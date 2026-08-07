@@ -348,25 +348,39 @@ Design rules being followed:
     sign-out (7004, `GCGameMatchSignOut`) picks the winner from `good_guys_win`,
     winners gain Elo (K=32) against the losers' average and losers lose the
     symmetric amount. Ratings persist in a new `PlayerRanks` table (created by
-    hand at startup for existing databases until migrations land), start at 0
-    MMR (Herald 1, the lowest medal) and map to Dota's tier*10+star encoding
-    (Herald 1 = 11 … Immortal 5 = 85). The rank request (8879→8880) and the
-    profile card now return the real medal. Logic lives in
-    `D2ST.Core/Ranking/RankMath.cs` (pure), the GC sees `IRankStore`, and the
-    EF implementation is `D2ST.Api/Ranks/RankStore.cs`. Verified over HTTP:
-    a Radiant win gave the winner +16 (1-0) and the Dire loser −16 (0-1).
-    Extras: MMR is floored at 0; the admin user list shows each player's MMR
-    and medal with per-user add/subtract and reset endpoints
+    hand at startup for existing databases until migrations land). New rows
+    start at 0 MMR and are uncalibrated; the visible medal is kept separate from
+    the numeric MMR. The rank request (8879→8880), profile card and server-static
+    lobby member use Dota's tier*10+star encoding (Herald 1 = 11 … Divine 5 =
+    75, Immortal = 80). Logic lives in `D2ST.Core/Ranking/RankMath.cs` (pure),
+    the GC sees `IRankStore`, and the EF implementation is
+    `D2ST.Api/Ranks/RankStore.cs`. Verified over HTTP before the calibration
+    correction: a Radiant win gave the winner +16 (1-0) and the Dire loser −16
+    (0-1). Extras: MMR is floored at 0; the admin user list shows each player's
+    MMR and medal with per-user add/subtract and reset endpoints
     (`POST /api/admin/users/{id}/mmr/adjust` with a signed Delta and
-    `.../mmr/reset`); and the server-static lobby object now carries each
-    member's medal tier, so the room shows them.
-29. **Rank calibration display** — the client draws the medal from the profile
-    card's `rank_tier_score`; the card used to send only `rank_tier`, so the
-    score defaulted to 0 and the client showed the account as *uncalibrated*
-    even with MMR set. The profile card now sends `rank_tier_score` = MMR
-    (plus the tier), and the rank response carries the MMR in `rank_data1`.
-    Verified: with 12075 MMR the card reports tier 8 / score 12075 and the rank
-    response 81 / 12075.
+    `.../mmr/reset`).
+29. **Rank calibration display** — the client layout renders
+    `rank_tier_score` as `{value}%`, so sending raw MMR there was the cause of
+    values such as `5000%`. The profile card now sends the encoded medal in
+    `rank_tier` and a 0–100 progress percentage in `rank_tier_score`; the rank
+    response sends the encoded medal, raw MMR in `rank_data1`, progress in
+    `rank_data2`, and leaderboard rank in `rank_data3`. Calibration is persisted
+    in `PlayerRanks`: a positive admin MMR assignment or a rated match makes the
+    rank visible, while reset/new accounts remain uncalibrated. Existing rows
+    with positive MMR are migrated as visible for backward compatibility.
+    With the current public medal bands, 5000 MMR maps to Divine 2 (`72`) at
+    90% progress; Divine 3 starts at 5020, so thresholds should be treated as
+    configurable if the project intentionally follows a different table.
+    The 100-hour Valve rule is a ranked-matchmaking access gate, not the
+    `rank_tier_score` value and not a replacement for calibration. This server
+    does not fake 100 hours or claim a ranked queue is unlocked; a future ranked
+    queue needs its own tracked playtime and calibration-confidence flow.
+30. **Verification note for the rank-field correction** — `git diff --check`,
+    the protocol-field search, and boundary checks for the medal table pass
+    (`5000 → 72/90%`, `5020 → 73/0%`, `5620 → 80/100%`). The current agent
+    environment has no `dotnet` executable, so `dotnet build D2STServer.sln
+    -c Release` must be run in the deployment/CI environment before release.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).

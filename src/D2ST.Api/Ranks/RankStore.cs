@@ -32,8 +32,14 @@ public sealed class RankStore : IRankStore
         var entity = db.PlayerRanks.AsNoTracking()
             .SingleOrDefault(rank => rank.AccountId == accountId);
         var rank = entity is null
-            ? new PlayerRank(accountId, 0, 0, 0, 0)
-            : new PlayerRank(accountId, entity.Mmr, entity.Wins, entity.Losses, entity.Games);
+            ? new PlayerRank(accountId, 0, 0, 0, 0, false)
+            : new PlayerRank(
+                accountId,
+                entity.Mmr,
+                entity.Wins,
+                entity.Losses,
+                entity.Games,
+                entity.IsCalibrated);
         _cache[accountId] = rank;
         return rank;
     }
@@ -74,7 +80,8 @@ public sealed class RankStore : IRankStore
                 Math.Max(0, rank.Mmr + delta),
                 rank.Wins + (isWinner ? 1 : 0),
                 rank.Losses + (isWinner ? 0 : 1),
-                rank.Games + 1);
+                rank.Games + 1,
+                true);
 
             var entity = db.PlayerRanks.SingleOrDefault(entry => entry.AccountId == rank.AccountId);
             if (entity is null)
@@ -86,6 +93,7 @@ public sealed class RankStore : IRankStore
                     Wins = next.Wins,
                     Losses = next.Losses,
                     Games = next.Games,
+                    IsCalibrated = next.IsCalibrated,
                     UpdatedAt = now
                 });
             }
@@ -95,6 +103,7 @@ public sealed class RankStore : IRankStore
                 entity.Wins = next.Wins;
                 entity.Losses = next.Losses;
                 entity.Games = next.Games;
+                entity.IsCalibrated = next.IsCalibrated;
                 entity.UpdatedAt = now;
             }
 
@@ -107,14 +116,22 @@ public sealed class RankStore : IRankStore
     public PlayerRank Adjust(uint accountId, int delta)
     {
         var current = GetOrCreate(accountId);
-        var next = current with { Mmr = Math.Max(0, current.Mmr + delta) };
+        var nextMmr = Math.Max(0, current.Mmr + delta);
+        var next = current with
+        {
+            Mmr = nextMmr,
+            // The admin adjustment is also the explicit way to assign a
+            // visible rank in this server, even when no calibration matches
+            // have been played yet.
+            IsCalibrated = current.IsCalibrated || nextMmr > 0
+        };
         Persist(next);
         return next;
     }
 
     public PlayerRank Reset(uint accountId)
     {
-        var next = new PlayerRank(accountId, 0, 0, 0, 0);
+        var next = new PlayerRank(accountId, 0, 0, 0, 0, false);
         Persist(next);
         return next;
     }
@@ -133,6 +150,7 @@ public sealed class RankStore : IRankStore
                 Wins = rank.Wins,
                 Losses = rank.Losses,
                 Games = rank.Games,
+                IsCalibrated = rank.IsCalibrated,
                 UpdatedAt = DateTimeOffset.UtcNow
             });
         }
@@ -142,6 +160,7 @@ public sealed class RankStore : IRankStore
             entity.Wins = rank.Wins;
             entity.Losses = rank.Losses;
             entity.Games = rank.Games;
+            entity.IsCalibrated = rank.IsCalibrated;
             entity.UpdatedAt = DateTimeOffset.UtcNow;
         }
 

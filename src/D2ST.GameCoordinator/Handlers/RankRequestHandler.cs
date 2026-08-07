@@ -6,8 +6,8 @@ using D2ST.Protocol.Dota;
 namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
-/// Answers the rank request (8879 → 8880) with the player's medal, computed
-/// from their lobby MMR (Herald 1 by default).
+/// Answers the rank request (8879 → 8880) with the player's encoded medal,
+/// MMR and progress percentage. Uncalibrated accounts use rank value zero.
 /// </summary>
 public sealed class RankRequestHandler : IGcMessageHandler
 {
@@ -23,12 +23,14 @@ public sealed class RankRequestHandler : IGcMessageHandler
     public IReadOnlyList<GcMessage> Handle(GcContext context, GcMessage request)
     {
         var rank = _ranks.GetOrCreate(context.AccountId);
-        var info = RankMath.RankFor(rank.Mmr);
+        var info = RankMath.VisibleRankFor(rank);
         var response = new CMsgGCToClientRankResponse
         {
             Result = CMsgGCToClientRankResponse.EResultCode.kSucceeded,
             RankValue = (uint)info.RankValue,
-            RankData1 = (uint)Math.Max(0, rank.Mmr)
+            RankData1 = info.RankValue == 0 ? 0u : (uint)Math.Max(0, rank.Mmr),
+            RankData2 = (uint)info.ProgressPercent,
+            RankData3 = 0
         };
 
         return

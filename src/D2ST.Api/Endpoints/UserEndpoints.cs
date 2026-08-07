@@ -47,14 +47,16 @@ public static class UserEndpoints
             }
 
             var rank = ranks.GetOrCreate(session.Account.AccountId);
-            var info = RankMath.RankFor(rank.Mmr);
+            var info = RankMath.VisibleRankFor(rank);
             return Results.Ok(new
             {
                 AccountId = rank.AccountId,
                 Mmr = rank.Mmr,
                 RankTier = info.Tier,
                 RankStar = info.Star,
-                RankValue = info.RankValue
+                RankValue = info.RankValue,
+                RankProgress = info.ProgressPercent,
+                IsCalibrated = rank.IsCalibrated
             });
         });
 

@@ -26,19 +26,21 @@ public sealed class GetProfileCardHandler : IGcMessageHandler
         var requested = context.Codec.Decode<CMsgClientToGCGetProfileCard>(request.Body);
         var accountId = requested.AccountId != 0 ? requested.AccountId : context.AccountId;
 
-        // Nothing here tracks badges, ranks or showcase slots yet; the card is
-        // the identity only, which is enough for the client to render it.
+        // Badge/showcase data is not persisted yet; rank data is backed by the
+        // rank store because the client renders it directly from this card.
         var rank = _ranks.GetOrCreate(accountId);
-        var info = RankMath.RankFor(rank.Mmr);
+        var info = RankMath.VisibleRankFor(rank);
         var card = new CMsgDOTAProfileCard
         {
             AccountId = accountId,
             BadgePoints = 0,
             EventId = 0,
-            RankTier = (uint)info.Tier,
-            // The client draws the medal from the score; without it the profile
-            // shows the account as uncalibrated even when a tier is set.
-            RankTierScore = (uint)Math.Max(0, rank.Mmr),
+            // rank_tier is the encoded medal (for example Divine 3 = 73),
+            // not just the base tier (7).
+            RankTier = (uint)info.RankValue,
+            // The client renders this field as "{value}%". It is progress
+            // through the current star, never the player's raw MMR.
+            RankTierScore = (uint)info.ProgressPercent,
             LeaderboardRank = 0,
             IsPlusSubscriber = false
         };

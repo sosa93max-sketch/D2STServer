@@ -910,7 +910,7 @@ public sealed class LobbyService : IGcWelcomeContributor
             serverStatic.AllMembers.Add(new CSODOTAServerStaticLobbyMember
             {
                 SteamId = member.Id,
-                RankTier = RankMath.RankFor(rank.Mmr).Tier,
+                RankTier = RankMath.VisibleRankFor(rank).RankValue,
                 WasMvpLastGame = false,
                 IsPlusSubscriber = true,
                 FavoriteTeamPacked = 0,

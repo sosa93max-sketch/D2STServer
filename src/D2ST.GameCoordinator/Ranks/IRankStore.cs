@@ -8,7 +8,7 @@ namespace D2ST.GameCoordinator.Ranks;
 /// </summary>
 public interface IRankStore
 {
-    /// <summary>The current rating, creating a Herald-1 row on first sight.</summary>
+    /// <summary>The current rating, creating an uncalibrated snapshot on first sight.</summary>
     PlayerRank GetOrCreate(uint accountId);
 
     /// <summary>Applies a finished match's results and persists the changes.</summary>
@@ -17,6 +17,6 @@ public interface IRankStore
     /// <summary>Adds (or subtracts) MMR by hand from the admin web.</summary>
     PlayerRank Adjust(uint accountId, int delta);
 
-    /// <summary>Resets a player to 0 MMR / Herald 1 with a clean record.</summary>
+    /// <summary>Resets a player to 0 MMR / uncalibrated with a clean record.</summary>
     PlayerRank Reset(uint accountId);
 }

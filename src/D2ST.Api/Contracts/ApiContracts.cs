@@ -34,7 +34,9 @@ public sealed record AdminUserResponse(
     int Mmr,
     int RankTier,
     int RankStar,
-    int RankValue);
+    int RankValue,
+    int RankProgress,
+    bool IsCalibrated);
 
 public sealed record AdminCreateUserRequest(string Username, string Password, string? PersonaName);
 

@@ -173,6 +173,8 @@ public static class AdminEndpoints
                 RankTier = info.Tier,
                 RankStar = info.Star,
                 RankValue = info.RankValue,
+                RankProgress = info.ProgressPercent,
+                IsCalibrated = rank.IsCalibrated,
                 Message = $"MMR ajustado: {rank.Mmr}"
             });
         });
@@ -199,7 +201,7 @@ public static class AdminEndpoints
 
             var rank = ranks.Reset((uint)accountId);
             return Results.Ok(new AdminMessageResponse(
-                $"MMR restablecido a {rank.Mmr} (Herald 1)."));
+                $"MMR restablecido a {rank.Mmr} (sin calibrar)."));
         });
 
         app.MapPost("/api/admin/users/{accountId:long}/password", async (
@@ -356,7 +358,9 @@ public static class AdminEndpoints
             rank.Mmr,
             info.Tier,
             info.Star,
-            info.RankValue);
+            info.RankValue,
+            info.ProgressPercent,
+            rank.IsCalibrated);
     }
 
     private static bool TryDecodeAvatar(string? contentBase64, out byte[] content)

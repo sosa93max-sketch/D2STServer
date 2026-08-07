@@ -232,6 +232,11 @@ function medalName(tier) {
   return names[(tier || 1) - 1] || 'Herald';
 }
 
+function rankLabel(user) {
+  if (!user.IsCalibrated) return user.Mmr + ' · Sin calibrar';
+  return user.Mmr + ' · ' + medalName(user.RankTier) + ' ' + (user.RankStar || '');
+}
+
 function avatarCell(user) {
   const td = document.createElement('td');
   const img = document.createElement('img');
@@ -294,7 +299,7 @@ async function loadUsers() {
     state.appendChild(dot);
     state.appendChild(document.createTextNode(user.Online ? 'En línea' : 'Offline'));
     row.appendChild(state);
-    row.appendChild(tr('', user.Mmr + ' · ' + medalName(user.RankTier) + ' ' + (user.RankStar || 1)));
+    row.appendChild(tr('', rankLabel(user)));
     row.appendChild(tr('', new Date(user.CreatedAt).toLocaleString()));
     row.appendChild(avatarCell(user));
     const actions = document.createElement('td');
@@ -326,7 +331,7 @@ async function adjustMmr(user, sign) {
 }
 
 async function resetMmr(user) {
-  if (!confirm('¿Restablecer el MMR de "' + user.Username + '" a 0 (Herald 1)? Se borran sus partidas contadas.')) return;
+  if (!confirm('¿Restablecer el MMR de "' + user.Username + '" a 0 (sin calibrar)? Se borran sus partidas contadas.')) return;
   const result = await api('/api/admin/users/' + user.AccountId + '/mmr/reset', { method: 'POST' });
   if (result.ok) loadUsers();
   else alert(messageOf(result));
