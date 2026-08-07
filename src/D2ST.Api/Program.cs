@@ -8,7 +8,6 @@ using D2ST.GameCoordinator.Players;
 using D2ST.GameCoordinator.Ranks;
 using D2ST.Persistence;
 using D2ST.Steam;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,20 +56,13 @@ using (var scope = app.Services.CreateScope())
         );
         """);
 
-    // Existing databases were created before calibration was persisted. Keep
-    // their positive MMR assignments visible, then leave new/zero-MMR users
-    // uncalibrated until an admin assignment or rated result marks them so.
-    try
+    // Existing databases were created before calibration was persisted. Check
+    // the schema before adding the column so a newly created database does not
+    // log a misleading duplicate-column error on every startup.
+    if (!HasPlayerRankCalibrationColumn(db))
     {
         db.Database.ExecuteSqlRaw(
             "ALTER TABLE \"PlayerRanks\" ADD COLUMN \"IsCalibrated\" INTEGER NOT NULL DEFAULT 0;");
-    }
-    catch (SqliteException error) when (
-        error.SqliteErrorCode == 1 &&
-        error.Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase))
-    {
-        // The column is already present on a newly created or previously
-        // upgraded database.
     }
 
     db.Database.ExecuteSqlRaw(
@@ -101,6 +93,40 @@ static void EnsureSqliteDirectory(string connectionString)
     if (!string.IsNullOrEmpty(directory))
     {
         Directory.CreateDirectory(directory);
+    }
+}
+
+static bool HasPlayerRankCalibrationColumn(D2stDbContext db)
+{
+    var connection = db.Database.GetDbConnection();
+    var openedHere = connection.State != System.Data.ConnectionState.Open;
+    if (openedHere)
+    {
+        connection.Open();
+    }
+
+    try
+    {
+        using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA table_info(\"PlayerRanks\");";
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            if (!reader.IsDBNull(1) &&
+                string.Equals(reader.GetString(1), "IsCalibrated", StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    finally
+    {
+        if (openedHere)
+        {
+            connection.Close();
+        }
     }
 }
 

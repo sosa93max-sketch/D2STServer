@@ -395,6 +395,12 @@ Design rules being followed:
     overlay behavior; the friend request itself is processed in its work queue.
     Validation in this environment is static (`git diff --check`); the real
     Dota client/shim flow still requires a Windows run.
+32. **Idempotent `PlayerRanks` bootstrap** — startup now checks
+    `PRAGMA table_info("PlayerRanks")` before adding `IsCalibrated`. New
+    databases and already-upgraded databases no longer emit a duplicate-column
+    error; an older database that has the table without that column still gets
+    the one required `ALTER TABLE`. Positive existing MMR rows are then marked
+    calibrated as before. The change is in `src/D2ST.Api/Program.cs`.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).
