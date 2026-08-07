@@ -30,7 +30,11 @@ public sealed record AdminUserResponse(
     string? PersonaName,
     bool Online,
     DateTimeOffset CreatedAt,
-    bool HasAvatar);
+    bool HasAvatar,
+    int Mmr,
+    int RankTier,
+    int RankStar,
+    int RankValue);
 
 public sealed record AdminCreateUserRequest(string Username, string Password, string? PersonaName);
 
@@ -39,6 +43,8 @@ public sealed record AdminSetPasswordRequest(string Password);
 public sealed record AdminSetPersonaRequest(string PersonaName);
 
 public sealed record AdminSetAvatarRequest(string ContentBase64);
+
+public sealed record AdminAdjustMmrRequest(int Delta);
 
 public sealed record AdminMessageResponse(string Message);
 

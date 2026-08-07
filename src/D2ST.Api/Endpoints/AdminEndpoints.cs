@@ -1,7 +1,9 @@
 using System.Text.Json;
 using D2ST.Api.Contracts;
 using D2ST.Core.Accounts;
+using D2ST.Core.Ranking;
 using D2ST.Core.Steam;
+using D2ST.GameCoordinator.Ranks;
 using D2ST.Persistence;
 using D2ST.Steam;
 using D2ST.Steam.Social;
@@ -38,6 +40,7 @@ public static class AdminEndpoints
             ISessionStore sessions,
             D2stDbContext db,
             IConfiguration config,
+            IRankStore ranks,
             CancellationToken ct) =>
         {
             var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
@@ -55,14 +58,8 @@ public static class AdminEndpoints
                 .OrderBy(account => account.AccountId)
                 .ToListAsync(ct);
             var online = sessions.OnlineAccounts();
-            return Results.Ok(accounts.Select(account => new AdminUserResponse(
-                account.AccountId,
-                SteamAccount.SteamIdFromAccountId(account.AccountId).ToString(),
-                account.Username,
-                account.PersonaName,
-                online.Contains(account.AccountId),
-                account.CreatedAt,
-                account.Avatar is { Length: > 0 })).ToList());
+            return Results.Ok(accounts.Select(account =>
+                ToResponse(ranks, account, online.Contains(account.AccountId))).ToList());
         });
 
         app.MapPost("/api/admin/users", async (
@@ -72,6 +69,7 @@ public static class AdminEndpoints
             D2stDbContext db,
             IConfiguration config,
             ISteamAuthService auth,
+            IRankStore ranks,
             CancellationToken ct) =>
         {
             var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
@@ -106,14 +104,7 @@ public static class AdminEndpoints
                 }
             }
 
-            return Results.Ok(new AdminUserResponse(
-                account!.AccountId,
-                SteamAccount.SteamIdFromAccountId(account.AccountId).ToString(),
-                account.Username,
-                account.PersonaName,
-                false,
-                account.CreatedAt,
-                account.Avatar is { Length: > 0 }));
+            return Results.Ok(ToResponse(ranks, account!, online: false));
         });
 
         app.MapPut("/api/admin/users/{accountId:long}/avatar", async (
@@ -145,6 +136,70 @@ public static class AdminEndpoints
             return await users.SetAvatarAsync((uint)accountId, content, ct)
                 ? Results.Ok(new AdminMessageResponse("Avatar actualizado."))
                 : Json(new AdminMessageResponse("Usuario no encontrado."), 404);
+        });
+
+        app.MapPost("/api/admin/users/{accountId:long}/mmr/adjust", async (
+            long accountId,
+            AdminAdjustMmrRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration config,
+            IRankStore ranks,
+            CancellationToken ct) =>
+        {
+            var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
+            if (context is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.IsAdmin)
+            {
+                return Forbidden();
+            }
+
+            var id = (uint)accountId;
+            if (!await db.Accounts.AnyAsync(entity => entity.AccountId == id, ct))
+            {
+                return Json(new AdminMessageResponse("Usuario no encontrado."), 404);
+            }
+
+            var rank = ranks.Adjust(id, request.Delta);
+            var info = RankMath.RankFor(rank.Mmr);
+            return Results.Ok(new
+            {
+                Mmr = rank.Mmr,
+                RankTier = info.Tier,
+                RankStar = info.Star,
+                RankValue = info.RankValue,
+                Message = $"MMR ajustado: {rank.Mmr}"
+            });
+        });
+
+        app.MapPost("/api/admin/users/{accountId:long}/mmr/reset", async (
+            long accountId,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration config,
+            IRankStore ranks,
+            CancellationToken ct) =>
+        {
+            var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
+            if (context is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.IsAdmin)
+            {
+                return Forbidden();
+            }
+
+            var rank = ranks.Reset((uint)accountId);
+            return Results.Ok(new AdminMessageResponse(
+                $"MMR restablecido a {rank.Mmr} (Herald 1)."));
         });
 
         app.MapPost("/api/admin/users/{accountId:long}/password", async (
@@ -285,6 +340,24 @@ public static class AdminEndpoints
 
     private static IResult Json(object value, int statusCode) =>
         Results.Json(value, JsonOptions, statusCode: statusCode);
+
+    private static AdminUserResponse ToResponse(IRankStore ranks, AccountEntity account, bool online)
+    {
+        var rank = ranks.GetOrCreate(account.AccountId);
+        var info = RankMath.RankFor(rank.Mmr);
+        return new AdminUserResponse(
+            account.AccountId,
+            SteamAccount.SteamIdFromAccountId(account.AccountId).ToString(),
+            account.Username,
+            account.PersonaName,
+            online,
+            account.CreatedAt,
+            account.Avatar is { Length: > 0 },
+            rank.Mmr,
+            info.Tier,
+            info.Star,
+            info.RankValue);
+    }
 
     private static bool TryDecodeAvatar(string? contentBase64, out byte[] content)
     {

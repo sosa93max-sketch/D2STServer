@@ -13,4 +13,10 @@ public interface IRankStore
 
     /// <summary>Applies a finished match's results and persists the changes.</summary>
     void ApplyMatchResult(IReadOnlyList<(uint AccountId, bool Won)> results);
+
+    /// <summary>Adds (or subtracts) MMR by hand from the admin web.</summary>
+    PlayerRank Adjust(uint accountId, int delta);
+
+    /// <summary>Resets a player to 0 MMR / Herald 1 with a clean record.</summary>
+    PlayerRank Reset(uint accountId);
 }

@@ -1,4 +1,6 @@
 using D2ST.Core.Accounts;
+using D2ST.Core.Ranking;
+using D2ST.GameCoordinator.Ranks;
 using D2ST.GameCoordinator.SharedObjects;
 using D2ST.Protocol.Dota;
 
@@ -26,6 +28,7 @@ public sealed class LobbyService : IGcWelcomeContributor
     private const uint DefaultServerPort = 27015;
 
     private readonly SoCacheService _soCache;
+    private readonly IRankStore _ranks;
     private readonly TimeProvider _time;
     private readonly Lock _gate = new();
     private readonly Dictionary<ulong, ulong> _memberships = [];
@@ -34,9 +37,10 @@ public sealed class LobbyService : IGcWelcomeContributor
     private readonly Dictionary<ulong, Dictionary<ulong, string>> _memberNames = [];
     private ulong _sequence;
 
-    public LobbyService(SoCacheService soCache, TimeProvider time)
+    public LobbyService(SoCacheService soCache, IRankStore ranks, TimeProvider time)
     {
         _soCache = soCache;
+        _ranks = ranks;
         _time = time;
     }
 
@@ -900,11 +904,13 @@ public sealed class LobbyService : IGcWelcomeContributor
         foreach (var member in lobby.AllMembers)
         {
             var name = MemberName(lobby.LobbyId, member.Id);
+            var rank = _ranks.GetOrCreate(AccountIdOf(member.Id));
             staticLobby.AllMembers.Add(new CSODOTAStaticLobbyMember { Name = name });
             serverLobby.AllMembers.Add(new CSODOTAServerLobbyMember());
             serverStatic.AllMembers.Add(new CSODOTAServerStaticLobbyMember
             {
                 SteamId = member.Id,
+                RankTier = RankMath.RankFor(rank.Mmr).Tier,
                 WasMvpLastGame = false,
                 IsPlusSubscriber = true,
                 FavoriteTeamPacked = 0,

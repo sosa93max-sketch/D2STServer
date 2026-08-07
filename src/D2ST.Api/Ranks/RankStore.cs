@@ -71,7 +71,7 @@ public sealed class RankStore : IRankStore
         {
             var next = new PlayerRank(
                 rank.AccountId,
-                rank.Mmr + delta,
+                Math.Max(0, rank.Mmr + delta),
                 rank.Wins + (isWinner ? 1 : 0),
                 rank.Losses + (isWinner ? 0 : 1),
                 rank.Games + 1);
@@ -102,5 +102,50 @@ public sealed class RankStore : IRankStore
         }
 
         db.SaveChanges();
+    }
+
+    public PlayerRank Adjust(uint accountId, int delta)
+    {
+        var current = GetOrCreate(accountId);
+        var next = current with { Mmr = Math.Max(0, current.Mmr + delta) };
+        Persist(next);
+        return next;
+    }
+
+    public PlayerRank Reset(uint accountId)
+    {
+        var next = new PlayerRank(accountId, 0, 0, 0, 0);
+        Persist(next);
+        return next;
+    }
+
+    private void Persist(PlayerRank rank)
+    {
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        var entity = db.PlayerRanks.SingleOrDefault(entry => entry.AccountId == rank.AccountId);
+        if (entity is null)
+        {
+            db.PlayerRanks.Add(new PlayerRankEntity
+            {
+                AccountId = rank.AccountId,
+                Mmr = rank.Mmr,
+                Wins = rank.Wins,
+                Losses = rank.Losses,
+                Games = rank.Games,
+                UpdatedAt = DateTimeOffset.UtcNow
+            });
+        }
+        else
+        {
+            entity.Mmr = rank.Mmr;
+            entity.Wins = rank.Wins;
+            entity.Losses = rank.Losses;
+            entity.Games = rank.Games;
+            entity.UpdatedAt = DateTimeOffset.UtcNow;
+        }
+
+        db.SaveChanges();
+        _cache[rank.AccountId] = rank;
     }
 }

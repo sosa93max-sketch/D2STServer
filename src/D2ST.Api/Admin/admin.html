@@ -227,6 +227,11 @@ function defaultAvatarSrc(user) {
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 }
 
+function medalName(tier) {
+  const names = ['Herald', 'Guardian', 'Crusader', 'Archon', 'Legend', 'Ancient', 'Divine', 'Immortal'];
+  return names[(tier || 1) - 1] || 'Herald';
+}
+
 function avatarCell(user) {
   const td = document.createElement('td');
   const img = document.createElement('img');
@@ -270,7 +275,7 @@ async function loadUsers() {
 
   const table = document.createElement('table');
   const head = document.createElement('tr');
-  ['ID', 'Usuario', 'Persona', 'Steam ID', 'Estado', 'Creado', 'Avatar', 'Acciones'].forEach((h) => {
+  ['ID', 'Usuario', 'Persona', 'Steam ID', 'Estado', 'MMR', 'Creado', 'Avatar', 'Acciones'].forEach((h) => {
     const th = document.createElement('th');
     th.textContent = h;
     head.appendChild(th);
@@ -289,10 +294,14 @@ async function loadUsers() {
     state.appendChild(dot);
     state.appendChild(document.createTextNode(user.Online ? 'En línea' : 'Offline'));
     row.appendChild(state);
+    row.appendChild(tr('', user.Mmr + ' · ' + medalName(user.RankTier) + ' ' + (user.RankStar || 1)));
     row.appendChild(tr('', new Date(user.CreatedAt).toLocaleString()));
     row.appendChild(avatarCell(user));
     const actions = document.createElement('td');
     actions.className = 'actions';
+    actions.appendChild(actionLink('MMR +', '', () => adjustMmr(user, 1)));
+    actions.appendChild(actionLink('MMR −', '', () => adjustMmr(user, -1)));
+    actions.appendChild(actionLink('Reset MMR', 'danger', () => resetMmr(user)));
     actions.appendChild(actionLink('Avatar', '', () => uploadAvatar(user)));
     actions.appendChild(actionLink('Renombrar', '', () => renameUser(user)));
     actions.appendChild(actionLink('Contraseña', '', () => resetPassword(user)));
@@ -301,6 +310,26 @@ async function loadUsers() {
     table.appendChild(row);
   }
   wrap.appendChild(table);
+}
+
+async function adjustMmr(user, sign) {
+  const amount = prompt((sign > 0 ? 'Sumar' : 'Restar') + ' MMR a ' + user.Username + ' (máximo 5000):', '25');
+  if (amount == null) return;
+  const value = parseInt(amount, 10);
+  if (!Number.isFinite(value) || value <= 0 || value > 5000) { alert('Cantidad inválida.'); return; }
+  const result = await api('/api/admin/users/' + user.AccountId + '/mmr/adjust', {
+    method: 'POST',
+    body: JSON.stringify({ Delta: sign * value })
+  });
+  if (result.ok) loadUsers();
+  else alert(messageOf(result));
+}
+
+async function resetMmr(user) {
+  if (!confirm('¿Restablecer el MMR de "' + user.Username + '" a 0 (Herald 1)? Se borran sus partidas contadas.')) return;
+  const result = await api('/api/admin/users/' + user.AccountId + '/mmr/reset', { method: 'POST' });
+  if (result.ok) loadUsers();
+  else alert(messageOf(result));
 }
 
 function uploadAvatar(user) {

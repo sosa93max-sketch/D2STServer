@@ -355,6 +355,11 @@ Design rules being followed:
     `D2ST.Core/Ranking/RankMath.cs` (pure), the GC sees `IRankStore`, and the
     EF implementation is `D2ST.Api/Ranks/RankStore.cs`. Verified over HTTP:
     a Radiant win gave the winner +16 (1-0) and the Dire loser −16 (0-1).
+    Extras: MMR is floored at 0; the admin user list shows each player's MMR
+    and medal with per-user add/subtract and reset endpoints
+    (`POST /api/admin/users/{id}/mmr/adjust` with a signed Delta and
+    `.../mmr/reset`); and the server-static lobby object now carries each
+    member's medal tier, so the room shows them.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).
