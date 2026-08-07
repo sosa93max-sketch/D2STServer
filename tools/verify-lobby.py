@@ -204,7 +204,7 @@ for token in (host_token, guest_token, third_token):
 # create a lobby with a pass key, a name and a region
 details = string_field(2, "Devin test lobby") + varint_field(4, 3) + varint_field(5, 2)
 handled, replies = exchange(host_token, 7038, string_field(5, "secret") + bytes_field(7, details))
-check("7038 answers 7055 with success", handled and replies[0][0] == 7055 and result_of(replies) == 0, names(replies))
+check("7038 answers 7055 with success", handled and replies[0][0] == 7055 and result_of(replies) == 1, names(replies))
 
 lobby = get("/api/gamecoordinator/lobby", host_token)
 check("the lobby holds its host on Radiant slot 1",

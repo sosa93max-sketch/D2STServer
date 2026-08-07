@@ -6,7 +6,8 @@ namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
 /// Hosts a lobby (7038 → 7055). The lobby itself reaches the client as a
-/// Shared Object cache it is subscribed to; the reply only carries the result.
+/// Shared Object cache it is subscribed to; the reply is the generic result the
+/// modern client's create job waits for.
 /// </summary>
 public sealed class PracticeLobbyCreateHandler : IGcMessageHandler
 {
@@ -22,7 +23,11 @@ public sealed class PracticeLobbyCreateHandler : IGcMessageHandler
     public IReadOnlyList<GcMessage> Handle(GcContext context, GcMessage request)
     {
         var create = context.Codec.Decode<CMsgPracticeLobbyCreate>(request.Body);
-        var response = new CMsgPracticeLobbyJoinResponse { Result = _lobbies.Create(context, create) };
+        var created = _lobbies.Create(context, create);
+        var response = new CMsgGenericResult
+        {
+            Eresult = created == DOTAJoinLobbyResult.DotaJoinResultSuccess ? 1u : 0u
+        };
 
         return
         [

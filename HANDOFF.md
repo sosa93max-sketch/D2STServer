@@ -331,6 +331,13 @@ Design rules being followed:
     (`[0..n-1]`), `lobby_creation_time` (from the id's high bits) and the
     `extra_messages` marker (8821 / `[8,0]`), mirroring SKY_server. Also added
     the Watch-tab queries (8009→8010, 8036→8061, 8037→8062) answering empty.
+26. **Generic-result replies for lobby writes** — the modern client's create,
+    set-details and set-team-slot jobs wait for `7055` carrying a
+    `CMsgGenericResult` (eresult), not the legacy join-response body — and the
+    two setters previously got no reply at all, so the client showed "lobby
+    not created" / "cannot change slot" errors even though the state changed.
+    All three now answer 7055 with eresult (1 ok / 0 refused), matching
+    SKY_server; leave and kick correctly stay unanswered.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).

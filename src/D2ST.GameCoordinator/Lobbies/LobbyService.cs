@@ -181,8 +181,12 @@ public sealed class LobbyService : IGcWelcomeContributor
         }
     }
 
-    /// <summary>Applies the host's settings. Only the host may, and not once the game is running.</summary>
-    public void SetDetails(GcContext context, CMsgPracticeLobbySetDetails details)
+    /// <summary>
+    /// Applies the host's settings. Only the host may, and not once the game is
+    /// running. Returns whether the change was applied, for the generic-result
+    /// reply the modern client expects.
+    /// </summary>
+    public bool SetDetails(GcContext context, CMsgPracticeLobbySetDetails details)
     {
         lock (_gate)
         {
@@ -190,11 +194,12 @@ public sealed class LobbyService : IGcWelcomeContributor
                 lobby.LeaderId != context.SteamId ||
                 lobby.state != CSODOTALobby.State.Ui)
             {
-                return;
+                return false;
             }
 
             ApplyDetails(lobby, details);
             Write(lobby);
+            return true;
         }
     }
 
@@ -202,19 +207,19 @@ public sealed class LobbyService : IGcWelcomeContributor
     /// Puts the caller in a team slot. A slot somebody else holds is refused
     /// rather than shared, so two players cannot end up on the same one.
     /// </summary>
-    public void SetTeamSlot(GcContext context, CMsgPracticeLobbySetTeamSlot request)
+    public bool SetTeamSlot(GcContext context, CMsgPracticeLobbySetTeamSlot request)
     {
         lock (_gate)
         {
             if (!TryGetLobbyOf(context.SteamId, out var lobby) || lobby.state != CSODOTALobby.State.Ui)
             {
-                return;
+                return false;
             }
 
             var member = lobby.AllMembers.FirstOrDefault(entry => entry.Id == context.SteamId);
             if (member is null)
             {
-                return;
+                return false;
             }
 
             var team = request.Team;
@@ -224,7 +229,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 if (slot == 0 || lobby.AllMembers.Any(other =>
                         other.Id != member.Id && other.Team == team && other.Slot == slot))
                 {
-                    return;
+                    return false;
                 }
 
                 member.Team = team;
@@ -237,6 +242,7 @@ public sealed class LobbyService : IGcWelcomeContributor
             }
 
             Write(lobby);
+            return true;
         }
     }
 
