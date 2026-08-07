@@ -904,3 +904,29 @@ the dedicated-server launch path — plus matchmaking handlers and an item
 catalogue behind the econ grant), EF migrations, the `steam_api_new` redesign, and
 real-client validation. This is a
 solid foundation, **not** a complete GC.
+
+## 9. Launcher account switching and Workshop relaunch fix
+
+The related launcher and shim were audited after a report that changing the
+launcher account left the first account in the ini and that creating
+`D2MAX\Workshop` caused the next Dota launch to remain in the background.
+
+- `sosa93max-sketch/new_launcher` now writes beside the loaded executable at
+  `<dota2.exe dir>\D2MAX\steam_api.ini`, which is the exact path read by the
+  current shim. The active profile supplies `FallbackAccountId` and
+  `FallbackPersonaName`; `QSaveFile` keeps the ini atomic. The old launcher
+  path `game\SKYNET` was the reason the first account appeared hardcoded after
+  `D2MAX` had been created.
+- The launcher removes only stale `dota2.exe` processes whose exact path is
+  the selected target before a relaunch. This covers Source 2's hidden-second-
+  instance behavior without killing unrelated processes.
+- `sosa93max-sketch/steam_api` keeps Workshop subscription snapshots outside
+  the game tree at `%LOCALAPPDATA%\D2Max\Workshop`, reads old in-game snapshots
+  only to migrate them, prunes empty legacy directories and never deletes real
+  Workshop content recursively. Its shutdown path marks the account offline,
+  cancels active HTTP/event/queue workers and closes the TCP server.
+
+These changes still require a Windows DllExport build and a real two-account,
+two-consecutive-launch test. Do not claim the client issue is fully validated
+until `dota2.exe` is confirmed gone after the first exit and the second launch
+opens normally.
