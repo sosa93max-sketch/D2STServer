@@ -923,8 +923,12 @@ launcher account left the first account in the ini and that creating
 - `sosa93max-sketch/steam_api` keeps Workshop subscription snapshots outside
   the game tree at `%LOCALAPPDATA%\D2Max\Workshop`, reads old in-game snapshots
   only to migrate them, prunes empty legacy directories and never deletes real
-  Workshop content recursively. Its shutdown path marks the account offline,
-  cancels active HTTP/event/queue workers and closes the TCP server.
+  Workshop content recursively. `SteamUGC` no longer performs the legacy scan
+  synchronously: it loads only the external snapshot before returning the
+  interface, then migrates legacy snapshots on a background worker using
+  explicit `D2MAX`/`SKYNET` paths, without moving the whole legacy tree during
+  Dota startup. Its shutdown path marks the account offline, cancels active
+  HTTP/event/queue workers and closes the TCP server.
 - The first Windows build of `steam_api` exposed a missing `SKYNET.Helpers` import
   in `WorkQueue` plus a .NET Framework definite-assignment issue in the worker
   dequeue condition; both are fixed in `steam_api` commit `92fb8fa`.
