@@ -264,6 +264,13 @@ public sealed class LobbyService : IGcWelcomeContributor
                 return false;
             }
 
+            // No bots yet: a match needs at least two human players, otherwise
+            // the launch would sit in SERVERSETUP forever waiting for a server.
+            if (lobby.AllMembers.Count < 2)
+            {
+                return false;
+            }
+
             MarkTeamsIncomplete(lobby);
             lobby.state = CSODOTALobby.State.Serversetup;
             lobby.Connect = string.Empty;
@@ -274,6 +281,37 @@ public sealed class LobbyService : IGcWelcomeContributor
             DropServer(lobby.LobbyId);
             Write(lobby);
             return true;
+        }
+    }
+
+    /// <summary>
+    /// The client's cancel button during a launch (GCAbandonCurrentGame):
+    /// aborts a launch in progress back to the UI state, or leaves the lobby
+    /// when nothing is launching.
+    /// </summary>
+    public void AbandonCurrentGame(GcContext context)
+    {
+        lock (_gate)
+        {
+            if (!TryGetLobbyOf(context.SteamId, out var lobby))
+            {
+                return;
+            }
+
+            if (lobby.state == CSODOTALobby.State.Ui)
+            {
+                Detach(lobby, context.SteamId);
+                return;
+            }
+
+            lobby.state = CSODOTALobby.State.Ui;
+            lobby.Connect = string.Empty;
+            lobby.ServerId = 0;
+            lobby.MatchId = 0;
+            lobby.GameStartTime = 0;
+            lobby.GameState = DOTAGameState.DotaGamerulesStateInit;
+            DropServer(lobby.LobbyId);
+            Write(lobby);
         }
     }
 

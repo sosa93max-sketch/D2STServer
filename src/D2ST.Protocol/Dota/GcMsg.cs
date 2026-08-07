@@ -38,6 +38,7 @@ public static class GcMsg
     public const uint PartyReadyCheckAcknowledge = (uint)EDOTAGCMsg.kEMsgPartyReadyCheckAcknowledge;
 
     public const uint PracticeLobbyCreate = (uint)EDOTAGCMsg.kEMsgGCPracticeLobbyCreate;
+    public const uint AbandonCurrentGame = (uint)EDOTAGCMsg.kEMsgGCAbandonCurrentGame;
     public const uint PracticeLobbyLeave = (uint)EDOTAGCMsg.kEMsgGCPracticeLobbyLeave;
     public const uint PracticeLobbyLaunch = (uint)EDOTAGCMsg.kEMsgGCPracticeLobbyLaunch;
     public const uint PracticeLobbyList = (uint)EDOTAGCMsg.kEMsgGCPracticeLobbyList;

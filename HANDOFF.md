@@ -338,6 +338,12 @@ Design rules being followed:
     not created" / "cannot change slot" errors even though the state changed.
     All three now answer 7055 with eresult (1 ok / 0 refused), matching
     SKY_server; leave and kick correctly stay unanswered.
+27. **Solo launch refused + cancel works** — launching a practice lobby with
+    fewer than two human players is refused (eresult 0, stays in UI) because
+    bots are not implemented yet, so it no longer sits in SERVERSETUP waiting
+    forever. The launch overlay's cancel button (7035 `AbandonCurrentGame`) is
+    now handled: it aborts a launch in progress back to the UI state (or leaves
+    the lobby when nothing is launching), so the X actually cancels.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).
