@@ -1,7 +1,9 @@
 using D2ST.Api.Contracts;
 using D2ST.Core.Accounts;
 using D2ST.Core.Events;
+using D2ST.Core.Ranking;
 using D2ST.Core.Steam;
+using D2ST.GameCoordinator.Ranks;
 using D2ST.Steam;
 using D2ST.Steam.Presence;
 using D2ST.Steam.Social;
@@ -31,6 +33,29 @@ public static class UserEndpoints
             var accountId = session.Account.AccountId;
             var profile = await users.FindAsync(accountId, accountId, ct);
             return profile is null ? Results.NotFound() : Results.Ok(profile.ToApiUser());
+        });
+
+        app.MapGet("/api/users/me/rank", (
+            HttpContext http,
+            ISessionStore sessions,
+            IRankStore ranks) =>
+        {
+            var session = http.Authenticate(sessions);
+            if (session is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var rank = ranks.GetOrCreate(session.Account.AccountId);
+            var info = RankMath.RankFor(rank.Mmr);
+            return Results.Ok(new
+            {
+                AccountId = rank.AccountId,
+                Mmr = rank.Mmr,
+                RankTier = info.Tier,
+                RankStar = info.Star,
+                RankValue = info.RankValue
+            });
         });
 
         app.MapGet("/api/users", async (
