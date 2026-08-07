@@ -36,6 +36,9 @@ public sealed class GetProfileCardHandler : IGcMessageHandler
             BadgePoints = 0,
             EventId = 0,
             RankTier = (uint)info.Tier,
+            // The client draws the medal from the score; without it the profile
+            // shows the account as uncalibrated even when a tier is set.
+            RankTierScore = (uint)Math.Max(0, rank.Mmr),
             LeaderboardRank = 0,
             IsPlusSubscriber = false
         };

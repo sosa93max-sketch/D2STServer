@@ -360,6 +360,13 @@ Design rules being followed:
     (`POST /api/admin/users/{id}/mmr/adjust` with a signed Delta and
     `.../mmr/reset`); and the server-static lobby object now carries each
     member's medal tier, so the room shows them.
+29. **Rank calibration display** — the client draws the medal from the profile
+    card's `rank_tier_score`; the card used to send only `rank_tier`, so the
+    score defaulted to 0 and the client showed the account as *uncalibrated*
+    even with MMR set. The profile card now sends `rank_tier_score` = MMR
+    (plus the tier), and the rank response carries the MMR in `rank_data1`.
+    Verified: with 12075 MMR the card reports tier 8 / score 12075 and the rank
+    response 81 / 12075.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).

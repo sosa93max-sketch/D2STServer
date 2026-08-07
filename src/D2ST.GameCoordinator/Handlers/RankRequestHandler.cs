@@ -27,7 +27,8 @@ public sealed class RankRequestHandler : IGcMessageHandler
         var response = new CMsgGCToClientRankResponse
         {
             Result = CMsgGCToClientRankResponse.EResultCode.kSucceeded,
-            RankValue = (uint)info.RankValue
+            RankValue = (uint)info.RankValue,
+            RankData1 = (uint)Math.Max(0, rank.Mmr)
         };
 
         return
