@@ -68,19 +68,6 @@ public enum EGCMsgResponse
 }
 
 [global::ProtoBuf.ProtoContract()]
-public enum EGCPartnerRequestResponse
-{
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EPartnerRequestOK")]
-    kEPartnerRequestOK = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EPartnerRequestBadAccount")]
-    kEPartnerRequestBadAccount = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EPartnerRequestNotLinked")]
-    kEPartnerRequestNotLinked = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EPartnerRequestUnsupportedPartnerType")]
-    kEPartnerRequestUnsupportedPartnerType = 4,
-}
-
-[global::ProtoBuf.ProtoContract()]
 public enum EGCMsgUseItemResponse
 {
     [global::ProtoBuf.ProtoEnum(Name = @"k_EGCMsgUseItemResponse_ItemUsed")]
@@ -111,6 +98,12 @@ public enum EGCMsgUseItemResponse
     kEGCMsgUseItemResponseEmoticonUnlockComplete = 12,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EGCMsgUseItemResponse_ItemUsed_Compendium")]
     kEGCMsgUseItemResponseItemUsedCompendium = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGCMsgUseItemResponse_CannotUseWhileUntradable")]
+    kEGCMsgUseItemResponseCannotUseWhileUntradable = 14,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGCMsgUseItemResponse_CannotBeUsedByAccount")]
+    kEGCMsgUseItemResponseCannotBeUsedByAccount = 15,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGCMsgUseItemResponse_RecipientCannotRecieve")]
+    kEGCMsgUseItemResponseRecipientCannotRecieve = 16,
 }
 
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

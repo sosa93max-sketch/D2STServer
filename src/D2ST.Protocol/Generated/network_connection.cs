@@ -149,8 +149,6 @@ public enum ENetworkDisconnectionReason
     NetworkDisconnectSteamDenyBadAntiCheat = 68,
     [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_SERVER_SHUTDOWN")]
     NetworkDisconnectServerShutdown = 69,
-    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_SPLITPACKET_SEND_OVERFLOW")]
-    NetworkDisconnectSplitpacketSendOverflow = 70,
     [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_REPLAY_INCOMPATIBLE")]
     NetworkDisconnectReplayIncompatible = 71,
     [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_CONNECT_REQUEST_TIMEDOUT")]
@@ -223,6 +221,36 @@ public enum ENetworkDisconnectionReason
     NetworkDisconnectRejectServercdkeyauthinvalid = 148,
     [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_REJECT_BANNED")]
     NetworkDisconnectRejectBanned = 149,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_TEAMKILLING")]
+    NetworkDisconnectKickedTeamkilling = 150,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_TK_START")]
+    NetworkDisconnectKickedTkStart = 151,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_UNTRUSTEDACCOUNT")]
+    NetworkDisconnectKickedUntrustedaccount = 152,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_CONVICTEDACCOUNT")]
+    NetworkDisconnectKickedConvictedaccount = 153,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_COMPETITIVECOOLDOWN")]
+    NetworkDisconnectKickedCompetitivecooldown = 154,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_TEAMHURTING")]
+    NetworkDisconnectKickedTeamhurting = 155,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_HOSTAGEKILLING")]
+    NetworkDisconnectKickedHostagekilling = 156,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_VOTEDOFF")]
+    NetworkDisconnectKickedVotedoff = 157,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_IDLE")]
+    NetworkDisconnectKickedIdle = 158,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_SUICIDE")]
+    NetworkDisconnectKickedSuicide = 159,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_NOSTEAMLOGIN")]
+    NetworkDisconnectKickedNosteamlogin = 160,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_NOSTEAMTICKET")]
+    NetworkDisconnectKickedNosteamticket = 161,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_INPUTAUTOMATION")]
+    NetworkDisconnectKickedInputautomation = 162,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_VACNETABNORMALBEHAVIOR")]
+    NetworkDisconnectKickedVacnetabnormalbehavior = 163,
+    [global::ProtoBuf.ProtoEnum(Name = @"NETWORK_DISCONNECT_KICKED_INSECURECLIENT")]
+    NetworkDisconnectKickedInsecureclient = 164,
 }
 
 public static partial class Extensions
@@ -232,6 +260,18 @@ public static partial class Extensions
 
     public static void SetNetworkConnectionToken(this global::Google.Protobuf.Reflection.EnumValueOptions obj, string value)
         => global::ProtoBuf.Extensible.AppendValue<string>(obj, 50500, value);
+
+    public static string GetNetworkConnectionDetailToken(this global::Google.Protobuf.Reflection.EnumValueOptions obj)
+        => obj == null ? default : global::ProtoBuf.Extensible.GetValue<string>(obj, 50501);
+
+    public static void SetNetworkConnectionDetailToken(this global::Google.Protobuf.Reflection.EnumValueOptions obj, string value)
+        => global::ProtoBuf.Extensible.AppendValue<string>(obj, 50501, value);
+
+    public static bool GetAllowedFromClient(this global::Google.Protobuf.Reflection.EnumValueOptions obj)
+        => obj == null ? default : global::ProtoBuf.Extensible.GetValue<bool>(obj, 50502);
+
+    public static void SetAllowedFromClient(this global::Google.Protobuf.Reflection.EnumValueOptions obj, bool value)
+        => global::ProtoBuf.Extensible.AppendValue<bool>(obj, 50502, value);
 
 }
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

@@ -7,20 +7,220 @@
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgSHA1Digest : global::ProtoBuf.IExtensible
+public partial class CExtraMsgBlock : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-    [global::ProtoBuf.ProtoMember(1, Name = @"block1", DataFormat = global::ProtoBuf.DataFormat.FixedSize, IsRequired = true)]
-    public ulong Block1 { get; set; }
+    [global::ProtoBuf.ProtoMember(1, Name = @"msg_type")]
+    public uint MsgType
+    {
+        get => __pbn__MsgType.GetValueOrDefault();
+        set => __pbn__MsgType = value;
+    }
+    public bool ShouldSerializeMsgType() => __pbn__MsgType != null;
+    public void ResetMsgType() => __pbn__MsgType = null;
+    private uint? __pbn__MsgType;
 
-    [global::ProtoBuf.ProtoMember(2, Name = @"block2", DataFormat = global::ProtoBuf.DataFormat.FixedSize, IsRequired = true)]
-    public ulong Block2 { get; set; }
+    [global::ProtoBuf.ProtoMember(2, Name = @"contents")]
+    public byte[] Contents
+    {
+        get => __pbn__Contents;
+        set => __pbn__Contents = value;
+    }
+    public bool ShouldSerializeContents() => __pbn__Contents != null;
+    public void ResetContents() => __pbn__Contents = null;
+    private byte[] __pbn__Contents;
 
-    [global::ProtoBuf.ProtoMember(3, Name = @"block3", DataFormat = global::ProtoBuf.DataFormat.FixedSize, IsRequired = true)]
-    public uint Block3 { get; set; }
+    [global::ProtoBuf.ProtoMember(3, Name = @"msg_key")]
+    public ulong MsgKey
+    {
+        get => __pbn__MsgKey.GetValueOrDefault();
+        set => __pbn__MsgKey = value;
+    }
+    public bool ShouldSerializeMsgKey() => __pbn__MsgKey != null;
+    public void ResetMsgKey() => __pbn__MsgKey = null;
+    private ulong? __pbn__MsgKey;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"is_compressed")]
+    public bool IsCompressed
+    {
+        get => __pbn__IsCompressed.GetValueOrDefault();
+        set => __pbn__IsCompressed = value;
+    }
+    public bool ShouldSerializeIsCompressed() => __pbn__IsCompressed != null;
+    public void ResetIsCompressed() => __pbn__IsCompressed = null;
+    private bool? __pbn__IsCompressed;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgSteamLearnServerInfo : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"access_tokens")]
+    public CMsgSteamLearnAccessTokens AccessTokens { get; set; }
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"project_infos")]
+    public global::System.Collections.Generic.List<ProjectInfo> ProjectInfos { get; } = new global::System.Collections.Generic.List<ProjectInfo>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class ProjectInfo : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"project_id")]
+        public uint ProjectId
+        {
+            get => __pbn__ProjectId.GetValueOrDefault();
+            set => __pbn__ProjectId = value;
+        }
+        public bool ShouldSerializeProjectId() => __pbn__ProjectId != null;
+        public void ResetProjectId() => __pbn__ProjectId = null;
+        private uint? __pbn__ProjectId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"snapshot_published_version")]
+        public uint SnapshotPublishedVersion
+        {
+            get => __pbn__SnapshotPublishedVersion.GetValueOrDefault();
+            set => __pbn__SnapshotPublishedVersion = value;
+        }
+        public bool ShouldSerializeSnapshotPublishedVersion() => __pbn__SnapshotPublishedVersion != null;
+        public void ResetSnapshotPublishedVersion() => __pbn__SnapshotPublishedVersion = null;
+        private uint? __pbn__SnapshotPublishedVersion;
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"inference_published_version")]
+        public uint InferencePublishedVersion
+        {
+            get => __pbn__InferencePublishedVersion.GetValueOrDefault();
+            set => __pbn__InferencePublishedVersion = value;
+        }
+        public bool ShouldSerializeInferencePublishedVersion() => __pbn__InferencePublishedVersion != null;
+        public void ResetInferencePublishedVersion() => __pbn__InferencePublishedVersion = null;
+        private uint? __pbn__InferencePublishedVersion;
+
+        [global::ProtoBuf.ProtoMember(6, Name = @"snapshot_percentage")]
+        public uint SnapshotPercentage
+        {
+            get => __pbn__SnapshotPercentage.GetValueOrDefault();
+            set => __pbn__SnapshotPercentage = value;
+        }
+        public bool ShouldSerializeSnapshotPercentage() => __pbn__SnapshotPercentage != null;
+        public void ResetSnapshotPercentage() => __pbn__SnapshotPercentage = null;
+        private uint? __pbn__SnapshotPercentage;
+
+        [global::ProtoBuf.ProtoMember(7, Name = @"snapshot_enabled")]
+        public bool SnapshotEnabled
+        {
+            get => __pbn__SnapshotEnabled.GetValueOrDefault();
+            set => __pbn__SnapshotEnabled = value;
+        }
+        public bool ShouldSerializeSnapshotEnabled() => __pbn__SnapshotEnabled != null;
+        public void ResetSnapshotEnabled() => __pbn__SnapshotEnabled = null;
+        private bool? __pbn__SnapshotEnabled;
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCAssertJobData : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"message_type")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string MessageType
+    {
+        get => __pbn__MessageType ?? "";
+        set => __pbn__MessageType = value;
+    }
+    public bool ShouldSerializeMessageType() => __pbn__MessageType != null;
+    public void ResetMessageType() => __pbn__MessageType = null;
+    private string __pbn__MessageType;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"message_data")]
+    public byte[] MessageData
+    {
+        get => __pbn__MessageData;
+        set => __pbn__MessageData = value;
+    }
+    public bool ShouldSerializeMessageData() => __pbn__MessageData != null;
+    public void ResetMessageData() => __pbn__MessageData = null;
+    private byte[] __pbn__MessageData;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCConCommand : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"command")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string Command
+    {
+        get => __pbn__Command ?? "";
+        set => __pbn__Command = value;
+    }
+    public bool ShouldSerializeCommand() => __pbn__Command != null;
+    public void ResetCommand() => __pbn__Command = null;
+    private string __pbn__Command;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgSDOAssert : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"sdo_type")]
+    public int SdoType
+    {
+        get => __pbn__SdoType.GetValueOrDefault();
+        set => __pbn__SdoType = value;
+    }
+    public bool ShouldSerializeSdoType() => __pbn__SdoType != null;
+    public void ResetSdoType() => __pbn__SdoType = null;
+    private int? __pbn__SdoType;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"requests")]
+    public global::System.Collections.Generic.List<Request> Requests { get; } = new global::System.Collections.Generic.List<Request>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class Request : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"key")]
+        public ulong[] Keys { get; set; }
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"requesting_job")]
+        [global::System.ComponentModel.DefaultValue("")]
+        public string RequestingJob
+        {
+            get => __pbn__RequestingJob ?? "";
+            set => __pbn__RequestingJob = value;
+        }
+        public bool ShouldSerializeRequestingJob() => __pbn__RequestingJob != null;
+        public void ResetRequestingJob() => __pbn__RequestingJob = null;
+        private string __pbn__RequestingJob;
+
+    }
 
 }
 
@@ -418,14 +618,15 @@ public partial class CMsgGCToGCSubGCStarting : global::ProtoBuf.IExtensible
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(1, Name = @"dir_index")]
-    public uint DirIndex
+    [global::System.ComponentModel.DefaultValue(-1)]
+    public int DirIndex
     {
-        get => __pbn__DirIndex.GetValueOrDefault();
+        get => __pbn__DirIndex ?? -1;
         set => __pbn__DirIndex = value;
     }
     public bool ShouldSerializeDirIndex() => __pbn__DirIndex != null;
     public void ResetDirIndex() => __pbn__DirIndex = null;
-    private uint? __pbn__DirIndex;
+    private int? __pbn__DirIndex;
 
 }
 
@@ -437,14 +638,15 @@ public partial class CGCToGCMsgMasterAck : global::ProtoBuf.IExtensible
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(1, Name = @"dir_index")]
-    public uint DirIndex
+    [global::System.ComponentModel.DefaultValue(-1)]
+    public int DirIndex
     {
-        get => __pbn__DirIndex.GetValueOrDefault();
+        get => __pbn__DirIndex ?? -1;
         set => __pbn__DirIndex = value;
     }
     public bool ShouldSerializeDirIndex() => __pbn__DirIndex != null;
     public void ResetDirIndex() => __pbn__DirIndex = null;
-    private uint? __pbn__DirIndex;
+    private int? __pbn__DirIndex;
 
     [global::ProtoBuf.ProtoMember(3, Name = @"machine_name")]
     [global::System.ComponentModel.DefaultValue("")]
@@ -479,14 +681,15 @@ public partial class CGCToGCMsgMasterAck : global::ProtoBuf.IExtensible
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"dir_index")]
-        public uint DirIndex
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int DirIndex
         {
-            get => __pbn__DirIndex.GetValueOrDefault();
+            get => __pbn__DirIndex ?? -1;
             set => __pbn__DirIndex = value;
         }
         public bool ShouldSerializeDirIndex() => __pbn__DirIndex != null;
         public void ResetDirIndex() => __pbn__DirIndex = null;
-        private uint? __pbn__DirIndex;
+        private int? __pbn__DirIndex;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"type_instances")]
         public uint[] TypeInstances { get; set; }
@@ -571,14 +774,15 @@ public partial class CGCToGCMsgMasterStartupComplete : global::ProtoBuf.IExtensi
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"dir_index")]
-        public uint DirIndex
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int DirIndex
         {
-            get => __pbn__DirIndex.GetValueOrDefault();
+            get => __pbn__DirIndex ?? -1;
             set => __pbn__DirIndex = value;
         }
         public bool ShouldSerializeDirIndex() => __pbn__DirIndex != null;
         public void ResetDirIndex() => __pbn__DirIndex = null;
-        private uint? __pbn__DirIndex;
+        private int? __pbn__DirIndex;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"machine_name")]
         [global::System.ComponentModel.DefaultValue("")]
@@ -927,6 +1131,137 @@ public partial class CMsgClientHello : global::ProtoBuf.IExtensible
     public void ResetGameMsg() => __pbn__GameMsg = null;
     private byte[] __pbn__GameMsg;
 
+    [global::ProtoBuf.ProtoMember(11, Name = @"os_type")]
+    public int OsType
+    {
+        get => __pbn__OsType.GetValueOrDefault();
+        set => __pbn__OsType = value;
+    }
+    public bool ShouldSerializeOsType() => __pbn__OsType != null;
+    public void ResetOsType() => __pbn__OsType = null;
+    private int? __pbn__OsType;
+
+    [global::ProtoBuf.ProtoMember(12, Name = @"render_system")]
+    public uint RenderSystem
+    {
+        get => __pbn__RenderSystem.GetValueOrDefault();
+        set => __pbn__RenderSystem = value;
+    }
+    public bool ShouldSerializeRenderSystem() => __pbn__RenderSystem != null;
+    public void ResetRenderSystem() => __pbn__RenderSystem = null;
+    private uint? __pbn__RenderSystem;
+
+    [global::ProtoBuf.ProtoMember(13, Name = @"render_system_req")]
+    public uint RenderSystemReq
+    {
+        get => __pbn__RenderSystemReq.GetValueOrDefault();
+        set => __pbn__RenderSystemReq = value;
+    }
+    public bool ShouldSerializeRenderSystemReq() => __pbn__RenderSystemReq != null;
+    public void ResetRenderSystemReq() => __pbn__RenderSystemReq = null;
+    private uint? __pbn__RenderSystemReq;
+
+    [global::ProtoBuf.ProtoMember(14, Name = @"screen_width")]
+    public uint ScreenWidth
+    {
+        get => __pbn__ScreenWidth.GetValueOrDefault();
+        set => __pbn__ScreenWidth = value;
+    }
+    public bool ShouldSerializeScreenWidth() => __pbn__ScreenWidth != null;
+    public void ResetScreenWidth() => __pbn__ScreenWidth = null;
+    private uint? __pbn__ScreenWidth;
+
+    [global::ProtoBuf.ProtoMember(15, Name = @"screen_height")]
+    public uint ScreenHeight
+    {
+        get => __pbn__ScreenHeight.GetValueOrDefault();
+        set => __pbn__ScreenHeight = value;
+    }
+    public bool ShouldSerializeScreenHeight() => __pbn__ScreenHeight != null;
+    public void ResetScreenHeight() => __pbn__ScreenHeight = null;
+    private uint? __pbn__ScreenHeight;
+
+    [global::ProtoBuf.ProtoMember(16, Name = @"screen_refresh")]
+    public uint ScreenRefresh
+    {
+        get => __pbn__ScreenRefresh.GetValueOrDefault();
+        set => __pbn__ScreenRefresh = value;
+    }
+    public bool ShouldSerializeScreenRefresh() => __pbn__ScreenRefresh != null;
+    public void ResetScreenRefresh() => __pbn__ScreenRefresh = null;
+    private uint? __pbn__ScreenRefresh;
+
+    [global::ProtoBuf.ProtoMember(17, Name = @"render_width")]
+    public uint RenderWidth
+    {
+        get => __pbn__RenderWidth.GetValueOrDefault();
+        set => __pbn__RenderWidth = value;
+    }
+    public bool ShouldSerializeRenderWidth() => __pbn__RenderWidth != null;
+    public void ResetRenderWidth() => __pbn__RenderWidth = null;
+    private uint? __pbn__RenderWidth;
+
+    [global::ProtoBuf.ProtoMember(18, Name = @"render_height")]
+    public uint RenderHeight
+    {
+        get => __pbn__RenderHeight.GetValueOrDefault();
+        set => __pbn__RenderHeight = value;
+    }
+    public bool ShouldSerializeRenderHeight() => __pbn__RenderHeight != null;
+    public void ResetRenderHeight() => __pbn__RenderHeight = null;
+    private uint? __pbn__RenderHeight;
+
+    [global::ProtoBuf.ProtoMember(19, Name = @"swap_width")]
+    public uint SwapWidth
+    {
+        get => __pbn__SwapWidth.GetValueOrDefault();
+        set => __pbn__SwapWidth = value;
+    }
+    public bool ShouldSerializeSwapWidth() => __pbn__SwapWidth != null;
+    public void ResetSwapWidth() => __pbn__SwapWidth = null;
+    private uint? __pbn__SwapWidth;
+
+    [global::ProtoBuf.ProtoMember(20, Name = @"swap_height")]
+    public uint SwapHeight
+    {
+        get => __pbn__SwapHeight.GetValueOrDefault();
+        set => __pbn__SwapHeight = value;
+    }
+    public bool ShouldSerializeSwapHeight() => __pbn__SwapHeight != null;
+    public void ResetSwapHeight() => __pbn__SwapHeight = null;
+    private uint? __pbn__SwapHeight;
+
+    [global::ProtoBuf.ProtoMember(22, Name = @"is_steam_china")]
+    public bool IsSteamChina
+    {
+        get => __pbn__IsSteamChina.GetValueOrDefault();
+        set => __pbn__IsSteamChina = value;
+    }
+    public bool ShouldSerializeIsSteamChina() => __pbn__IsSteamChina != null;
+    public void ResetIsSteamChina() => __pbn__IsSteamChina = null;
+    private bool? __pbn__IsSteamChina;
+
+    [global::ProtoBuf.ProtoMember(24, Name = @"is_steam_china_client")]
+    public bool IsSteamChinaClient
+    {
+        get => __pbn__IsSteamChinaClient.GetValueOrDefault();
+        set => __pbn__IsSteamChinaClient = value;
+    }
+    public bool ShouldSerializeIsSteamChinaClient() => __pbn__IsSteamChinaClient != null;
+    public void ResetIsSteamChinaClient() => __pbn__IsSteamChinaClient = null;
+    private bool? __pbn__IsSteamChinaClient;
+
+    [global::ProtoBuf.ProtoMember(23, Name = @"platform_name")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string PlatformName
+    {
+        get => __pbn__PlatformName ?? "";
+        set => __pbn__PlatformName = value;
+    }
+    public bool ShouldSerializePlatformName() => __pbn__PlatformName != null;
+    public void ResetPlatformName() => __pbn__PlatformName = null;
+    private string __pbn__PlatformName;
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -965,37 +1300,6 @@ public partial class CMsgClientWelcome : global::ProtoBuf.IExtensible
     [global::ProtoBuf.ProtoMember(5)]
     public Location location { get; set; }
 
-    [global::ProtoBuf.ProtoMember(6, Name = @"save_game_key")]
-    public byte[] SaveGameKey
-    {
-        get => __pbn__SaveGameKey;
-        set => __pbn__SaveGameKey = value;
-    }
-    public bool ShouldSerializeSaveGameKey() => __pbn__SaveGameKey != null;
-    public void ResetSaveGameKey() => __pbn__SaveGameKey = null;
-    private byte[] __pbn__SaveGameKey;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"item_schema_crc", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public uint ItemSchemaCrc
-    {
-        get => __pbn__ItemSchemaCrc.GetValueOrDefault();
-        set => __pbn__ItemSchemaCrc = value;
-    }
-    public bool ShouldSerializeItemSchemaCrc() => __pbn__ItemSchemaCrc != null;
-    public void ResetItemSchemaCrc() => __pbn__ItemSchemaCrc = null;
-    private uint? __pbn__ItemSchemaCrc;
-
-    [global::ProtoBuf.ProtoMember(8, Name = @"items_game_url")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string ItemsGameUrl
-    {
-        get => __pbn__ItemsGameUrl ?? "";
-        set => __pbn__ItemsGameUrl = value;
-    }
-    public bool ShouldSerializeItemsGameUrl() => __pbn__ItemsGameUrl != null;
-    public void ResetItemsGameUrl() => __pbn__ItemsGameUrl = null;
-    private string __pbn__ItemsGameUrl;
-
     [global::ProtoBuf.ProtoMember(9, Name = @"gc_socache_file_version")]
     public uint GcSocacheFileVersion
     {
@@ -1016,6 +1320,83 @@ public partial class CMsgClientWelcome : global::ProtoBuf.IExtensible
     public bool ShouldSerializeTxnCountryCode() => __pbn__TxnCountryCode != null;
     public void ResetTxnCountryCode() => __pbn__TxnCountryCode = null;
     private string __pbn__TxnCountryCode;
+
+    [global::ProtoBuf.ProtoMember(11, Name = @"game_data2")]
+    public byte[] GameData2
+    {
+        get => __pbn__GameData2;
+        set => __pbn__GameData2 = value;
+    }
+    public bool ShouldSerializeGameData2() => __pbn__GameData2 != null;
+    public void ResetGameData2() => __pbn__GameData2 = null;
+    private byte[] __pbn__GameData2;
+
+    [global::ProtoBuf.ProtoMember(12, Name = @"rtime32_gc_welcome_timestamp")]
+    public uint Rtime32GcWelcomeTimestamp
+    {
+        get => __pbn__Rtime32GcWelcomeTimestamp.GetValueOrDefault();
+        set => __pbn__Rtime32GcWelcomeTimestamp = value;
+    }
+    public bool ShouldSerializeRtime32GcWelcomeTimestamp() => __pbn__Rtime32GcWelcomeTimestamp != null;
+    public void ResetRtime32GcWelcomeTimestamp() => __pbn__Rtime32GcWelcomeTimestamp = null;
+    private uint? __pbn__Rtime32GcWelcomeTimestamp;
+
+    [global::ProtoBuf.ProtoMember(13, Name = @"currency")]
+    public uint Currency
+    {
+        get => __pbn__Currency.GetValueOrDefault();
+        set => __pbn__Currency = value;
+    }
+    public bool ShouldSerializeCurrency() => __pbn__Currency != null;
+    public void ResetCurrency() => __pbn__Currency = null;
+    private uint? __pbn__Currency;
+
+    [global::ProtoBuf.ProtoMember(14, Name = @"balance")]
+    public uint Balance
+    {
+        get => __pbn__Balance.GetValueOrDefault();
+        set => __pbn__Balance = value;
+    }
+    public bool ShouldSerializeBalance() => __pbn__Balance != null;
+    public void ResetBalance() => __pbn__Balance = null;
+    private uint? __pbn__Balance;
+
+    [global::ProtoBuf.ProtoMember(15, Name = @"balance_url")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string BalanceUrl
+    {
+        get => __pbn__BalanceUrl ?? "";
+        set => __pbn__BalanceUrl = value;
+    }
+    public bool ShouldSerializeBalanceUrl() => __pbn__BalanceUrl != null;
+    public void ResetBalanceUrl() => __pbn__BalanceUrl = null;
+    private string __pbn__BalanceUrl;
+
+    [global::ProtoBuf.ProtoMember(16, Name = @"has_accepted_china_ssa")]
+    public bool HasAcceptedChinaSsa
+    {
+        get => __pbn__HasAcceptedChinaSsa.GetValueOrDefault();
+        set => __pbn__HasAcceptedChinaSsa = value;
+    }
+    public bool ShouldSerializeHasAcceptedChinaSsa() => __pbn__HasAcceptedChinaSsa != null;
+    public void ResetHasAcceptedChinaSsa() => __pbn__HasAcceptedChinaSsa = null;
+    private bool? __pbn__HasAcceptedChinaSsa;
+
+    [global::ProtoBuf.ProtoMember(17, Name = @"is_banned_steam_china")]
+    public bool IsBannedSteamChina
+    {
+        get => __pbn__IsBannedSteamChina.GetValueOrDefault();
+        set => __pbn__IsBannedSteamChina = value;
+    }
+    public bool ShouldSerializeIsBannedSteamChina() => __pbn__IsBannedSteamChina != null;
+    public void ResetIsBannedSteamChina() => __pbn__IsBannedSteamChina = null;
+    private bool? __pbn__IsBannedSteamChina;
+
+    [global::ProtoBuf.ProtoMember(18, Name = @"additional_welcome_msgs")]
+    public CExtraMsgBlock AdditionalWelcomeMsgs { get; set; }
+
+    [global::ProtoBuf.ProtoMember(20, Name = @"steam_learn_server_info")]
+    public CMsgSteamLearnServerInfo SteamLearnServerInfo { get; set; }
 
     [global::ProtoBuf.ProtoContract()]
     public partial class Location : global::ProtoBuf.IExtensible
@@ -1538,6 +1919,9 @@ public partial class CWorkshopSetItemPaymentRulesRequest : global::ProtoBuf.IExt
     public void ResetMakeWorkshopFilesSubscribable() => __pbn__MakeWorkshopFilesSubscribable = null;
     private bool? __pbn__MakeWorkshopFilesSubscribable;
 
+    [global::ProtoBuf.ProtoMember(7, Name = @"associated_workshop_file_for_direct_payments")]
+    public WorkshopDirectPaymentRule AssociatedWorkshopFileForDirectPayments { get; set; }
+
     [global::ProtoBuf.ProtoContract()]
     public partial class WorkshopItemPaymentRule : global::ProtoBuf.IExtensible
     {
@@ -1577,14 +1961,45 @@ public partial class CWorkshopSetItemPaymentRulesRequest : global::ProtoBuf.IExt
         private string __pbn__RuleDescription;
 
         [global::ProtoBuf.ProtoMember(4, Name = @"rule_type")]
+        [global::System.ComponentModel.DefaultValue(1u)]
         public uint RuleType
         {
-            get => __pbn__RuleType.GetValueOrDefault();
+            get => __pbn__RuleType ?? 1u;
             set => __pbn__RuleType = value;
         }
         public bool ShouldSerializeRuleType() => __pbn__RuleType != null;
         public void ResetRuleType() => __pbn__RuleType = null;
         private uint? __pbn__RuleType;
+
+    }
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class WorkshopDirectPaymentRule : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"workshop_file_id")]
+        public ulong WorkshopFileId
+        {
+            get => __pbn__WorkshopFileId.GetValueOrDefault();
+            set => __pbn__WorkshopFileId = value;
+        }
+        public bool ShouldSerializeWorkshopFileId() => __pbn__WorkshopFileId != null;
+        public void ResetWorkshopFileId() => __pbn__WorkshopFileId = null;
+        private ulong? __pbn__WorkshopFileId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"rule_description")]
+        [global::System.ComponentModel.DefaultValue("")]
+        public string RuleDescription
+        {
+            get => __pbn__RuleDescription ?? "";
+            set => __pbn__RuleDescription = value;
+        }
+        public bool ShouldSerializeRuleDescription() => __pbn__RuleDescription != null;
+        public void ResetRuleDescription() => __pbn__RuleDescription = null;
+        private string __pbn__RuleDescription;
 
     }
 
@@ -2245,6 +2660,16 @@ public partial class CMsgGCToGCMasterBroadcastMessage : global::ProtoBuf.IExtens
     public bool ShouldSerializeMsgData() => __pbn__MsgData != null;
     public void ResetMsgData() => __pbn__MsgData = null;
     private byte[] __pbn__MsgData;
+
+    [global::ProtoBuf.ProtoMember(6, Name = @"trusted_servers_only")]
+    public bool TrustedServersOnly
+    {
+        get => __pbn__TrustedServersOnly.GetValueOrDefault();
+        set => __pbn__TrustedServersOnly = value;
+    }
+    public bool ShouldSerializeTrustedServersOnly() => __pbn__TrustedServersOnly != null;
+    public void ResetTrustedServersOnly() => __pbn__TrustedServersOnly = null;
+    private bool? __pbn__TrustedServersOnly;
 
 }
 

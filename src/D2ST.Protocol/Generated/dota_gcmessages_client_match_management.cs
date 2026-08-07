@@ -56,17 +56,6 @@ public partial class CMsgStartFindingMatch : global::ProtoBuf.IExtensible
     public void ResetGameModes() => __pbn__GameModes = null;
     private uint? __pbn__GameModes;
 
-    [global::ProtoBuf.ProtoMember(5, Name = @"bot_difficulty")]
-    [global::System.ComponentModel.DefaultValue(DOTABotDifficulty.BotDifficultyHard)]
-    public DOTABotDifficulty BotDifficulty
-    {
-        get => __pbn__BotDifficulty ?? DOTABotDifficulty.BotDifficultyHard;
-        set => __pbn__BotDifficulty = value;
-    }
-    public bool ShouldSerializeBotDifficulty() => __pbn__BotDifficulty != null;
-    public void ResetBotDifficulty() => __pbn__BotDifficulty = null;
-    private DOTABotDifficulty? __pbn__BotDifficulty;
-
     [global::ProtoBuf.ProtoMember(6, Name = @"match_type")]
     [global::System.ComponentModel.DefaultValue(MatchType.MatchTypeCasual)]
     public MatchType MatchType
@@ -144,16 +133,6 @@ public partial class CMsgStartFindingMatch : global::ProtoBuf.IExtensible
     public void ResetSoloQueue() => __pbn__SoloQueue = null;
     private bool? __pbn__SoloQueue;
 
-    [global::ProtoBuf.ProtoMember(15, Name = @"bot_script_index")]
-    public uint BotScriptIndex
-    {
-        get => __pbn__BotScriptIndex.GetValueOrDefault();
-        set => __pbn__BotScriptIndex = value;
-    }
-    public bool ShouldSerializeBotScriptIndex() => __pbn__BotScriptIndex != null;
-    public void ResetBotScriptIndex() => __pbn__BotScriptIndex = null;
-    private uint? __pbn__BotScriptIndex;
-
     [global::ProtoBuf.ProtoMember(16, Name = @"steam_clan_account_id")]
     public uint SteamClanAccountId
     {
@@ -183,6 +162,56 @@ public partial class CMsgStartFindingMatch : global::ProtoBuf.IExtensible
     public bool ShouldSerializeLaneSelectionFlags() => __pbn__LaneSelectionFlags != null;
     public void ResetLaneSelectionFlags() => __pbn__LaneSelectionFlags = null;
     private uint? __pbn__LaneSelectionFlags;
+
+    [global::ProtoBuf.ProtoMember(19, Name = @"high_priority_disabled")]
+    public bool HighPriorityDisabled
+    {
+        get => __pbn__HighPriorityDisabled.GetValueOrDefault();
+        set => __pbn__HighPriorityDisabled = value;
+    }
+    public bool ShouldSerializeHighPriorityDisabled() => __pbn__HighPriorityDisabled != null;
+    public void ResetHighPriorityDisabled() => __pbn__HighPriorityDisabled = null;
+    private bool? __pbn__HighPriorityDisabled;
+
+    [global::ProtoBuf.ProtoMember(20, Name = @"disable_experimental_gameplay")]
+    public bool DisableExperimentalGameplay
+    {
+        get => __pbn__DisableExperimentalGameplay.GetValueOrDefault();
+        set => __pbn__DisableExperimentalGameplay = value;
+    }
+    public bool ShouldSerializeDisableExperimentalGameplay() => __pbn__DisableExperimentalGameplay != null;
+    public void ResetDisableExperimentalGameplay() => __pbn__DisableExperimentalGameplay = null;
+    private bool? __pbn__DisableExperimentalGameplay;
+
+    [global::ProtoBuf.ProtoMember(21, Name = @"custom_game_difficulty_mask")]
+    public uint CustomGameDifficultyMask
+    {
+        get => __pbn__CustomGameDifficultyMask.GetValueOrDefault();
+        set => __pbn__CustomGameDifficultyMask = value;
+    }
+    public bool ShouldSerializeCustomGameDifficultyMask() => __pbn__CustomGameDifficultyMask != null;
+    public void ResetCustomGameDifficultyMask() => __pbn__CustomGameDifficultyMask = null;
+    private uint? __pbn__CustomGameDifficultyMask;
+
+    [global::ProtoBuf.ProtoMember(22, Name = @"bot_difficulty_mask")]
+    public uint BotDifficultyMask
+    {
+        get => __pbn__BotDifficultyMask.GetValueOrDefault();
+        set => __pbn__BotDifficultyMask = value;
+    }
+    public bool ShouldSerializeBotDifficultyMask() => __pbn__BotDifficultyMask != null;
+    public void ResetBotDifficultyMask() => __pbn__BotDifficultyMask = null;
+    private uint? __pbn__BotDifficultyMask;
+
+    [global::ProtoBuf.ProtoMember(23, Name = @"bot_script_index_mask")]
+    public uint BotScriptIndexMask
+    {
+        get => __pbn__BotScriptIndexMask.GetValueOrDefault();
+        set => __pbn__BotScriptIndexMask = value;
+    }
+    public bool ShouldSerializeBotScriptIndexMask() => __pbn__BotScriptIndexMask != null;
+    public void ResetBotScriptIndexMask() => __pbn__BotScriptIndexMask = null;
+    private uint? __pbn__BotScriptIndexMask;
 
 }
 
@@ -258,6 +287,16 @@ public partial class CMsgStopFindingMatch : global::ProtoBuf.IExtensible
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"accept_cooldown")]
+    public bool AcceptCooldown
+    {
+        get => __pbn__AcceptCooldown.GetValueOrDefault();
+        set => __pbn__AcceptCooldown = value;
+    }
+    public bool ShouldSerializeAcceptCooldown() => __pbn__AcceptCooldown != null;
+    public void ResetAcceptCooldown() => __pbn__AcceptCooldown = null;
+    private bool? __pbn__AcceptCooldown;
 
 }
 
@@ -378,6 +417,23 @@ public partial class CMsgReadyUpStatus : global::ProtoBuf.IExtensible
     [global::ProtoBuf.ProtoMember(3, Name = @"declined_ids")]
     public uint[] DeclinedIds { get; set; }
 
+    [global::ProtoBuf.ProtoMember(4, Name = @"accepted_indices")]
+    public uint[] AcceptedIndices { get; set; }
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"declined_indices")]
+    public uint[] DeclinedIndices { get; set; }
+
+    [global::ProtoBuf.ProtoMember(6, Name = @"local_ready_state")]
+    [global::System.ComponentModel.DefaultValue(DOTALobbyReadyState.DOTALobbyReadyStateUNDECLARED)]
+    public DOTALobbyReadyState LocalReadyState
+    {
+        get => __pbn__LocalReadyState ?? DOTALobbyReadyState.DOTALobbyReadyStateUNDECLARED;
+        set => __pbn__LocalReadyState = value;
+    }
+    public bool ShouldSerializeLocalReadyState() => __pbn__LocalReadyState != null;
+    public void ResetLocalReadyState() => __pbn__LocalReadyState = null;
+    private DOTALobbyReadyState? __pbn__LocalReadyState;
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -386,6 +442,35 @@ public partial class CMsgAbandonCurrentGame : global::ProtoBuf.IExtensible
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgLobbyScenarioSave : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"version")]
+    public int Version
+    {
+        get => __pbn__Version.GetValueOrDefault();
+        set => __pbn__Version = value;
+    }
+    public bool ShouldSerializeVersion() => __pbn__Version != null;
+    public void ResetVersion() => __pbn__Version = null;
+    private int? __pbn__Version;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"data")]
+    public byte[] Data
+    {
+        get => __pbn__Data;
+        set => __pbn__Data = value;
+    }
+    public bool ShouldSerializeData() => __pbn__Data != null;
+    public void ResetData() => __pbn__Data = null;
+    private byte[] __pbn__Data;
 
 }
 
@@ -482,16 +567,6 @@ public partial class CMsgPracticeLobbySetDetails : global::ProtoBuf.IExtensible
     public void ResetFillWithBots() => __pbn__FillWithBots = null;
     private bool? __pbn__FillWithBots;
 
-    [global::ProtoBuf.ProtoMember(12, Name = @"intro_mode")]
-    public bool IntroMode
-    {
-        get => __pbn__IntroMode.GetValueOrDefault();
-        set => __pbn__IntroMode = value;
-    }
-    public bool ShouldSerializeIntroMode() => __pbn__IntroMode != null;
-    public void ResetIntroMode() => __pbn__IntroMode = null;
-    private bool? __pbn__IntroMode;
-
     [global::ProtoBuf.ProtoMember(13, Name = @"allow_spectating")]
     public bool AllowSpectating
     {
@@ -501,17 +576,6 @@ public partial class CMsgPracticeLobbySetDetails : global::ProtoBuf.IExtensible
     public bool ShouldSerializeAllowSpectating() => __pbn__AllowSpectating != null;
     public void ResetAllowSpectating() => __pbn__AllowSpectating = null;
     private bool? __pbn__AllowSpectating;
-
-    [global::ProtoBuf.ProtoMember(14, Name = @"game_version")]
-    [global::System.ComponentModel.DefaultValue(DOTAGameVersion.GameVersionCurrent)]
-    public DOTAGameVersion GameVersion
-    {
-        get => __pbn__GameVersion ?? DOTAGameVersion.GameVersionCurrent;
-        set => __pbn__GameVersion = value;
-    }
-    public bool ShouldSerializeGameVersion() => __pbn__GameVersion != null;
-    public void ResetGameVersion() => __pbn__GameVersion = null;
-    private DOTAGameVersion? __pbn__GameVersion;
 
     [global::ProtoBuf.ProtoMember(15, Name = @"pass_key")]
     [global::System.ComponentModel.DefaultValue("")]
@@ -553,16 +617,6 @@ public partial class CMsgPracticeLobbySetDetails : global::ProtoBuf.IExtensible
     public bool ShouldSerializePenaltyLevelDire() => __pbn__PenaltyLevelDire != null;
     public void ResetPenaltyLevelDire() => __pbn__PenaltyLevelDire = null;
     private uint? __pbn__PenaltyLevelDire;
-
-    [global::ProtoBuf.ProtoMember(19, Name = @"load_game_id")]
-    public uint LoadGameId
-    {
-        get => __pbn__LoadGameId.GetValueOrDefault();
-        set => __pbn__LoadGameId = value;
-    }
-    public bool ShouldSerializeLoadGameId() => __pbn__LoadGameId != null;
-    public void ResetLoadGameId() => __pbn__LoadGameId = null;
-    private uint? __pbn__LoadGameId;
 
     [global::ProtoBuf.ProtoMember(20, Name = @"series_type")]
     public uint SeriesType
@@ -813,6 +867,47 @@ public partial class CMsgPracticeLobbySetDetails : global::ProtoBuf.IExtensible
     public void ResetLeagueNodeId() => __pbn__LeagueNodeId = null;
     private uint? __pbn__LeagueNodeId;
 
+    [global::ProtoBuf.ProtoMember(50, Name = @"requested_hero_ids")]
+    public int[] RequestedHeroIds { get; set; }
+
+    [global::ProtoBuf.ProtoMember(51, Name = @"scenario_save")]
+    public CMsgLobbyScenarioSave ScenarioSave { get; set; }
+
+    [global::ProtoBuf.ProtoMember(52)]
+    public AbilityDraftSpecificDetails ability_draft_specific_details { get; set; }
+
+    [global::ProtoBuf.ProtoMember(53, Name = @"do_player_draft")]
+    public bool DoPlayerDraft
+    {
+        get => __pbn__DoPlayerDraft.GetValueOrDefault();
+        set => __pbn__DoPlayerDraft = value;
+    }
+    public bool ShouldSerializeDoPlayerDraft() => __pbn__DoPlayerDraft != null;
+    public void ResetDoPlayerDraft() => __pbn__DoPlayerDraft = null;
+    private bool? __pbn__DoPlayerDraft;
+
+    [global::ProtoBuf.ProtoMember(54, Name = @"requested_hero_teams")]
+    public int[] RequestedHeroTeams { get; set; }
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class AbilityDraftSpecificDetails : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"shuffle_draft_order")]
+        public bool ShuffleDraftOrder
+        {
+            get => __pbn__ShuffleDraftOrder.GetValueOrDefault();
+            set => __pbn__ShuffleDraftOrder = value;
+        }
+        public bool ShouldSerializeShuffleDraftOrder() => __pbn__ShuffleDraftOrder != null;
+        public void ResetShuffleDraftOrder() => __pbn__ShuffleDraftOrder = null;
+        private bool? __pbn__ShuffleDraftOrder;
+
+    }
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -856,58 +951,6 @@ public partial class CMsgPracticeLobbyCreate : global::ProtoBuf.IExtensible
 
     [global::ProtoBuf.ProtoMember(7, Name = @"lobby_details")]
     public CMsgPracticeLobbySetDetails LobbyDetails { get; set; }
-
-    [global::ProtoBuf.ProtoMember(8)]
-    public SaveGame save_game { get; set; }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class SaveGame : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"data")]
-        public byte[] Data
-        {
-            get => __pbn__Data;
-            set => __pbn__Data = value;
-        }
-        public bool ShouldSerializeData() => __pbn__Data != null;
-        public void ResetData() => __pbn__Data = null;
-        private byte[] __pbn__Data;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"version")]
-        public int Version
-        {
-            get => __pbn__Version.GetValueOrDefault();
-            set => __pbn__Version = value;
-        }
-        public bool ShouldSerializeVersion() => __pbn__Version != null;
-        public void ResetVersion() => __pbn__Version = null;
-        private int? __pbn__Version;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"steam_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-        public ulong SteamId
-        {
-            get => __pbn__SteamId.GetValueOrDefault();
-            set => __pbn__SteamId = value;
-        }
-        public bool ShouldSerializeSteamId() => __pbn__SteamId != null;
-        public void ResetSteamId() => __pbn__SteamId = null;
-        private ulong? __pbn__SteamId;
-
-        [global::ProtoBuf.ProtoMember(4, Name = @"signature", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-        public ulong Signature
-        {
-            get => __pbn__Signature.GetValueOrDefault();
-            set => __pbn__Signature = value;
-        }
-        public bool ShouldSerializeSignature() => __pbn__Signature != null;
-        public void ResetSignature() => __pbn__Signature = null;
-        private ulong? __pbn__Signature;
-
-    }
 
 }
 
@@ -1138,15 +1181,6 @@ public partial class CMsgApplyTeamToPracticeLobby : global::ProtoBuf.IExtensible
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgClearPracticeLobbyTeam : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-}
-
-[global::ProtoBuf.ProtoContract()]
 public partial class CMsgPracticeLobbyList : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -1226,26 +1260,6 @@ public partial class CMsgPracticeLobbyListResponseEntry : global::ProtoBuf.IExte
     public bool ShouldSerializeLeaderAccountId() => __pbn__LeaderAccountId != null;
     public void ResetLeaderAccountId() => __pbn__LeaderAccountId = null;
     private uint? __pbn__LeaderAccountId;
-
-    [global::ProtoBuf.ProtoMember(8, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(9, Name = @"guild_logo")]
-    public ulong GuildLogo
-    {
-        get => __pbn__GuildLogo.GetValueOrDefault();
-        set => __pbn__GuildLogo = value;
-    }
-    public bool ShouldSerializeGuildLogo() => __pbn__GuildLogo != null;
-    public void ResetGuildLogo() => __pbn__GuildLogo = null;
-    private ulong? __pbn__GuildLogo;
 
     [global::ProtoBuf.ProtoMember(10, Name = @"name")]
     [global::System.ComponentModel.DefaultValue("")]
@@ -1351,6 +1365,26 @@ public partial class CMsgPracticeLobbyListResponseEntry : global::ProtoBuf.IExte
     public bool ShouldSerializeLanHostPingLocation() => __pbn__LanHostPingLocation != null;
     public void ResetLanHostPingLocation() => __pbn__LanHostPingLocation = null;
     private string __pbn__LanHostPingLocation;
+
+    [global::ProtoBuf.ProtoMember(21, Name = @"min_player_count")]
+    public uint MinPlayerCount
+    {
+        get => __pbn__MinPlayerCount.GetValueOrDefault();
+        set => __pbn__MinPlayerCount = value;
+    }
+    public bool ShouldSerializeMinPlayerCount() => __pbn__MinPlayerCount != null;
+    public void ResetMinPlayerCount() => __pbn__MinPlayerCount = null;
+    private uint? __pbn__MinPlayerCount;
+
+    [global::ProtoBuf.ProtoMember(22, Name = @"penalties_enabled")]
+    public bool PenaltiesEnabled
+    {
+        get => __pbn__PenaltiesEnabled.GetValueOrDefault();
+        set => __pbn__PenaltiesEnabled = value;
+    }
+    public bool ShouldSerializePenaltiesEnabled() => __pbn__PenaltiesEnabled != null;
+    public void ResetPenaltiesEnabled() => __pbn__PenaltiesEnabled = null;
+    private bool? __pbn__PenaltiesEnabled;
 
     [global::ProtoBuf.ProtoContract()]
     public partial class CLobbyMember : global::ProtoBuf.IExtensible
@@ -1533,30 +1567,6 @@ public partial class CMsgFriendPracticeLobbyListRequest : global::ProtoBuf.IExte
 
 [global::ProtoBuf.ProtoContract()]
 public partial class CMsgFriendPracticeLobbyListResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"lobbies")]
-    public global::System.Collections.Generic.List<CMsgPracticeLobbyListResponseEntry> Lobbies { get; } = new global::System.Collections.Generic.List<CMsgPracticeLobbyListResponseEntry>();
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGuildmatePracticeLobbyListRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guilds")]
-    public uint[] Guilds { get; set; }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGuildmatePracticeLobbyListResponse : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -1787,6 +1797,56 @@ public partial class CMsgJoinableCustomLobbiesResponseEntry : global::ProtoBuf.I
     public void ResetLanHostPingLocation() => __pbn__LanHostPingLocation = null;
     private string __pbn__LanHostPingLocation;
 
+    [global::ProtoBuf.ProtoMember(13, Name = @"lobby_creation_time")]
+    public uint LobbyCreationTime
+    {
+        get => __pbn__LobbyCreationTime.GetValueOrDefault();
+        set => __pbn__LobbyCreationTime = value;
+    }
+    public bool ShouldSerializeLobbyCreationTime() => __pbn__LobbyCreationTime != null;
+    public void ResetLobbyCreationTime() => __pbn__LobbyCreationTime = null;
+    private uint? __pbn__LobbyCreationTime;
+
+    [global::ProtoBuf.ProtoMember(14, Name = @"custom_game_timestamp")]
+    public uint CustomGameTimestamp
+    {
+        get => __pbn__CustomGameTimestamp.GetValueOrDefault();
+        set => __pbn__CustomGameTimestamp = value;
+    }
+    public bool ShouldSerializeCustomGameTimestamp() => __pbn__CustomGameTimestamp != null;
+    public void ResetCustomGameTimestamp() => __pbn__CustomGameTimestamp = null;
+    private uint? __pbn__CustomGameTimestamp;
+
+    [global::ProtoBuf.ProtoMember(15, Name = @"custom_game_crc")]
+    public ulong CustomGameCrc
+    {
+        get => __pbn__CustomGameCrc.GetValueOrDefault();
+        set => __pbn__CustomGameCrc = value;
+    }
+    public bool ShouldSerializeCustomGameCrc() => __pbn__CustomGameCrc != null;
+    public void ResetCustomGameCrc() => __pbn__CustomGameCrc = null;
+    private ulong? __pbn__CustomGameCrc;
+
+    [global::ProtoBuf.ProtoMember(16, Name = @"min_player_count")]
+    public uint MinPlayerCount
+    {
+        get => __pbn__MinPlayerCount.GetValueOrDefault();
+        set => __pbn__MinPlayerCount = value;
+    }
+    public bool ShouldSerializeMinPlayerCount() => __pbn__MinPlayerCount != null;
+    public void ResetMinPlayerCount() => __pbn__MinPlayerCount = null;
+    private uint? __pbn__MinPlayerCount;
+
+    [global::ProtoBuf.ProtoMember(17, Name = @"penalties_enabled")]
+    public bool PenaltiesEnabled
+    {
+        get => __pbn__PenaltiesEnabled.GetValueOrDefault();
+        set => __pbn__PenaltiesEnabled = value;
+    }
+    public bool ShouldSerializePenaltiesEnabled() => __pbn__PenaltiesEnabled != null;
+    public void ResetPenaltiesEnabled() => __pbn__PenaltiesEnabled = null;
+    private bool? __pbn__PenaltiesEnabled;
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1988,150 +2048,6 @@ public partial class CMsgBotGameCreate : global::ProtoBuf.IExtensible
     public bool ShouldSerializeDifficultyDire() => __pbn__DifficultyDire != null;
     public void ResetDifficultyDire() => __pbn__DifficultyDire = null;
     private DOTABotDifficulty? __pbn__DifficultyDire;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgCustomGameCreate : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"search_key")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string SearchKey
-    {
-        get => __pbn__SearchKey ?? "";
-        set => __pbn__SearchKey = value;
-    }
-    public bool ShouldSerializeSearchKey() => __pbn__SearchKey != null;
-    public void ResetSearchKey() => __pbn__SearchKey = null;
-    private string __pbn__SearchKey;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"client_version")]
-    public uint ClientVersion
-    {
-        get => __pbn__ClientVersion.GetValueOrDefault();
-        set => __pbn__ClientVersion = value;
-    }
-    public bool ShouldSerializeClientVersion() => __pbn__ClientVersion != null;
-    public void ResetClientVersion() => __pbn__ClientVersion = null;
-    private uint? __pbn__ClientVersion;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"difficulty")]
-    public uint Difficulty
-    {
-        get => __pbn__Difficulty.GetValueOrDefault();
-        set => __pbn__Difficulty = value;
-    }
-    public bool ShouldSerializeDifficulty() => __pbn__Difficulty != null;
-    public void ResetDifficulty() => __pbn__Difficulty = null;
-    private uint? __pbn__Difficulty;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"game_mode")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string GameMode
-    {
-        get => __pbn__GameMode ?? "";
-        set => __pbn__GameMode = value;
-    }
-    public bool ShouldSerializeGameMode() => __pbn__GameMode != null;
-    public void ResetGameMode() => __pbn__GameMode = null;
-    private string __pbn__GameMode;
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"map")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Map
-    {
-        get => __pbn__Map ?? "";
-        set => __pbn__Map = value;
-    }
-    public bool ShouldSerializeMap() => __pbn__Map != null;
-    public void ResetMap() => __pbn__Map = null;
-    private string __pbn__Map;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"custom_game_id")]
-    public ulong CustomGameId
-    {
-        get => __pbn__CustomGameId.GetValueOrDefault();
-        set => __pbn__CustomGameId = value;
-    }
-    public bool ShouldSerializeCustomGameId() => __pbn__CustomGameId != null;
-    public void ResetCustomGameId() => __pbn__CustomGameId = null;
-    private ulong? __pbn__CustomGameId;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgEventGameCreate : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"search_key")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string SearchKey
-    {
-        get => __pbn__SearchKey ?? "";
-        set => __pbn__SearchKey = value;
-    }
-    public bool ShouldSerializeSearchKey() => __pbn__SearchKey != null;
-    public void ResetSearchKey() => __pbn__SearchKey = null;
-    private string __pbn__SearchKey;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"client_version")]
-    public uint ClientVersion
-    {
-        get => __pbn__ClientVersion.GetValueOrDefault();
-        set => __pbn__ClientVersion = value;
-    }
-    public bool ShouldSerializeClientVersion() => __pbn__ClientVersion != null;
-    public void ResetClientVersion() => __pbn__ClientVersion = null;
-    private uint? __pbn__ClientVersion;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"difficulty")]
-    public uint Difficulty
-    {
-        get => __pbn__Difficulty.GetValueOrDefault();
-        set => __pbn__Difficulty = value;
-    }
-    public bool ShouldSerializeDifficulty() => __pbn__Difficulty != null;
-    public void ResetDifficulty() => __pbn__Difficulty = null;
-    private uint? __pbn__Difficulty;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"game_mode")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string GameMode
-    {
-        get => __pbn__GameMode ?? "";
-        set => __pbn__GameMode = value;
-    }
-    public bool ShouldSerializeGameMode() => __pbn__GameMode != null;
-    public void ResetGameMode() => __pbn__GameMode = null;
-    private string __pbn__GameMode;
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"map")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Map
-    {
-        get => __pbn__Map ?? "";
-        set => __pbn__Map = value;
-    }
-    public bool ShouldSerializeMap() => __pbn__Map != null;
-    public void ResetMap() => __pbn__Map = null;
-    private string __pbn__Map;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"custom_game_id")]
-    public ulong CustomGameId
-    {
-        get => __pbn__CustomGameId.GetValueOrDefault();
-        set => __pbn__CustomGameId = value;
-    }
-    public bool ShouldSerializeCustomGameId() => __pbn__CustomGameId != null;
-    public void ResetCustomGameId() => __pbn__CustomGameId = null;
-    private ulong? __pbn__CustomGameId;
 
 }
 
@@ -2729,6 +2645,54 @@ public partial class CMsgGCToClientRequestLaneSelectionResponse : global::ProtoB
     public void ResetLaneSelectionFlags() => __pbn__LaneSelectionFlags = null;
     private uint? __pbn__LaneSelectionFlags;
 
+    [global::ProtoBuf.ProtoMember(2, Name = @"high_priority_disabled")]
+    public bool HighPriorityDisabled
+    {
+        get => __pbn__HighPriorityDisabled.GetValueOrDefault();
+        set => __pbn__HighPriorityDisabled = value;
+    }
+    public bool ShouldSerializeHighPriorityDisabled() => __pbn__HighPriorityDisabled != null;
+    public void ResetHighPriorityDisabled() => __pbn__HighPriorityDisabled = null;
+    private bool? __pbn__HighPriorityDisabled;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToClientRequestMMInfo : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCMMInfo : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"lane_selection_flags")]
+    public uint LaneSelectionFlags
+    {
+        get => __pbn__LaneSelectionFlags.GetValueOrDefault();
+        set => __pbn__LaneSelectionFlags = value;
+    }
+    public bool ShouldSerializeLaneSelectionFlags() => __pbn__LaneSelectionFlags != null;
+    public void ResetLaneSelectionFlags() => __pbn__LaneSelectionFlags = null;
+    private uint? __pbn__LaneSelectionFlags;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"high_priority_disabled")]
+    public bool HighPriorityDisabled
+    {
+        get => __pbn__HighPriorityDisabled.GetValueOrDefault();
+        set => __pbn__HighPriorityDisabled = value;
+    }
+    public bool ShouldSerializeHighPriorityDisabled() => __pbn__HighPriorityDisabled != null;
+    public void ResetHighPriorityDisabled() => __pbn__HighPriorityDisabled = null;
+    private bool? __pbn__HighPriorityDisabled;
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -2758,8 +2722,8 @@ public enum EStartFindingMatchResult
     kEStartFindingMatchResultCompetitiveNotUnlocked = 107,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_GameModeNotUnlocked")]
     kEStartFindingMatchResultGameModeNotUnlocked = 108,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_CompetitiveNotEnoughSkillData")]
-    kEStartFindingMatchResultCompetitiveNotEnoughSkillData = 109,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_CompetitiveNotEnoughPlayTime")]
+    kEStartFindingMatchResultCompetitiveNotEnoughPlayTime = 109,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_MissingInitialSkill")]
     kEStartFindingMatchResultMissingInitialSkill = 110,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_CompetitiveRankSpreadTooLarge")]
@@ -2790,6 +2754,32 @@ public enum EStartFindingMatchResult
     kEStartFindingMatchResultCoachesChallengeBadPartySize = 123,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_CoachesChallengeRequirementsNotMet")]
     kEStartFindingMatchResultCoachesChallengeRequirementsNotMet = 124,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_InvalidRoleSelections")]
+    kEStartFindingMatchResultInvalidRoleSelections = 125,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_PhoneNumberDiscrepancy")]
+    kEStartFindingMatchResultPhoneNumberDiscrepancy = 126,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_NoQueuePoints")]
+    kEStartFindingMatchResultNoQueuePoints = 127,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_MemberMissingGauntletFlag")]
+    kEStartFindingMatchResultMemberMissingGauntletFlag = 128,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_MemberGauntletTooRecent")]
+    kEStartFindingMatchResultMemberGauntletTooRecent = 129,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_DifficultyNotUnlocked")]
+    kEStartFindingMatchResultDifficultyNotUnlocked = 130,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_CoachesNotAllowedInParty")]
+    kEStartFindingMatchResultCoachesNotAllowedInParty = 131,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_MatchmakingBusy")]
+    kEStartFindingMatchResultMatchmakingBusy = 132,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_SteamChinaBanned")]
+    kEStartFindingMatchResultSteamChinaBanned = 133,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_SteamChinaInvalidMixedParty")]
+    kEStartFindingMatchResultSteamChinaInvalidMixedParty = 134,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_RestrictedFromRanked")]
+    kEStartFindingMatchResultRestrictedFromRanked = 135,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_RankPreventsParties")]
+    kEStartFindingMatchResultRankPreventsParties = 136,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EStartFindingMatchResult_RegisteredNameRequired")]
+    kEStartFindingMatchResultRegisteredNameRequired = 137,
 }
 
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

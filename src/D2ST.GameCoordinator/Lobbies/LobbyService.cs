@@ -31,6 +31,7 @@ public sealed class LobbyService : IGcWelcomeContributor
     private readonly Dictionary<ulong, ulong> _memberships = [];
     private readonly Dictionary<ulong, LobbyServer> _servers = [];
     private readonly Dictionary<ulong, ulong> _serversBySteamId = [];
+    private readonly Dictionary<ulong, Dictionary<ulong, string>> _memberNames = [];
     private ulong _sequence;
 
     public LobbyService(SoCacheService soCache, TimeProvider time)
@@ -93,7 +94,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 return DOTAJoinLobbyResult.DotaJoinResultInvalidLobby;
             }
 
-            if (lobby.Members.Any(member => member.Id == context.SteamId))
+            if (lobby.AllMembers.Any(member => member.Id == context.SteamId))
             {
                 return DOTAJoinLobbyResult.DotaJoinResultSuccess;
             }
@@ -145,7 +146,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 return;
             }
 
-            var target = lobby.Members.FirstOrDefault(member => AccountIdOf(member.Id) == accountId);
+            var target = lobby.AllMembers.FirstOrDefault(member => AccountIdOf(member.Id) == accountId);
             if (target is null || target.Id == context.SteamId)
             {
                 return;
@@ -168,7 +169,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 return;
             }
 
-            var target = lobby.Members.FirstOrDefault(member => AccountIdOf(member.Id) == accountId);
+            var target = lobby.AllMembers.FirstOrDefault(member => AccountIdOf(member.Id) == accountId);
             if (target is null || target.Team == DotaGcTeam.DotaGcTeamPlayerPool)
             {
                 return;
@@ -210,7 +211,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 return;
             }
 
-            var member = lobby.Members.FirstOrDefault(entry => entry.Id == context.SteamId);
+            var member = lobby.AllMembers.FirstOrDefault(entry => entry.Id == context.SteamId);
             if (member is null)
             {
                 return;
@@ -220,7 +221,7 @@ public sealed class LobbyService : IGcWelcomeContributor
             if (IsPlayingTeam(team))
             {
                 var slot = request.Slot is >= 1 and <= SlotsPerTeam ? request.Slot : FreeSlot(lobby, team);
-                if (slot == 0 || lobby.Members.Any(other =>
+                if (slot == 0 || lobby.AllMembers.Any(other =>
                         other.Id != member.Id && other.Team == team && other.Slot == slot))
                 {
                     return;
@@ -361,15 +362,15 @@ public sealed class LobbyService : IGcWelcomeContributor
             {
                 foreach (var player in request.ConnectedPlayers)
                 {
-                    var member = lobby.Members.FirstOrDefault(entry => entry.Id == player.SteamId);
+                    var member = lobby.AllMembers.FirstOrDefault(entry => entry.Id == player.SteamId);
                     if (member is null)
                     {
                         continue;
                     }
 
-                    if (member.HeroId != player.HeroId)
+                    if (member.HeroId != (int)player.HeroId)
                     {
-                        member.HeroId = player.HeroId;
+                        member.HeroId = (int)player.HeroId;
                         changed = true;
                     }
 
@@ -382,7 +383,7 @@ public sealed class LobbyService : IGcWelcomeContributor
 
                 foreach (var player in request.DisconnectedPlayers)
                 {
-                    var member = lobby.Members.FirstOrDefault(entry => entry.Id == player.SteamId);
+                    var member = lobby.AllMembers.FirstOrDefault(entry => entry.Id == player.SteamId);
                     if (member is not null && member.LeaverStatus != DOTALeaverStatust.DotaLeaverDisconnected)
                     {
                         member.LeaverStatus = DOTALeaverStatust.DotaLeaverDisconnected;
@@ -419,7 +420,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 failedId = request.AbandonedLoaders.FirstOrDefault();
             }
 
-            var member = failedId != 0 ? lobby.Members.FirstOrDefault(entry => entry.Id == failedId) : null;
+            var member = failedId != 0 ? lobby.AllMembers.FirstOrDefault(entry => entry.Id == failedId) : null;
             if (member is not null)
             {
                 member.LeaverStatus = DOTALeaverStatust.DotaLeaverDisconnected;
@@ -451,7 +452,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 lobby.GameStartTime = (uint)_time.GetUtcNow().ToUnixTimeSeconds();
             }
 
-            foreach (var member in lobby.Members)
+            foreach (var member in lobby.AllMembers)
             {
                 member.LeaverStatus = DOTALeaverStatust.DotaLeaverNone;
             }
@@ -571,19 +572,23 @@ public sealed class LobbyService : IGcWelcomeContributor
     /// </summary>
     private void Detach(CSODOTALobby lobby, ulong steamId)
     {
-        var member = lobby.Members.FirstOrDefault(entry => entry.Id == steamId);
+        var member = lobby.AllMembers.FirstOrDefault(entry => entry.Id == steamId);
         if (member is null)
         {
             return;
         }
 
-        if (lobby.LeaderId == steamId || lobby.Members.Count <= 1)
+        if (lobby.LeaderId == steamId || lobby.AllMembers.Count <= 1)
         {
             Close(lobby);
             return;
         }
 
-        lobby.Members.Remove(member);
+        lobby.AllMembers.Remove(member);
+        if (_memberNames.TryGetValue(lobby.LobbyId, out var names))
+        {
+            names.Remove(steamId);
+        }
         _memberships.Remove(steamId);
         _soCache.Unsubscribe(AccountIdOf(steamId), SoOwner.ForLobby(lobby.LobbyId));
         Write(lobby);
@@ -591,25 +596,31 @@ public sealed class LobbyService : IGcWelcomeContributor
 
     private void Close(CSODOTALobby lobby)
     {
-        foreach (var member in lobby.Members)
+        foreach (var member in lobby.AllMembers)
         {
             _memberships.Remove(member.Id);
         }
 
+        _memberNames.Remove(lobby.LobbyId);
         DropServer(lobby.LobbyId);
         _soCache.RemoveOwner(SoOwner.ForLobby(lobby.LobbyId));
     }
 
     private void AddMember(CSODOTALobby lobby, GcContext context, DotaGcTeam team)
     {
-        lobby.Members.Add(new CDOTALobbyMember
+        lobby.AllMembers.Add(new CSODOTALobbyMember
         {
             Id = context.SteamId,
-            Name = context.PersonaName,
             Team = team,
             Slot = IsPlayingTeam(team) ? FreeSlot(lobby, team) : 0
         });
 
+        if (!_memberNames.TryGetValue(lobby.LobbyId, out var names))
+        {
+            names = _memberNames[lobby.LobbyId] = [];
+        }
+
+        names[context.SteamId] = context.PersonaName;
         _memberships[context.SteamId] = lobby.LobbyId;
     }
 
@@ -629,7 +640,7 @@ public sealed class LobbyService : IGcWelcomeContributor
     /// <summary>The lowest unused slot of a team, or 0 when it is full. Slots are 1-based.</summary>
     private static uint FreeSlot(CSODOTALobby lobby, DotaGcTeam team)
     {
-        var taken = lobby.Members
+        var taken = lobby.AllMembers
             .Where(member => member.Team == team)
             .Select(member => member.Slot)
             .ToHashSet();
@@ -695,11 +706,6 @@ public sealed class LobbyService : IGcWelcomeContributor
             lobby.FillWithBots = details.FillWithBots;
         }
 
-        if (details.ShouldSerializeIntroMode())
-        {
-            lobby.IntroMode = details.IntroMode;
-        }
-
         if (details.ShouldSerializeAllowSpectating())
         {
             lobby.AllowSpectating = details.AllowSpectating;
@@ -731,7 +737,7 @@ public sealed class LobbyService : IGcWelcomeContributor
         }
     }
 
-    private static CMsgPracticeLobbyListResponseEntry ToListEntry(CSODOTALobby lobby)
+    private CMsgPracticeLobbyListResponseEntry ToListEntry(CSODOTALobby lobby)
     {
         var entry = new CMsgPracticeLobbyListResponseEntry
         {
@@ -746,12 +752,12 @@ public sealed class LobbyService : IGcWelcomeContributor
             MaxPlayerCount = lobby.CustomMaxPlayers != 0 ? lobby.CustomMaxPlayers : SlotsPerTeam * 2
         };
 
-        foreach (var member in lobby.Members)
+        foreach (var member in lobby.AllMembers)
         {
             entry.Members.Add(new CMsgPracticeLobbyListResponseEntry.CLobbyMember
             {
                 AccountId = AccountIdOf(member.Id),
-                PlayerName = member.Name
+                PlayerName = MemberName(lobby.LobbyId, member.Id)
             });
         }
 
@@ -787,6 +793,12 @@ public sealed class LobbyService : IGcWelcomeContributor
             SoCacheKey.Lobby(lobby.LobbyId),
             new SoObjectKey(DotaSoCache.TypeDotaLobby, lobby.LobbyId),
             lobby);
+
+    /// <summary>The persona name a member joined with (the lobby SO carries no names).</summary>
+    public string MemberName(ulong lobbyId, ulong steamId) =>
+        _memberNames.TryGetValue(lobbyId, out var names) && names.TryGetValue(steamId, out var name)
+            ? name
+            : string.Empty;
 
     private static uint AccountIdOf(ulong steamId) => SteamAccount.AccountIdFromSteamId(steamId);
 

@@ -13,17 +13,6 @@ public partial class CSODOTAPartyMember : global::ProtoBuf.IExtensible
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-    [global::ProtoBuf.ProtoMember(1, Name = @"partner_type")]
-    [global::System.ComponentModel.DefaultValue(PartnerAccountType.PartnerNone)]
-    public PartnerAccountType PartnerType
-    {
-        get => __pbn__PartnerType ?? PartnerAccountType.PartnerNone;
-        set => __pbn__PartnerType = value;
-    }
-    public bool ShouldSerializePartnerType() => __pbn__PartnerType != null;
-    public void ResetPartnerType() => __pbn__PartnerType = null;
-    private PartnerAccountType? __pbn__PartnerType;
-
     [global::ProtoBuf.ProtoMember(2, Name = @"is_coach")]
     public bool IsCoach
     {
@@ -90,6 +79,16 @@ public partial class CSODOTAPartyMember : global::ProtoBuf.IExtensible
     public void ResetTourneyPreventUntil() => __pbn__TourneyPreventUntil = null;
     private uint? __pbn__TourneyPreventUntil;
 
+    [global::ProtoBuf.ProtoMember(13, Name = @"mm_data_valid")]
+    public bool MmDataValid
+    {
+        get => __pbn__MmDataValid.GetValueOrDefault();
+        set => __pbn__MmDataValid = value;
+    }
+    public bool ShouldSerializeMmDataValid() => __pbn__MmDataValid != null;
+    public void ResetMmDataValid() => __pbn__MmDataValid = null;
+    private bool? __pbn__MmDataValid;
+
     [global::ProtoBuf.ProtoMember(11, Name = @"lane_selection_flags")]
     public uint LaneSelectionFlags
     {
@@ -100,6 +99,26 @@ public partial class CSODOTAPartyMember : global::ProtoBuf.IExtensible
     public void ResetLaneSelectionFlags() => __pbn__LaneSelectionFlags = null;
     private uint? __pbn__LaneSelectionFlags;
 
+    [global::ProtoBuf.ProtoMember(14, Name = @"high_priority_disabled")]
+    public bool HighPriorityDisabled
+    {
+        get => __pbn__HighPriorityDisabled.GetValueOrDefault();
+        set => __pbn__HighPriorityDisabled = value;
+    }
+    public bool ShouldSerializeHighPriorityDisabled() => __pbn__HighPriorityDisabled != null;
+    public void ResetHighPriorityDisabled() => __pbn__HighPriorityDisabled = null;
+    private bool? __pbn__HighPriorityDisabled;
+
+    [global::ProtoBuf.ProtoMember(15, Name = @"has_hp_resource")]
+    public bool HasHpResource
+    {
+        get => __pbn__HasHpResource.GetValueOrDefault();
+        set => __pbn__HasHpResource = value;
+    }
+    public bool ShouldSerializeHasHpResource() => __pbn__HasHpResource != null;
+    public void ResetHasHpResource() => __pbn__HasHpResource = null;
+    private bool? __pbn__HasHpResource;
+
     [global::ProtoBuf.ProtoMember(12, Name = @"joined_from_partyfinder")]
     public bool JoinedFromPartyfinder
     {
@@ -109,6 +128,19 @@ public partial class CSODOTAPartyMember : global::ProtoBuf.IExtensible
     public bool ShouldSerializeJoinedFromPartyfinder() => __pbn__JoinedFromPartyfinder != null;
     public void ResetJoinedFromPartyfinder() => __pbn__JoinedFromPartyfinder = null;
     private bool? __pbn__JoinedFromPartyfinder;
+
+    [global::ProtoBuf.ProtoMember(16, Name = @"is_steam_china")]
+    public bool IsSteamChina
+    {
+        get => __pbn__IsSteamChina.GetValueOrDefault();
+        set => __pbn__IsSteamChina = value;
+    }
+    public bool ShouldSerializeIsSteamChina() => __pbn__IsSteamChina != null;
+    public void ResetIsSteamChina() => __pbn__IsSteamChina = null;
+    private bool? __pbn__IsSteamChina;
+
+    [global::ProtoBuf.ProtoMember(17, Name = @"banned_hero_ids")]
+    public int[] BannedHeroIds { get; set; }
 
 }
 
@@ -234,17 +266,6 @@ public partial class CSODOTAParty : global::ProtoBuf.IExtensible
     public void ResetMatchType() => __pbn__MatchType = null;
     private MatchType? __pbn__MatchType;
 
-    [global::ProtoBuf.ProtoMember(22, Name = @"bot_difficulty")]
-    [global::System.ComponentModel.DefaultValue(DOTABotDifficulty.BotDifficultyPassive)]
-    public DOTABotDifficulty BotDifficulty
-    {
-        get => __pbn__BotDifficulty ?? DOTABotDifficulty.BotDifficultyPassive;
-        set => __pbn__BotDifficulty = value;
-    }
-    public bool ShouldSerializeBotDifficulty() => __pbn__BotDifficulty != null;
-    public void ResetBotDifficulty() => __pbn__BotDifficulty = null;
-    private DOTABotDifficulty? __pbn__BotDifficulty;
-
     [global::ProtoBuf.ProtoMember(23, Name = @"team_id")]
     public uint TeamId
     {
@@ -328,19 +349,6 @@ public partial class CSODOTAParty : global::ProtoBuf.IExtensible
 
     [global::ProtoBuf.ProtoMember(29, Name = @"members")]
     public global::System.Collections.Generic.List<CSODOTAPartyMember> Members { get; } = new global::System.Collections.Generic.List<CSODOTAPartyMember>();
-
-    [global::ProtoBuf.ProtoMember(30, Name = @"open_guild_id")]
-    public uint OpenGuildId
-    {
-        get => __pbn__OpenGuildId.GetValueOrDefault();
-        set => __pbn__OpenGuildId = value;
-    }
-    public bool ShouldSerializeOpenGuildId() => __pbn__OpenGuildId != null;
-    public void ResetOpenGuildId() => __pbn__OpenGuildId = null;
-    private uint? __pbn__OpenGuildId;
-
-    [global::ProtoBuf.ProtoMember(31, Name = @"common_guilds")]
-    public uint[] CommonGuilds { get; set; }
 
     [global::ProtoBuf.ProtoMember(35, Name = @"low_priority_games_remaining")]
     public uint LowPriorityGamesRemaining
@@ -499,16 +507,6 @@ public partial class CSODOTAParty : global::ProtoBuf.IExtensible
     public void ResetSoloQueue() => __pbn__SoloQueue = null;
     private bool? __pbn__SoloQueue;
 
-    [global::ProtoBuf.ProtoMember(60, Name = @"bot_script_index")]
-    public uint BotScriptIndex
-    {
-        get => __pbn__BotScriptIndex.GetValueOrDefault();
-        set => __pbn__BotScriptIndex = value;
-    }
-    public bool ShouldSerializeBotScriptIndex() => __pbn__BotScriptIndex != null;
-    public void ResetBotScriptIndex() => __pbn__BotScriptIndex = null;
-    private uint? __pbn__BotScriptIndex;
-
     [global::ProtoBuf.ProtoMember(61, Name = @"steam_clan_account_id")]
     public uint SteamClanAccountId
     {
@@ -561,6 +559,127 @@ public partial class CSODOTAParty : global::ProtoBuf.IExtensible
     public bool ShouldSerializePartySearchBeaconActive() => __pbn__PartySearchBeaconActive != null;
     public void ResetPartySearchBeaconActive() => __pbn__PartySearchBeaconActive = null;
     private bool? __pbn__PartySearchBeaconActive;
+
+    [global::ProtoBuf.ProtoMember(67, Name = @"matchmaking_flags")]
+    public uint MatchmakingFlags
+    {
+        get => __pbn__MatchmakingFlags.GetValueOrDefault();
+        set => __pbn__MatchmakingFlags = value;
+    }
+    public bool ShouldSerializeMatchmakingFlags() => __pbn__MatchmakingFlags != null;
+    public void ResetMatchmakingFlags() => __pbn__MatchmakingFlags = null;
+    private uint? __pbn__MatchmakingFlags;
+
+    [global::ProtoBuf.ProtoMember(68, Name = @"high_priority_state")]
+    [global::System.ComponentModel.DefaultValue(EHighPriorityMMState.kEHighPriorityMMUnknown)]
+    public EHighPriorityMMState HighPriorityState
+    {
+        get => __pbn__HighPriorityState ?? EHighPriorityMMState.kEHighPriorityMMUnknown;
+        set => __pbn__HighPriorityState = value;
+    }
+    public bool ShouldSerializeHighPriorityState() => __pbn__HighPriorityState != null;
+    public void ResetHighPriorityState() => __pbn__HighPriorityState = null;
+    private EHighPriorityMMState? __pbn__HighPriorityState;
+
+    [global::ProtoBuf.ProtoMember(69, Name = @"lane_selections_enabled")]
+    public bool LaneSelectionsEnabled
+    {
+        get => __pbn__LaneSelectionsEnabled.GetValueOrDefault();
+        set => __pbn__LaneSelectionsEnabled = value;
+    }
+    public bool ShouldSerializeLaneSelectionsEnabled() => __pbn__LaneSelectionsEnabled != null;
+    public void ResetLaneSelectionsEnabled() => __pbn__LaneSelectionsEnabled = null;
+    private bool? __pbn__LaneSelectionsEnabled;
+
+    [global::ProtoBuf.ProtoMember(70, Name = @"custom_game_difficulty_mask")]
+    public uint CustomGameDifficultyMask
+    {
+        get => __pbn__CustomGameDifficultyMask.GetValueOrDefault();
+        set => __pbn__CustomGameDifficultyMask = value;
+    }
+    public bool ShouldSerializeCustomGameDifficultyMask() => __pbn__CustomGameDifficultyMask != null;
+    public void ResetCustomGameDifficultyMask() => __pbn__CustomGameDifficultyMask = null;
+    private uint? __pbn__CustomGameDifficultyMask;
+
+    [global::ProtoBuf.ProtoMember(71, Name = @"is_steam_china")]
+    public bool IsSteamChina
+    {
+        get => __pbn__IsSteamChina.GetValueOrDefault();
+        set => __pbn__IsSteamChina = value;
+    }
+    public bool ShouldSerializeIsSteamChina() => __pbn__IsSteamChina != null;
+    public void ResetIsSteamChina() => __pbn__IsSteamChina = null;
+    private bool? __pbn__IsSteamChina;
+
+    [global::ProtoBuf.ProtoMember(72, Name = @"bot_difficulty_mask")]
+    public uint BotDifficultyMask
+    {
+        get => __pbn__BotDifficultyMask.GetValueOrDefault();
+        set => __pbn__BotDifficultyMask = value;
+    }
+    public bool ShouldSerializeBotDifficultyMask() => __pbn__BotDifficultyMask != null;
+    public void ResetBotDifficultyMask() => __pbn__BotDifficultyMask = null;
+    private uint? __pbn__BotDifficultyMask;
+
+    [global::ProtoBuf.ProtoMember(73, Name = @"bot_script_index_mask")]
+    public uint BotScriptIndexMask
+    {
+        get => __pbn__BotScriptIndexMask.GetValueOrDefault();
+        set => __pbn__BotScriptIndexMask = value;
+    }
+    public bool ShouldSerializeBotScriptIndexMask() => __pbn__BotScriptIndexMask != null;
+    public void ResetBotScriptIndexMask() => __pbn__BotScriptIndexMask = null;
+    private uint? __pbn__BotScriptIndexMask;
+
+    [global::ProtoBuf.ProtoMember(74, Name = @"restricted_from_ranked")]
+    public bool RestrictedFromRanked
+    {
+        get => __pbn__RestrictedFromRanked.GetValueOrDefault();
+        set => __pbn__RestrictedFromRanked = value;
+    }
+    public bool ShouldSerializeRestrictedFromRanked() => __pbn__RestrictedFromRanked != null;
+    public void ResetRestrictedFromRanked() => __pbn__RestrictedFromRanked = null;
+    private bool? __pbn__RestrictedFromRanked;
+
+    [global::ProtoBuf.ProtoMember(75, Name = @"restricted_from_ranked_account_id")]
+    public uint RestrictedFromRankedAccountId
+    {
+        get => __pbn__RestrictedFromRankedAccountId.GetValueOrDefault();
+        set => __pbn__RestrictedFromRankedAccountId = value;
+    }
+    public bool ShouldSerializeRestrictedFromRankedAccountId() => __pbn__RestrictedFromRankedAccountId != null;
+    public void ResetRestrictedFromRankedAccountId() => __pbn__RestrictedFromRankedAccountId = null;
+    private uint? __pbn__RestrictedFromRankedAccountId;
+
+    [global::ProtoBuf.ProtoMember(76, Name = @"rank_spread_likert_scale")]
+    public uint RankSpreadLikertScale
+    {
+        get => __pbn__RankSpreadLikertScale.GetValueOrDefault();
+        set => __pbn__RankSpreadLikertScale = value;
+    }
+    public bool ShouldSerializeRankSpreadLikertScale() => __pbn__RankSpreadLikertScale != null;
+    public void ResetRankSpreadLikertScale() => __pbn__RankSpreadLikertScale = null;
+    private uint? __pbn__RankSpreadLikertScale;
+
+    [global::ProtoBuf.ProtoMember(77, Name = @"behavior_score_likert_scale")]
+    public uint BehaviorScoreLikertScale
+    {
+        get => __pbn__BehaviorScoreLikertScale.GetValueOrDefault();
+        set => __pbn__BehaviorScoreLikertScale = value;
+    }
+    public bool ShouldSerializeBehaviorScoreLikertScale() => __pbn__BehaviorScoreLikertScale != null;
+    public void ResetBehaviorScoreLikertScale() => __pbn__BehaviorScoreLikertScale = null;
+    private uint? __pbn__BehaviorScoreLikertScale;
+
+    [global::ProtoBuf.ProtoMember(78, Name = @"contains_required_playtester")]
+    public bool ContainsRequiredPlaytester
+    {
+        get => __pbn__ContainsRequiredPlaytester.GetValueOrDefault();
+        set => __pbn__ContainsRequiredPlaytester = value;
+    }
+    public bool ShouldSerializeContainsRequiredPlaytester() => __pbn__ContainsRequiredPlaytester != null;
+    public void ResetContainsRequiredPlaytester() => __pbn__ContainsRequiredPlaytester = null;
+    private bool? __pbn__ContainsRequiredPlaytester;
 
     [global::ProtoBuf.ProtoContract()]
     public enum State
@@ -699,119 +818,6 @@ public partial class CSODOTAPartyInvite : global::ProtoBuf.IExtensible
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CSODOTALobbyInvite : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"group_id")]
-    public ulong GroupId
-    {
-        get => __pbn__GroupId.GetValueOrDefault();
-        set => __pbn__GroupId = value;
-    }
-    public bool ShouldSerializeGroupId() => __pbn__GroupId != null;
-    public void ResetGroupId() => __pbn__GroupId = null;
-    private ulong? __pbn__GroupId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"sender_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong SenderId
-    {
-        get => __pbn__SenderId.GetValueOrDefault();
-        set => __pbn__SenderId = value;
-    }
-    public bool ShouldSerializeSenderId() => __pbn__SenderId != null;
-    public void ResetSenderId() => __pbn__SenderId = null;
-    private ulong? __pbn__SenderId;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"sender_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string SenderName
-    {
-        get => __pbn__SenderName ?? "";
-        set => __pbn__SenderName = value;
-    }
-    public bool ShouldSerializeSenderName() => __pbn__SenderName != null;
-    public void ResetSenderName() => __pbn__SenderName = null;
-    private string __pbn__SenderName;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"members")]
-    public global::System.Collections.Generic.List<LobbyMember> Members { get; } = new global::System.Collections.Generic.List<LobbyMember>();
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"custom_game_id")]
-    public ulong CustomGameId
-    {
-        get => __pbn__CustomGameId.GetValueOrDefault();
-        set => __pbn__CustomGameId = value;
-    }
-    public bool ShouldSerializeCustomGameId() => __pbn__CustomGameId != null;
-    public void ResetCustomGameId() => __pbn__CustomGameId = null;
-    private ulong? __pbn__CustomGameId;
-
-    [global::ProtoBuf.ProtoMember(6, Name = @"invite_gid", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong InviteGid
-    {
-        get => __pbn__InviteGid.GetValueOrDefault();
-        set => __pbn__InviteGid = value;
-    }
-    public bool ShouldSerializeInviteGid() => __pbn__InviteGid != null;
-    public void ResetInviteGid() => __pbn__InviteGid = null;
-    private ulong? __pbn__InviteGid;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"custom_game_crc", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong CustomGameCrc
-    {
-        get => __pbn__CustomGameCrc.GetValueOrDefault();
-        set => __pbn__CustomGameCrc = value;
-    }
-    public bool ShouldSerializeCustomGameCrc() => __pbn__CustomGameCrc != null;
-    public void ResetCustomGameCrc() => __pbn__CustomGameCrc = null;
-    private ulong? __pbn__CustomGameCrc;
-
-    [global::ProtoBuf.ProtoMember(8, Name = @"custom_game_timestamp", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public uint CustomGameTimestamp
-    {
-        get => __pbn__CustomGameTimestamp.GetValueOrDefault();
-        set => __pbn__CustomGameTimestamp = value;
-    }
-    public bool ShouldSerializeCustomGameTimestamp() => __pbn__CustomGameTimestamp != null;
-    public void ResetCustomGameTimestamp() => __pbn__CustomGameTimestamp = null;
-    private uint? __pbn__CustomGameTimestamp;
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class LobbyMember : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"name")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string Name
-        {
-            get => __pbn__Name ?? "";
-            set => __pbn__Name = value;
-        }
-        public bool ShouldSerializeName() => __pbn__Name != null;
-        public void ResetName() => __pbn__Name = null;
-        private string __pbn__Name;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"steam_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-        public ulong SteamId
-        {
-            get => __pbn__SteamId.GetValueOrDefault();
-            set => __pbn__SteamId = value;
-        }
-        public bool ShouldSerializeSteamId() => __pbn__SteamId != null;
-        public void ResetSteamId() => __pbn__SteamId = null;
-        private ulong? __pbn__SteamId;
-
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
 public partial class CMsgLeaverState : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -878,1666 +884,6 @@ public partial class CMsgLeaverState : global::ProtoBuf.IExtensible
     public bool ShouldSerializeMassDisconnect() => __pbn__MassDisconnect != null;
     public void ResetMassDisconnect() => __pbn__MassDisconnect = null;
     private bool? __pbn__MassDisconnect;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CDOTALobbyMember : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong Id
-    {
-        get => __pbn__Id.GetValueOrDefault();
-        set => __pbn__Id = value;
-    }
-    public bool ShouldSerializeId() => __pbn__Id != null;
-    public void ResetId() => __pbn__Id = null;
-    private ulong? __pbn__Id;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"hero_id")]
-    public uint HeroId
-    {
-        get => __pbn__HeroId.GetValueOrDefault();
-        set => __pbn__HeroId = value;
-    }
-    public bool ShouldSerializeHeroId() => __pbn__HeroId != null;
-    public void ResetHeroId() => __pbn__HeroId = null;
-    private uint? __pbn__HeroId;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"team")]
-    [global::System.ComponentModel.DefaultValue(DotaGcTeam.DotaGcTeamGoodGuys)]
-    public DotaGcTeam Team
-    {
-        get => __pbn__Team ?? DotaGcTeam.DotaGcTeamGoodGuys;
-        set => __pbn__Team = value;
-    }
-    public bool ShouldSerializeTeam() => __pbn__Team != null;
-    public void ResetTeam() => __pbn__Team = null;
-    private DotaGcTeam? __pbn__Team;
-
-    [global::ProtoBuf.ProtoMember(6, Name = @"name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Name
-    {
-        get => __pbn__Name ?? "";
-        set => __pbn__Name = value;
-    }
-    public bool ShouldSerializeName() => __pbn__Name != null;
-    public void ResetName() => __pbn__Name = null;
-    private string __pbn__Name;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"slot")]
-    public uint Slot
-    {
-        get => __pbn__Slot.GetValueOrDefault();
-        set => __pbn__Slot = value;
-    }
-    public bool ShouldSerializeSlot() => __pbn__Slot != null;
-    public void ResetSlot() => __pbn__Slot = null;
-    private uint? __pbn__Slot;
-
-    [global::ProtoBuf.ProtoMember(12, Name = @"party_id")]
-    public ulong PartyId
-    {
-        get => __pbn__PartyId.GetValueOrDefault();
-        set => __pbn__PartyId = value;
-    }
-    public bool ShouldSerializePartyId() => __pbn__PartyId != null;
-    public void ResetPartyId() => __pbn__PartyId = null;
-    private ulong? __pbn__PartyId;
-
-    [global::ProtoBuf.ProtoMember(13, Name = @"meta_level")]
-    public uint MetaLevel
-    {
-        get => __pbn__MetaLevel.GetValueOrDefault();
-        set => __pbn__MetaLevel = value;
-    }
-    public bool ShouldSerializeMetaLevel() => __pbn__MetaLevel != null;
-    public void ResetMetaLevel() => __pbn__MetaLevel = null;
-    private uint? __pbn__MetaLevel;
-
-    [global::ProtoBuf.ProtoMember(14, Name = @"meta_xp")]
-    public uint MetaXp
-    {
-        get => __pbn__MetaXp.GetValueOrDefault();
-        set => __pbn__MetaXp = value;
-    }
-    public bool ShouldSerializeMetaXp() => __pbn__MetaXp != null;
-    public void ResetMetaXp() => __pbn__MetaXp = null;
-    private uint? __pbn__MetaXp;
-
-    [global::ProtoBuf.ProtoMember(15, Name = @"meta_xp_awarded")]
-    public uint MetaXpAwarded
-    {
-        get => __pbn__MetaXpAwarded.GetValueOrDefault();
-        set => __pbn__MetaXpAwarded = value;
-    }
-    public bool ShouldSerializeMetaXpAwarded() => __pbn__MetaXpAwarded != null;
-    public void ResetMetaXpAwarded() => __pbn__MetaXpAwarded = null;
-    private uint? __pbn__MetaXpAwarded;
-
-    [global::ProtoBuf.ProtoMember(16, Name = @"leaver_status")]
-    [global::System.ComponentModel.DefaultValue(DOTALeaverStatust.DotaLeaverNone)]
-    public DOTALeaverStatust LeaverStatus
-    {
-        get => __pbn__LeaverStatus ?? DOTALeaverStatust.DotaLeaverNone;
-        set => __pbn__LeaverStatus = value;
-    }
-    public bool ShouldSerializeLeaverStatus() => __pbn__LeaverStatus != null;
-    public void ResetLeaverStatus() => __pbn__LeaverStatus = null;
-    private DOTALeaverStatust? __pbn__LeaverStatus;
-
-    [global::ProtoBuf.ProtoMember(28, Name = @"leaver_actions")]
-    public uint LeaverActions
-    {
-        get => __pbn__LeaverActions.GetValueOrDefault();
-        set => __pbn__LeaverActions = value;
-    }
-    public bool ShouldSerializeLeaverActions() => __pbn__LeaverActions != null;
-    public void ResetLeaverActions() => __pbn__LeaverActions = null;
-    private uint? __pbn__LeaverActions;
-
-    [global::ProtoBuf.ProtoMember(17, Name = @"channel")]
-    [global::System.ComponentModel.DefaultValue(6u)]
-    public uint Channel
-    {
-        get => __pbn__Channel ?? 6u;
-        set => __pbn__Channel = value;
-    }
-    public bool ShouldSerializeChannel() => __pbn__Channel != null;
-    public void ResetChannel() => __pbn__Channel = null;
-    private uint? __pbn__Channel;
-
-    [global::ProtoBuf.ProtoMember(18, Name = @"prize_def_index")]
-    public uint PrizeDefIndex
-    {
-        get => __pbn__PrizeDefIndex.GetValueOrDefault();
-        set => __pbn__PrizeDefIndex = value;
-    }
-    public bool ShouldSerializePrizeDefIndex() => __pbn__PrizeDefIndex != null;
-    public void ResetPrizeDefIndex() => __pbn__PrizeDefIndex = null;
-    private uint? __pbn__PrizeDefIndex;
-
-    [global::ProtoBuf.ProtoMember(20, Name = @"disabled_hero_id")]
-    public uint[] DisabledHeroIds { get; set; }
-
-    [global::ProtoBuf.ProtoMember(21, Name = @"partner_account_type")]
-    [global::System.ComponentModel.DefaultValue(PartnerAccountType.PartnerNone)]
-    public PartnerAccountType PartnerAccountType
-    {
-        get => __pbn__PartnerAccountType ?? PartnerAccountType.PartnerNone;
-        set => __pbn__PartnerAccountType = value;
-    }
-    public bool ShouldSerializePartnerAccountType() => __pbn__PartnerAccountType != null;
-    public void ResetPartnerAccountType() => __pbn__PartnerAccountType = null;
-    private PartnerAccountType? __pbn__PartnerAccountType;
-
-    [global::ProtoBuf.ProtoMember(22, Name = @"enabled_hero_id")]
-    public uint[] EnabledHeroIds { get; set; }
-
-    [global::ProtoBuf.ProtoMember(23, Name = @"coach_team")]
-    [global::System.ComponentModel.DefaultValue(DotaGcTeam.DotaGcTeamNoteam)]
-    public DotaGcTeam CoachTeam
-    {
-        get => __pbn__CoachTeam ?? DotaGcTeam.DotaGcTeamNoteam;
-        set => __pbn__CoachTeam = value;
-    }
-    public bool ShouldSerializeCoachTeam() => __pbn__CoachTeam != null;
-    public void ResetCoachTeam() => __pbn__CoachTeam = null;
-    private DotaGcTeam? __pbn__CoachTeam;
-
-    [global::ProtoBuf.ProtoMember(42, Name = @"coach_rating")]
-    public uint CoachRating
-    {
-        get => __pbn__CoachRating.GetValueOrDefault();
-        set => __pbn__CoachRating = value;
-    }
-    public bool ShouldSerializeCoachRating() => __pbn__CoachRating != null;
-    public void ResetCoachRating() => __pbn__CoachRating = null;
-    private uint? __pbn__CoachRating;
-
-    [global::ProtoBuf.ProtoMember(24, Name = @"pwrd_cyber_cafe_id")]
-    public uint PwrdCyberCafeId
-    {
-        get => __pbn__PwrdCyberCafeId.GetValueOrDefault();
-        set => __pbn__PwrdCyberCafeId = value;
-    }
-    public bool ShouldSerializePwrdCyberCafeId() => __pbn__PwrdCyberCafeId != null;
-    public void ResetPwrdCyberCafeId() => __pbn__PwrdCyberCafeId = null;
-    private uint? __pbn__PwrdCyberCafeId;
-
-    [global::ProtoBuf.ProtoMember(25, Name = @"pwrd_cyber_cafe_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string PwrdCyberCafeName
-    {
-        get => __pbn__PwrdCyberCafeName ?? "";
-        set => __pbn__PwrdCyberCafeName = value;
-    }
-    public bool ShouldSerializePwrdCyberCafeName() => __pbn__PwrdCyberCafeName != null;
-    public void ResetPwrdCyberCafeName() => __pbn__PwrdCyberCafeName = null;
-    private string __pbn__PwrdCyberCafeName;
-
-    [global::ProtoBuf.ProtoMember(26, Name = @"disabled_random_hero_id", IsPacked = true)]
-    public uint[] DisabledRandomHeroIds { get; set; }
-
-    [global::ProtoBuf.ProtoMember(41, Name = @"disabled_random_hero_bits", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public uint[] DisabledRandomHeroBits { get; set; }
-
-    [global::ProtoBuf.ProtoMember(27, Name = @"xp_bonuses")]
-    public global::System.Collections.Generic.List<CDOTALobbyMemberXPBonus> XpBonuses { get; } = new global::System.Collections.Generic.List<CDOTALobbyMemberXPBonus>();
-
-    [global::ProtoBuf.ProtoMember(29, Name = @"rank_change", DataFormat = global::ProtoBuf.DataFormat.ZigZag)]
-    public int RankChange
-    {
-        get => __pbn__RankChange.GetValueOrDefault();
-        set => __pbn__RankChange = value;
-    }
-    public bool ShouldSerializeRankChange() => __pbn__RankChange != null;
-    public void ResetRankChange() => __pbn__RankChange = null;
-    private int? __pbn__RankChange;
-
-    [global::ProtoBuf.ProtoMember(30, Name = @"cameraman")]
-    public bool Cameraman
-    {
-        get => __pbn__Cameraman.GetValueOrDefault();
-        set => __pbn__Cameraman = value;
-    }
-    public bool ShouldSerializeCameraman() => __pbn__Cameraman != null;
-    public void ResetCameraman() => __pbn__Cameraman = null;
-    private bool? __pbn__Cameraman;
-
-    [global::ProtoBuf.ProtoMember(31, Name = @"custom_game_product_ids")]
-    public uint[] CustomGameProductIds { get; set; }
-
-    [global::ProtoBuf.ProtoMember(32, Name = @"lobby_mvp_vote_account_id")]
-    public uint LobbyMvpVoteAccountId
-    {
-        get => __pbn__LobbyMvpVoteAccountId.GetValueOrDefault();
-        set => __pbn__LobbyMvpVoteAccountId = value;
-    }
-    public bool ShouldSerializeLobbyMvpVoteAccountId() => __pbn__LobbyMvpVoteAccountId != null;
-    public void ResetLobbyMvpVoteAccountId() => __pbn__LobbyMvpVoteAccountId = null;
-    private uint? __pbn__LobbyMvpVoteAccountId;
-
-    [global::ProtoBuf.ProtoMember(33, Name = @"search_match_type")]
-    [global::System.ComponentModel.DefaultValue(MatchType.MatchTypeCasual)]
-    public MatchType SearchMatchType
-    {
-        get => __pbn__SearchMatchType ?? MatchType.MatchTypeCasual;
-        set => __pbn__SearchMatchType = value;
-    }
-    public bool ShouldSerializeSearchMatchType() => __pbn__SearchMatchType != null;
-    public void ResetSearchMatchType() => __pbn__SearchMatchType = null;
-    private MatchType? __pbn__SearchMatchType;
-
-    [global::ProtoBuf.ProtoMember(35, Name = @"favorite_team_packed")]
-    public ulong FavoriteTeamPacked
-    {
-        get => __pbn__FavoriteTeamPacked.GetValueOrDefault();
-        set => __pbn__FavoriteTeamPacked = value;
-    }
-    public bool ShouldSerializeFavoriteTeamPacked() => __pbn__FavoriteTeamPacked != null;
-    public void ResetFavoriteTeamPacked() => __pbn__FavoriteTeamPacked = null;
-    private ulong? __pbn__FavoriteTeamPacked;
-
-    [global::ProtoBuf.ProtoMember(36, Name = @"is_plus_subscriber")]
-    public bool IsPlusSubscriber
-    {
-        get => __pbn__IsPlusSubscriber.GetValueOrDefault();
-        set => __pbn__IsPlusSubscriber = value;
-    }
-    public bool ShouldSerializeIsPlusSubscriber() => __pbn__IsPlusSubscriber != null;
-    public void ResetIsPlusSubscriber() => __pbn__IsPlusSubscriber = null;
-    private bool? __pbn__IsPlusSubscriber;
-
-    [global::ProtoBuf.ProtoMember(37, Name = @"rank_tier_updated")]
-    public bool RankTierUpdated
-    {
-        get => __pbn__RankTierUpdated.GetValueOrDefault();
-        set => __pbn__RankTierUpdated = value;
-    }
-    public bool ShouldSerializeRankTierUpdated() => __pbn__RankTierUpdated != null;
-    public void ResetRankTierUpdated() => __pbn__RankTierUpdated = null;
-    private bool? __pbn__RankTierUpdated;
-
-    [global::ProtoBuf.ProtoMember(38, Name = @"lane_selection_flags")]
-    public uint LaneSelectionFlags
-    {
-        get => __pbn__LaneSelectionFlags.GetValueOrDefault();
-        set => __pbn__LaneSelectionFlags = value;
-    }
-    public bool ShouldSerializeLaneSelectionFlags() => __pbn__LaneSelectionFlags != null;
-    public void ResetLaneSelectionFlags() => __pbn__LaneSelectionFlags = null;
-    private uint? __pbn__LaneSelectionFlags;
-
-    [global::ProtoBuf.ProtoMember(39, Name = @"can_earn_rewards")]
-    public bool CanEarnRewards
-    {
-        get => __pbn__CanEarnRewards.GetValueOrDefault();
-        set => __pbn__CanEarnRewards = value;
-    }
-    public bool ShouldSerializeCanEarnRewards() => __pbn__CanEarnRewards != null;
-    public void ResetCanEarnRewards() => __pbn__CanEarnRewards = null;
-    private bool? __pbn__CanEarnRewards;
-
-    [global::ProtoBuf.ProtoMember(40, Name = @"live_spectator_team")]
-    [global::System.ComponentModel.DefaultValue(DotaGcTeam.DotaGcTeamNoteam)]
-    public DotaGcTeam LiveSpectatorTeam
-    {
-        get => __pbn__LiveSpectatorTeam ?? DotaGcTeam.DotaGcTeamNoteam;
-        set => __pbn__LiveSpectatorTeam = value;
-    }
-    public bool ShouldSerializeLiveSpectatorTeam() => __pbn__LiveSpectatorTeam != null;
-    public void ResetLiveSpectatorTeam() => __pbn__LiveSpectatorTeam = null;
-    private DotaGcTeam? __pbn__LiveSpectatorTeam;
-
-    [global::ProtoBuf.ProtoMember(43, Name = @"was_mvp_last_game")]
-    public bool WasMvpLastGame
-    {
-        get => __pbn__WasMvpLastGame.GetValueOrDefault();
-        set => __pbn__WasMvpLastGame = value;
-    }
-    public bool ShouldSerializeWasMvpLastGame() => __pbn__WasMvpLastGame != null;
-    public void ResetWasMvpLastGame() => __pbn__WasMvpLastGame = null;
-    private bool? __pbn__WasMvpLastGame;
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class CDOTALobbyMemberXPBonus : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"type")]
-        public uint Type
-        {
-            get => __pbn__Type.GetValueOrDefault();
-            set => __pbn__Type = value;
-        }
-        public bool ShouldSerializeType() => __pbn__Type != null;
-        public void ResetType() => __pbn__Type = null;
-        private uint? __pbn__Type;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"xp_bonus")]
-        public float XpBonus
-        {
-            get => __pbn__XpBonus.GetValueOrDefault();
-            set => __pbn__XpBonus = value;
-        }
-        public bool ShouldSerializeXpBonus() => __pbn__XpBonus != null;
-        public void ResetXpBonus() => __pbn__XpBonus = null;
-        private float? __pbn__XpBonus;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"source_key")]
-        public ulong SourceKey
-        {
-            get => __pbn__SourceKey.GetValueOrDefault();
-            set => __pbn__SourceKey = value;
-        }
-        public bool ShouldSerializeSourceKey() => __pbn__SourceKey != null;
-        public void ResetSourceKey() => __pbn__SourceKey = null;
-        private ulong? __pbn__SourceKey;
-
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CLobbyTeamDetails : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"team_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string TeamName
-    {
-        get => __pbn__TeamName ?? "";
-        set => __pbn__TeamName = value;
-    }
-    public bool ShouldSerializeTeamName() => __pbn__TeamName != null;
-    public void ResetTeamName() => __pbn__TeamName = null;
-    private string __pbn__TeamName;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"team_tag")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string TeamTag
-    {
-        get => __pbn__TeamTag ?? "";
-        set => __pbn__TeamTag = value;
-    }
-    public bool ShouldSerializeTeamTag() => __pbn__TeamTag != null;
-    public void ResetTeamTag() => __pbn__TeamTag = null;
-    private string __pbn__TeamTag;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"team_id")]
-    public uint TeamId
-    {
-        get => __pbn__TeamId.GetValueOrDefault();
-        set => __pbn__TeamId = value;
-    }
-    public bool ShouldSerializeTeamId() => __pbn__TeamId != null;
-    public void ResetTeamId() => __pbn__TeamId = null;
-    private uint? __pbn__TeamId;
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"team_logo")]
-    public ulong TeamLogo
-    {
-        get => __pbn__TeamLogo.GetValueOrDefault();
-        set => __pbn__TeamLogo = value;
-    }
-    public bool ShouldSerializeTeamLogo() => __pbn__TeamLogo != null;
-    public void ResetTeamLogo() => __pbn__TeamLogo = null;
-    private ulong? __pbn__TeamLogo;
-
-    [global::ProtoBuf.ProtoMember(6, Name = @"team_base_logo")]
-    public ulong TeamBaseLogo
-    {
-        get => __pbn__TeamBaseLogo.GetValueOrDefault();
-        set => __pbn__TeamBaseLogo = value;
-    }
-    public bool ShouldSerializeTeamBaseLogo() => __pbn__TeamBaseLogo != null;
-    public void ResetTeamBaseLogo() => __pbn__TeamBaseLogo = null;
-    private ulong? __pbn__TeamBaseLogo;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"team_banner_logo")]
-    public ulong TeamBannerLogo
-    {
-        get => __pbn__TeamBannerLogo.GetValueOrDefault();
-        set => __pbn__TeamBannerLogo = value;
-    }
-    public bool ShouldSerializeTeamBannerLogo() => __pbn__TeamBannerLogo != null;
-    public void ResetTeamBannerLogo() => __pbn__TeamBannerLogo = null;
-    private ulong? __pbn__TeamBannerLogo;
-
-    [global::ProtoBuf.ProtoMember(8, Name = @"team_complete")]
-    public bool TeamComplete
-    {
-        get => __pbn__TeamComplete.GetValueOrDefault();
-        set => __pbn__TeamComplete = value;
-    }
-    public bool ShouldSerializeTeamComplete() => __pbn__TeamComplete != null;
-    public void ResetTeamComplete() => __pbn__TeamComplete = null;
-    private bool? __pbn__TeamComplete;
-
-    [global::ProtoBuf.ProtoMember(20, Name = @"team_logo_url")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string TeamLogoUrl
-    {
-        get => __pbn__TeamLogoUrl ?? "";
-        set => __pbn__TeamLogoUrl = value;
-    }
-    public bool ShouldSerializeTeamLogoUrl() => __pbn__TeamLogoUrl != null;
-    public void ResetTeamLogoUrl() => __pbn__TeamLogoUrl = null;
-    private string __pbn__TeamLogoUrl;
-
-    [global::ProtoBuf.ProtoMember(9, Name = @"guild_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string GuildName
-    {
-        get => __pbn__GuildName ?? "";
-        set => __pbn__GuildName = value;
-    }
-    public bool ShouldSerializeGuildName() => __pbn__GuildName != null;
-    public void ResetGuildName() => __pbn__GuildName = null;
-    private string __pbn__GuildName;
-
-    [global::ProtoBuf.ProtoMember(10, Name = @"guild_tag")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string GuildTag
-    {
-        get => __pbn__GuildTag ?? "";
-        set => __pbn__GuildTag = value;
-    }
-    public bool ShouldSerializeGuildTag() => __pbn__GuildTag != null;
-    public void ResetGuildTag() => __pbn__GuildTag = null;
-    private string __pbn__GuildTag;
-
-    [global::ProtoBuf.ProtoMember(11, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(12, Name = @"guild_logo")]
-    public ulong GuildLogo
-    {
-        get => __pbn__GuildLogo.GetValueOrDefault();
-        set => __pbn__GuildLogo = value;
-    }
-    public bool ShouldSerializeGuildLogo() => __pbn__GuildLogo != null;
-    public void ResetGuildLogo() => __pbn__GuildLogo = null;
-    private ulong? __pbn__GuildLogo;
-
-    [global::ProtoBuf.ProtoMember(13, Name = @"guild_base_logo")]
-    public ulong GuildBaseLogo
-    {
-        get => __pbn__GuildBaseLogo.GetValueOrDefault();
-        set => __pbn__GuildBaseLogo = value;
-    }
-    public bool ShouldSerializeGuildBaseLogo() => __pbn__GuildBaseLogo != null;
-    public void ResetGuildBaseLogo() => __pbn__GuildBaseLogo = null;
-    private ulong? __pbn__GuildBaseLogo;
-
-    [global::ProtoBuf.ProtoMember(14, Name = @"guild_banner_logo")]
-    public ulong GuildBannerLogo
-    {
-        get => __pbn__GuildBannerLogo.GetValueOrDefault();
-        set => __pbn__GuildBannerLogo = value;
-    }
-    public bool ShouldSerializeGuildBannerLogo() => __pbn__GuildBannerLogo != null;
-    public void ResetGuildBannerLogo() => __pbn__GuildBannerLogo = null;
-    private ulong? __pbn__GuildBannerLogo;
-
-    [global::ProtoBuf.ProtoMember(15, Name = @"rank")]
-    public uint Rank
-    {
-        get => __pbn__Rank.GetValueOrDefault();
-        set => __pbn__Rank = value;
-    }
-    public bool ShouldSerializeRank() => __pbn__Rank != null;
-    public void ResetRank() => __pbn__Rank = null;
-    private uint? __pbn__Rank;
-
-    [global::ProtoBuf.ProtoMember(16, Name = @"rank_change", DataFormat = global::ProtoBuf.DataFormat.ZigZag)]
-    public int RankChange
-    {
-        get => __pbn__RankChange.GetValueOrDefault();
-        set => __pbn__RankChange = value;
-    }
-    public bool ShouldSerializeRankChange() => __pbn__RankChange != null;
-    public void ResetRankChange() => __pbn__RankChange = null;
-    private int? __pbn__RankChange;
-
-    [global::ProtoBuf.ProtoMember(17, Name = @"is_home_team")]
-    public bool IsHomeTeam
-    {
-        get => __pbn__IsHomeTeam.GetValueOrDefault();
-        set => __pbn__IsHomeTeam = value;
-    }
-    public bool ShouldSerializeIsHomeTeam() => __pbn__IsHomeTeam != null;
-    public void ResetIsHomeTeam() => __pbn__IsHomeTeam = null;
-    private bool? __pbn__IsHomeTeam;
-
-    [global::ProtoBuf.ProtoMember(18, Name = @"is_challenge_match")]
-    public bool IsChallengeMatch
-    {
-        get => __pbn__IsChallengeMatch.GetValueOrDefault();
-        set => __pbn__IsChallengeMatch = value;
-    }
-    public bool ShouldSerializeIsChallengeMatch() => __pbn__IsChallengeMatch != null;
-    public void ResetIsChallengeMatch() => __pbn__IsChallengeMatch = null;
-    private bool? __pbn__IsChallengeMatch;
-
-    [global::ProtoBuf.ProtoMember(19, Name = @"challenge_match_token_account")]
-    public ulong ChallengeMatchTokenAccount
-    {
-        get => __pbn__ChallengeMatchTokenAccount.GetValueOrDefault();
-        set => __pbn__ChallengeMatchTokenAccount = value;
-    }
-    public bool ShouldSerializeChallengeMatchTokenAccount() => __pbn__ChallengeMatchTokenAccount != null;
-    public void ResetChallengeMatchTokenAccount() => __pbn__ChallengeMatchTokenAccount = null;
-    private ulong? __pbn__ChallengeMatchTokenAccount;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CLobbyTimedRewardDetails : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"item_def_index")]
-    public uint ItemDefIndex
-    {
-        get => __pbn__ItemDefIndex.GetValueOrDefault();
-        set => __pbn__ItemDefIndex = value;
-    }
-    public bool ShouldSerializeItemDefIndex() => __pbn__ItemDefIndex != null;
-    public void ResetItemDefIndex() => __pbn__ItemDefIndex = null;
-    private uint? __pbn__ItemDefIndex;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"is_supply_crate")]
-    public bool IsSupplyCrate
-    {
-        get => __pbn__IsSupplyCrate.GetValueOrDefault();
-        set => __pbn__IsSupplyCrate = value;
-    }
-    public bool ShouldSerializeIsSupplyCrate() => __pbn__IsSupplyCrate != null;
-    public void ResetIsSupplyCrate() => __pbn__IsSupplyCrate = null;
-    private bool? __pbn__IsSupplyCrate;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"is_timed_drop")]
-    public bool IsTimedDrop
-    {
-        get => __pbn__IsTimedDrop.GetValueOrDefault();
-        set => __pbn__IsTimedDrop = value;
-    }
-    public bool ShouldSerializeIsTimedDrop() => __pbn__IsTimedDrop != null;
-    public void ResetIsTimedDrop() => __pbn__IsTimedDrop = null;
-    private bool? __pbn__IsTimedDrop;
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"account_id")]
-    public uint AccountId
-    {
-        get => __pbn__AccountId.GetValueOrDefault();
-        set => __pbn__AccountId = value;
-    }
-    public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
-    public void ResetAccountId() => __pbn__AccountId = null;
-    private uint? __pbn__AccountId;
-
-    [global::ProtoBuf.ProtoMember(6, Name = @"origin")]
-    public uint Origin
-    {
-        get => __pbn__Origin.GetValueOrDefault();
-        set => __pbn__Origin = value;
-    }
-    public bool ShouldSerializeOrigin() => __pbn__Origin != null;
-    public void ResetOrigin() => __pbn__Origin = null;
-    private uint? __pbn__Origin;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CLobbyBroadcastChannelInfo : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"channel_id")]
-    public uint ChannelId
-    {
-        get => __pbn__ChannelId.GetValueOrDefault();
-        set => __pbn__ChannelId = value;
-    }
-    public bool ShouldSerializeChannelId() => __pbn__ChannelId != null;
-    public void ResetChannelId() => __pbn__ChannelId = null;
-    private uint? __pbn__ChannelId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"country_code")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string CountryCode
-    {
-        get => __pbn__CountryCode ?? "";
-        set => __pbn__CountryCode = value;
-    }
-    public bool ShouldSerializeCountryCode() => __pbn__CountryCode != null;
-    public void ResetCountryCode() => __pbn__CountryCode = null;
-    private string __pbn__CountryCode;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"description")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Description
-    {
-        get => __pbn__Description ?? "";
-        set => __pbn__Description = value;
-    }
-    public bool ShouldSerializeDescription() => __pbn__Description != null;
-    public void ResetDescription() => __pbn__Description = null;
-    private string __pbn__Description;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"language_code")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string LanguageCode
-    {
-        get => __pbn__LanguageCode ?? "";
-        set => __pbn__LanguageCode = value;
-    }
-    public bool ShouldSerializeLanguageCode() => __pbn__LanguageCode != null;
-    public void ResetLanguageCode() => __pbn__LanguageCode = null;
-    private string __pbn__LanguageCode;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CSODOTALobby : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"lobby_id")]
-    public ulong LobbyId
-    {
-        get => __pbn__LobbyId.GetValueOrDefault();
-        set => __pbn__LobbyId = value;
-    }
-    public bool ShouldSerializeLobbyId() => __pbn__LobbyId != null;
-    public void ResetLobbyId() => __pbn__LobbyId = null;
-    private ulong? __pbn__LobbyId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"members")]
-    public global::System.Collections.Generic.List<CDOTALobbyMember> Members { get; } = new global::System.Collections.Generic.List<CDOTALobbyMember>();
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"left_members")]
-    public global::System.Collections.Generic.List<CDOTALobbyMember> LeftMembers { get; } = new global::System.Collections.Generic.List<CDOTALobbyMember>();
-
-    [global::ProtoBuf.ProtoMember(11, Name = @"leader_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong LeaderId
-    {
-        get => __pbn__LeaderId.GetValueOrDefault();
-        set => __pbn__LeaderId = value;
-    }
-    public bool ShouldSerializeLeaderId() => __pbn__LeaderId != null;
-    public void ResetLeaderId() => __pbn__LeaderId = null;
-    private ulong? __pbn__LeaderId;
-
-    [global::ProtoBuf.ProtoMember(6, Name = @"server_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    [global::System.ComponentModel.DefaultValue(typeof(ulong), "0")]
-    public ulong ServerId
-    {
-        get => __pbn__ServerId ?? 0ul;
-        set => __pbn__ServerId = value;
-    }
-    public bool ShouldSerializeServerId() => __pbn__ServerId != null;
-    public void ResetServerId() => __pbn__ServerId = null;
-    private ulong? __pbn__ServerId;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"game_mode")]
-    public uint GameMode
-    {
-        get => __pbn__GameMode.GetValueOrDefault();
-        set => __pbn__GameMode = value;
-    }
-    public bool ShouldSerializeGameMode() => __pbn__GameMode != null;
-    public void ResetGameMode() => __pbn__GameMode = null;
-    private uint? __pbn__GameMode;
-
-    [global::ProtoBuf.ProtoMember(10, Name = @"pending_invites", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong[] PendingInvites { get; set; }
-
-    [global::ProtoBuf.ProtoMember(4)]
-    [global::System.ComponentModel.DefaultValue(State.Ui)]
-    public State state
-    {
-        get => __pbn__state ?? State.Ui;
-        set => __pbn__state = value;
-    }
-    public bool ShouldSerializestate() => __pbn__state != null;
-    public void Resetstate() => __pbn__state = null;
-    private State? __pbn__state;
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"connect")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Connect
-    {
-        get => __pbn__Connect ?? "";
-        set => __pbn__Connect = value;
-    }
-    public bool ShouldSerializeConnect() => __pbn__Connect != null;
-    public void ResetConnect() => __pbn__Connect = null;
-    private string __pbn__Connect;
-
-    [global::ProtoBuf.ProtoMember(12)]
-    [global::System.ComponentModel.DefaultValue(LobbyType.Invalid)]
-    public LobbyType lobby_type
-    {
-        get => __pbn__lobby_type ?? LobbyType.Invalid;
-        set => __pbn__lobby_type = value;
-    }
-    public bool ShouldSerializelobby_type() => __pbn__lobby_type != null;
-    public void Resetlobby_type() => __pbn__lobby_type = null;
-    private LobbyType? __pbn__lobby_type;
-
-    [global::ProtoBuf.ProtoMember(13, Name = @"allow_cheats")]
-    public bool AllowCheats
-    {
-        get => __pbn__AllowCheats.GetValueOrDefault();
-        set => __pbn__AllowCheats = value;
-    }
-    public bool ShouldSerializeAllowCheats() => __pbn__AllowCheats != null;
-    public void ResetAllowCheats() => __pbn__AllowCheats = null;
-    private bool? __pbn__AllowCheats;
-
-    [global::ProtoBuf.ProtoMember(14, Name = @"fill_with_bots")]
-    public bool FillWithBots
-    {
-        get => __pbn__FillWithBots.GetValueOrDefault();
-        set => __pbn__FillWithBots = value;
-    }
-    public bool ShouldSerializeFillWithBots() => __pbn__FillWithBots != null;
-    public void ResetFillWithBots() => __pbn__FillWithBots = null;
-    private bool? __pbn__FillWithBots;
-
-    [global::ProtoBuf.ProtoMember(15, Name = @"intro_mode")]
-    public bool IntroMode
-    {
-        get => __pbn__IntroMode.GetValueOrDefault();
-        set => __pbn__IntroMode = value;
-    }
-    public bool ShouldSerializeIntroMode() => __pbn__IntroMode != null;
-    public void ResetIntroMode() => __pbn__IntroMode = null;
-    private bool? __pbn__IntroMode;
-
-    [global::ProtoBuf.ProtoMember(16, Name = @"game_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string GameName
-    {
-        get => __pbn__GameName ?? "";
-        set => __pbn__GameName = value;
-    }
-    public bool ShouldSerializeGameName() => __pbn__GameName != null;
-    public void ResetGameName() => __pbn__GameName = null;
-    private string __pbn__GameName;
-
-    [global::ProtoBuf.ProtoMember(17, Name = @"team_details")]
-    public global::System.Collections.Generic.List<CLobbyTeamDetails> TeamDetails { get; } = new global::System.Collections.Generic.List<CLobbyTeamDetails>();
-
-    [global::ProtoBuf.ProtoMember(18, Name = @"tutorial_lesson")]
-    public uint TutorialLesson
-    {
-        get => __pbn__TutorialLesson.GetValueOrDefault();
-        set => __pbn__TutorialLesson = value;
-    }
-    public bool ShouldSerializeTutorialLesson() => __pbn__TutorialLesson != null;
-    public void ResetTutorialLesson() => __pbn__TutorialLesson = null;
-    private uint? __pbn__TutorialLesson;
-
-    [global::ProtoBuf.ProtoMember(19, Name = @"tournament_id")]
-    public uint TournamentId
-    {
-        get => __pbn__TournamentId.GetValueOrDefault();
-        set => __pbn__TournamentId = value;
-    }
-    public bool ShouldSerializeTournamentId() => __pbn__TournamentId != null;
-    public void ResetTournamentId() => __pbn__TournamentId = null;
-    private uint? __pbn__TournamentId;
-
-    [global::ProtoBuf.ProtoMember(20, Name = @"tournament_game_id")]
-    public uint TournamentGameId
-    {
-        get => __pbn__TournamentGameId.GetValueOrDefault();
-        set => __pbn__TournamentGameId = value;
-    }
-    public bool ShouldSerializeTournamentGameId() => __pbn__TournamentGameId != null;
-    public void ResetTournamentGameId() => __pbn__TournamentGameId = null;
-    private uint? __pbn__TournamentGameId;
-
-    [global::ProtoBuf.ProtoMember(21, Name = @"server_region")]
-    [global::System.ComponentModel.DefaultValue(0u)]
-    public uint ServerRegion
-    {
-        get => __pbn__ServerRegion ?? 0u;
-        set => __pbn__ServerRegion = value;
-    }
-    public bool ShouldSerializeServerRegion() => __pbn__ServerRegion != null;
-    public void ResetServerRegion() => __pbn__ServerRegion = null;
-    private uint? __pbn__ServerRegion;
-
-    [global::ProtoBuf.ProtoMember(22, Name = @"game_state")]
-    [global::System.ComponentModel.DefaultValue(DOTAGameState.DotaGamerulesStateInit)]
-    public DOTAGameState GameState
-    {
-        get => __pbn__GameState ?? DOTAGameState.DotaGamerulesStateInit;
-        set => __pbn__GameState = value;
-    }
-    public bool ShouldSerializeGameState() => __pbn__GameState != null;
-    public void ResetGameState() => __pbn__GameState = null;
-    private DOTAGameState? __pbn__GameState;
-
-    [global::ProtoBuf.ProtoMember(23, Name = @"num_spectators")]
-    public uint NumSpectators
-    {
-        get => __pbn__NumSpectators.GetValueOrDefault();
-        set => __pbn__NumSpectators = value;
-    }
-    public bool ShouldSerializeNumSpectators() => __pbn__NumSpectators != null;
-    public void ResetNumSpectators() => __pbn__NumSpectators = null;
-    private uint? __pbn__NumSpectators;
-
-    [global::ProtoBuf.ProtoMember(25, Name = @"matchgroup")]
-    public uint Matchgroup
-    {
-        get => __pbn__Matchgroup.GetValueOrDefault();
-        set => __pbn__Matchgroup = value;
-    }
-    public bool ShouldSerializeMatchgroup() => __pbn__Matchgroup != null;
-    public void ResetMatchgroup() => __pbn__Matchgroup = null;
-    private uint? __pbn__Matchgroup;
-
-    [global::ProtoBuf.ProtoMember(28, Name = @"cm_pick")]
-    [global::System.ComponentModel.DefaultValue(DotaCmPick.DotaCmRandom)]
-    public DotaCmPick CmPick
-    {
-        get => __pbn__CmPick ?? DotaCmPick.DotaCmRandom;
-        set => __pbn__CmPick = value;
-    }
-    public bool ShouldSerializeCmPick() => __pbn__CmPick != null;
-    public void ResetCmPick() => __pbn__CmPick = null;
-    private DotaCmPick? __pbn__CmPick;
-
-    [global::ProtoBuf.ProtoMember(30, Name = @"match_id")]
-    public ulong MatchId
-    {
-        get => __pbn__MatchId.GetValueOrDefault();
-        set => __pbn__MatchId = value;
-    }
-    public bool ShouldSerializeMatchId() => __pbn__MatchId != null;
-    public void ResetMatchId() => __pbn__MatchId = null;
-    private ulong? __pbn__MatchId;
-
-    [global::ProtoBuf.ProtoMember(31, Name = @"allow_spectating")]
-    [global::System.ComponentModel.DefaultValue(true)]
-    public bool AllowSpectating
-    {
-        get => __pbn__AllowSpectating ?? true;
-        set => __pbn__AllowSpectating = value;
-    }
-    public bool ShouldSerializeAllowSpectating() => __pbn__AllowSpectating != null;
-    public void ResetAllowSpectating() => __pbn__AllowSpectating = null;
-    private bool? __pbn__AllowSpectating;
-
-    [global::ProtoBuf.ProtoMember(36, Name = @"bot_difficulty_radiant")]
-    [global::System.ComponentModel.DefaultValue(DOTABotDifficulty.BotDifficultyHard)]
-    public DOTABotDifficulty BotDifficultyRadiant
-    {
-        get => __pbn__BotDifficultyRadiant ?? DOTABotDifficulty.BotDifficultyHard;
-        set => __pbn__BotDifficultyRadiant = value;
-    }
-    public bool ShouldSerializeBotDifficultyRadiant() => __pbn__BotDifficultyRadiant != null;
-    public void ResetBotDifficultyRadiant() => __pbn__BotDifficultyRadiant = null;
-    private DOTABotDifficulty? __pbn__BotDifficultyRadiant;
-
-    [global::ProtoBuf.ProtoMember(37, Name = @"game_version")]
-    [global::System.ComponentModel.DefaultValue(DOTAGameVersion.GameVersionCurrent)]
-    public DOTAGameVersion GameVersion
-    {
-        get => __pbn__GameVersion ?? DOTAGameVersion.GameVersionCurrent;
-        set => __pbn__GameVersion = value;
-    }
-    public bool ShouldSerializeGameVersion() => __pbn__GameVersion != null;
-    public void ResetGameVersion() => __pbn__GameVersion = null;
-    private DOTAGameVersion? __pbn__GameVersion;
-
-    [global::ProtoBuf.ProtoMember(38, Name = @"timed_reward_details")]
-    public global::System.Collections.Generic.List<CLobbyTimedRewardDetails> TimedRewardDetails { get; } = new global::System.Collections.Generic.List<CLobbyTimedRewardDetails>();
-
-    [global::ProtoBuf.ProtoMember(39, Name = @"pass_key")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string PassKey
-    {
-        get => __pbn__PassKey ?? "";
-        set => __pbn__PassKey = value;
-    }
-    public bool ShouldSerializePassKey() => __pbn__PassKey != null;
-    public void ResetPassKey() => __pbn__PassKey = null;
-    private string __pbn__PassKey;
-
-    [global::ProtoBuf.ProtoMember(42, Name = @"leagueid")]
-    public uint Leagueid
-    {
-        get => __pbn__Leagueid.GetValueOrDefault();
-        set => __pbn__Leagueid = value;
-    }
-    public bool ShouldSerializeLeagueid() => __pbn__Leagueid != null;
-    public void ResetLeagueid() => __pbn__Leagueid = null;
-    private uint? __pbn__Leagueid;
-
-    [global::ProtoBuf.ProtoMember(43, Name = @"penalty_level_radiant")]
-    [global::System.ComponentModel.DefaultValue(0u)]
-    public uint PenaltyLevelRadiant
-    {
-        get => __pbn__PenaltyLevelRadiant ?? 0u;
-        set => __pbn__PenaltyLevelRadiant = value;
-    }
-    public bool ShouldSerializePenaltyLevelRadiant() => __pbn__PenaltyLevelRadiant != null;
-    public void ResetPenaltyLevelRadiant() => __pbn__PenaltyLevelRadiant = null;
-    private uint? __pbn__PenaltyLevelRadiant;
-
-    [global::ProtoBuf.ProtoMember(44, Name = @"penalty_level_dire")]
-    [global::System.ComponentModel.DefaultValue(0u)]
-    public uint PenaltyLevelDire
-    {
-        get => __pbn__PenaltyLevelDire ?? 0u;
-        set => __pbn__PenaltyLevelDire = value;
-    }
-    public bool ShouldSerializePenaltyLevelDire() => __pbn__PenaltyLevelDire != null;
-    public void ResetPenaltyLevelDire() => __pbn__PenaltyLevelDire = null;
-    private uint? __pbn__PenaltyLevelDire;
-
-    [global::ProtoBuf.ProtoMember(45, Name = @"load_game_id")]
-    public uint LoadGameId
-    {
-        get => __pbn__LoadGameId.GetValueOrDefault();
-        set => __pbn__LoadGameId = value;
-    }
-    public bool ShouldSerializeLoadGameId() => __pbn__LoadGameId != null;
-    public void ResetLoadGameId() => __pbn__LoadGameId = null;
-    private uint? __pbn__LoadGameId;
-
-    [global::ProtoBuf.ProtoMember(46, Name = @"series_type")]
-    public uint SeriesType
-    {
-        get => __pbn__SeriesType.GetValueOrDefault();
-        set => __pbn__SeriesType = value;
-    }
-    public bool ShouldSerializeSeriesType() => __pbn__SeriesType != null;
-    public void ResetSeriesType() => __pbn__SeriesType = null;
-    private uint? __pbn__SeriesType;
-
-    [global::ProtoBuf.ProtoMember(47, Name = @"radiant_series_wins")]
-    public uint RadiantSeriesWins
-    {
-        get => __pbn__RadiantSeriesWins.GetValueOrDefault();
-        set => __pbn__RadiantSeriesWins = value;
-    }
-    public bool ShouldSerializeRadiantSeriesWins() => __pbn__RadiantSeriesWins != null;
-    public void ResetRadiantSeriesWins() => __pbn__RadiantSeriesWins = null;
-    private uint? __pbn__RadiantSeriesWins;
-
-    [global::ProtoBuf.ProtoMember(48, Name = @"dire_series_wins")]
-    public uint DireSeriesWins
-    {
-        get => __pbn__DireSeriesWins.GetValueOrDefault();
-        set => __pbn__DireSeriesWins = value;
-    }
-    public bool ShouldSerializeDireSeriesWins() => __pbn__DireSeriesWins != null;
-    public void ResetDireSeriesWins() => __pbn__DireSeriesWins = null;
-    private uint? __pbn__DireSeriesWins;
-
-    [global::ProtoBuf.ProtoMember(49, Name = @"loot_generated")]
-    public uint LootGenerated
-    {
-        get => __pbn__LootGenerated.GetValueOrDefault();
-        set => __pbn__LootGenerated = value;
-    }
-    public bool ShouldSerializeLootGenerated() => __pbn__LootGenerated != null;
-    public void ResetLootGenerated() => __pbn__LootGenerated = null;
-    private uint? __pbn__LootGenerated;
-
-    [global::ProtoBuf.ProtoMember(50, Name = @"loot_awarded")]
-    public uint LootAwarded
-    {
-        get => __pbn__LootAwarded.GetValueOrDefault();
-        set => __pbn__LootAwarded = value;
-    }
-    public bool ShouldSerializeLootAwarded() => __pbn__LootAwarded != null;
-    public void ResetLootAwarded() => __pbn__LootAwarded = null;
-    private uint? __pbn__LootAwarded;
-
-    [global::ProtoBuf.ProtoMember(51, Name = @"allchat")]
-    [global::System.ComponentModel.DefaultValue(false)]
-    public bool Allchat
-    {
-        get => __pbn__Allchat ?? false;
-        set => __pbn__Allchat = value;
-    }
-    public bool ShouldSerializeAllchat() => __pbn__Allchat != null;
-    public void ResetAllchat() => __pbn__Allchat = null;
-    private bool? __pbn__Allchat;
-
-    [global::ProtoBuf.ProtoMember(53, Name = @"dota_tv_delay")]
-    [global::System.ComponentModel.DefaultValue(LobbyDotaTVDelay.LobbyDotaTV10)]
-    public LobbyDotaTVDelay DotaTvDelay
-    {
-        get => __pbn__DotaTvDelay ?? LobbyDotaTVDelay.LobbyDotaTV10;
-        set => __pbn__DotaTvDelay = value;
-    }
-    public bool ShouldSerializeDotaTvDelay() => __pbn__DotaTvDelay != null;
-    public void ResetDotaTvDelay() => __pbn__DotaTvDelay = null;
-    private LobbyDotaTVDelay? __pbn__DotaTvDelay;
-
-    [global::ProtoBuf.ProtoMember(54, Name = @"custom_game_mode")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string CustomGameMode
-    {
-        get => __pbn__CustomGameMode ?? "";
-        set => __pbn__CustomGameMode = value;
-    }
-    public bool ShouldSerializeCustomGameMode() => __pbn__CustomGameMode != null;
-    public void ResetCustomGameMode() => __pbn__CustomGameMode = null;
-    private string __pbn__CustomGameMode;
-
-    [global::ProtoBuf.ProtoMember(55, Name = @"custom_map_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string CustomMapName
-    {
-        get => __pbn__CustomMapName ?? "";
-        set => __pbn__CustomMapName = value;
-    }
-    public bool ShouldSerializeCustomMapName() => __pbn__CustomMapName != null;
-    public void ResetCustomMapName() => __pbn__CustomMapName = null;
-    private string __pbn__CustomMapName;
-
-    [global::ProtoBuf.ProtoMember(56, Name = @"custom_difficulty")]
-    public uint CustomDifficulty
-    {
-        get => __pbn__CustomDifficulty.GetValueOrDefault();
-        set => __pbn__CustomDifficulty = value;
-    }
-    public bool ShouldSerializeCustomDifficulty() => __pbn__CustomDifficulty != null;
-    public void ResetCustomDifficulty() => __pbn__CustomDifficulty = null;
-    private uint? __pbn__CustomDifficulty;
-
-    [global::ProtoBuf.ProtoMember(57, Name = @"lan")]
-    public bool Lan
-    {
-        get => __pbn__Lan.GetValueOrDefault();
-        set => __pbn__Lan = value;
-    }
-    public bool ShouldSerializeLan() => __pbn__Lan != null;
-    public void ResetLan() => __pbn__Lan = null;
-    private bool? __pbn__Lan;
-
-    [global::ProtoBuf.ProtoMember(58, Name = @"broadcast_channel_info")]
-    public global::System.Collections.Generic.List<CLobbyBroadcastChannelInfo> BroadcastChannelInfoes { get; } = new global::System.Collections.Generic.List<CLobbyBroadcastChannelInfo>();
-
-    [global::ProtoBuf.ProtoMember(59, Name = @"first_leaver_accountid")]
-    public uint FirstLeaverAccountid
-    {
-        get => __pbn__FirstLeaverAccountid.GetValueOrDefault();
-        set => __pbn__FirstLeaverAccountid = value;
-    }
-    public bool ShouldSerializeFirstLeaverAccountid() => __pbn__FirstLeaverAccountid != null;
-    public void ResetFirstLeaverAccountid() => __pbn__FirstLeaverAccountid = null;
-    private uint? __pbn__FirstLeaverAccountid;
-
-    [global::ProtoBuf.ProtoMember(60, Name = @"series_id")]
-    public uint SeriesId
-    {
-        get => __pbn__SeriesId.GetValueOrDefault();
-        set => __pbn__SeriesId = value;
-    }
-    public bool ShouldSerializeSeriesId() => __pbn__SeriesId != null;
-    public void ResetSeriesId() => __pbn__SeriesId = null;
-    private uint? __pbn__SeriesId;
-
-    [global::ProtoBuf.ProtoMember(61, Name = @"low_priority")]
-    public bool LowPriority
-    {
-        get => __pbn__LowPriority.GetValueOrDefault();
-        set => __pbn__LowPriority = value;
-    }
-    public bool ShouldSerializeLowPriority() => __pbn__LowPriority != null;
-    public void ResetLowPriority() => __pbn__LowPriority = null;
-    private bool? __pbn__LowPriority;
-
-    [global::ProtoBuf.ProtoMember(62, Name = @"extra_messages")]
-    public global::System.Collections.Generic.List<CExtraMsg> ExtraMessages { get; } = new global::System.Collections.Generic.List<CExtraMsg>();
-
-    [global::ProtoBuf.ProtoMember(63, Name = @"save_game")]
-    public CDOTASaveGame SaveGame { get; set; }
-
-    [global::ProtoBuf.ProtoMember(65, Name = @"first_blood_happened")]
-    public bool FirstBloodHappened
-    {
-        get => __pbn__FirstBloodHappened.GetValueOrDefault();
-        set => __pbn__FirstBloodHappened = value;
-    }
-    public bool ShouldSerializeFirstBloodHappened() => __pbn__FirstBloodHappened != null;
-    public void ResetFirstBloodHappened() => __pbn__FirstBloodHappened = null;
-    private bool? __pbn__FirstBloodHappened;
-
-    [global::ProtoBuf.ProtoMember(70, Name = @"match_outcome")]
-    [global::System.ComponentModel.DefaultValue(EMatchOutcome.kEMatchOutcomeUnknown)]
-    public EMatchOutcome MatchOutcome
-    {
-        get => __pbn__MatchOutcome ?? EMatchOutcome.kEMatchOutcomeUnknown;
-        set => __pbn__MatchOutcome = value;
-    }
-    public bool ShouldSerializeMatchOutcome() => __pbn__MatchOutcome != null;
-    public void ResetMatchOutcome() => __pbn__MatchOutcome = null;
-    private EMatchOutcome? __pbn__MatchOutcome;
-
-    [global::ProtoBuf.ProtoMember(67, Name = @"mass_disconnect")]
-    public bool MassDisconnect
-    {
-        get => __pbn__MassDisconnect.GetValueOrDefault();
-        set => __pbn__MassDisconnect = value;
-    }
-    public bool ShouldSerializeMassDisconnect() => __pbn__MassDisconnect != null;
-    public void ResetMassDisconnect() => __pbn__MassDisconnect = null;
-    private bool? __pbn__MassDisconnect;
-
-    [global::ProtoBuf.ProtoMember(68, Name = @"custom_game_id")]
-    public ulong CustomGameId
-    {
-        get => __pbn__CustomGameId.GetValueOrDefault();
-        set => __pbn__CustomGameId = value;
-    }
-    public bool ShouldSerializeCustomGameId() => __pbn__CustomGameId != null;
-    public void ResetCustomGameId() => __pbn__CustomGameId = null;
-    private ulong? __pbn__CustomGameId;
-
-    [global::ProtoBuf.ProtoMember(71, Name = @"custom_min_players")]
-    public uint CustomMinPlayers
-    {
-        get => __pbn__CustomMinPlayers.GetValueOrDefault();
-        set => __pbn__CustomMinPlayers = value;
-    }
-    public bool ShouldSerializeCustomMinPlayers() => __pbn__CustomMinPlayers != null;
-    public void ResetCustomMinPlayers() => __pbn__CustomMinPlayers = null;
-    private uint? __pbn__CustomMinPlayers;
-
-    [global::ProtoBuf.ProtoMember(72, Name = @"custom_max_players")]
-    public uint CustomMaxPlayers
-    {
-        get => __pbn__CustomMaxPlayers.GetValueOrDefault();
-        set => __pbn__CustomMaxPlayers = value;
-    }
-    public bool ShouldSerializeCustomMaxPlayers() => __pbn__CustomMaxPlayers != null;
-    public void ResetCustomMaxPlayers() => __pbn__CustomMaxPlayers = null;
-    private uint? __pbn__CustomMaxPlayers;
-
-    [global::ProtoBuf.ProtoMember(73, Name = @"partner_type")]
-    [global::System.ComponentModel.DefaultValue(PartnerAccountType.PartnerNone)]
-    public PartnerAccountType PartnerType
-    {
-        get => __pbn__PartnerType ?? PartnerAccountType.PartnerNone;
-        set => __pbn__PartnerType = value;
-    }
-    public bool ShouldSerializePartnerType() => __pbn__PartnerType != null;
-    public void ResetPartnerType() => __pbn__PartnerType = null;
-    private PartnerAccountType? __pbn__PartnerType;
-
-    [global::ProtoBuf.ProtoMember(75, Name = @"visibility")]
-    [global::System.ComponentModel.DefaultValue(DOTALobbyVisibility.DOTALobbyVisibilityPublic)]
-    public DOTALobbyVisibility Visibility
-    {
-        get => __pbn__Visibility ?? DOTALobbyVisibility.DOTALobbyVisibilityPublic;
-        set => __pbn__Visibility = value;
-    }
-    public bool ShouldSerializeVisibility() => __pbn__Visibility != null;
-    public void ResetVisibility() => __pbn__Visibility = null;
-    private DOTALobbyVisibility? __pbn__Visibility;
-
-    [global::ProtoBuf.ProtoMember(76, Name = @"custom_game_crc", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong CustomGameCrc
-    {
-        get => __pbn__CustomGameCrc.GetValueOrDefault();
-        set => __pbn__CustomGameCrc = value;
-    }
-    public bool ShouldSerializeCustomGameCrc() => __pbn__CustomGameCrc != null;
-    public void ResetCustomGameCrc() => __pbn__CustomGameCrc = null;
-    private ulong? __pbn__CustomGameCrc;
-
-    [global::ProtoBuf.ProtoMember(77, Name = @"custom_game_auto_created_lobby")]
-    public bool CustomGameAutoCreatedLobby
-    {
-        get => __pbn__CustomGameAutoCreatedLobby.GetValueOrDefault();
-        set => __pbn__CustomGameAutoCreatedLobby = value;
-    }
-    public bool ShouldSerializeCustomGameAutoCreatedLobby() => __pbn__CustomGameAutoCreatedLobby != null;
-    public void ResetCustomGameAutoCreatedLobby() => __pbn__CustomGameAutoCreatedLobby = null;
-    private bool? __pbn__CustomGameAutoCreatedLobby;
-
-    [global::ProtoBuf.ProtoMember(80, Name = @"custom_game_timestamp", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public uint CustomGameTimestamp
-    {
-        get => __pbn__CustomGameTimestamp.GetValueOrDefault();
-        set => __pbn__CustomGameTimestamp = value;
-    }
-    public bool ShouldSerializeCustomGameTimestamp() => __pbn__CustomGameTimestamp != null;
-    public void ResetCustomGameTimestamp() => __pbn__CustomGameTimestamp = null;
-    private uint? __pbn__CustomGameTimestamp;
-
-    [global::ProtoBuf.ProtoMember(81, Name = @"previous_series_matches")]
-    public ulong[] PreviousSeriesMatches { get; set; }
-
-    [global::ProtoBuf.ProtoMember(82, Name = @"previous_match_override")]
-    public ulong PreviousMatchOverride
-    {
-        get => __pbn__PreviousMatchOverride.GetValueOrDefault();
-        set => __pbn__PreviousMatchOverride = value;
-    }
-    public bool ShouldSerializePreviousMatchOverride() => __pbn__PreviousMatchOverride != null;
-    public void ResetPreviousMatchOverride() => __pbn__PreviousMatchOverride = null;
-    private ulong? __pbn__PreviousMatchOverride;
-
-    [global::ProtoBuf.ProtoMember(83, Name = @"custom_game_uses_account_records")]
-    public bool CustomGameUsesAccountRecords
-    {
-        get => __pbn__CustomGameUsesAccountRecords.GetValueOrDefault();
-        set => __pbn__CustomGameUsesAccountRecords = value;
-    }
-    public bool ShouldSerializeCustomGameUsesAccountRecords() => __pbn__CustomGameUsesAccountRecords != null;
-    public void ResetCustomGameUsesAccountRecords() => __pbn__CustomGameUsesAccountRecords = null;
-    private bool? __pbn__CustomGameUsesAccountRecords;
-
-    [global::ProtoBuf.ProtoMember(87, Name = @"game_start_time")]
-    public uint GameStartTime
-    {
-        get => __pbn__GameStartTime.GetValueOrDefault();
-        set => __pbn__GameStartTime = value;
-    }
-    public bool ShouldSerializeGameStartTime() => __pbn__GameStartTime != null;
-    public void ResetGameStartTime() => __pbn__GameStartTime = null;
-    private uint? __pbn__GameStartTime;
-
-    [global::ProtoBuf.ProtoMember(88, Name = @"pause_setting")]
-    [global::System.ComponentModel.DefaultValue(LobbyDotaPauseSetting.LobbyDotaPauseSettingUnlimited)]
-    public LobbyDotaPauseSetting PauseSetting
-    {
-        get => __pbn__PauseSetting ?? LobbyDotaPauseSetting.LobbyDotaPauseSettingUnlimited;
-        set => __pbn__PauseSetting = value;
-    }
-    public bool ShouldSerializePauseSetting() => __pbn__PauseSetting != null;
-    public void ResetPauseSetting() => __pbn__PauseSetting = null;
-    private LobbyDotaPauseSetting? __pbn__PauseSetting;
-
-    [global::ProtoBuf.ProtoMember(89, Name = @"lobby_mvp_account_id")]
-    public uint LobbyMvpAccountId
-    {
-        get => __pbn__LobbyMvpAccountId.GetValueOrDefault();
-        set => __pbn__LobbyMvpAccountId = value;
-    }
-    public bool ShouldSerializeLobbyMvpAccountId() => __pbn__LobbyMvpAccountId != null;
-    public void ResetLobbyMvpAccountId() => __pbn__LobbyMvpAccountId = null;
-    private uint? __pbn__LobbyMvpAccountId;
-
-    [global::ProtoBuf.ProtoMember(90, Name = @"weekend_tourney_division_id")]
-    public uint WeekendTourneyDivisionId
-    {
-        get => __pbn__WeekendTourneyDivisionId.GetValueOrDefault();
-        set => __pbn__WeekendTourneyDivisionId = value;
-    }
-    public bool ShouldSerializeWeekendTourneyDivisionId() => __pbn__WeekendTourneyDivisionId != null;
-    public void ResetWeekendTourneyDivisionId() => __pbn__WeekendTourneyDivisionId = null;
-    private uint? __pbn__WeekendTourneyDivisionId;
-
-    [global::ProtoBuf.ProtoMember(91, Name = @"weekend_tourney_skill_level")]
-    public uint WeekendTourneySkillLevel
-    {
-        get => __pbn__WeekendTourneySkillLevel.GetValueOrDefault();
-        set => __pbn__WeekendTourneySkillLevel = value;
-    }
-    public bool ShouldSerializeWeekendTourneySkillLevel() => __pbn__WeekendTourneySkillLevel != null;
-    public void ResetWeekendTourneySkillLevel() => __pbn__WeekendTourneySkillLevel = null;
-    private uint? __pbn__WeekendTourneySkillLevel;
-
-    [global::ProtoBuf.ProtoMember(92, Name = @"weekend_tourney_bracket_round")]
-    public uint WeekendTourneyBracketRound
-    {
-        get => __pbn__WeekendTourneyBracketRound.GetValueOrDefault();
-        set => __pbn__WeekendTourneyBracketRound = value;
-    }
-    public bool ShouldSerializeWeekendTourneyBracketRound() => __pbn__WeekendTourneyBracketRound != null;
-    public void ResetWeekendTourneyBracketRound() => __pbn__WeekendTourneyBracketRound = null;
-    private uint? __pbn__WeekendTourneyBracketRound;
-
-    [global::ProtoBuf.ProtoMember(93, Name = @"bot_difficulty_dire")]
-    [global::System.ComponentModel.DefaultValue(DOTABotDifficulty.BotDifficultyHard)]
-    public DOTABotDifficulty BotDifficultyDire
-    {
-        get => __pbn__BotDifficultyDire ?? DOTABotDifficulty.BotDifficultyHard;
-        set => __pbn__BotDifficultyDire = value;
-    }
-    public bool ShouldSerializeBotDifficultyDire() => __pbn__BotDifficultyDire != null;
-    public void ResetBotDifficultyDire() => __pbn__BotDifficultyDire = null;
-    private DOTABotDifficulty? __pbn__BotDifficultyDire;
-
-    [global::ProtoBuf.ProtoMember(94, Name = @"bot_radiant")]
-    public ulong BotRadiant
-    {
-        get => __pbn__BotRadiant.GetValueOrDefault();
-        set => __pbn__BotRadiant = value;
-    }
-    public bool ShouldSerializeBotRadiant() => __pbn__BotRadiant != null;
-    public void ResetBotRadiant() => __pbn__BotRadiant = null;
-    private ulong? __pbn__BotRadiant;
-
-    [global::ProtoBuf.ProtoMember(95, Name = @"bot_dire")]
-    public ulong BotDire
-    {
-        get => __pbn__BotDire.GetValueOrDefault();
-        set => __pbn__BotDire = value;
-    }
-    public bool ShouldSerializeBotDire() => __pbn__BotDire != null;
-    public void ResetBotDire() => __pbn__BotDire = null;
-    private ulong? __pbn__BotDire;
-
-    [global::ProtoBuf.ProtoMember(96, Name = @"event_progression_enabled")]
-    public global::System.Collections.Generic.List<EEvent> EventProgressionEnableds { get; } = new global::System.Collections.Generic.List<EEvent>();
-
-    [global::ProtoBuf.ProtoMember(97, Name = @"selection_priority_rules")]
-    [global::System.ComponentModel.DefaultValue(DOTASelectionPriorityRules.kDOTASelectionPriorityRulesManual)]
-    public DOTASelectionPriorityRules SelectionPriorityRules
-    {
-        get => __pbn__SelectionPriorityRules ?? DOTASelectionPriorityRules.kDOTASelectionPriorityRulesManual;
-        set => __pbn__SelectionPriorityRules = value;
-    }
-    public bool ShouldSerializeSelectionPriorityRules() => __pbn__SelectionPriorityRules != null;
-    public void ResetSelectionPriorityRules() => __pbn__SelectionPriorityRules = null;
-    private DOTASelectionPriorityRules? __pbn__SelectionPriorityRules;
-
-    [global::ProtoBuf.ProtoMember(98, Name = @"series_previous_selection_priority_team_id")]
-    public uint SeriesPreviousSelectionPriorityTeamId
-    {
-        get => __pbn__SeriesPreviousSelectionPriorityTeamId.GetValueOrDefault();
-        set => __pbn__SeriesPreviousSelectionPriorityTeamId = value;
-    }
-    public bool ShouldSerializeSeriesPreviousSelectionPriorityTeamId() => __pbn__SeriesPreviousSelectionPriorityTeamId != null;
-    public void ResetSeriesPreviousSelectionPriorityTeamId() => __pbn__SeriesPreviousSelectionPriorityTeamId = null;
-    private uint? __pbn__SeriesPreviousSelectionPriorityTeamId;
-
-    [global::ProtoBuf.ProtoMember(99, Name = @"series_current_selection_priority_team_id")]
-    public uint SeriesCurrentSelectionPriorityTeamId
-    {
-        get => __pbn__SeriesCurrentSelectionPriorityTeamId.GetValueOrDefault();
-        set => __pbn__SeriesCurrentSelectionPriorityTeamId = value;
-    }
-    public bool ShouldSerializeSeriesCurrentSelectionPriorityTeamId() => __pbn__SeriesCurrentSelectionPriorityTeamId != null;
-    public void ResetSeriesCurrentSelectionPriorityTeamId() => __pbn__SeriesCurrentSelectionPriorityTeamId = null;
-    private uint? __pbn__SeriesCurrentSelectionPriorityTeamId;
-
-    [global::ProtoBuf.ProtoMember(100, Name = @"series_current_priority_team_choice")]
-    [global::System.ComponentModel.DefaultValue(DOTASelectionPriorityChoice.kDOTASelectionPriorityChoiceInvalid)]
-    public DOTASelectionPriorityChoice SeriesCurrentPriorityTeamChoice
-    {
-        get => __pbn__SeriesCurrentPriorityTeamChoice ?? DOTASelectionPriorityChoice.kDOTASelectionPriorityChoiceInvalid;
-        set => __pbn__SeriesCurrentPriorityTeamChoice = value;
-    }
-    public bool ShouldSerializeSeriesCurrentPriorityTeamChoice() => __pbn__SeriesCurrentPriorityTeamChoice != null;
-    public void ResetSeriesCurrentPriorityTeamChoice() => __pbn__SeriesCurrentPriorityTeamChoice = null;
-    private DOTASelectionPriorityChoice? __pbn__SeriesCurrentPriorityTeamChoice;
-
-    [global::ProtoBuf.ProtoMember(101, Name = @"series_current_non_priority_team_choice")]
-    [global::System.ComponentModel.DefaultValue(DOTASelectionPriorityChoice.kDOTASelectionPriorityChoiceInvalid)]
-    public DOTASelectionPriorityChoice SeriesCurrentNonPriorityTeamChoice
-    {
-        get => __pbn__SeriesCurrentNonPriorityTeamChoice ?? DOTASelectionPriorityChoice.kDOTASelectionPriorityChoiceInvalid;
-        set => __pbn__SeriesCurrentNonPriorityTeamChoice = value;
-    }
-    public bool ShouldSerializeSeriesCurrentNonPriorityTeamChoice() => __pbn__SeriesCurrentNonPriorityTeamChoice != null;
-    public void ResetSeriesCurrentNonPriorityTeamChoice() => __pbn__SeriesCurrentNonPriorityTeamChoice = null;
-    private DOTASelectionPriorityChoice? __pbn__SeriesCurrentNonPriorityTeamChoice;
-
-    [global::ProtoBuf.ProtoMember(102, Name = @"series_current_selection_priority_used_coin_toss")]
-    public bool SeriesCurrentSelectionPriorityUsedCoinToss
-    {
-        get => __pbn__SeriesCurrentSelectionPriorityUsedCoinToss.GetValueOrDefault();
-        set => __pbn__SeriesCurrentSelectionPriorityUsedCoinToss = value;
-    }
-    public bool ShouldSerializeSeriesCurrentSelectionPriorityUsedCoinToss() => __pbn__SeriesCurrentSelectionPriorityUsedCoinToss != null;
-    public void ResetSeriesCurrentSelectionPriorityUsedCoinToss() => __pbn__SeriesCurrentSelectionPriorityUsedCoinToss = null;
-    private bool? __pbn__SeriesCurrentSelectionPriorityUsedCoinToss;
-
-    [global::ProtoBuf.ProtoMember(103, Name = @"current_primary_event")]
-    [global::System.ComponentModel.DefaultValue(EEvent.EventIdNone)]
-    public EEvent CurrentPrimaryEvent
-    {
-        get => __pbn__CurrentPrimaryEvent ?? EEvent.EventIdNone;
-        set => __pbn__CurrentPrimaryEvent = value;
-    }
-    public bool ShouldSerializeCurrentPrimaryEvent() => __pbn__CurrentPrimaryEvent != null;
-    public void ResetCurrentPrimaryEvent() => __pbn__CurrentPrimaryEvent = null;
-    private EEvent? __pbn__CurrentPrimaryEvent;
-
-    [global::ProtoBuf.ProtoMember(104, Name = @"lowpri_deprecated")]
-    public bool LowpriDeprecated
-    {
-        get => __pbn__LowpriDeprecated.GetValueOrDefault();
-        set => __pbn__LowpriDeprecated = value;
-    }
-    public bool ShouldSerializeLowpriDeprecated() => __pbn__LowpriDeprecated != null;
-    public void ResetLowpriDeprecated() => __pbn__LowpriDeprecated = null;
-    private bool? __pbn__LowpriDeprecated;
-
-    [global::ProtoBuf.ProtoMember(105, Name = @"emergency_disabled_hero_ids")]
-    public uint[] EmergencyDisabledHeroIds { get; set; }
-
-    [global::ProtoBuf.ProtoMember(106, Name = @"custom_game_private_key", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong CustomGamePrivateKey
-    {
-        get => __pbn__CustomGamePrivateKey.GetValueOrDefault();
-        set => __pbn__CustomGamePrivateKey = value;
-    }
-    public bool ShouldSerializeCustomGamePrivateKey() => __pbn__CustomGamePrivateKey != null;
-    public void ResetCustomGamePrivateKey() => __pbn__CustomGamePrivateKey = null;
-    private ulong? __pbn__CustomGamePrivateKey;
-
-    [global::ProtoBuf.ProtoMember(107, Name = @"custom_game_penalties")]
-    public bool CustomGamePenalties
-    {
-        get => __pbn__CustomGamePenalties.GetValueOrDefault();
-        set => __pbn__CustomGamePenalties = value;
-    }
-    public bool ShouldSerializeCustomGamePenalties() => __pbn__CustomGamePenalties != null;
-    public void ResetCustomGamePenalties() => __pbn__CustomGamePenalties = null;
-    private bool? __pbn__CustomGamePenalties;
-
-    [global::ProtoBuf.ProtoMember(108, Name = @"mutations")]
-    public uint[] Mutations { get; set; }
-
-    [global::ProtoBuf.ProtoMember(109, Name = @"lan_host_ping_location")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string LanHostPingLocation
-    {
-        get => __pbn__LanHostPingLocation ?? "";
-        set => __pbn__LanHostPingLocation = value;
-    }
-    public bool ShouldSerializeLanHostPingLocation() => __pbn__LanHostPingLocation != null;
-    public void ResetLanHostPingLocation() => __pbn__LanHostPingLocation = null;
-    private string __pbn__LanHostPingLocation;
-
-    [global::ProtoBuf.ProtoMember(110, Name = @"league_node_id")]
-    public uint LeagueNodeId
-    {
-        get => __pbn__LeagueNodeId.GetValueOrDefault();
-        set => __pbn__LeagueNodeId = value;
-    }
-    public bool ShouldSerializeLeagueNodeId() => __pbn__LeagueNodeId != null;
-    public void ResetLeagueNodeId() => __pbn__LeagueNodeId = null;
-    private uint? __pbn__LeagueNodeId;
-
-    [global::ProtoBuf.ProtoMember(111, Name = @"match_duration")]
-    public uint MatchDuration
-    {
-        get => __pbn__MatchDuration.GetValueOrDefault();
-        set => __pbn__MatchDuration = value;
-    }
-    public bool ShouldSerializeMatchDuration() => __pbn__MatchDuration != null;
-    public void ResetMatchDuration() => __pbn__MatchDuration = null;
-    private uint? __pbn__MatchDuration;
-
-    [global::ProtoBuf.ProtoMember(112, Name = @"custom_game_browseable")]
-    public bool CustomGameBrowseable
-    {
-        get => __pbn__CustomGameBrowseable.GetValueOrDefault();
-        set => __pbn__CustomGameBrowseable = value;
-    }
-    public bool ShouldSerializeCustomGameBrowseable() => __pbn__CustomGameBrowseable != null;
-    public void ResetCustomGameBrowseable() => __pbn__CustomGameBrowseable = null;
-    private bool? __pbn__CustomGameBrowseable;
-
-    [global::ProtoBuf.ProtoMember(113, Name = @"league_phase")]
-    public uint LeaguePhase
-    {
-        get => __pbn__LeaguePhase.GetValueOrDefault();
-        set => __pbn__LeaguePhase = value;
-    }
-    public bool ShouldSerializeLeaguePhase() => __pbn__LeaguePhase != null;
-    public void ResetLeaguePhase() => __pbn__LeaguePhase = null;
-    private uint? __pbn__LeaguePhase;
-
-    [global::ProtoBuf.ProtoMember(114, Name = @"record_detailed_stats")]
-    public bool RecordDetailedStats
-    {
-        get => __pbn__RecordDetailedStats.GetValueOrDefault();
-        set => __pbn__RecordDetailedStats = value;
-    }
-    public bool ShouldSerializeRecordDetailedStats() => __pbn__RecordDetailedStats != null;
-    public void ResetRecordDetailedStats() => __pbn__RecordDetailedStats = null;
-    private bool? __pbn__RecordDetailedStats;
-
-    [global::ProtoBuf.ProtoMember(115, Name = @"is_allstar_game")]
-    public bool IsAllstarGame
-    {
-        get => __pbn__IsAllstarGame.GetValueOrDefault();
-        set => __pbn__IsAllstarGame = value;
-    }
-    public bool ShouldSerializeIsAllstarGame() => __pbn__IsAllstarGame != null;
-    public void ResetIsAllstarGame() => __pbn__IsAllstarGame = null;
-    private bool? __pbn__IsAllstarGame;
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class CExtraMsg : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"id")]
-        public uint Id
-        {
-            get => __pbn__Id.GetValueOrDefault();
-            set => __pbn__Id = value;
-        }
-        public bool ShouldSerializeId() => __pbn__Id != null;
-        public void ResetId() => __pbn__Id = null;
-        private uint? __pbn__Id;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"contents")]
-        public byte[] Contents
-        {
-            get => __pbn__Contents;
-            set => __pbn__Contents = value;
-        }
-        public bool ShouldSerializeContents() => __pbn__Contents != null;
-        public void ResetContents() => __pbn__Contents = null;
-        private byte[] __pbn__Contents;
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum State
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"UI")]
-        Ui = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"READYUP")]
-        Readyup = 4,
-        [global::ProtoBuf.ProtoEnum(Name = @"SERVERSETUP")]
-        Serversetup = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"RUN")]
-        Run = 2,
-        [global::ProtoBuf.ProtoEnum(Name = @"POSTGAME")]
-        Postgame = 3,
-        [global::ProtoBuf.ProtoEnum(Name = @"NOTREADY")]
-        Notready = 5,
-        [global::ProtoBuf.ProtoEnum(Name = @"SERVERASSIGN")]
-        Serverassign = 6,
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum LobbyType
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"INVALID")]
-        Invalid = -1,
-        [global::ProtoBuf.ProtoEnum(Name = @"CASUAL_MATCH")]
-        CasualMatch = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"PRACTICE")]
-        Practice = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"COOP_BOT_MATCH")]
-        CoopBotMatch = 4,
-        [global::ProtoBuf.ProtoEnum(Name = @"LEGACY_TEAM_MATCH")]
-        LegacyTeamMatch = 5,
-        [global::ProtoBuf.ProtoEnum(Name = @"LEGACY_SOLO_QUEUE_MATCH")]
-        LegacySoloQueueMatch = 6,
-        [global::ProtoBuf.ProtoEnum(Name = @"COMPETITIVE_MATCH")]
-        CompetitiveMatch = 7,
-        [global::ProtoBuf.ProtoEnum(Name = @"CASUAL_1V1_MATCH")]
-        Casual1v1Match = 8,
-        [global::ProtoBuf.ProtoEnum(Name = @"WEEKEND_TOURNEY")]
-        WeekendTourney = 9,
-        [global::ProtoBuf.ProtoEnum(Name = @"LOCAL_BOT_MATCH")]
-        LocalBotMatch = 10,
-        [global::ProtoBuf.ProtoEnum(Name = @"SPECTATOR")]
-        Spectator = 11,
-        [global::ProtoBuf.ProtoEnum(Name = @"EVENT_MATCH")]
-        EventMatch = 12,
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgLobbyPlaytestDetails : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"json")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Json
-    {
-        get => __pbn__Json ?? "";
-        set => __pbn__Json = value;
-    }
-    public bool ShouldSerializeJson() => __pbn__Json != null;
-    public void ResetJson() => __pbn__Json = null;
-    private string __pbn__Json;
 
 }
 
@@ -2682,6 +1028,684 @@ public partial class CMsgLobbyEventGameDetails : global::ProtoBuf.IExtensible
 }
 
 [global::ProtoBuf.ProtoContract()]
+public partial class CMsgMatchMatchmakingStats : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"average_queue_time")]
+    public uint AverageQueueTime
+    {
+        get => __pbn__AverageQueueTime.GetValueOrDefault();
+        set => __pbn__AverageQueueTime = value;
+    }
+    public bool ShouldSerializeAverageQueueTime() => __pbn__AverageQueueTime != null;
+    public void ResetAverageQueueTime() => __pbn__AverageQueueTime = null;
+    private uint? __pbn__AverageQueueTime;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"maximum_queue_time")]
+    public uint MaximumQueueTime
+    {
+        get => __pbn__MaximumQueueTime.GetValueOrDefault();
+        set => __pbn__MaximumQueueTime = value;
+    }
+    public bool ShouldSerializeMaximumQueueTime() => __pbn__MaximumQueueTime != null;
+    public void ResetMaximumQueueTime() => __pbn__MaximumQueueTime = null;
+    private uint? __pbn__MaximumQueueTime;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"behavior_score_variance")]
+    [global::System.ComponentModel.DefaultValue(EMatchBehaviorScoreVariance.kEMatchBehaviorScoreVarianceInvalid)]
+    public EMatchBehaviorScoreVariance BehaviorScoreVariance
+    {
+        get => __pbn__BehaviorScoreVariance ?? EMatchBehaviorScoreVariance.kEMatchBehaviorScoreVarianceInvalid;
+        set => __pbn__BehaviorScoreVariance = value;
+    }
+    public bool ShouldSerializeBehaviorScoreVariance() => __pbn__BehaviorScoreVariance != null;
+    public void ResetBehaviorScoreVariance() => __pbn__BehaviorScoreVariance = null;
+    private EMatchBehaviorScoreVariance? __pbn__BehaviorScoreVariance;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMvpData : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"mvps")]
+    public global::System.Collections.Generic.List<MvpDatum> Mvps { get; } = new global::System.Collections.Generic.List<MvpDatum>();
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"event_mvps")]
+    public global::System.Collections.Generic.List<MvpDatum> EventMvps { get; } = new global::System.Collections.Generic.List<MvpDatum>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class MvpDatum : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"player_slot")]
+        public uint PlayerSlot
+        {
+            get => __pbn__PlayerSlot.GetValueOrDefault();
+            set => __pbn__PlayerSlot = value;
+        }
+        public bool ShouldSerializePlayerSlot() => __pbn__PlayerSlot != null;
+        public void ResetPlayerSlot() => __pbn__PlayerSlot = null;
+        private uint? __pbn__PlayerSlot;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"accolades")]
+        public global::System.Collections.Generic.List<MvpAccolade> Accolades { get; } = new global::System.Collections.Generic.List<MvpAccolade>();
+
+        [global::ProtoBuf.ProtoContract()]
+        public partial class MvpAccolade : global::ProtoBuf.IExtensible
+        {
+            private global::ProtoBuf.IExtension __pbn__extensionData;
+            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+            [global::ProtoBuf.ProtoMember(1, Name = @"type")]
+            [global::System.ComponentModel.DefaultValue(MvpAccoladeType.Kills)]
+            public MvpAccoladeType Type
+            {
+                get => __pbn__Type ?? MvpAccoladeType.Kills;
+                set => __pbn__Type = value;
+            }
+            public bool ShouldSerializeType() => __pbn__Type != null;
+            public void ResetType() => __pbn__Type = null;
+            private MvpAccoladeType? __pbn__Type;
+
+            [global::ProtoBuf.ProtoMember(2, Name = @"detail_value")]
+            public float DetailValue
+            {
+                get => __pbn__DetailValue.GetValueOrDefault();
+                set => __pbn__DetailValue = value;
+            }
+            public bool ShouldSerializeDetailValue() => __pbn__DetailValue != null;
+            public void ResetDetailValue() => __pbn__DetailValue = null;
+            private float? __pbn__DetailValue;
+
+            [global::ProtoBuf.ProtoContract()]
+            public enum MvpAccoladeType
+            {
+                [global::ProtoBuf.ProtoEnum(Name = @"kills")]
+                Kills = 1,
+                [global::ProtoBuf.ProtoEnum(Name = @"deaths")]
+                Deaths = 2,
+                [global::ProtoBuf.ProtoEnum(Name = @"assists")]
+                Assists = 3,
+                [global::ProtoBuf.ProtoEnum(Name = @"net_worth")]
+                NetWorth = 5,
+                [global::ProtoBuf.ProtoEnum(Name = @"item_value")]
+                ItemValue = 6,
+                [global::ProtoBuf.ProtoEnum(Name = @"support_gold_spent")]
+                SupportGoldSpent = 7,
+                [global::ProtoBuf.ProtoEnum(Name = @"wards_placed")]
+                WardsPlaced = 8,
+                [global::ProtoBuf.ProtoEnum(Name = @"dewards")]
+                Dewards = 9,
+                [global::ProtoBuf.ProtoEnum(Name = @"camps_stacked")]
+                CampsStacked = 10,
+                [global::ProtoBuf.ProtoEnum(Name = @"last_hits")]
+                LastHits = 11,
+                [global::ProtoBuf.ProtoEnum(Name = @"denies")]
+                Denies = 12,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Killing_Sprees")]
+                kKillEaterEventKillingSprees = 13,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Godlike")]
+                kKillEaterEventGodlike = 14,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Towers_Destroyed")]
+                kKillEaterEventTowersDestroyed = 15,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Invoker_SunstrikeKills")]
+                kKillEaterEventTypeInvokerSunstrikeKills = 16,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Axe_Culls")]
+                kKillEaterEventTypeAxeCulls = 17,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Axe_BattleHungerKills")]
+                kKillEaterEventTypeAxeBattleHungerKills = 18,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_LowHealthKills")]
+                kKillEaterEventTypeLowHealthKills = 19,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Invoker_TornadoKills")]
+                kKillEaterEventTypeInvokerTornadoKills = 20,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Sven_DoubleStuns")]
+                kKillEaterEventTypeSvenDoubleStuns = 21,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Sven_WarcryAssists")]
+                kKillEaterEventTypeSvenWarcryAssists = 22,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Sven_CleaveDoubleKills")]
+                kKillEaterEventTypeSvenCleaveDoubleKills = 23,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Sven_TeleportInterrupts")]
+                kKillEaterEventTypeSvenTeleportInterrupts = 24,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Faceless_MultiChrono")]
+                kKillEaterEventTypeFacelessMultiChrono = 25,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Faceless_ChronoKills")]
+                kKillEaterEventTypeFacelessChronoKills = 26,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Ursa_MultiShocks")]
+                kKillEaterEventTypeUrsaMultiShocks = 27,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_RoshanKills")]
+                kKillEaterEventTypeRoshanKills = 28,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lion_FingerKills")]
+                kKillEaterEventTypeLionFingerKills = 29,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Riki_SmokedHeroKills")]
+                kKillEaterEventTypeRikiSmokedHeroKills = 32,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_HeroesRevealedWithDust")]
+                kKillEaterEventTypeHeroesRevealedWithDust = 33,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_SkeletonKing_ReincarnationKills")]
+                kKillEaterEventTypeSkeletonKingReincarnationKills = 34,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Skywrath_FlareKills")]
+                kKillEaterEventTypeSkywrathFlareKills = 35,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Leshrac_SplitEarthStuns")]
+                kKillEaterEventTypeLeshracSplitEarthStuns = 36,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Mirana_MaxStunArrows")]
+                kKillEaterEventTypeMiranaMaxStunArrows = 37,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_PhantomAssassin_CoupdeGraceCrits")]
+                kKillEaterEventTypePhantomAssassinCoupdeGraceCrits = 38,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_PhantomAssassin_DaggerCrits")]
+                kKillEaterEventTypePhantomAssassinDaggerCrits = 39,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Meepo_Earthbinds")]
+                kKillEaterEventTypeMeepoEarthbinds = 40,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Bloodseeker_RuptureKills")]
+                kKillEaterEventTypeBloodseekerRuptureKills = 41,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Slark_LeashedEnemies")]
+                kKillEaterEventTypeSlarkLeashedEnemies = 42,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Disruptor_FountainGlimpses")]
+                kKillEaterEventTypeDisruptorFountainGlimpses = 43,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Rubick_SpellsStolen")]
+                kKillEaterEventTypeRubickSpellsStolen = 44,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Rubick_UltimatesStolen")]
+                kKillEaterEventTypeRubickUltimatesStolen = 45,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Doom_EnemiesDoomed")]
+                kKillEaterEventTypeDoomEnemiesDoomed = 46,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Omniknight_Purifications")]
+                kKillEaterEventTypeOmniknightPurifications = 47,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Omniknight_AlliesRepelled")]
+                kKillEaterEventTypeOmniknightAlliesRepelled = 48,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Omniknight_EnemiesRepelled")]
+                kKillEaterEventTypeOmniknightEnemiesRepelled = 49,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Warlock_FiveHeroFatalBonds")]
+                kKillEaterEventTypeWarlockFiveHeroFatalBonds = 50,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_CrystalMaiden_FrostbittenEnemies")]
+                kKillEaterEventTypeCrystalMaidenFrostbittenEnemies = 51,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_CrystalMaiden_CrystalNovas")]
+                kKillEaterEventTypeCrystalMaidenCrystalNovas = 52,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Kunkka_DoubleHeroTorrents")]
+                kKillEaterEventTypeKunkkaDoubleHeroTorrents = 53,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Kunkka_TripleHeroGhostShips")]
+                kKillEaterEventTypeKunkkaTripleHeroGhostShips = 54,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_NagaSiren_EnemiesEnsnared")]
+                kKillEaterEventTypeNagaSirenEnemiesEnsnared = 55,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_NagaSiren_TripleHeroRipTides")]
+                kKillEaterEventTypeNagaSirenTripleHeroRipTides = 56,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lycan_KillsDuringShapeshift")]
+                kKillEaterEventTypeLycanKillsDuringShapeshift = 57,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Pudge_DismemberKills")]
+                kKillEaterEventTypePudgeDismemberKills = 58,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Pudge_EnemyHeroesHooked")]
+                kKillEaterEventTypePudgeEnemyHeroesHooked = 59,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Pudge_HookKills")]
+                kKillEaterEventTypePudgeHookKills = 60,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Pudge_UnseenEnemyHeroesHooked")]
+                kKillEaterEventTypePudgeUnseenEnemyHeroesHooked = 61,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DrowRanger_EnemiesSilenced")]
+                kKillEaterEventTypeDrowRangerEnemiesSilenced = 62,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DrowRanger_MultiHeroSilences")]
+                kKillEaterEventTypeDrowRangerMultiHeroSilences = 63,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DrowRanger_SilencedKills")]
+                kKillEaterEventTypeDrowRangerSilencedKills = 64,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DrowRanger_FrostArrowKills")]
+                kKillEaterEventTypeDrowRangerFrostArrowKills = 65,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DragonKnight_KillsInDragonForm")]
+                kKillEaterEventTypeDragonKnightKillsInDragonForm = 66,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DragonKnight_BreatheFireKills")]
+                kKillEaterEventTypeDragonKnightBreatheFireKills = 67,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DragonKnight_SplashKills")]
+                kKillEaterEventTypeDragonKnightSplashKills = 68,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_WitchDoctor_CaskStuns")]
+                kKillEaterEventTypeWitchDoctorCaskStuns = 69,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_WitchDoctor_MaledictKills")]
+                kKillEaterEventTypeWitchDoctorMaledictKills = 70,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_WitchDoctor_MultiHeroMaledicts")]
+                kKillEaterEventTypeWitchDoctorMultiHeroMaledicts = 71,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_WitchDoctor_DeathWardKills")]
+                kKillEaterEventTypeWitchDoctorDeathWardKills = 72,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Disruptor_ThunderStrikeKills")]
+                kKillEaterEventTypeDisruptorThunderStrikeKills = 73,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Disruptor_HeroesGlimpsed")]
+                kKillEaterEventTypeDisruptorHeroesGlimpsed = 74,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_CrystalMaiden_FreezingFieldKills")]
+                kKillEaterEventTypeCrystalMaidenFreezingFieldKills = 75,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Medusa_EnemiesPetrified")]
+                kKillEaterEventTypeMedusaEnemiesPetrified = 77,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Warlock_FatalBondsKills")]
+                kKillEaterEventTypeWarlockFatalBondsKills = 78,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Warlock_GolemKills")]
+                kKillEaterEventTypeWarlockGolemKills = 79,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Tusk_WalrusPunches")]
+                kKillEaterEventTypeTuskWalrusPunches = 80,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Tusk_SnowballStuns")]
+                kKillEaterEventTypeTuskSnowballStuns = 81,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Earthshaker_FissureStuns")]
+                kKillEaterEventTypeEarthshakerFissureStuns = 82,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Earthshaker_3HeroEchoslams")]
+                kKillEaterEventTypeEarthshaker3HeroEchoslams = 83,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_SandKing_BurrowstrikeStuns")]
+                kKillEaterEventTypeSandKingBurrowstrikeStuns = 84,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_SandKing_EpicenterKills")]
+                kKillEaterEventTypeSandKingEpicenterKills = 85,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_SkywrathMage_AncientSealKills")]
+                kKillEaterEventTypeSkywrathMageAncientSealKills = 86,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_SkywrathMage_ConcussiveShotKills")]
+                kKillEaterEventTypeSkywrathMageConcussiveShotKills = 87,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Luna_LucentBeamKills")]
+                kKillEaterEventTypeLunaLucentBeamKills = 88,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Luna_EclipseKills")]
+                kKillEaterEventTypeLunaEclipseKills = 89,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_KeeperOfTheLight_IlluminateKills")]
+                kKillEaterEventTypeKeeperOfTheLightIlluminateKills = 90,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_KeeperOfTheLight_ManaLeakStuns")]
+                kKillEaterEventTypeKeeperOfTheLightManaLeakStuns = 91,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_KeeperOfTheLight_TeammatesRecalled")]
+                kKillEaterEventTypeKeeperOfTheLightTeammatesRecalled = 92,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_LegionCommander_DuelsWon")]
+                kKillEaterEventTypeLegionCommanderDuelsWon = 93,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Beastmaster_RoarKills")]
+                kKillEaterEventTypeBeastmasterRoarKills = 94,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Beastmaster_RoarMultiKills")]
+                kKillEaterEventTypeBeastmasterRoarMultiKills = 95,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Windrunner_FocusFireBuildings")]
+                kKillEaterEventTypeWindrunnerFocusFireBuildings = 96,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Windrunner_PowershotKills")]
+                kKillEaterEventTypeWindrunnerPowershotKills = 97,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_PhantomAssassin_DaggerLastHits")]
+                kKillEaterEventTypePhantomAssassinDaggerLastHits = 98,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_PhantomAssassin_PhantomStrikeKills")]
+                kKillEaterEventTypePhantomAssassinPhantomStrikeKills = 99,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DeathProphet_CryptSwarmKills")]
+                kKillEaterEventTypeDeathProphetCryptSwarmKills = 100,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DeathProphet_ExorcismBuildingKills")]
+                kKillEaterEventTypeDeathProphetExorcismBuildingKills = 101,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DeathProphet_ExorcismSpiritsSummoned")]
+                kKillEaterEventTypeDeathProphetExorcismSpiritsSummoned = 102,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DeathProphet_MultiHeroSilences")]
+                kKillEaterEventTypeDeathProphetMultiHeroSilences = 103,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Abaddon_MistCoilKills")]
+                kKillEaterEventTypeAbaddonMistCoilKills = 104,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Abaddon_MistCoilHealed")]
+                kKillEaterEventTypeAbaddonMistCoilHealed = 105,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Abaddon_AphoticShieldKills")]
+                kKillEaterEventTypeAbaddonAphoticShieldKills = 106,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lich_ChainFrostTripleKills")]
+                kKillEaterEventTypeLichChainFrostTripleKills = 107,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lich_ChainFrostMultiKills")]
+                kKillEaterEventTypeLichChainFrostMultiKills = 108,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lich_ChainFrostBounces")]
+                kKillEaterEventTypeLichChainFrostBounces = 109,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Ursa_EnragedKills")]
+                kKillEaterEventTypeUrsaEnragedKills = 110,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Ursa_EarthshockKills")]
+                kKillEaterEventTypeUrsaEarthshockKills = 111,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lina_LagunaBladeKills")]
+                kKillEaterEventTypeLinaLagunaBladeKills = 112,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lina_DragonSlaveKills")]
+                kKillEaterEventTypeLinaDragonSlaveKills = 113,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lina_LightStrikeArrayStuns")]
+                kKillEaterEventTypeLinaLightStrikeArrayStuns = 114,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Barracks_Destroyed")]
+                kKillEaterEventBarracksDestroyed = 115,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_TemplarAssassin_MeldKills")]
+                kKillEaterEventTemplarAssassinMeldKills = 116,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_TemplarAssassin_HeroesSlowed")]
+                kKillEaterEventTemplarAssassinHeroesSlowed = 117,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Sniper_AssassinationKills")]
+                kKillEaterEventSniperAssassinationKills = 118,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Sniper_HeadshotStuns")]
+                kKillEaterEventSniperHeadshotStuns = 119,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_EarthSpirit_SmashStuns")]
+                kKillEaterEventEarthSpiritSmashStuns = 120,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_EarthSpirit_GripSilences")]
+                kKillEaterEventEarthSpiritGripSilences = 121,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ShadowShaman_ShackleKills")]
+                kKillEaterEventShadowShamanShackleKills = 122,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ShadowShaman_HexKills")]
+                kKillEaterEventShadowShamanHexKills = 123,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Centaur_EnemiesStomped")]
+                kKillEaterEventCentaurEnemiesStomped = 124,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Centaur_DoubleEdgeKills")]
+                kKillEaterEventCentaurDoubleEdgeKills = 125,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Centaur_ReturnKills")]
+                kKillEaterEventCentaurReturnKills = 126,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_EmberSpirit_EnemiesChained")]
+                kKillEaterEventEmberSpiritEnemiesChained = 127,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_EmberSpirit_SleightOfFistMultiKills")]
+                kKillEaterEventEmberSpiritSleightOfFistMultiKills = 128,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Puck_OrbKills")]
+                kKillEaterEventPuckOrbKills = 129,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_VengefulSpirit_EnemiesStunned")]
+                kKillEaterEventVengefulSpiritEnemiesStunned = 130,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Lifestealer_RageKills")]
+                kKillEaterEventLifestealerRageKills = 131,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Lifestealer_OpenWoundsKills")]
+                kKillEaterEventLifestealerOpenWoundsKills = 132,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Lifestealer_InfestKills")]
+                kKillEaterEventLifestealerInfestKills = 133,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ElderTitan_SpiritKills")]
+                kKillEaterEventElderTitanSpiritKills = 134,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ElderTitan_GoodStomps")]
+                kKillEaterEventElderTitanGoodStomps = 135,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Clockwerk_RocketKills")]
+                kKillEaterEventClockwerkRocketKills = 136,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Clockwerk_BlindRocketKills")]
+                kKillEaterEventClockwerkBlindRocketKills = 137,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_StormSpirit_BallKills")]
+                kKillEaterEventStormSpiritBallKills = 138,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_StormSpirit_DoubleRemnantKills")]
+                kKillEaterEventStormSpiritDoubleRemnantKills = 139,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_StormSpirit_VortexKills")]
+                kKillEaterEventStormSpiritVortexKills = 140,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Tinker_DoubleMissileKills")]
+                kKillEaterEventTinkerDoubleMissileKills = 141,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Tinker_LaserKills")]
+                kKillEaterEventTinkerLaserKills = 142,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Techies_SuicideKills")]
+                kKillEaterEventTechiesSuicideKills = 143,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Techies_LandMineKills")]
+                kKillEaterEventTechiesLandMineKills = 144,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Techies_StatisTrapStuns")]
+                kKillEaterEventTechiesStatisTrapStuns = 145,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Techies_RemoteMineKills")]
+                kKillEaterEventTechiesRemoteMineKills = 146,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ShadowFiend_TripleRazeKills")]
+                kKillEaterEventShadowFiendTripleRazeKills = 147,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ShadowFiend_RequiemMultiKills")]
+                kKillEaterEventShadowFiendRequiemMultiKills = 148,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ShadowFiend_QRazeKills")]
+                kKillEaterEventShadowFiendQRazeKills = 149,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ShadowFiend_WRazeKills")]
+                kKillEaterEventShadowFiendWRazeKills = 150,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_ShadowFiend_ERazeKills")]
+                kKillEaterEventShadowFiendERazeKills = 151,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Oracle_FatesEdictKills")]
+                kKillEaterEventOracleFatesEdictKills = 152,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Oracle_FalsePromiseSaves")]
+                kKillEaterEventOracleFalsePromiseSaves = 153,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEvent_Juggernaut_OmnislashKills")]
+                kKillEaterEventJuggernautOmnislashKills = 154,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_SkeletonKing_SkeletonHeroKills")]
+                kKillEaterEventTypeSkeletonKingSkeletonHeroKills = 157,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DarkWillow_CursedCrownTripleStuns")]
+                kKillEaterEventTypeDarkWillowCursedCrownTripleStuns = 158,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Dazzle_ShallowGraveSaves")]
+                kKillEaterEventTypeDazzleShallowGraveSaves = 159,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Dazzle_PoisonTouchKills")]
+                kKillEaterEventTypeDazzlePoisonTouchKills = 160,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ThreeManMeks")]
+                kKillEaterEventTypeThreeManMeks = 161,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Viper_PoisonAttackKills")]
+                kKillEaterEventTypeViperPoisonAttackKills = 162,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Viper_CorrosiveSkinKills")]
+                kKillEaterEventTypeViperCorrosiveSkinKills = 163,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ThreeHeroVeils")]
+                kKillEaterEventTypeThreeHeroVeils = 164,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Viper_KillsDuringViperStrike")]
+                kKillEaterEventTypeViperKillsDuringViperStrike = 165,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_SolarCrestKills")]
+                kKillEaterEventTypeSolarCrestKills = 166,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Tiny_TreeThrowKills")]
+                kKillEaterEventTypeTinyTreeThrowKills = 167,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Riki_BackstabKills")]
+                kKillEaterEventTypeRikiBackstabKills = 168,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Phoenix_ThreeHeroSupernovaStuns")]
+                kKillEaterEventTypePhoenixThreeHeroSupernovaStuns = 169,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Terrorblade_MetamorphosisKills")]
+                kKillEaterEventTypeTerrorbladeMetamorphosisKills = 170,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lion_GreatFingerKills")]
+                kKillEaterEventTypeLionGreatFingerKills = 171,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Antimage_SpellsBlockedWithAghanims")]
+                kKillEaterEventTypeAntimageSpellsBlockedWithAghanims = 172,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Antimage_ThreeManManaVoids")]
+                kKillEaterEventTypeAntimageThreeManManaVoids = 173,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ArcWarden_TempestDoubleKills")]
+                kKillEaterEventTypeArcWardenTempestDoubleKills = 174,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ArcWarden_SparkWraithKills")]
+                kKillEaterEventTypeArcWardenSparkWraithKills = 175,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Bane_BrainSapKills")]
+                kKillEaterEventTypeBaneBrainSapKills = 176,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Bane_FiendsGripKills")]
+                kKillEaterEventTypeBaneFiendsGripKills = 177,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Batrider_TripleHeroFlamebreaks")]
+                kKillEaterEventTypeBatriderTripleHeroFlamebreaks = 178,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Batrider_DoubleHeroLassoes")]
+                kKillEaterEventTypeBatriderDoubleHeroLassoes = 179,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Brewmaster_KillsDuringPrimalSplit")]
+                kKillEaterEventTypeBrewmasterKillsDuringPrimalSplit = 180,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Bristleback_KillsUnderFourQuillStacks")]
+                kKillEaterEventTypeBristlebackKillsUnderFourQuillStacks = 181,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Bristleback_TripleHeroNasalGoo")]
+                kKillEaterEventTypeBristlebackTripleHeroNasalGoo = 182,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Broodmother_SpiderlingHeroKills")]
+                kKillEaterEventTypeBroodmotherSpiderlingHeroKills = 183,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Broodmother_KillsInsideWeb")]
+                kKillEaterEventTypeBroodmotherKillsInsideWeb = 184,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Centaur_ThreeHeroStampede")]
+                kKillEaterEventTypeCentaurThreeHeroStampede = 185,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ChaosKnight_RealityRiftKills")]
+                kKillEaterEventTypeChaosKnightRealityRiftKills = 186,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Chen_KillsWithPenitence")]
+                kKillEaterEventTypeChenKillsWithPenitence = 187,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_CrystalMaiden_TwoHeroCrystalNovas")]
+                kKillEaterEventTypeCrystalMaidenTwoHeroCrystalNovas = 188,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_CrystalMaiden_ThreeHeroFreezingFields")]
+                kKillEaterEventTypeCrystalMaidenThreeHeroFreezingFields = 189,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Dazzle_ShadowWaveKills")]
+                kKillEaterEventTypeDazzleShadowWaveKills = 190,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DeathProphet_SiphonKills")]
+                kKillEaterEventTypeDeathProphetSiphonKills = 191,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DeathProphet_ExorcismKillsDuringEuls")]
+                kKillEaterEventTypeDeathProphetExorcismKillsDuringEuls = 192,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Disruptor_ThreeHeroKineticFieldStaticStorm")]
+                kKillEaterEventTypeDisruptorThreeHeroKineticFieldStaticStorm = 193,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Doom_InfernalBladeBurnKills")]
+                kKillEaterEventTypeDoomInfernalBladeBurnKills = 194,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DrowRanger_PrecisionAuraCreepTowerKills")]
+                kKillEaterEventTypeDrowRangerPrecisionAuraCreepTowerKills = 195,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_EmberSpirit_RemnantKills")]
+                kKillEaterEventTypeEmberSpiritRemnantKills = 196,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_EmberSpirit_SleightOfFistKills")]
+                kKillEaterEventTypeEmberSpiritSleightOfFistKills = 197,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Enigma_MidnightPulseBlackHoleCombos")]
+                kKillEaterEventTypeEnigmaMidnightPulseBlackHoleCombos = 198,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Enigma_ThreeManBlackHoles")]
+                kKillEaterEventTypeEnigmaThreeManBlackHoles = 199,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_FacelessVoid_MultiHeroTimeDilation")]
+                kKillEaterEventTypeFacelessVoidMultiHeroTimeDilation = 200,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Gyrocopter_ThreeHeroFlakCannon")]
+                kKillEaterEventTypeGyrocopterThreeHeroFlakCannon = 201,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Gyrocopter_HomingMissileKills")]
+                kKillEaterEventTypeGyrocopterHomingMissileKills = 202,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Gyrocopter_RocketBarrageKills")]
+                kKillEaterEventTypeGyrocopterRocketBarrageKills = 203,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Huskar_KillsDuringLifeBreak")]
+                kKillEaterEventTypeHuskarKillsDuringLifeBreak = 204,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Huskar_BurningSpearKills")]
+                kKillEaterEventTypeHuskarBurningSpearKills = 205,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Invoker_MultiHeroIceWall")]
+                kKillEaterEventTypeInvokerMultiHeroIceWall = 206,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Invoker_ThreeHeroEMP")]
+                kKillEaterEventTypeInvokerThreeHeroEMP = 207,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Invoker_ThreeHeroDeafeningBlast")]
+                kKillEaterEventTypeInvokerThreeHeroDeafeningBlast = 208,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Invoker_MultiHeroChaosMeteor")]
+                kKillEaterEventTypeInvokerMultiHeroChaosMeteor = 209,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Jakiro_MultiHeroDualBreath")]
+                kKillEaterEventTypeJakiroMultiHeroDualBreath = 210,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Jakiro_IcePathMacropyreCombos")]
+                kKillEaterEventTypeJakiroIcePathMacropyreCombos = 211,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Leshrac_PulseNovaKills")]
+                kKillEaterEventTypeLeshracPulseNovaKills = 212,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Leshrac_ThreeHeroLightningStorm")]
+                kKillEaterEventTypeLeshracThreeHeroLightningStorm = 213,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lion_ThreeHeroFingerOfDeath")]
+                kKillEaterEventTypeLionThreeHeroFingerOfDeath = 214,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Meepo_PoofKills")]
+                kKillEaterEventTypeMeepoPoofKills = 215,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Meepo_MultiHeroEarthbinds")]
+                kKillEaterEventTypeMeepoMultiHeroEarthbinds = 216,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_NightStalker_NighttimeKills")]
+                kKillEaterEventTypeNightStalkerNighttimeKills = 217,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Morphling_KillsDuringReplicate")]
+                kKillEaterEventTypeMorphlingKillsDuringReplicate = 218,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_OgreMagi_FireblastKills")]
+                kKillEaterEventTypeOgreMagiFireblastKills = 219,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_OgreMagi_IgniteKills")]
+                kKillEaterEventTypeOgreMagiIgniteKills = 220,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DominatingKillStreaks")]
+                kKillEaterEventTypeDominatingKillStreaks = 221,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_MegaKillStreaks")]
+                kKillEaterEventTypeMegaKillStreaks = 222,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Alchemist_AghanimsGiven")]
+                kKillEaterEventTypeAlchemistAghanimsGiven = 223,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_VeilsLeadingToKills")]
+                kKillEaterEventTypeVeilsLeadingToKills = 224,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_DustLeadingToKills")]
+                kKillEaterEventTypeDustLeadingToKills = 225,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_WitchDoctor_MultiHeroCaskStuns")]
+                kKillEaterEventTypeWitchDoctorMultiHeroCaskStuns = 226,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Weaver_ShukuchiKills")]
+                kKillEaterEventTypeWeaverShukuchiKills = 227,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Windrunner_ShackleFocusFireKills")]
+                kKillEaterEventTypeWindrunnerShackleFocusFireKills = 228,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_VengefulSpirit_VengeanceAuraIllusionKills")]
+                kKillEaterEventTypeVengefulSpiritVengeanceAuraIllusionKills = 229,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Tusk_WalrusPunchKills")]
+                kKillEaterEventTypeTuskWalrusPunchKills = 230,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Tinker_MultiHeroLasers")]
+                kKillEaterEventTypeTinkerMultiHeroLasers = 231,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_TemplarAssassin_MultiHeroPsiBlades")]
+                kKillEaterEventTypeTemplarAssassinMultiHeroPsiBlades = 232,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Sven_KillsDuringGodsStrength")]
+                kKillEaterEventTypeSvenKillsDuringGodsStrength = 233,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Sniper_ThreeHeroShrapnels")]
+                kKillEaterEventTypeSniperThreeHeroShrapnels = 234,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Slark_KillsDuringShadowDance")]
+                kKillEaterEventTypeSlarkKillsDuringShadowDance = 235,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ShadowShaman_MultiHeroEtherShocks")]
+                kKillEaterEventTypeShadowShamanMultiHeroEtherShocks = 236,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ShadowShaman_SerpentWardShackleKills")]
+                kKillEaterEventTypeShadowShamanSerpentWardShackleKills = 237,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Riki_ThreeHeroTricksOfTheTrade")]
+                kKillEaterEventTypeRikiThreeHeroTricksOfTheTrade = 238,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Razor_EyeOfTheStormKills")]
+                kKillEaterEventTypeRazorEyeOfTheStormKills = 239,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Pugna_LifeDrainKills")]
+                kKillEaterEventTypePugnaLifeDrainKills = 240,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_ObsidianDestroyer_SanitysEclipseKills")]
+                kKillEaterEventTypeObsidianDestroyerSanitysEclipseKills = 241,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Oracle_MultiHeroFortunesEnd")]
+                kKillEaterEventTypeOracleMultiHeroFortunesEnd = 242,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Omniknight_PurificationKills")]
+                kKillEaterEventTypeOmniknightPurificationKills = 243,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_NightStalker_EnemyMissesUnderCripplingFear")]
+                kKillEaterEventTypeNightStalkerEnemyMissesUnderCripplingFear = 244,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Warlock_ThreeHeroFatalBonds")]
+                kKillEaterEventTypeWarlockThreeHeroFatalBonds = 245,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Riki_TricksOfTheTradeKills")]
+                kKillEaterEventTypeRikiTricksOfTheTradeKills = 246,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Earthshaker_AftershockHits10")]
+                kKillEaterEventTypeEarthshakerAftershockHits10 = 247,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Earthshaker_5HeroEchoslams")]
+                kKillEaterEventTypeEarthshaker5HeroEchoslams = 248,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lina_LagunaBladeHeroKills")]
+                kKillEaterEventTypeLinaLagunaBladeHeroKills = 249,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Lina_LightStrikeHeroStuns")]
+                kKillEaterEventTypeLinaLightStrikeHeroStuns = 250,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Earthshaker_FissureMultiStuns")]
+                kKillEaterEventTypeEarthshakerFissureMultiStuns = 251,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Earthshaker_TotemKills")]
+                kKillEaterEventTypeEarthshakerTotemKills = 252,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Pangolier_SwashbuckleKills")]
+                kKillEaterEventTypePangolierSwashbuckleKills = 253,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Furion_EnemyHeroesTrapped")]
+                kKillEaterEventTypeFurionEnemyHeroesTrapped = 254,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Pangolier_HeartpiercerKills")]
+                kKillEaterEventTypePangolierHeartpiercerKills = 255,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Medusa_MultiHeroStoneGaze")]
+                kKillEaterEventTypeMedusaMultiHeroStoneGaze = 256,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Medusa_SplitShotKills")]
+                kKillEaterEventTypeMedusaSplitShotKills = 257,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Mirana_MultiHeroStarstorm")]
+                kKillEaterEventTypeMiranaMultiHeroStarstorm = 258,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Mirana_KillsFromMoonlightShadow")]
+                kKillEaterEventTypeMiranaKillsFromMoonlightShadow = 259,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Magnus_MultiHeroSkewers")]
+                kKillEaterEventTypeMagnusMultiHeroSkewers = 260,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Magnus_MultiHeroReversePolarity")]
+                kKillEaterEventTypeMagnusMultiHeroReversePolarity = 261,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Magnus_HeroesSlowedWithShockwave")]
+                kKillEaterEventTypeMagnusHeroesSlowedWithShockwave = 262,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_NagaSiren_MultiHeroSong")]
+                kKillEaterEventTypeNagaSirenMultiHeroSong = 263,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_NagaSiren_AlliesHealedBySong")]
+                kKillEaterEventTypeNagaSirenAlliesHealedBySong = 264,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_LoneDruid_MultiHeroRoar")]
+                kKillEaterEventTypeLoneDruidMultiHeroRoar = 265,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_LoneDruid_BattleCryKills")]
+                kKillEaterEventTypeLoneDruidBattleCryKills = 266,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_WinterWyvern_ThreeHeroCurses")]
+                kKillEaterEventTypeWinterWyvernThreeHeroCurses = 267,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Antimage_SpellsBlockedWithCounterspell")]
+                kKillEaterEventTypeAntimageSpellsBlockedWithCounterspell = 268,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Mars_EnemiesKilledInArena")]
+                kKillEaterEventTypeMarsEnemiesKilledInArena = 269,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Mars_MultiHeroGodsRebuke")]
+                kKillEaterEventTypeMarsMultiHeroGodsRebuke = 270,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Mars_GodsRebukeKills")]
+                kKillEaterEventTypeMarsGodsRebukeKills = 271,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Snapfire_LizardBlobsKills")]
+                kKillEaterEventTypeSnapfireLizardBlobsKills = 272,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Snapfire_TwoHeroCookieStuns")]
+                kKillEaterEventTypeSnapfireTwoHeroCookieStuns = 273,
+                [global::ProtoBuf.ProtoEnum(Name = @"Custom_KillStreak")]
+                CustomKillStreak = 274,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Muerta_DeadShotKills")]
+                kKillEaterEventTypeMuertaDeadShotKills = 275,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Muerta_PierceTheVeilKills")]
+                kKillEaterEventTypeMuertaPierceTheVeilKills = 276,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Muerta_MultiHeroDeadShot")]
+                kKillEaterEventTypeMuertaMultiHeroDeadShot = 277,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Muerta_DeadShotsIntoTheCalling")]
+                kKillEaterEventTypeMuertaDeadShotsIntoTheCalling = 278,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Ringmaster_LongRangeDaggerHits")]
+                kKillEaterEventTypeRingmasterLongRangeDaggerHits = 279,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Ringmaster_MultiHeroWhips")]
+                kKillEaterEventTypeRingmasterMultiHeroWhips = 280,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Ringmaster_MultiHeroMesmerizes")]
+                kKillEaterEventTypeRingmasterMultiHeroMesmerizes = 281,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Kez_ParryCounterAttacks")]
+                kKillEaterEventTypeKezParryCounterAttacks = 282,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Kez_RavensVeilKills")]
+                kKillEaterEventTypeKezRavensVeilKills = 283,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Kez_RaptorDanceHealing")]
+                kKillEaterEventTypeKezRaptorDanceHealing = 284,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Kez_KillsDuringFalconRush")]
+                kKillEaterEventTypeKezKillsDuringFalconRush = 285,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Seasonal_PartyHatsStolen")]
+                kKillEaterEventTypeSeasonalPartyHatsStolen = 286,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Seasonal_TallestHat")]
+                kKillEaterEventTypeSeasonalTallestHat = 287,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Largo_MultiHeroFrogstomp")]
+                kKillEaterEventTypeLargoMultiHeroFrogstomp = 288,
+                [global::ProtoBuf.ProtoEnum(Name = @"kKillEaterEventType_Largo_AmphibianRhapsodyKillsAndAssists")]
+                kKillEaterEventTypeLargoAmphibianRhapsodyKillsAndAssists = 289,
+            }
+
+        }
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
 public enum ELaneSelection
 {
     [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelection_SAFELANE")]
@@ -2690,53 +1714,67 @@ public enum ELaneSelection
     kELaneSelectionOFFLANE = 1,
     [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelection_MIDLANE")]
     kELaneSelectionMIDLANE = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelection_SUPPORT_SOFT")]
-    kELaneSelectionSUPPORTSOFT = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelection_SUPPORT_HARD")]
-    kELaneSelectionSUPPORTHARD = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelection_SUPPORT")]
+    kELaneSelectionSUPPORT = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelection_HARDSUPPORT")]
+    kELaneSelectionHARDSUPPORT = 4,
 }
 
 [global::ProtoBuf.ProtoContract()]
 public enum ELaneSelectionFlags
 {
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_None")]
-    kELaneSelectionFlagsNone = 0,
     [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_SAFELANE")]
     kELaneSelectionFlagsSAFELANE = 1,
     [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_OFFLANE")]
     kELaneSelectionFlagsOFFLANE = 2,
     [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_MIDLANE")]
     kELaneSelectionFlagsMIDLANE = 4,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_CORE")]
-    kELaneSelectionFlagsCORE = 7,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_SUPPORT_SOFT")]
-    kELaneSelectionFlagsSUPPORTSOFT = 8,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_SUPPORT_HARD")]
-    kELaneSelectionFlagsSUPPORTHARD = 16,
     [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_SUPPORT")]
-    kELaneSelectionFlagsSUPPORT = 24,
+    kELaneSelectionFlagsSUPPORT = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlags_HARDSUPPORT")]
+    kELaneSelectionFlagsHARDSUPPORT = 16,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlagGroup_None")]
+    kELaneSelectionFlagGroupNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlagGroup_CORE")]
+    kELaneSelectionFlagGroupCORE = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlagGroup_SUPPORT")]
+    kELaneSelectionFlagGroupSUPPORT = 24,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlagGroup_ALL")]
+    kELaneSelectionFlagGroupALL = 31,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ELaneSelectionFlagGroup_HIGHDEMAND")]
+    kELaneSelectionFlagGroupHIGHDEMAND = 18,
 }
 
 [global::ProtoBuf.ProtoContract()]
-public enum LobbyDotaTVDelay
+public enum EPartyMatchmakingFlags
 {
-    [global::ProtoBuf.ProtoEnum(Name = @"LobbyDotaTV_10")]
-    LobbyDotaTV10 = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"LobbyDotaTV_120")]
-    LobbyDotaTV120 = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"LobbyDotaTV_300")]
-    LobbyDotaTV300 = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPartyMatchmakingFlags_None")]
+    kEPartyMatchmakingFlagsNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPartyMatchmakingFlags_LargeRankSpread")]
+    kEPartyMatchmakingFlagsLargeRankSpread = 1,
 }
 
 [global::ProtoBuf.ProtoContract()]
-public enum LobbyDotaPauseSetting
+public enum EHighPriorityMMState
 {
-    [global::ProtoBuf.ProtoEnum(Name = @"LobbyDotaPauseSetting_Unlimited")]
-    LobbyDotaPauseSettingUnlimited = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"LobbyDotaPauseSetting_Limited")]
-    LobbyDotaPauseSettingLimited = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"LobbyDotaPauseSetting_Disabled")]
-    LobbyDotaPauseSettingDisabled = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_Unknown")]
+    kEHighPriorityMMUnknown = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_MissingMMData")]
+    kEHighPriorityMMMissingMMData = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_ResourceMissing")]
+    kEHighPriorityMMResourceMissing = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_ManuallyDisabled")]
+    kEHighPriorityMMManuallyDisabled = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_Min_Enabled")]
+    kEHighPriorityMMMinEnabled = 64,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_AllRolesSelected")]
+    kEHighPriorityMMAllRolesSelected = 65,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_UsingResource")]
+    kEHighPriorityMMUsingResource = 66,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_FiveStack")]
+    kEHighPriorityMMFiveStack = 67,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EHighPriorityMM_HighDemand")]
+    kEHighPriorityMMHighDemand = 68,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -2763,6 +1801,19 @@ public enum EReadyCheckRequestResult
     kEReadyCheckRequestResultSendError = 3,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EReadyCheckRequestResult_UnknownError")]
     kEReadyCheckRequestResultUnknownError = 4,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum EMatchBehaviorScoreVariance
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchBehaviorScoreVariance_Invalid")]
+    kEMatchBehaviorScoreVarianceInvalid = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchBehaviorScoreVariance_Low")]
+    kEMatchBehaviorScoreVarianceLow = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchBehaviorScoreVariance_Medium")]
+    kEMatchBehaviorScoreVarianceMedium = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchBehaviorScoreVariance_High")]
+    kEMatchBehaviorScoreVarianceHigh = 3,
 }
 
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

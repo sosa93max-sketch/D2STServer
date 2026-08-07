@@ -5,6 +5,7 @@
 # '#' are ignored.
 #
 # Source: https://github.com/SteamDatabase/GameTracking-Dota2 (Protobufs/)
+# pinned to GameTracking-Dota2 4b28dd7d49f7a1a4b073f3b5dcd22c1ad17423f0 (build 6783, 2026-05-04)
 
 steammessages.proto
 gcsdk_gcmessages.proto
@@ -30,3 +31,13 @@ dota_gcmessages_msgid.proto
 network_connection.proto
 dota_gcmessages_server.proto
 dota_match_metadata.proto
+valveextensions.proto
+steammessages_steamlearn.steamworkssdk.proto
+networkbasetypes.proto
+dota_gcmessages_webapi.proto
+dota_gcmessages_common_lobby.proto
+dota_gcmessages_common_overworld.proto
+dota_gcmessages_common_craftworks.proto
+dota_gcmessages_common_monster_hunter.proto
+steammessages_unified_base.steamworkssdk.proto
+dota_gcmessages_common_survivors.proto

@@ -173,7 +173,7 @@ bob_token, bob = logon(90002, "Bob")
 carol_token, carol = logon(90003, "Carol")
 
 for token in (alice_token, bob_token, carol_token):
-    exchange(token, 4006, varint_field(1, 3756))
+    exchange(token, 4006, varint_field(1, 6783))
     poll(token)
 
 # invite bob
@@ -205,7 +205,7 @@ check("party holds both members", party["MemberSteamIds"] == [alice, bob], party
 check("leader is the inviter", party["LeaderSteamId"] == alice, party)
 
 # a reconnect re-publishes the party in the welcome
-_, welcome = exchange(alice_token, 4006, varint_field(1, 3756))
+_, welcome = exchange(alice_token, 4006, varint_field(1, 6783))
 welcome_caches = [decode(cache) for cache in decode(welcome[1][1]).get(3, [])]
 party_caches = [cache for cache in welcome_caches if decode(cache[4][0])[1][0] == 2]
 check("welcome carries the party cache", len(party_caches) == 1, len(welcome_caches))

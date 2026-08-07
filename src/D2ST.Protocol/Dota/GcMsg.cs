@@ -81,8 +81,6 @@ public static class GcMsg
     public const uint OtherLeftChatChannel = (uint)EDOTAGCMsg.kEMsgGCOtherLeftChannel;
     public const uint RequestChatChannelList = (uint)EDOTAGCMsg.kEMsgGCRequestChatChannelList;
     public const uint RequestChatChannelListResponse = (uint)EDOTAGCMsg.kEMsgGCRequestChatChannelListResponse;
-    public const uint ChatGetUserList = (uint)EDOTAGCMsg.kEMsgDOTAChatGetUserList;
-    public const uint ChatGetUserListResponse = (uint)EDOTAGCMsg.kEMsgDOTAChatGetUserListResponse;
     public const uint ChatGetMemberCount = (uint)EDOTAGCMsg.kEMsgDOTAChatGetMemberCount;
     public const uint ChatGetMemberCountResponse = (uint)EDOTAGCMsg.kEMsgDOTAChatGetMemberCountResponse;
     public const uint PrivateChatInvite = (uint)EDOTAGCMsg.kEMsgClientToGCPrivateChatInvite;
@@ -90,8 +88,6 @@ public static class GcMsg
     public const uint PrivateChatPromote = (uint)EDOTAGCMsg.kEMsgClientToGCPrivateChatPromote;
     public const uint PrivateChatDemote = (uint)EDOTAGCMsg.kEMsgClientToGCPrivateChatDemote;
     public const uint ToClientPrivateChatResponse = (uint)EDOTAGCMsg.kEMsgGCToClientPrivateChatResponse;
-    public const uint PrivateChatInfoRequest = (uint)EDOTAGCMsg.kEMsgClientToGCPrivateChatInfoRequest;
-    public const uint ToClientPrivateChatInfoResponse = (uint)EDOTAGCMsg.kEMsgGCToClientPrivateChatInfoResponse;
 
     public const uint ClientToGCGetProfileCard = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCard;
     public const uint ClientToGCGetProfileCardResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCardResponse;
@@ -102,8 +98,6 @@ public static class GcMsg
     public const uint WeekendTourneySchedule = (uint)EDOTAGCMsg.kEMsgDOTAWeekendTourneySchedule;
     public const uint MyTeamInfoRequest = (uint)EDOTAGCMsg.kEMsgClientToGCMyTeamInfoRequest;
     public const uint ToClientTeamsInfo = (uint)EDOTAGCMsg.kEMsgGCToClientTeamsInfo;
-    public const uint RequestGuildData = (uint)EDOTAGCMsg.kEMsgGCRequestGuildData;
-    public const uint GuildData = (uint)EDOTAGCMsg.kEMsgGCGuildData;
     public const uint EmoticonDataRequest = (uint)EDOTAGCMsg.kEMsgClientToGCEmoticonDataRequest;
     public const uint ToClientEmoticonData = (uint)EDOTAGCMsg.kEMsgGCToClientEmoticonData;
     public const uint GetEventPoints = (uint)EDOTAGCMsg.kEMsgDOTAGetEventPoints;

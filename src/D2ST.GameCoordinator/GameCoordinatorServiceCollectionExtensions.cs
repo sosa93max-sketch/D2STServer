@@ -42,7 +42,6 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, StoreSalesDataHandler>();
         services.AddSingleton<IGcMessageHandler, WeekendTourneyScheduleHandler>();
         services.AddSingleton<IGcMessageHandler, MyTeamInfoHandler>();
-        services.AddSingleton<IGcMessageHandler, GuildDataHandler>();
         services.AddSingleton<IGcMessageHandler, EmoticonDataHandler>();
         services.AddSingleton<IGcMessageHandler, EventPointsHandler>();
         services.AddSingleton<IGcMessageHandler, EquipItemsHandler>();
@@ -85,13 +84,11 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, LeaveChatChannelHandler>();
         services.AddSingleton<IGcMessageHandler, ChatMessageHandler>();
         services.AddSingleton<IGcMessageHandler, RequestChatChannelListHandler>();
-        services.AddSingleton<IGcMessageHandler, ChatGetUserListHandler>();
         services.AddSingleton<IGcMessageHandler, ChatGetMemberCountHandler>();
         services.AddSingleton<IGcMessageHandler, PrivateChatInviteHandler>();
         services.AddSingleton<IGcMessageHandler, PrivateChatKickHandler>();
         services.AddSingleton<IGcMessageHandler, PrivateChatPromoteHandler>();
         services.AddSingleton<IGcMessageHandler, PrivateChatDemoteHandler>();
-        services.AddSingleton<IGcMessageHandler, PrivateChatInfoRequestHandler>();
         services.AddSingleton<GcRouter>();
         services.AddSingleton<GameCoordinatorService>();
         return services;

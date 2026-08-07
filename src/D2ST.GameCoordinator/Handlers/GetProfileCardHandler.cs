@@ -22,9 +22,7 @@ public sealed class GetProfileCardHandler : IGcMessageHandler
         var card = new CMsgDOTAProfileCard
         {
             AccountId = accountId,
-            BackgroundDefIndex = 0,
             BadgePoints = 0,
-            EventPoints = 0,
             EventId = 0,
             RankTier = 0,
             LeaderboardRank = 0,

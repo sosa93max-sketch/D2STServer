@@ -368,39 +368,6 @@ public sealed class ChatService : IGcLogonListener
         }
     }
 
-    /// <summary>Who may enter a private chat and who is in it right now.</summary>
-    public CMsgGCToClientPrivateChatInfoResponse PrivateChatInfo(GcContext context, string channelName)
-    {
-        lock (_gate)
-        {
-            var response = new CMsgGCToClientPrivateChatInfoResponse { PrivateChatChannelName = channelName };
-            var (channel, _) = PrivateChat(context, channelName, adminRequired: false);
-            if (channel is null)
-            {
-                return response;
-            }
-
-            response.Creator = channel.Creator;
-            response.CreationDate = channel.CreatedAt;
-            foreach (var accountId in channel.Allowed)
-            {
-                var member = channel.Members.Values.FirstOrDefault(entry => entry.AccountId == accountId);
-                response.Members.Add(new CMsgGCToClientPrivateChatInfoResponse.Member
-                {
-                    AccountId = accountId,
-                    Name = member?.Name ?? string.Empty,
-                    // The status enum is not in the 7.22g protos, only the
-                    // number the client reads as offline (0) or online (1).
-                    Status = member is not null || _players.IsOnline(SteamAccount.SteamIdFromAccountId(accountId))
-                        ? 1u
-                        : 0u
-                });
-            }
-
-            return response;
-        }
-    }
-
     /// <summary>A channel and who is in it, for the HTTP read-only view.</summary>
     public IReadOnlyList<(ulong Id, string Name, DOTAChatChannelTypet Type, int MaxMembers, bool Configured, IReadOnlyList<(ulong SteamId, string Name)> Members)> Snapshot()
     {

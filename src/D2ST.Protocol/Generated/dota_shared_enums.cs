@@ -73,6 +73,9 @@ public partial class CDOTAClientHardwareSpecs : global::ProtoBuf.IExtensible
     public void ResetPreferNotHost() => __pbn__PreferNotHost = null;
     private bool? __pbn__PreferNotHost;
 
+    [global::ProtoBuf.ProtoMember(7, Name = @"crc")]
+    public uint[] Crcs { get; set; }
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -642,7 +645,7 @@ public partial class CMsgDOTACombatLogEntry : global::ProtoBuf.IExtensible
     private uint? __pbn__RuneType;
 
     [global::ProtoBuf.ProtoMember(40, Name = @"assist_players")]
-    public uint[] AssistPlayers { get; set; }
+    public int[] AssistPlayers { get; set; }
 
     [global::ProtoBuf.ProtoMember(41, Name = @"is_heal_save")]
     public bool IsHealSave
@@ -974,6 +977,367 @@ public partial class CMsgDOTACombatLogEntry : global::ProtoBuf.IExtensible
     public void ResetSpellGeneratedAttack() => __pbn__SpellGeneratedAttack = null;
     private bool? __pbn__SpellGeneratedAttack;
 
+    [global::ProtoBuf.ProtoMember(74, Name = @"at_night_time")]
+    public bool AtNightTime
+    {
+        get => __pbn__AtNightTime.GetValueOrDefault();
+        set => __pbn__AtNightTime = value;
+    }
+    public bool ShouldSerializeAtNightTime() => __pbn__AtNightTime != null;
+    public void ResetAtNightTime() => __pbn__AtNightTime = null;
+    private bool? __pbn__AtNightTime;
+
+    [global::ProtoBuf.ProtoMember(75, Name = @"attacker_has_scepter")]
+    public bool AttackerHasScepter
+    {
+        get => __pbn__AttackerHasScepter.GetValueOrDefault();
+        set => __pbn__AttackerHasScepter = value;
+    }
+    public bool ShouldSerializeAttackerHasScepter() => __pbn__AttackerHasScepter != null;
+    public void ResetAttackerHasScepter() => __pbn__AttackerHasScepter = null;
+    private bool? __pbn__AttackerHasScepter;
+
+    [global::ProtoBuf.ProtoMember(76, Name = @"neutral_camp_team")]
+    public uint NeutralCampTeam
+    {
+        get => __pbn__NeutralCampTeam.GetValueOrDefault();
+        set => __pbn__NeutralCampTeam = value;
+    }
+    public bool ShouldSerializeNeutralCampTeam() => __pbn__NeutralCampTeam != null;
+    public void ResetNeutralCampTeam() => __pbn__NeutralCampTeam = null;
+    private uint? __pbn__NeutralCampTeam;
+
+    [global::ProtoBuf.ProtoMember(77, Name = @"regenerated_health")]
+    public float RegeneratedHealth
+    {
+        get => __pbn__RegeneratedHealth.GetValueOrDefault();
+        set => __pbn__RegeneratedHealth = value;
+    }
+    public bool ShouldSerializeRegeneratedHealth() => __pbn__RegeneratedHealth != null;
+    public void ResetRegeneratedHealth() => __pbn__RegeneratedHealth = null;
+    private float? __pbn__RegeneratedHealth;
+
+    [global::ProtoBuf.ProtoMember(78, Name = @"will_reincarnate")]
+    public bool WillReincarnate
+    {
+        get => __pbn__WillReincarnate.GetValueOrDefault();
+        set => __pbn__WillReincarnate = value;
+    }
+    public bool ShouldSerializeWillReincarnate() => __pbn__WillReincarnate != null;
+    public void ResetWillReincarnate() => __pbn__WillReincarnate = null;
+    private bool? __pbn__WillReincarnate;
+
+    [global::ProtoBuf.ProtoMember(79, Name = @"uses_charges")]
+    public bool UsesCharges
+    {
+        get => __pbn__UsesCharges.GetValueOrDefault();
+        set => __pbn__UsesCharges = value;
+    }
+    public bool ShouldSerializeUsesCharges() => __pbn__UsesCharges != null;
+    public void ResetUsesCharges() => __pbn__UsesCharges = null;
+    private bool? __pbn__UsesCharges;
+
+    [global::ProtoBuf.ProtoMember(80, Name = @"tracked_stat_id")]
+    public uint TrackedStatId
+    {
+        get => __pbn__TrackedStatId.GetValueOrDefault();
+        set => __pbn__TrackedStatId = value;
+    }
+    public bool ShouldSerializeTrackedStatId() => __pbn__TrackedStatId != null;
+    public void ResetTrackedStatId() => __pbn__TrackedStatId = null;
+    private uint? __pbn__TrackedStatId;
+
+    [global::ProtoBuf.ProtoMember(81, Name = @"modifier_purged_duration")]
+    public float ModifierPurgedDuration
+    {
+        get => __pbn__ModifierPurgedDuration.GetValueOrDefault();
+        set => __pbn__ModifierPurgedDuration = value;
+    }
+    public bool ShouldSerializeModifierPurgedDuration() => __pbn__ModifierPurgedDuration != null;
+    public void ResetModifierPurgedDuration() => __pbn__ModifierPurgedDuration = null;
+    private float? __pbn__ModifierPurgedDuration;
+
+    [global::ProtoBuf.ProtoMember(82, Name = @"heal_from_regen")]
+    public bool HealFromRegen
+    {
+        get => __pbn__HealFromRegen.GetValueOrDefault();
+        set => __pbn__HealFromRegen = value;
+    }
+    public bool ShouldSerializeHealFromRegen() => __pbn__HealFromRegen != null;
+    public void ResetHealFromRegen() => __pbn__HealFromRegen = null;
+    private bool? __pbn__HealFromRegen;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgPendingEventAward : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"event_id")]
+    [global::System.ComponentModel.DefaultValue(EEvent.EventIdNone)]
+    public EEvent EventId
+    {
+        get => __pbn__EventId ?? EEvent.EventIdNone;
+        set => __pbn__EventId = value;
+    }
+    public bool ShouldSerializeEventId() => __pbn__EventId != null;
+    public void ResetEventId() => __pbn__EventId = null;
+    private EEvent? __pbn__EventId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"action_id")]
+    public uint ActionId
+    {
+        get => __pbn__ActionId.GetValueOrDefault();
+        set => __pbn__ActionId = value;
+    }
+    public bool ShouldSerializeActionId() => __pbn__ActionId != null;
+    public void ResetActionId() => __pbn__ActionId = null;
+    private uint? __pbn__ActionId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"num_to_grant")]
+    public uint NumToGrant
+    {
+        get => __pbn__NumToGrant.GetValueOrDefault();
+        set => __pbn__NumToGrant = value;
+    }
+    public bool ShouldSerializeNumToGrant() => __pbn__NumToGrant != null;
+    public void ResetNumToGrant() => __pbn__NumToGrant = null;
+    private uint? __pbn__NumToGrant;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"score_mode")]
+    [global::System.ComponentModel.DefaultValue(EEventActionScoreMode.keEventActionScoreModeAdd)]
+    public EEventActionScoreMode ScoreMode
+    {
+        get => __pbn__ScoreMode ?? EEventActionScoreMode.keEventActionScoreModeAdd;
+        set => __pbn__ScoreMode = value;
+    }
+    public bool ShouldSerializeScoreMode() => __pbn__ScoreMode != null;
+    public void ResetScoreMode() => __pbn__ScoreMode = null;
+    private EEventActionScoreMode? __pbn__ScoreMode;
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"audit_action")]
+    public uint AuditAction
+    {
+        get => __pbn__AuditAction.GetValueOrDefault();
+        set => __pbn__AuditAction = value;
+    }
+    public bool ShouldSerializeAuditAction() => __pbn__AuditAction != null;
+    public void ResetAuditAction() => __pbn__AuditAction = null;
+    private uint? __pbn__AuditAction;
+
+    [global::ProtoBuf.ProtoMember(6, Name = @"audit_data")]
+    public ulong AuditData
+    {
+        get => __pbn__AuditData.GetValueOrDefault();
+        set => __pbn__AuditData = value;
+    }
+    public bool ShouldSerializeAuditData() => __pbn__AuditData != null;
+    public void ResetAuditData() => __pbn__AuditData = null;
+    private ulong? __pbn__AuditData;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgMonsterHunterMaterialQuantity : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"material_counts")]
+    public global::System.Collections.Generic.List<MaterialCountsEntry> MaterialCounts { get; } = new global::System.Collections.Generic.List<MaterialCountsEntry>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class MaterialCountsEntry : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"key")]
+        public uint Key
+        {
+            get => __pbn__Key.GetValueOrDefault();
+            set => __pbn__Key = value;
+        }
+        public bool ShouldSerializeKey() => __pbn__Key != null;
+        public void ResetKey() => __pbn__Key = null;
+        private uint? __pbn__Key;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"value")]
+        public int Value
+        {
+            get => __pbn__Value.GetValueOrDefault();
+            set => __pbn__Value = value;
+        }
+        public bool ShouldSerializeValue() => __pbn__Value != null;
+        public void ResetValue() => __pbn__Value = null;
+        private int? __pbn__Value;
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgMonsterHunterInvestigation : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"hero_id")]
+    public int HeroId
+    {
+        get => __pbn__HeroId.GetValueOrDefault();
+        set => __pbn__HeroId = value;
+    }
+    public bool ShouldSerializeHeroId() => __pbn__HeroId != null;
+    public void ResetHeroId() => __pbn__HeroId = null;
+    private int? __pbn__HeroId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"persona_id")]
+    public int PersonaId
+    {
+        get => __pbn__PersonaId.GetValueOrDefault();
+        set => __pbn__PersonaId = value;
+    }
+    public bool ShouldSerializePersonaId() => __pbn__PersonaId != null;
+    public void ResetPersonaId() => __pbn__PersonaId = null;
+    private int? __pbn__PersonaId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"match_rewards")]
+    public CMsgMonsterHunterMaterialQuantity MatchRewards { get; set; }
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"hunt_rewards")]
+    public CMsgMonsterHunterMaterialQuantity HuntRewards { get; set; }
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"success_state")]
+    public bool SuccessState
+    {
+        get => __pbn__SuccessState.GetValueOrDefault();
+        set => __pbn__SuccessState = value;
+    }
+    public bool ShouldSerializeSuccessState() => __pbn__SuccessState != null;
+    public void ResetSuccessState() => __pbn__SuccessState = null;
+    private bool? __pbn__SuccessState;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgMonsterHunterInvestigationGameState : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"selected_investigation")]
+    public CMsgMonsterHunterInvestigation SelectedInvestigation { get; set; }
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"hunted_by")]
+    public global::System.Collections.Generic.List<HuntedBy> HuntedBies { get; } = new global::System.Collections.Generic.List<HuntedBy>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class HuntedBy : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"hero_id")]
+        public int HeroId
+        {
+            get => __pbn__HeroId.GetValueOrDefault();
+            set => __pbn__HeroId = value;
+        }
+        public bool ShouldSerializeHeroId() => __pbn__HeroId != null;
+        public void ResetHeroId() => __pbn__HeroId = null;
+        private int? __pbn__HeroId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"persona_id")]
+        public int PersonaId
+        {
+            get => __pbn__PersonaId.GetValueOrDefault();
+            set => __pbn__PersonaId = value;
+        }
+        public bool ShouldSerializePersonaId() => __pbn__PersonaId != null;
+        public void ResetPersonaId() => __pbn__PersonaId = null;
+        private int? __pbn__PersonaId;
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"hunt_rewards")]
+        public CMsgMonsterHunterMaterialQuantity HuntRewards { get; set; }
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"success_state")]
+        public bool SuccessState
+        {
+            get => __pbn__SuccessState.GetValueOrDefault();
+            set => __pbn__SuccessState = value;
+        }
+        public bool ShouldSerializeSuccessState() => __pbn__SuccessState != null;
+        public void ResetSuccessState() => __pbn__SuccessState = null;
+        private bool? __pbn__SuccessState;
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgMonsterHunterCodexUpdateData : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"player_hero")]
+    public int PlayerHero
+    {
+        get => __pbn__PlayerHero.GetValueOrDefault();
+        set => __pbn__PlayerHero = value;
+    }
+    public bool ShouldSerializePlayerHero() => __pbn__PlayerHero != null;
+    public void ResetPlayerHero() => __pbn__PlayerHero = null;
+    private int? __pbn__PlayerHero;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"allies")]
+    public int[] Allies { get; set; }
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"enemies")]
+    public int[] Enemies { get; set; }
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"player_kills")]
+    public global::System.Collections.Generic.List<KillInfo> PlayerKills { get; } = new global::System.Collections.Generic.List<KillInfo>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class KillInfo : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"hero_id")]
+        public int HeroId
+        {
+            get => __pbn__HeroId.GetValueOrDefault();
+            set => __pbn__HeroId = value;
+        }
+        public bool ShouldSerializeHeroId() => __pbn__HeroId != null;
+        public void ResetHeroId() => __pbn__HeroId = null;
+        private int? __pbn__HeroId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"kill_count")]
+        public int KillCount
+        {
+            get => __pbn__KillCount.GetValueOrDefault();
+            set => __pbn__KillCount = value;
+        }
+        public bool ShouldSerializeKillCount() => __pbn__KillCount != null;
+        public void ResetKillCount() => __pbn__KillCount = null;
+        private int? __pbn__KillCount;
+
+    }
+
 }
 
 [global::ProtoBuf.ProtoContract(Name = @"DOTA_GameMode")]
@@ -1031,6 +1395,8 @@ public enum DOTAGameMode
     DotaGamemodeMutation = 24,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GAMEMODE_COACHES_CHALLENGE")]
     DotaGamemodeCoachesChallenge = 25,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GAMEMODE_BOT_CHALLENGE")]
+    DotaGamemodeBotChallenge = 26,
 }
 
 [global::ProtoBuf.ProtoContract(Name = @"DOTA_GameState")]
@@ -1058,8 +1424,12 @@ public enum DOTAGameState
     DotaGamerulesStateCustomGameSetup = 9,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD")]
     DotaGamerulesStateWaitForMapToLoad = 10,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GAMERULES_STATE_SCENARIO_SETUP")]
+    DotaGamerulesStateScenarioSetup = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GAMERULES_STATE_PLAYER_DRAFT")]
+    DotaGamerulesStatePlayerDraft = 12,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GAMERULES_STATE_LAST")]
-    DotaGamerulesStateLast = 11,
+    DotaGamerulesStateLast = 13,
 }
 
 [global::ProtoBuf.ProtoContract(Name = @"DOTA_GC_TEAM")]
@@ -1077,6 +1447,24 @@ public enum DotaGcTeam
     DotaGcTeamPlayerPool = 4,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_NOTEAM")]
     DotaGcTeamNoteam = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_1")]
+    DotaGcTeamCustom1 = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_2")]
+    DotaGcTeamCustom2 = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_3")]
+    DotaGcTeamCustom3 = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_4")]
+    DotaGcTeamCustom4 = 9,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_5")]
+    DotaGcTeamCustom5 = 10,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_6")]
+    DotaGcTeamCustom6 = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_7")]
+    DotaGcTeamCustom7 = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_CUSTOM_8")]
+    DotaGcTeamCustom8 = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_GC_TEAM_NEUTRALS")]
+    DotaGcTeamNeutrals = 14,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1134,8 +1522,97 @@ public enum EEvent
     EventIdNewBloom2019 = 24,
     [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_INTERNATIONAL_2019")]
     EventIdInternational2019 = 25,
-    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_COUNT")]
-    EventIdCount = 26,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_NEW_PLAYER_EXPERIENCE")]
+    EventIdNewPlayerExperience = 26,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_FROSTIVUS_2019")]
+    EventIdFrostivus2019 = 27,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_NEW_BLOOM_2020")]
+    EventIdNewBloom2020 = 28,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_INTERNATIONAL_2020")]
+    EventIdInternational2020 = 29,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_FANDOM")]
+    EventIdTeamFandom = 30,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_DIRETIDE_2020")]
+    EventIdDiretide2020 = 31,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_SPRING_2021")]
+    EventIdSpring2021 = 32,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_FALL_2021")]
+    EventIdFall2021 = 33,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_FANDOM_FALL_2021")]
+    EventIdTeamFandomFall2021 = 34,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_2021_2022_TOUR2")]
+    EventIdTeam20212022Tour2 = 35,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_INTERNATIONAL_2022")]
+    EventIdInternational2022 = 36,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_2021_2022_TOUR3")]
+    EventIdTeam20212022Tour3 = 37,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_INTERNATIONAL_2022")]
+    EventIdTeamInternational2022 = 38,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_PERMANENT_GRANTS")]
+    EventIdPermanentGrants = 39,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_MUERTA_RELEASE_SPRING2023")]
+    EventIdMuertaReleaseSpring2023 = 40,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_2023_TOUR1")]
+    EventIdTeam2023Tour1 = 41,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_2023_TOUR2")]
+    EventIdTeam2023Tour2 = 42,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_TEAM_2023_TOUR3")]
+    EventIdTeam2023Tour3 = 43,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_INTERNATIONAL_2023")]
+    EventIdInternational2023 = 45,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_10TH_ANNIVERSARY")]
+    EventId10thAnniversary = 46,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_CROWNFALL")]
+    EventIdCrownfall = 47,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_FROSTIVUS_2023")]
+    EventIdFrostivus2023 = 48,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_INTERNATIONAL_2024")]
+    EventIdInternational2024 = 49,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_FROSTIVUS_2024")]
+    EventIdFrostivus2024 = 50,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_MONSTER_HUNTER")]
+    EventIdMonsterHunter = 51,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_INTERNATIONAL_2025")]
+    EventIdInternational2025 = 52,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_FALL_2025")]
+    EventIdFall2025 = 53,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_WINTER_2025")]
+    EventIdWinter2025 = 55,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_SPRING_2026")]
+    EventIdSpring2026 = 56,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_SUMMER_2026")]
+    EventIdSummer2026 = 57,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_FALL_2026")]
+    EventIdFall2026 = 58,
+    [global::ProtoBuf.ProtoEnum(Name = @"EVENT_ID_WINTER_2026")]
+    EventIdWinter2026 = 59,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum ERankType
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_Invalid")]
+    kERankTypeInvalid = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_Casual")]
+    kERankTypeCasual = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_Ranked")]
+    kERankTypeRanked = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_CasualLegacy")]
+    kERankTypeCasualLegacy = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_RankedLegacy")]
+    kERankTypeRankedLegacy = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_CasualGlicko")]
+    kERankTypeCasualGlicko = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_RankedGlicko")]
+    kERankTypeRankedGlicko = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_RankMax")]
+    kERankTypeRankMax = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_BehaviorPrivate")]
+    kERankTypeBehaviorPrivate = 100,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_BehaviorPublic")]
+    kERankTypeBehaviorPublic = 101,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ERankType_Max")]
+    kERankTypeMax = 102,
 }
 
 [global::ProtoBuf.ProtoContract(Name = @"DOTALeaverStatus_t")]
@@ -1159,6 +1636,8 @@ public enum DOTALeaverStatust
     DotaLeaverFailedToReadyUp = 7,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LEAVER_DECLINED")]
     DotaLeaverDeclined = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LEAVER_DECLINED_REQUEUE")]
+    DotaLeaverDeclinedRequeue = 9,
 }
 
 [global::ProtoBuf.ProtoContract(Name = @"DOTAConnectionState_t")]
@@ -1193,6 +1672,51 @@ public enum FantasyRoles
     FantasyRoleOfflane = 3,
     [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_ROLE_MID")]
     FantasyRoleMid = 4,
+}
+
+[global::ProtoBuf.ProtoContract(Name = @"Fantasy_Scoring")]
+public enum FantasyScoring
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_KILLS")]
+    FantasyScoringKills = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_DEATHS")]
+    FantasyScoringDeaths = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_CS")]
+    FantasyScoringCs = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_GPM")]
+    FantasyScoringGpm = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_TOWER_KILLS")]
+    FantasyScoringTowerKills = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_ROSHAN_KILLS")]
+    FantasyScoringRoshanKills = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_TEAMFIGHT_PARTICIPATION")]
+    FantasyScoringTeamfightParticipation = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_WARDS_PLANTED")]
+    FantasyScoringWardsPlanted = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_CAMPS_STACKED")]
+    FantasyScoringCampsStacked = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_RUNES_GRABBED")]
+    FantasyScoringRunesGrabbed = 9,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_FIRST_BLOOD")]
+    FantasyScoringFirstBlood = 10,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_STUNS")]
+    FantasyScoringStuns = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_SMOKES_USED")]
+    FantasyScoringSmokesUsed = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_MADSTONE")]
+    FantasyScoringMadstone = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_WATCHERS_TAKEN")]
+    FantasyScoringWatchersTaken = 14,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_LOTUSES_GAINED")]
+    FantasyScoringLotusesGained = 15,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_TORMENTOR_KILLS")]
+    FantasyScoringTormentorKills = 16,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_COURIER_KILLS")]
+    FantasyScoringCourierKills = 17,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_TYPES")]
+    FantasyScoringTypes = 18,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_SCORING_INVALID")]
+    FantasyScoringInvalid = 19,
 }
 
 [global::ProtoBuf.ProtoContract(Name = @"Fantasy_Team_Slots")]
@@ -1235,6 +1759,17 @@ public enum FantasySelectionMode
     FantasySelectionCardBased = 9,
 }
 
+[global::ProtoBuf.ProtoContract(Name = @"Fantasy_Gem_Type")]
+public enum FantasyGemType
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_GEM_TYPE_RUBY")]
+    FantasyGemTypeRuby = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_GEM_TYPE_SAPPHIRE")]
+    FantasyGemTypeSapphire = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"FANTASY_GEM_TYPE_EMERALD")]
+    FantasyGemTypeEmerald = 2,
+}
+
 [global::ProtoBuf.ProtoContract(Name = @"DOTAChatChannelType_t")]
 public enum DOTAChatChannelTypet
 {
@@ -1266,6 +1801,8 @@ public enum DOTAChatChannelTypet
     DOTAChannelTypeGameAllies = 12,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTAChannelType_GameSpectator")]
     DOTAChannelTypeGameSpectator = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTAChannelType_GameCoaching")]
+    DOTAChannelTypeGameCoaching = 14,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTAChannelType_Cafe")]
     DOTAChannelTypeCafe = 15,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTAChannelType_CustomGame")]
@@ -1282,6 +1819,94 @@ public enum DOTAChatChannelTypet
     DOTAChannelTypeGameEvents = 21,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTAChannelType_Trivia")]
     DOTAChannelTypeTrivia = 22,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTAChannelType_NewPlayer")]
+    DOTAChannelTypeNewPlayer = 23,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTAChannelType_PrivateCoaching")]
+    DOTAChannelTypePrivateCoaching = 24,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum EChatSpecialPrivileges
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EChatSpecialPrivileges_None")]
+    kEChatSpecialPrivilegesNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EChatSpecialPrivileges_Moderator")]
+    kEChatSpecialPrivilegesModerator = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EChatSpecialPrivileges_SuperModerator")]
+    kEChatSpecialPrivilegesSuperModerator = 2,
+}
+
+[global::ProtoBuf.ProtoContract(Name = @"DOTACommType_t")]
+public enum DOTACommTypet
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_NONE")]
+    DotaCommTypeNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_PING")]
+    DotaCommTypePing = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_CHATWHEEL")]
+    DotaCommTypeChatwheel = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_TIP")]
+    DotaCommTypeTip = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_TEXT")]
+    DotaCommTypeText = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_SHOWCASE")]
+    DotaCommTypeShowcase = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_VOICE")]
+    DotaCommTypeVoice = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_ALLY_ABILITY")]
+    DotaCommTypeAllyAbility = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_PAUSE")]
+    DotaCommTypePause = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_COACHING")]
+    DotaCommTypeCoaching = 9,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_NOCOOLDOWN")]
+    DotaCommTypeNocooldown = 10,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_RANKEDMATCHMAKE")]
+    DotaCommTypeRankedmatchmake = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_DROPS")]
+    DotaCommTypeDrops = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_NEWPLAYER_EXPERT")]
+    DotaCommTypeNewplayerExpert = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_COACHED")]
+    DotaCommTypeCoached = 14,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_TYPE_MAPDRAWING")]
+    DotaCommTypeMapdrawing = 15,
+}
+
+[global::ProtoBuf.ProtoContract(Name = @"DOTACommLevel_t")]
+public enum DOTACommLevelt
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_NONE")]
+    DotaCommLevelNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_COOLDOWN")]
+    DotaCommLevelCooldown = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_PINGS")]
+    DotaCommLevelPings = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_MAPDRAWING")]
+    DotaCommLevelMapdrawing = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_CHAT")]
+    DotaCommLevelChat = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_TIPPING")]
+    DotaCommLevelTipping = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_VOICE")]
+    DotaCommLevelVoice = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMM_LEVEL_ALLIED_ABILITY")]
+    DotaCommLevelAlliedAbility = 7,
+}
+
+[global::ProtoBuf.ProtoContract(Name = @"DOTABehaviorLevel_t")]
+public enum DOTABehaviorLevelt
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BEHAVIOR_LEVEL_NONE")]
+    DotaBehaviorLevelNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BEHAVIOR_LEVEL_RANKED_ALLOWED")]
+    DotaBehaviorLevelRankedAllowed = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BEHAVIOR_LEVEL_PAUSING")]
+    DotaBehaviorLevelPausing = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BEHAVIOR_LEVEL_DROPS")]
+    DotaBehaviorLevelDrops = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BEHAVIOR_LEVEL_COACHING")]
+    DotaBehaviorLevelCoaching = 4,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1334,6 +1959,8 @@ public enum DOTALowPriorityBanType
     DotaLowPriorityBanReports = 1,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LOW_PRIORITY_BAN_SECONDARY_ABANDON")]
     DotaLowPriorityBanSecondaryAbandon = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LOW_PRIORITY_BAN_PRE_GAME_ROLE")]
+    DotaLowPriorityBanPreGameRole = 3,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1345,15 +1972,8 @@ public enum DOTALobbyReadyState
     DOTALobbyReadyStateACCEPTED = 1,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTALobbyReadyState_DECLINED")]
     DOTALobbyReadyStateDECLINED = 2,
-}
-
-[global::ProtoBuf.ProtoContract()]
-public enum DOTAGameVersion
-{
-    [global::ProtoBuf.ProtoEnum(Name = @"GAME_VERSION_CURRENT")]
-    GameVersionCurrent = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"GAME_VERSION_STABLE")]
-    GameVersionStable = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTALobbyReadyState_DECLINED_REQUEUE")]
+    DOTALobbyReadyStateDECLINEDREQUEUE = 3,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1387,6 +2007,8 @@ public enum DOTAJoinLobbyResult
     DotaJoinResultCustomGameCooldown = 12,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_JOIN_RESULT_BUSY")]
     DotaJoinResultBusy = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_JOIN_RESULT_NO_PLAYTIME")]
+    DotaJoinResultNoPlaytime = 14,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1424,23 +2046,6 @@ public enum DOTAMatchVote
     DOTAMatchVoteNEGATIVE = 2,
 }
 
-[global::ProtoBuf.ProtoContract(Name = @"DOTA_LobbyMemberXPBonus")]
-public enum DOTALobbyMemberXPBonus
-{
-    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LobbyMemberXPBonus_DEFAULT")]
-    DOTALobbyMemberXPBonusDEFAULT = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LobbyMemberXPBonus_BATTLE_BOOSTER")]
-    DOTALobbyMemberXPBonusBATTLEBOOSTER = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LobbyMemberXPBonus_SHARE_BONUS")]
-    DOTALobbyMemberXPBonusSHAREBONUS = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LobbyMemberXPBonus_PARTY")]
-    DOTALobbyMemberXPBonusPARTY = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LobbyMemberXPBonus_RECRUITMENT")]
-    DOTALobbyMemberXPBonusRECRUITMENT = 4,
-    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_LobbyMemberXPBonus_PCBANG")]
-    DOTALobbyMemberXPBonusPCBANG = 5,
-}
-
 [global::ProtoBuf.ProtoContract()]
 public enum DOTALobbyVisibility
 {
@@ -1459,20 +2064,19 @@ public enum EDOTAPlayerMMRType
     kEDOTAPlayerMMRTypeInvalid = 0,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_GeneralHidden")]
     kEDOTAPlayerMMRTypeGeneralHidden = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_GeneralCompetitive2019")]
-    kEDOTAPlayerMMRTypeGeneralCompetitive2019 = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_SoloCompetitive2019")]
-    kEDOTAPlayerMMRTypeSoloCompetitive2019 = 4,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_1v1Competitive_UNUSED")]
-    kEDOTAPlayerMMRType1v1CompetitiveUNUSED = 5,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_GeneralSeasonalRanked")]
-    kEDOTAPlayerMMRTypeGeneralSeasonalRanked = 6,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_SoloSeasonalRanked")]
-    kEDOTAPlayerMMRTypeSoloSeasonalRanked = 7,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_Competitive_Core")]
-    kEDOTAPlayerMMRTypeCompetitiveCore = 8,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_Competitive_Support")]
-    kEDOTAPlayerMMRTypeCompetitiveSupport = 9,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAPlayerMMRType_GeneralCompetitive")]
+    kEDOTAPlayerMMRTypeGeneralCompetitive = 3,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum EDOTAMMRBoostType
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAMMRBoostType_None")]
+    kEDOTAMMRBoostTypeNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAMMRBoostType_Leader")]
+    kEDOTAMMRBoostTypeLeader = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EDOTAMMRBoostType_Follower")]
+    kEDOTAMMRBoostTypeFollower = 2,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1482,28 +2086,16 @@ public enum MatchType
     MatchTypeCasual = 0,
     [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_COOP_BOTS")]
     MatchTypeCoopBots = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_LEGACY_TEAM_RANKED")]
-    MatchTypeLegacyTeamRanked = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_LEGACY_SOLO_QUEUE")]
-    MatchTypeLegacySoloQueue = 3,
     [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_COMPETITIVE")]
     MatchTypeCompetitive = 4,
     [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_WEEKEND_TOURNEY")]
     MatchTypeWeekendTourney = 5,
-    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_CASUAL_1V1")]
-    MatchTypeCasual1v1 = 6,
     [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_EVENT")]
     MatchTypeEvent = 7,
-    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_SEASONAL_RANKED")]
-    MatchTypeSeasonalRanked = 8,
-    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_LOWPRI_DEPRECATED")]
-    MatchTypeLowpriDeprecated = 9,
-    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_STEAM_GROUP")]
-    MatchTypeSteamGroup = 10,
-    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_MUTATION")]
-    MatchTypeMutation = 11,
     [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_COACHES_CHALLENGE")]
     MatchTypeCoachesChallenge = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"MATCH_TYPE_NEW_PLAYER_POOL")]
+    MatchTypeNewPlayerPool = 14,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1527,6 +2119,8 @@ public enum DOTABotDifficulty
     BotDifficultyExtra2 = 7,
     [global::ProtoBuf.ProtoEnum(Name = @"BOT_DIFFICULTY_EXTRA3")]
     BotDifficultyExtra3 = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"BOT_DIFFICULTY_NPX")]
+    BotDifficultyNpx = 9,
 }
 
 [global::ProtoBuf.ProtoContract(Name = @"DOTA_BOT_MODE")]
@@ -1584,6 +2178,18 @@ public enum DotaBotMode
     DotaBotModeTutorialBoss = 24,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BOT_MODE_MINION")]
     DotaBotModeMinion = 25,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BOT_MODE_OUTPOST")]
+    DotaBotModeOutpost = 26,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BOT_MODE_BOT_CHALLENGE_ENDGAME")]
+    DotaBotModeBotChallengeEndgame = 27,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BOT_MODE_WATCHER")]
+    DotaBotModeWatcher = 28,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BOT_MODE_WISDOM_SHRINE")]
+    DotaBotModeWisdomShrine = 29,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BOT_MODE_LOTUS_POOL")]
+    DotaBotModeLotusPool = 30,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_BOT_MODE_DEWARD")]
+    DotaBotModeDeward = 31,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1635,6 +2241,26 @@ public enum EMatchOutcome
     kEMatchOutcomeRadVictory = 2,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_DireVictory")]
     kEMatchOutcomeDireVictory = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_NeutralVictory")]
+    kEMatchOutcomeNeutralVictory = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_NoTeamWinner")]
+    kEMatchOutcomeNoTeamWinner = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom1Victory")]
+    kEMatchOutcomeCustom1Victory = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom2Victory")]
+    kEMatchOutcomeCustom2Victory = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom3Victory")]
+    kEMatchOutcomeCustom3Victory = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom4Victory")]
+    kEMatchOutcomeCustom4Victory = 9,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom5Victory")]
+    kEMatchOutcomeCustom5Victory = 10,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom6Victory")]
+    kEMatchOutcomeCustom6Victory = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom7Victory")]
+    kEMatchOutcomeCustom7Victory = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_Custom8Victory")]
+    kEMatchOutcomeCustom8Victory = 13,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_NotScored_PoorNetworkConditions")]
     kEMatchOutcomeNotScoredPoorNetworkConditions = 64,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_NotScored_Leaver")]
@@ -1645,6 +2271,8 @@ public enum EMatchOutcome
     kEMatchOutcomeNotScoredNeverStarted = 67,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_NotScored_Canceled")]
     kEMatchOutcomeNotScoredCanceled = 68,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMatchOutcome_NotScored_Suspicious")]
+    kEMatchOutcomeNotScoredSuspicious = 69,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1667,6 +2295,8 @@ public enum ELaneType
 [global::ProtoBuf.ProtoContract()]
 public enum EBadgeType
 {
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_Invalid")]
+    kEBadgeTypeInvalid = 0,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI7_Midweek")]
     kEBadgeTypeTI7Midweek = 1,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI7_Finals")]
@@ -1679,6 +2309,46 @@ public enum EBadgeType
     kEBadgeTypeTI8Finals = 5,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI8_AllEvent")]
     kEBadgeTypeTI8AllEvent = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI10")]
+    kEBadgeTypeTI10 = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI11_PlayoffsDay1")]
+    kEBadgeTypeTI11PlayoffsDay1 = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI11_PlayoffsDay2")]
+    kEBadgeTypeTI11PlayoffsDay2 = 9,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI11_PlayoffsDay3")]
+    kEBadgeTypeTI11PlayoffsDay3 = 10,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI11_PlayoffsDay4")]
+    kEBadgeTypeTI11PlayoffsDay4 = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI11_FinalsWeekend")]
+    kEBadgeTypeTI11FinalsWeekend = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI12_PlayoffsDay1")]
+    kEBadgeTypeTI12PlayoffsDay1 = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI12_PlayoffsDay2")]
+    kEBadgeTypeTI12PlayoffsDay2 = 14,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI12_PlayoffsDay3")]
+    kEBadgeTypeTI12PlayoffsDay3 = 15,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI12_FinalsWeekend")]
+    kEBadgeTypeTI12FinalsWeekend = 16,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI12_Special")]
+    kEBadgeTypeTI12Special = 17,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI13_FinalsDay1")]
+    kEBadgeTypeTI13FinalsDay1 = 18,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI13_FinalsDay2")]
+    kEBadgeTypeTI13FinalsDay2 = 19,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI13_FinalsDay3")]
+    kEBadgeTypeTI13FinalsDay3 = 20,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI13_Special")]
+    kEBadgeTypeTI13Special = 21,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI14_FinalsDay1")]
+    kEBadgeTypeTI14FinalsDay1 = 22,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI14_FinalsDay2")]
+    kEBadgeTypeTI14FinalsDay2 = 23,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI14_FinalsDay3")]
+    kEBadgeTypeTI14FinalsDay3 = 24,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI14_FinalsDay4")]
+    kEBadgeTypeTI14FinalsDay4 = 25,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EBadgeType_TI14_Special")]
+    kEBadgeTypeTI14Special = 26,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1709,10 +2379,10 @@ public enum ELeagueRegion
     LeagueRegionNa = 1,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_REGION_SA")]
     LeagueRegionSa = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_REGION_EUROPE")]
-    LeagueRegionEurope = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_REGION_CIS")]
-    LeagueRegionCis = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_REGION_WEU")]
+    LeagueRegionWeu = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_REGION_EEU")]
+    LeagueRegionEeu = 4,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_REGION_CHINA")]
     LeagueRegionChina = 5,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_REGION_SEA")]
@@ -1734,6 +2404,14 @@ public enum ELeagueTier
     LeagueTierMajor = 4,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_TIER_INTERNATIONAL")]
     LeagueTierInternational = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_TIER_DPC_QUALIFIER")]
+    LeagueTierDpcQualifier = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_TIER_DPC_LEAGUE_QUALIFIER")]
+    LeagueTierDpcLeagueQualifier = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_TIER_DPC_LEAGUE")]
+    LeagueTierDpcLeague = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_TIER_DPC_LEAGUE_FINALS")]
+    LeagueTierDpcLeagueFinals = 9,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1748,18 +2426,14 @@ public enum ELeagueTierCategory
 }
 
 [global::ProtoBuf.ProtoContract()]
-public enum ELeagueFlags
+public enum ELeagueDivision
 {
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FLAGS_NONE")]
-    LeagueFlagsNone = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_ACCEPTED_AGREEMENT")]
-    LeagueAcceptedAgreement = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_PAYMENT_EMAIL_SENT")]
-    LeaguePaymentEmailSent = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_COMPENDIUM_ALLOWED")]
-    LeagueCompendiumAllowed = 4,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_COMPENDIUM_PUBLIC")]
-    LeagueCompendiumPublic = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_DIVISION_UNSET")]
+    LeagueDivisionUnset = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_DIVISION_I")]
+    LeagueDivisionI = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_DIVISION_II")]
+    LeagueDivisionIi = 2,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1788,27 +2462,6 @@ public enum ELeaguePhase
     LeaguePhaseGroupStage = 2,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_PHASE_MAIN_EVENT")]
     LeaguePhaseMainEvent = 3,
-}
-
-[global::ProtoBuf.ProtoContract()]
-public enum ELeagueFantasyPhase
-{
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_UNSET")]
-    LeagueFantasyPhaseUnset = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_MAIN")]
-    LeagueFantasyPhaseMain = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_QUALIFIER_NA")]
-    LeagueFantasyPhaseQualifierNa = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_QUALIFIER_SA")]
-    LeagueFantasyPhaseQualifierSa = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_QUALIFIER_EUROPE")]
-    LeagueFantasyPhaseQualifierEurope = 4,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_QUALIFIER_CIS")]
-    LeagueFantasyPhaseQualifierCis = 5,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_QUALIFIER_CHINA")]
-    LeagueFantasyPhaseQualifierChina = 6,
-    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_FANTASY_PHASE_QUALIFIER_SEA")]
-    LeagueFantasyPhaseQualifierSea = 7,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1856,6 +2509,8 @@ public enum ELeagueAuditAction
     LeagueAuditActionLeagueStatusChanged = 19,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_LEAGUE_STREAM_EDIT")]
     LeagueAuditActionLeagueStreamEdit = 20,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_LEAGUE_TEAM_SWAP")]
+    LeagueAuditActionLeagueTeamSwap = 21,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_NODEGROUP_CREATE")]
     LeagueAuditActionNodegroupCreate = 100,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_NODEGROUP_DESTROY")]
@@ -1872,6 +2527,10 @@ public enum ELeagueAuditAction
     LeagueAuditActionNodegroupPopulate = 106,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_NODEGROUP_COMPLETED")]
     LeagueAuditActionNodegroupCompleted = 107,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_NODEGROUP_SET_SECONDARY_ADVANCING")]
+    LeagueAuditActionNodegroupSetSecondaryAdvancing = 108,
+    [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_NODEGROUP_SET_TERTIARY_ADVANCING")]
+    LeagueAuditActionNodegroupSetTertiaryAdvancing = 109,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_NODE_CREATE")]
     LeagueAuditActionNodeCreate = 200,
     [global::ProtoBuf.ProtoEnum(Name = @"LEAGUE_AUDIT_ACTION_NODE_DESTROY")]
@@ -1985,6 +2644,10 @@ public enum DotaCombatlogTypes
     DotaCombatlogUnitTeleported = 41,
     [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMBATLOG_KILL_EATER_EVENT")]
     DotaCombatlogKillEaterEvent = 42,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMBATLOG_NEUTRAL_ITEM_EARNED")]
+    DotaCombatlogNeutralItemEarned = 43,
+    [global::ProtoBuf.ProtoEnum(Name = @"DOTA_COMBATLOG_STAT_TRACKER_PLAYER")]
+    DotaCombatlogStatTrackerPlayer = 44,
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -2009,6 +2672,10 @@ public enum EDPCPushNotification
     DpcPushNotificationPlayerLeftTeam = 10,
     [global::ProtoBuf.ProtoEnum(Name = @"DPC_PUSH_NOTIFICATION_PLAYER_JOINED_TEAM")]
     DpcPushNotificationPlayerJoinedTeam = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"DPC_PUSH_NOTIFICATION_PLAYER_JOINED_TEAM_AS_COACH")]
+    DpcPushNotificationPlayerJoinedTeamAsCoach = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"DPC_PUSH_NOTIFICATION_PLAYER_LEFT_TEAM_AS_COACH")]
+    DpcPushNotificationPlayerLeftTeamAsCoach = 13,
     [global::ProtoBuf.ProtoEnum(Name = @"DPC_PUSH_NOTIFICATION_LEAGUE_RESULT")]
     DpcPushNotificationLeagueResult = 20,
     [global::ProtoBuf.ProtoEnum(Name = @"DPC_PUSH_NOTIFICATION_PREDICTION_MATCHES_AVAILABLE")]
@@ -2021,6 +2688,88 @@ public enum EDPCPushNotification
     DpcPushNotificationFantasyDailySummary = 41,
     [global::ProtoBuf.ProtoEnum(Name = @"DPC_PUSH_NOTIFICATION_FANTASY_FINAL_RESULTS")]
     DpcPushNotificationFantasyFinalResults = 42,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum EEventActionScoreMode
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_eEventActionScoreMode_Add")]
+    keEventActionScoreModeAdd = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_eEventActionScoreMode_Min")]
+    keEventActionScoreModeMin = 1,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum EPlayerChallengeHistoryType
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPlayerChallengeHistoryType_Invalid")]
+    kEPlayerChallengeHistoryTypeInvalid = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPlayerChallengeHistoryType_KillEater")]
+    kEPlayerChallengeHistoryTypeKillEater = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPlayerChallengeHistoryType_DotaPlusRelic")]
+    kEPlayerChallengeHistoryTypeDotaPlusRelic = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPlayerChallengeHistoryType_DotaPlusHeroPlayerChallenge")]
+    kEPlayerChallengeHistoryTypeDotaPlusHeroPlayerChallenge = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPlayerChallengeHistoryType_InGameEventChallenge")]
+    kEPlayerChallengeHistoryTypeInGameEventChallenge = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EPlayerChallengeHistoryType_GuildContract")]
+    kEPlayerChallengeHistoryTypeGuildContract = 5,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum EOverwatchReportReason
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EOverwatchReportReason_Unknown")]
+    kEOverwatchReportReasonUnknown = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EOverwatchReportReason_Cheating")]
+    kEOverwatchReportReasonCheating = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EOverwatchReportReason_Feeding")]
+    kEOverwatchReportReasonFeeding = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EOverwatchReportReason_Griefing")]
+    kEOverwatchReportReasonGriefing = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EOverwatchReportReason_Suspicious")]
+    kEOverwatchReportReasonSuspicious = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EOverwatchReportReason_AbilityAbuse")]
+    kEOverwatchReportReasonAbilityAbuse = 5,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum ECandyShopUpgrade
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ECandyShopUpgradeInvalid")]
+    kECandyShopUpgradeInvalid = -1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ECandyShopUpgrade_InventorySize")]
+    kECandyShopUpgradeInventorySize = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ECandyShopUpgrade_RewardShelf")]
+    kECandyShopUpgradeRewardShelf = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_ECandyShopUpgrade_ExtraExchangeRecipe")]
+    kECandyShopUpgradeExtraExchangeRecipe = 2,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum EItemSuggestPreference
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EItemSuggestPreference_None")]
+    kEItemSuggestPreferenceNone = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EItemSuggestPreference_Liked")]
+    kEItemSuggestPreferenceLiked = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EItemSuggestPreference_Disliked")]
+    kEItemSuggestPreferenceDisliked = 2,
+}
+
+[global::ProtoBuf.ProtoContract()]
+public enum ETimerAlertType
+{
+    [global::ProtoBuf.ProtoEnum(Name = @"k_TimerAlertType_PowerRune")]
+    kTimerAlertTypePowerRune = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_TimerAlertType_BountyRune")]
+    kTimerAlertTypeBountyRune = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_TimerAlertType_WisdomShrine")]
+    kTimerAlertTypeWisdomShrine = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_TimerAlertType_JungleCamps")]
+    kTimerAlertTypeJungleCamps = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_TimerAlertType_LotusPool")]
+    kTimerAlertTypeLotusPool = 5,
 }
 
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

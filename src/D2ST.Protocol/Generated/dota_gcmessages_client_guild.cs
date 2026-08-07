@@ -7,7 +7,422 @@
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildSDO : global::ProtoBuf.IExtensible
+public partial class CMsgGuildInfo : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_name")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string GuildName
+    {
+        get => __pbn__GuildName ?? "";
+        set => __pbn__GuildName = value;
+    }
+    public bool ShouldSerializeGuildName() => __pbn__GuildName != null;
+    public void ResetGuildName() => __pbn__GuildName = null;
+    private string __pbn__GuildName;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_tag")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string GuildTag
+    {
+        get => __pbn__GuildTag ?? "";
+        set => __pbn__GuildTag = value;
+    }
+    public bool ShouldSerializeGuildTag() => __pbn__GuildTag != null;
+    public void ResetGuildTag() => __pbn__GuildTag = null;
+    private string __pbn__GuildTag;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"created_timestamp")]
+    public uint CreatedTimestamp
+    {
+        get => __pbn__CreatedTimestamp.GetValueOrDefault();
+        set => __pbn__CreatedTimestamp = value;
+    }
+    public bool ShouldSerializeCreatedTimestamp() => __pbn__CreatedTimestamp != null;
+    public void ResetCreatedTimestamp() => __pbn__CreatedTimestamp = null;
+    private uint? __pbn__CreatedTimestamp;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"guild_language")]
+    public uint GuildLanguage
+    {
+        get => __pbn__GuildLanguage.GetValueOrDefault();
+        set => __pbn__GuildLanguage = value;
+    }
+    public bool ShouldSerializeGuildLanguage() => __pbn__GuildLanguage != null;
+    public void ResetGuildLanguage() => __pbn__GuildLanguage = null;
+    private uint? __pbn__GuildLanguage;
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"guild_flags")]
+    public uint GuildFlags
+    {
+        get => __pbn__GuildFlags.GetValueOrDefault();
+        set => __pbn__GuildFlags = value;
+    }
+    public bool ShouldSerializeGuildFlags() => __pbn__GuildFlags != null;
+    public void ResetGuildFlags() => __pbn__GuildFlags = null;
+    private uint? __pbn__GuildFlags;
+
+    [global::ProtoBuf.ProtoMember(7, Name = @"guild_logo")]
+    public ulong GuildLogo
+    {
+        get => __pbn__GuildLogo.GetValueOrDefault();
+        set => __pbn__GuildLogo = value;
+    }
+    public bool ShouldSerializeGuildLogo() => __pbn__GuildLogo != null;
+    public void ResetGuildLogo() => __pbn__GuildLogo = null;
+    private ulong? __pbn__GuildLogo;
+
+    [global::ProtoBuf.ProtoMember(8, Name = @"guild_region")]
+    public uint GuildRegion
+    {
+        get => __pbn__GuildRegion.GetValueOrDefault();
+        set => __pbn__GuildRegion = value;
+    }
+    public bool ShouldSerializeGuildRegion() => __pbn__GuildRegion != null;
+    public void ResetGuildRegion() => __pbn__GuildRegion = null;
+    private uint? __pbn__GuildRegion;
+
+    [global::ProtoBuf.ProtoMember(9, Name = @"guild_chat_group_id")]
+    public ulong GuildChatGroupId
+    {
+        get => __pbn__GuildChatGroupId.GetValueOrDefault();
+        set => __pbn__GuildChatGroupId = value;
+    }
+    public bool ShouldSerializeGuildChatGroupId() => __pbn__GuildChatGroupId != null;
+    public void ResetGuildChatGroupId() => __pbn__GuildChatGroupId = null;
+    private ulong? __pbn__GuildChatGroupId;
+
+    [global::ProtoBuf.ProtoMember(10, Name = @"guild_description")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string GuildDescription
+    {
+        get => __pbn__GuildDescription ?? "";
+        set => __pbn__GuildDescription = value;
+    }
+    public bool ShouldSerializeGuildDescription() => __pbn__GuildDescription != null;
+    public void ResetGuildDescription() => __pbn__GuildDescription = null;
+    private string __pbn__GuildDescription;
+
+    [global::ProtoBuf.ProtoMember(11, Name = @"default_chat_channel_id")]
+    public ulong DefaultChatChannelId
+    {
+        get => __pbn__DefaultChatChannelId.GetValueOrDefault();
+        set => __pbn__DefaultChatChannelId = value;
+    }
+    public bool ShouldSerializeDefaultChatChannelId() => __pbn__DefaultChatChannelId != null;
+    public void ResetDefaultChatChannelId() => __pbn__DefaultChatChannelId = null;
+    private ulong? __pbn__DefaultChatChannelId;
+
+    [global::ProtoBuf.ProtoMember(12, Name = @"guild_primary_color")]
+    public uint GuildPrimaryColor
+    {
+        get => __pbn__GuildPrimaryColor.GetValueOrDefault();
+        set => __pbn__GuildPrimaryColor = value;
+    }
+    public bool ShouldSerializeGuildPrimaryColor() => __pbn__GuildPrimaryColor != null;
+    public void ResetGuildPrimaryColor() => __pbn__GuildPrimaryColor = null;
+    private uint? __pbn__GuildPrimaryColor;
+
+    [global::ProtoBuf.ProtoMember(13, Name = @"guild_secondary_color")]
+    public uint GuildSecondaryColor
+    {
+        get => __pbn__GuildSecondaryColor.GetValueOrDefault();
+        set => __pbn__GuildSecondaryColor = value;
+    }
+    public bool ShouldSerializeGuildSecondaryColor() => __pbn__GuildSecondaryColor != null;
+    public void ResetGuildSecondaryColor() => __pbn__GuildSecondaryColor = null;
+    private uint? __pbn__GuildSecondaryColor;
+
+    [global::ProtoBuf.ProtoMember(14, Name = @"guild_pattern")]
+    public uint GuildPattern
+    {
+        get => __pbn__GuildPattern.GetValueOrDefault();
+        set => __pbn__GuildPattern = value;
+    }
+    public bool ShouldSerializeGuildPattern() => __pbn__GuildPattern != null;
+    public void ResetGuildPattern() => __pbn__GuildPattern = null;
+    private uint? __pbn__GuildPattern;
+
+    [global::ProtoBuf.ProtoMember(15, Name = @"guild_refresh_time_offset")]
+    public uint GuildRefreshTimeOffset
+    {
+        get => __pbn__GuildRefreshTimeOffset.GetValueOrDefault();
+        set => __pbn__GuildRefreshTimeOffset = value;
+    }
+    public bool ShouldSerializeGuildRefreshTimeOffset() => __pbn__GuildRefreshTimeOffset != null;
+    public void ResetGuildRefreshTimeOffset() => __pbn__GuildRefreshTimeOffset = null;
+    private uint? __pbn__GuildRefreshTimeOffset;
+
+    [global::ProtoBuf.ProtoMember(16, Name = @"guild_required_rank_tier")]
+    public uint GuildRequiredRankTier
+    {
+        get => __pbn__GuildRequiredRankTier.GetValueOrDefault();
+        set => __pbn__GuildRequiredRankTier = value;
+    }
+    public bool ShouldSerializeGuildRequiredRankTier() => __pbn__GuildRequiredRankTier != null;
+    public void ResetGuildRequiredRankTier() => __pbn__GuildRequiredRankTier = null;
+    private uint? __pbn__GuildRequiredRankTier;
+
+    [global::ProtoBuf.ProtoMember(17, Name = @"guild_motd_timestamp")]
+    public uint GuildMotdTimestamp
+    {
+        get => __pbn__GuildMotdTimestamp.GetValueOrDefault();
+        set => __pbn__GuildMotdTimestamp = value;
+    }
+    public bool ShouldSerializeGuildMotdTimestamp() => __pbn__GuildMotdTimestamp != null;
+    public void ResetGuildMotdTimestamp() => __pbn__GuildMotdTimestamp = null;
+    private uint? __pbn__GuildMotdTimestamp;
+
+    [global::ProtoBuf.ProtoMember(18, Name = @"guild_motd")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string GuildMotd
+    {
+        get => __pbn__GuildMotd ?? "";
+        set => __pbn__GuildMotd = value;
+    }
+    public bool ShouldSerializeGuildMotd() => __pbn__GuildMotd != null;
+    public void ResetGuildMotd() => __pbn__GuildMotd = null;
+    private string __pbn__GuildMotd;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGuildSummary : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_info")]
+    public CMsgGuildInfo GuildInfo { get; set; }
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"member_count")]
+    public uint MemberCount
+    {
+        get => __pbn__MemberCount.GetValueOrDefault();
+        set => __pbn__MemberCount = value;
+    }
+    public bool ShouldSerializeMemberCount() => __pbn__MemberCount != null;
+    public void ResetMemberCount() => __pbn__MemberCount = null;
+    private uint? __pbn__MemberCount;
+
+    [global::ProtoBuf.ProtoMember(3)]
+    public global::System.Collections.Generic.List<EventPoints> event_points { get; } = new global::System.Collections.Generic.List<EventPoints>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class EventPoints : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"event_id")]
+        public uint EventId
+        {
+            get => __pbn__EventId.GetValueOrDefault();
+            set => __pbn__EventId = value;
+        }
+        public bool ShouldSerializeEventId() => __pbn__EventId != null;
+        public void ResetEventId() => __pbn__EventId = null;
+        private uint? __pbn__EventId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"guild_points")]
+        public uint GuildPoints
+        {
+            get => __pbn__GuildPoints.GetValueOrDefault();
+            set => __pbn__GuildPoints = value;
+        }
+        public bool ShouldSerializeGuildPoints() => __pbn__GuildPoints != null;
+        public void ResetGuildPoints() => __pbn__GuildPoints = null;
+        private uint? __pbn__GuildPoints;
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"guild_rank")]
+        public uint GuildRank
+        {
+            get => __pbn__GuildRank.GetValueOrDefault();
+            set => __pbn__GuildRank = value;
+        }
+        public bool ShouldSerializeGuildRank() => __pbn__GuildRank != null;
+        public void ResetGuildRank() => __pbn__GuildRank = null;
+        private uint? __pbn__GuildRank;
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"guild_weekly_rank")]
+        public uint GuildWeeklyRank
+        {
+            get => __pbn__GuildWeeklyRank.GetValueOrDefault();
+            set => __pbn__GuildWeeklyRank = value;
+        }
+        public bool ShouldSerializeGuildWeeklyRank() => __pbn__GuildWeeklyRank != null;
+        public void ResetGuildWeeklyRank() => __pbn__GuildWeeklyRank = null;
+        private uint? __pbn__GuildWeeklyRank;
+
+        [global::ProtoBuf.ProtoMember(5, Name = @"guild_weekly_percentile")]
+        public uint GuildWeeklyPercentile
+        {
+            get => __pbn__GuildWeeklyPercentile.GetValueOrDefault();
+            set => __pbn__GuildWeeklyPercentile = value;
+        }
+        public bool ShouldSerializeGuildWeeklyPercentile() => __pbn__GuildWeeklyPercentile != null;
+        public void ResetGuildWeeklyPercentile() => __pbn__GuildWeeklyPercentile = null;
+        private uint? __pbn__GuildWeeklyPercentile;
+
+        [global::ProtoBuf.ProtoMember(6, Name = @"guild_current_percentile")]
+        public uint GuildCurrentPercentile
+        {
+            get => __pbn__GuildCurrentPercentile.GetValueOrDefault();
+            set => __pbn__GuildCurrentPercentile = value;
+        }
+        public bool ShouldSerializeGuildCurrentPercentile() => __pbn__GuildCurrentPercentile != null;
+        public void ResetGuildCurrentPercentile() => __pbn__GuildCurrentPercentile = null;
+        private uint? __pbn__GuildCurrentPercentile;
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGuildRole : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"role_id")]
+    public uint RoleId
+    {
+        get => __pbn__RoleId.GetValueOrDefault();
+        set => __pbn__RoleId = value;
+    }
+    public bool ShouldSerializeRoleId() => __pbn__RoleId != null;
+    public void ResetRoleId() => __pbn__RoleId = null;
+    private uint? __pbn__RoleId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"role_name")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string RoleName
+    {
+        get => __pbn__RoleName ?? "";
+        set => __pbn__RoleName = value;
+    }
+    public bool ShouldSerializeRoleName() => __pbn__RoleName != null;
+    public void ResetRoleName() => __pbn__RoleName = null;
+    private string __pbn__RoleName;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"role_flags")]
+    public uint RoleFlags
+    {
+        get => __pbn__RoleFlags.GetValueOrDefault();
+        set => __pbn__RoleFlags = value;
+    }
+    public bool ShouldSerializeRoleFlags() => __pbn__RoleFlags != null;
+    public void ResetRoleFlags() => __pbn__RoleFlags = null;
+    private uint? __pbn__RoleFlags;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"role_order")]
+    public uint RoleOrder
+    {
+        get => __pbn__RoleOrder.GetValueOrDefault();
+        set => __pbn__RoleOrder = value;
+    }
+    public bool ShouldSerializeRoleOrder() => __pbn__RoleOrder != null;
+    public void ResetRoleOrder() => __pbn__RoleOrder = null;
+    private uint? __pbn__RoleOrder;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGuildMember : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"member_account_id")]
+    public uint MemberAccountId
+    {
+        get => __pbn__MemberAccountId.GetValueOrDefault();
+        set => __pbn__MemberAccountId = value;
+    }
+    public bool ShouldSerializeMemberAccountId() => __pbn__MemberAccountId != null;
+    public void ResetMemberAccountId() => __pbn__MemberAccountId = null;
+    private uint? __pbn__MemberAccountId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"member_role_id")]
+    public uint MemberRoleId
+    {
+        get => __pbn__MemberRoleId.GetValueOrDefault();
+        set => __pbn__MemberRoleId = value;
+    }
+    public bool ShouldSerializeMemberRoleId() => __pbn__MemberRoleId != null;
+    public void ResetMemberRoleId() => __pbn__MemberRoleId = null;
+    private uint? __pbn__MemberRoleId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"member_joined_timestamp")]
+    public uint MemberJoinedTimestamp
+    {
+        get => __pbn__MemberJoinedTimestamp.GetValueOrDefault();
+        set => __pbn__MemberJoinedTimestamp = value;
+    }
+    public bool ShouldSerializeMemberJoinedTimestamp() => __pbn__MemberJoinedTimestamp != null;
+    public void ResetMemberJoinedTimestamp() => __pbn__MemberJoinedTimestamp = null;
+    private uint? __pbn__MemberJoinedTimestamp;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"member_last_active_timestamp")]
+    public uint MemberLastActiveTimestamp
+    {
+        get => __pbn__MemberLastActiveTimestamp.GetValueOrDefault();
+        set => __pbn__MemberLastActiveTimestamp = value;
+    }
+    public bool ShouldSerializeMemberLastActiveTimestamp() => __pbn__MemberLastActiveTimestamp != null;
+    public void ResetMemberLastActiveTimestamp() => __pbn__MemberLastActiveTimestamp = null;
+    private uint? __pbn__MemberLastActiveTimestamp;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGuildInvite : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"requester_account_id")]
+    public uint RequesterAccountId
+    {
+        get => __pbn__RequesterAccountId.GetValueOrDefault();
+        set => __pbn__RequesterAccountId = value;
+    }
+    public bool ShouldSerializeRequesterAccountId() => __pbn__RequesterAccountId != null;
+    public void ResetRequesterAccountId() => __pbn__RequesterAccountId = null;
+    private uint? __pbn__RequesterAccountId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
+    public uint TargetAccountId
+    {
+        get => __pbn__TargetAccountId.GetValueOrDefault();
+        set => __pbn__TargetAccountId = value;
+    }
+    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
+    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
+    private uint? __pbn__TargetAccountId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"timestamp_sent")]
+    public uint TimestampSent
+    {
+        get => __pbn__TimestampSent.GetValueOrDefault();
+        set => __pbn__TimestampSent = value;
+    }
+    public bool ShouldSerializeTimestampSent() => __pbn__TimestampSent != null;
+    public void ResetTimestampSent() => __pbn__TimestampSent = null;
+    private uint? __pbn__TimestampSent;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGuildData : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -23,187 +438,22 @@ public partial class CMsgDOTAGuildSDO : global::ProtoBuf.IExtensible
     public void ResetGuildId() => __pbn__GuildId = null;
     private uint? __pbn__GuildId;
 
-    [global::ProtoBuf.ProtoMember(2, Name = @"name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Name
-    {
-        get => __pbn__Name ?? "";
-        set => __pbn__Name = value;
-    }
-    public bool ShouldSerializeName() => __pbn__Name != null;
-    public void ResetName() => __pbn__Name = null;
-    private string __pbn__Name;
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_info")]
+    public CMsgGuildInfo GuildInfo { get; set; }
 
-    [global::ProtoBuf.ProtoMember(3, Name = @"tag")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Tag
-    {
-        get => __pbn__Tag ?? "";
-        set => __pbn__Tag = value;
-    }
-    public bool ShouldSerializeTag() => __pbn__Tag != null;
-    public void ResetTag() => __pbn__Tag = null;
-    private string __pbn__Tag;
+    [global::ProtoBuf.ProtoMember(3, Name = @"guild_roles")]
+    public global::System.Collections.Generic.List<CMsgGuildRole> GuildRoles { get; } = new global::System.Collections.Generic.List<CMsgGuildRole>();
 
-    [global::ProtoBuf.ProtoMember(4, Name = @"time_created")]
-    public uint TimeCreated
-    {
-        get => __pbn__TimeCreated.GetValueOrDefault();
-        set => __pbn__TimeCreated = value;
-    }
-    public bool ShouldSerializeTimeCreated() => __pbn__TimeCreated != null;
-    public void ResetTimeCreated() => __pbn__TimeCreated = null;
-    private uint? __pbn__TimeCreated;
+    [global::ProtoBuf.ProtoMember(4, Name = @"guild_members")]
+    public global::System.Collections.Generic.List<CMsgGuildMember> GuildMembers { get; } = new global::System.Collections.Generic.List<CMsgGuildMember>();
 
-    [global::ProtoBuf.ProtoMember(5, Name = @"time_disbanded")]
-    public uint TimeDisbanded
-    {
-        get => __pbn__TimeDisbanded.GetValueOrDefault();
-        set => __pbn__TimeDisbanded = value;
-    }
-    public bool ShouldSerializeTimeDisbanded() => __pbn__TimeDisbanded != null;
-    public void ResetTimeDisbanded() => __pbn__TimeDisbanded = null;
-    private uint? __pbn__TimeDisbanded;
-
-    [global::ProtoBuf.ProtoMember(6, Name = @"logo")]
-    public ulong Logo
-    {
-        get => __pbn__Logo.GetValueOrDefault();
-        set => __pbn__Logo = value;
-    }
-    public bool ShouldSerializeLogo() => __pbn__Logo != null;
-    public void ResetLogo() => __pbn__Logo = null;
-    private ulong? __pbn__Logo;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"base_logo")]
-    public ulong BaseLogo
-    {
-        get => __pbn__BaseLogo.GetValueOrDefault();
-        set => __pbn__BaseLogo = value;
-    }
-    public bool ShouldSerializeBaseLogo() => __pbn__BaseLogo != null;
-    public void ResetBaseLogo() => __pbn__BaseLogo = null;
-    private ulong? __pbn__BaseLogo;
-
-    [global::ProtoBuf.ProtoMember(8, Name = @"banner_logo")]
-    public ulong BannerLogo
-    {
-        get => __pbn__BannerLogo.GetValueOrDefault();
-        set => __pbn__BannerLogo = value;
-    }
-    public bool ShouldSerializeBannerLogo() => __pbn__BannerLogo != null;
-    public void ResetBannerLogo() => __pbn__BannerLogo = null;
-    private ulong? __pbn__BannerLogo;
-
-    [global::ProtoBuf.ProtoMember(9, Name = @"members")]
-    public global::System.Collections.Generic.List<Member> Members { get; } = new global::System.Collections.Generic.List<Member>();
-
-    [global::ProtoBuf.ProtoMember(10, Name = @"invitations")]
-    public global::System.Collections.Generic.List<Invitation> Invitations { get; } = new global::System.Collections.Generic.List<Invitation>();
-
-    [global::ProtoBuf.ProtoMember(11, Name = @"message")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Message
-    {
-        get => __pbn__Message ?? "";
-        set => __pbn__Message = value;
-    }
-    public bool ShouldSerializeMessage() => __pbn__Message != null;
-    public void ResetMessage() => __pbn__Message = null;
-    private string __pbn__Message;
-
-    [global::ProtoBuf.ProtoMember(12, Name = @"incremental")]
-    public bool Incremental
-    {
-        get => __pbn__Incremental.GetValueOrDefault();
-        set => __pbn__Incremental = value;
-    }
-    public bool ShouldSerializeIncremental() => __pbn__Incremental != null;
-    public void ResetIncremental() => __pbn__Incremental = null;
-    private bool? __pbn__Incremental;
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class Member : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
-        public uint AccountId
-        {
-            get => __pbn__AccountId.GetValueOrDefault();
-            set => __pbn__AccountId = value;
-        }
-        public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
-        public void ResetAccountId() => __pbn__AccountId = null;
-        private uint? __pbn__AccountId;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"time_joined")]
-        public uint TimeJoined
-        {
-            get => __pbn__TimeJoined.GetValueOrDefault();
-            set => __pbn__TimeJoined = value;
-        }
-        public bool ShouldSerializeTimeJoined() => __pbn__TimeJoined != null;
-        public void ResetTimeJoined() => __pbn__TimeJoined = null;
-        private uint? __pbn__TimeJoined;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"role")]
-        public uint Role
-        {
-            get => __pbn__Role.GetValueOrDefault();
-            set => __pbn__Role = value;
-        }
-        public bool ShouldSerializeRole() => __pbn__Role != null;
-        public void ResetRole() => __pbn__Role = null;
-        private uint? __pbn__Role;
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class Invitation : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
-        public uint AccountId
-        {
-            get => __pbn__AccountId.GetValueOrDefault();
-            set => __pbn__AccountId = value;
-        }
-        public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
-        public void ResetAccountId() => __pbn__AccountId = null;
-        private uint? __pbn__AccountId;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"time_sent")]
-        public uint TimeSent
-        {
-            get => __pbn__TimeSent.GetValueOrDefault();
-            set => __pbn__TimeSent = value;
-        }
-        public bool ShouldSerializeTimeSent() => __pbn__TimeSent != null;
-        public void ResetTimeSent() => __pbn__TimeSent = null;
-        private uint? __pbn__TimeSent;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"account_id_sender")]
-        public uint AccountIdSender
-        {
-            get => __pbn__AccountIdSender.GetValueOrDefault();
-            set => __pbn__AccountIdSender = value;
-        }
-        public bool ShouldSerializeAccountIdSender() => __pbn__AccountIdSender != null;
-        public void ResetAccountIdSender() => __pbn__AccountIdSender = null;
-        private uint? __pbn__AccountIdSender;
-
-    }
+    [global::ProtoBuf.ProtoMember(5, Name = @"guild_invites")]
+    public global::System.Collections.Generic.List<CMsgGuildInvite> GuildInvites { get; } = new global::System.Collections.Generic.List<CMsgGuildInvite>();
 
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildAuditSDO : global::ProtoBuf.IExtensible
+public partial class CMsgAccountGuildInvite : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -219,92 +469,1786 @@ public partial class CMsgDOTAGuildAuditSDO : global::ProtoBuf.IExtensible
     public void ResetGuildId() => __pbn__GuildId = null;
     private uint? __pbn__GuildId;
 
-    [global::ProtoBuf.ProtoMember(2, Name = @"entries")]
-    public global::System.Collections.Generic.List<Entry> Entries { get; } = new global::System.Collections.Generic.List<Entry>();
+    [global::ProtoBuf.ProtoMember(2, Name = @"requester_account_id")]
+    public uint RequesterAccountId
+    {
+        get => __pbn__RequesterAccountId.GetValueOrDefault();
+        set => __pbn__RequesterAccountId = value;
+    }
+    public bool ShouldSerializeRequesterAccountId() => __pbn__RequesterAccountId != null;
+    public void ResetRequesterAccountId() => __pbn__RequesterAccountId = null;
+    private uint? __pbn__RequesterAccountId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"timestamp_sent")]
+    public uint TimestampSent
+    {
+        get => __pbn__TimestampSent.GetValueOrDefault();
+        set => __pbn__TimestampSent = value;
+    }
+    public bool ShouldSerializeTimestampSent() => __pbn__TimestampSent != null;
+    public void ResetTimestampSent() => __pbn__TimestampSent = null;
+    private uint? __pbn__TimestampSent;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgAccountGuildMemberships : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_ids")]
+    public uint[] GuildIds { get; set; }
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_invites")]
+    public global::System.Collections.Generic.List<CMsgAccountGuildInvite> GuildInvites { get; } = new global::System.Collections.Generic.List<CMsgAccountGuildInvite>();
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGuildPersonaInfo : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_tag")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string GuildTag
+    {
+        get => __pbn__GuildTag ?? "";
+        set => __pbn__GuildTag = value;
+    }
+    public bool ShouldSerializeGuildTag() => __pbn__GuildTag != null;
+    public void ResetGuildTag() => __pbn__GuildTag = null;
+    private string __pbn__GuildTag;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"guild_flags")]
+    public uint GuildFlags
+    {
+        get => __pbn__GuildFlags.GetValueOrDefault();
+        set => __pbn__GuildFlags = value;
+    }
+    public bool ShouldSerializeGuildFlags() => __pbn__GuildFlags != null;
+    public void ResetGuildFlags() => __pbn__GuildFlags = null;
+    private uint? __pbn__GuildFlags;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgAccountGuildsPersonaInfo : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_persona_infos")]
+    public global::System.Collections.Generic.List<CMsgGuildPersonaInfo> GuildPersonaInfos { get; } = new global::System.Collections.Generic.List<CMsgGuildPersonaInfo>();
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGuildFeedEvent : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"feed_event_id")]
+    public ulong FeedEventId
+    {
+        get => __pbn__FeedEventId.GetValueOrDefault();
+        set => __pbn__FeedEventId = value;
+    }
+    public bool ShouldSerializeFeedEventId() => __pbn__FeedEventId != null;
+    public void ResetFeedEventId() => __pbn__FeedEventId = null;
+    private ulong? __pbn__FeedEventId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"timestamp")]
+    public uint Timestamp
+    {
+        get => __pbn__Timestamp.GetValueOrDefault();
+        set => __pbn__Timestamp = value;
+    }
+    public bool ShouldSerializeTimestamp() => __pbn__Timestamp != null;
+    public void ResetTimestamp() => __pbn__Timestamp = null;
+    private uint? __pbn__Timestamp;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"event_type")]
+    public uint EventType
+    {
+        get => __pbn__EventType.GetValueOrDefault();
+        set => __pbn__EventType = value;
+    }
+    public bool ShouldSerializeEventType() => __pbn__EventType != null;
+    public void ResetEventType() => __pbn__EventType = null;
+    private uint? __pbn__EventType;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"param_uint_1")]
+    public uint ParamUint1
+    {
+        get => __pbn__ParamUint1.GetValueOrDefault();
+        set => __pbn__ParamUint1 = value;
+    }
+    public bool ShouldSerializeParamUint1() => __pbn__ParamUint1 != null;
+    public void ResetParamUint1() => __pbn__ParamUint1 = null;
+    private uint? __pbn__ParamUint1;
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"param_uint_2")]
+    public uint ParamUint2
+    {
+        get => __pbn__ParamUint2.GetValueOrDefault();
+        set => __pbn__ParamUint2 = value;
+    }
+    public bool ShouldSerializeParamUint2() => __pbn__ParamUint2 != null;
+    public void ResetParamUint2() => __pbn__ParamUint2 = null;
+    private uint? __pbn__ParamUint2;
+
+    [global::ProtoBuf.ProtoMember(6, Name = @"param_uint_3")]
+    public uint ParamUint3
+    {
+        get => __pbn__ParamUint3.GetValueOrDefault();
+        set => __pbn__ParamUint3 = value;
+    }
+    public bool ShouldSerializeParamUint3() => __pbn__ParamUint3 != null;
+    public void ResetParamUint3() => __pbn__ParamUint3 = null;
+    private uint? __pbn__ParamUint3;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCCreateGuild : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_info")]
+    public CMsgGuildInfo GuildInfo { get; set; }
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_chat_type")]
+    [global::System.ComponentModel.DefaultValue(EGuildChatType.kEGuildChatTypeUnspecified)]
+    public EGuildChatType GuildChatType
+    {
+        get => __pbn__GuildChatType ?? EGuildChatType.kEGuildChatTypeUnspecified;
+        set => __pbn__GuildChatType = value;
+    }
+    public bool ShouldSerializeGuildChatType() => __pbn__GuildChatType != null;
+    public void ResetGuildChatType() => __pbn__GuildChatType = null;
+    private EGuildChatType? __pbn__GuildChatType;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCCreateGuildResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
 
     [global::ProtoBuf.ProtoContract()]
-    public partial class Entry : global::ProtoBuf.IExtensible
+    public enum EResponse
     {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"event_index")]
-        public uint EventIndex
-        {
-            get => __pbn__EventIndex.GetValueOrDefault();
-            set => __pbn__EventIndex = value;
-        }
-        public bool ShouldSerializeEventIndex() => __pbn__EventIndex != null;
-        public void ResetEventIndex() => __pbn__EventIndex = null;
-        private uint? __pbn__EventIndex;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"timestamp")]
-        public uint Timestamp
-        {
-            get => __pbn__Timestamp.GetValueOrDefault();
-            set => __pbn__Timestamp = value;
-        }
-        public bool ShouldSerializeTimestamp() => __pbn__Timestamp != null;
-        public void ResetTimestamp() => __pbn__Timestamp = null;
-        private uint? __pbn__Timestamp;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"action")]
-        public uint Action
-        {
-            get => __pbn__Action.GetValueOrDefault();
-            set => __pbn__Action = value;
-        }
-        public bool ShouldSerializeAction() => __pbn__Action != null;
-        public void ResetAction() => __pbn__Action = null;
-        private uint? __pbn__Action;
-
-        [global::ProtoBuf.ProtoMember(4, Name = @"account_id_requestor")]
-        public uint AccountIdRequestor
-        {
-            get => __pbn__AccountIdRequestor.GetValueOrDefault();
-            set => __pbn__AccountIdRequestor = value;
-        }
-        public bool ShouldSerializeAccountIdRequestor() => __pbn__AccountIdRequestor != null;
-        public void ResetAccountIdRequestor() => __pbn__AccountIdRequestor = null;
-        private uint? __pbn__AccountIdRequestor;
-
-        [global::ProtoBuf.ProtoMember(5, Name = @"account_id_target")]
-        public uint AccountIdTarget
-        {
-            get => __pbn__AccountIdTarget.GetValueOrDefault();
-            set => __pbn__AccountIdTarget = value;
-        }
-        public bool ShouldSerializeAccountIdTarget() => __pbn__AccountIdTarget != null;
-        public void ResetAccountIdTarget() => __pbn__AccountIdTarget = null;
-        private uint? __pbn__AccountIdTarget;
-
-        [global::ProtoBuf.ProtoMember(6, Name = @"reference_data_a")]
-        public uint ReferenceDataA
-        {
-            get => __pbn__ReferenceDataA.GetValueOrDefault();
-            set => __pbn__ReferenceDataA = value;
-        }
-        public bool ShouldSerializeReferenceDataA() => __pbn__ReferenceDataA != null;
-        public void ResetReferenceDataA() => __pbn__ReferenceDataA = null;
-        private uint? __pbn__ReferenceDataA;
-
-        [global::ProtoBuf.ProtoMember(7, Name = @"reference_data_b")]
-        public uint ReferenceDataB
-        {
-            get => __pbn__ReferenceDataB.GetValueOrDefault();
-            set => __pbn__ReferenceDataB = value;
-        }
-        public bool ShouldSerializeReferenceDataB() => __pbn__ReferenceDataB != null;
-        public void ResetReferenceDataB() => __pbn__ReferenceDataB = null;
-        private uint? __pbn__ReferenceDataB;
-
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidName")]
+        keInvalidName = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNameAlreadyUsed")]
+        keNameAlreadyUsed = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidTag")]
+        keInvalidTag = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTagAlreadyUsed")]
+        keTagAlreadyUsed = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidDescription")]
+        keInvalidDescription = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidRegion")]
+        keInvalidRegion = 10,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidLogo")]
+        keInvalidLogo = 11,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDoesNotOwnEvent")]
+        keDoesNotOwnEvent = 12,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildLimit")]
+        keGuildLimit = 13,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidMotD")]
+        keInvalidMotD = 14,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eBlocked")]
+        keBlocked = 15,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eFreeTrialNotAllowed")]
+        keFreeTrialNotAllowed = 16,
     }
 
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAAccountGuildMembershipsSDO : global::ProtoBuf.IExtensible
+public partial class CMsgClientToGCSetGuildInfo : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_info")]
+    public CMsgGuildInfo GuildInfo { get; set; }
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"guild_chat_type")]
+    [global::System.ComponentModel.DefaultValue(EGuildChatType.kEGuildChatTypeUnspecified)]
+    public EGuildChatType GuildChatType
+    {
+        get => __pbn__GuildChatType ?? EGuildChatType.kEGuildChatTypeUnspecified;
+        set => __pbn__GuildChatType = value;
+    }
+    public bool ShouldSerializeGuildChatType() => __pbn__GuildChatType != null;
+    public void ResetGuildChatType() => __pbn__GuildChatType = null;
+    private EGuildChatType? __pbn__GuildChatType;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCSetGuildInfoResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNotMember")]
+        keNotMember = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermission")]
+        keNoPermission = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eMotDTooLong")]
+        keMotDTooLong = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNameChangeNoPermissions")]
+        keNameChangeNoPermissions = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTagChangeNoPermissions")]
+        keTagChangeNoPermissions = 10,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNameInvalid")]
+        keNameInvalid = 11,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTagInvalid")]
+        keTagInvalid = 12,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDescriptionInvalid")]
+        keDescriptionInvalid = 13,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eBlocked")]
+        keBlocked = 14,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRequestGuildData : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRequestGuildDataResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_data")]
+    public CMsgGuildData GuildData { get; set; }
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNotMember")]
+        keNotMember = 6,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToClientGuildDataUpdated : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_data")]
+    public CMsgGuildData GuildData { get; set; }
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"update_flags")]
+    public uint UpdateFlags
+    {
+        get => __pbn__UpdateFlags.GetValueOrDefault();
+        set => __pbn__UpdateFlags = value;
+    }
+    public bool ShouldSerializeUpdateFlags() => __pbn__UpdateFlags != null;
+    public void ResetUpdateFlags() => __pbn__UpdateFlags = null;
+    private uint? __pbn__UpdateFlags;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToClientGuildMembersDataUpdated : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"members_data")]
+    public global::System.Collections.Generic.List<CMsgGuildMember> MembersDatas { get; } = new global::System.Collections.Generic.List<CMsgGuildMember>();
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRequestGuildMembership : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRequestGuildMembershipResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_memberships")]
+    public CMsgAccountGuildMemberships GuildMemberships { get; set; }
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToClientGuildMembershipUpdated : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_memberships")]
+    public CMsgAccountGuildMemberships GuildMemberships { get; set; }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCJoinGuild : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCJoinGuildResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildFull")]
+        keGuildFull = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAlreadyMember")]
+        keAlreadyMember = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildLimit")]
+        keGuildLimit = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildRequiresInvite")]
+        keGuildRequiresInvite = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildRankTooLow")]
+        keGuildRankTooLow = 10,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCLeaveGuild : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCLeaveGuildResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNotMember")]
+        keNotMember = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eLastAdmin")]
+        keLastAdmin = 7,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCKickGuildMember : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
+    public uint TargetAccountId
+    {
+        get => __pbn__TargetAccountId.GetValueOrDefault();
+        set => __pbn__TargetAccountId = value;
+    }
+    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
+    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
+    private uint? __pbn__TargetAccountId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCKickGuildMemberResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eRequesterNotMember")]
+        keRequesterNotMember = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTargetNotMember")]
+        keTargetNotMember = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermission")]
+        keNoPermission = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eCantKickSelf")]
+        keCantKickSelf = 9,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCSetGuildMemberRole : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
+    public uint TargetAccountId
+    {
+        get => __pbn__TargetAccountId.GetValueOrDefault();
+        set => __pbn__TargetAccountId = value;
+    }
+    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
+    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
+    private uint? __pbn__TargetAccountId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"target_role_id")]
+    public uint TargetRoleId
+    {
+        get => __pbn__TargetRoleId.GetValueOrDefault();
+        set => __pbn__TargetRoleId = value;
+    }
+    public bool ShouldSerializeTargetRoleId() => __pbn__TargetRoleId != null;
+    public void ResetTargetRoleId() => __pbn__TargetRoleId = null;
+    private uint? __pbn__TargetRoleId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCSetGuildMemberRoleResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eRequesterNotMember")]
+        keRequesterNotMember = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTargetNotMember")]
+        keTargetNotMember = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermission")]
+        keNoPermission = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidRole")]
+        keInvalidRole = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAdminViolation")]
+        keAdminViolation = 10,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCInviteToGuild : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
+    public uint TargetAccountId
+    {
+        get => __pbn__TargetAccountId.GetValueOrDefault();
+        set => __pbn__TargetAccountId = value;
+    }
+    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
+    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
+    private uint? __pbn__TargetAccountId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCInviteToGuildResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildFull")]
+        keGuildFull = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eRequesterNotMember")]
+        keRequesterNotMember = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAlreadyAMember")]
+        keAlreadyAMember = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAlreadyInvited")]
+        keAlreadyInvited = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoInvitePermissions")]
+        keNoInvitePermissions = 10,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooManyInvites")]
+        keTooManyInvites = 11,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidUser")]
+        keInvalidUser = 12,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCDeclineInviteToGuild : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCDeclineInviteToGuildResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoInviteFound")]
+        keNoInviteFound = 6,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCAcceptInviteToGuild : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCAcceptInviteToGuildResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoInviteFound")]
+        keNoInviteFound = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildFull")]
+        keGuildFull = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildLimit")]
+        keGuildLimit = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidInviter")]
+        keInvalidInviter = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAlreadyInGuild")]
+        keAlreadyInGuild = 10,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCCancelInviteToGuild : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
+    public uint TargetAccountId
+    {
+        get => __pbn__TargetAccountId.GetValueOrDefault();
+        set => __pbn__TargetAccountId = value;
+    }
+    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
+    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
+    private uint? __pbn__TargetAccountId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCCancelInviteToGuildResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoInviteFound")]
+        keNoInviteFound = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermissions")]
+        keNoPermissions = 7,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCAddGuildRole : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"role_name")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string RoleName
+    {
+        get => __pbn__RoleName ?? "";
+        set => __pbn__RoleName = value;
+    }
+    public bool ShouldSerializeRoleName() => __pbn__RoleName != null;
+    public void ResetRoleName() => __pbn__RoleName = null;
+    private string __pbn__RoleName;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"role_flags")]
+    public uint RoleFlags
+    {
+        get => __pbn__RoleFlags.GetValueOrDefault();
+        set => __pbn__RoleFlags = value;
+    }
+    public bool ShouldSerializeRoleFlags() => __pbn__RoleFlags != null;
+    public void ResetRoleFlags() => __pbn__RoleFlags = null;
+    private uint? __pbn__RoleFlags;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCAddGuildRoleResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"role_id")]
+    public uint RoleId
+    {
+        get => __pbn__RoleId.GetValueOrDefault();
+        set => __pbn__RoleId = value;
+    }
+    public bool ShouldSerializeRoleId() => __pbn__RoleId != null;
+    public void ResetRoleId() => __pbn__RoleId = null;
+    private uint? __pbn__RoleId;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNameAlreadyUsed")]
+        keNameAlreadyUsed = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermissions")]
+        keNoPermissions = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidFlags")]
+        keInvalidFlags = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidName")]
+        keInvalidName = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAdminViolation")]
+        keAdminViolation = 10,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooManyRoles")]
+        keTooManyRoles = 11,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eBlocked")]
+        keBlocked = 12,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCModifyGuildRole : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"role_id")]
+    public uint RoleId
+    {
+        get => __pbn__RoleId.GetValueOrDefault();
+        set => __pbn__RoleId = value;
+    }
+    public bool ShouldSerializeRoleId() => __pbn__RoleId != null;
+    public void ResetRoleId() => __pbn__RoleId = null;
+    private uint? __pbn__RoleId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"role_name")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string RoleName
+    {
+        get => __pbn__RoleName ?? "";
+        set => __pbn__RoleName = value;
+    }
+    public bool ShouldSerializeRoleName() => __pbn__RoleName != null;
+    public void ResetRoleName() => __pbn__RoleName = null;
+    private string __pbn__RoleName;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"role_flags")]
+    public uint RoleFlags
+    {
+        get => __pbn__RoleFlags.GetValueOrDefault();
+        set => __pbn__RoleFlags = value;
+    }
+    public bool ShouldSerializeRoleFlags() => __pbn__RoleFlags != null;
+    public void ResetRoleFlags() => __pbn__RoleFlags = null;
+    private uint? __pbn__RoleFlags;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCModifyGuildRoleResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidRole")]
+        keInvalidRole = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNameAlreadyUsed")]
+        keNameAlreadyUsed = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidFlags")]
+        keInvalidFlags = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidName")]
+        keInvalidName = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermissions")]
+        keNoPermissions = 10,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAdminViolation")]
+        keAdminViolation = 11,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eBlocked")]
+        keBlocked = 12,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRemoveGuildRole : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"role_id")]
+    public uint RoleId
+    {
+        get => __pbn__RoleId.GetValueOrDefault();
+        set => __pbn__RoleId = value;
+    }
+    public bool ShouldSerializeRoleId() => __pbn__RoleId != null;
+    public void ResetRoleId() => __pbn__RoleId = null;
+    private uint? __pbn__RoleId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRemoveGuildRoleResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidRole")]
+        keInvalidRole = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eRoleNotEmpty")]
+        keRoleNotEmpty = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermissions")]
+        keNoPermissions = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAdminViolation")]
+        keAdminViolation = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eCantRemoveDefaultRole")]
+        keCantRemoveDefaultRole = 10,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCSetGuildRoleOrder : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"requested_role_ids")]
+    public uint[] RequestedRoleIds { get; set; }
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"previous_role_ids")]
+    public uint[] PreviousRoleIds { get; set; }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCSetGuildRoleOrderResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"confirmed_role_ids")]
+    public uint[] ConfirmedRoleIds { get; set; }
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidRole")]
+        keInvalidRole = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidOrder")]
+        keInvalidOrder = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermissions")]
+        keNoPermissions = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eAdminViolation")]
+        keAdminViolation = 9,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCGuildFeedRequest : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"last_seen_id")]
+    public ulong LastSeenId
+    {
+        get => __pbn__LastSeenId.GetValueOrDefault();
+        set => __pbn__LastSeenId = value;
+    }
+    public bool ShouldSerializeLastSeenId() => __pbn__LastSeenId != null;
+    public void ResetLastSeenId() => __pbn__LastSeenId = null;
+    private ulong? __pbn__LastSeenId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRequestGuildFeedResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"feed_events")]
+    public global::System.Collections.Generic.List<CMsgGuildFeedEvent> FeedEvents { get; } = new global::System.Collections.Generic.List<CMsgGuildFeedEvent>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNoPermissions")]
+        keNoPermissions = 6,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToClientGuildFeedUpdated : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCAddPlayerToGuildChat : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCAddPlayerToGuildChatResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidGuild")]
+        keInvalidGuild = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNotMember")]
+        keNotMember = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSteamChatNotEnabled")]
+        keSteamChatNotEnabled = 7,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgFindGuildByTagResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"guild_summary")]
+    public CMsgGuildSummary GuildSummary { get; set; }
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidTag")]
+        keInvalidTag = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildNotFound")]
+        keGuildNotFound = 6,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgSearchForOpenGuildsResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"search_results")]
+    public global::System.Collections.Generic.List<SearchResult> SearchResults { get; } = new global::System.Collections.Generic.List<SearchResult>();
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"use_whitelist")]
+    public bool UseWhitelist
+    {
+        get => __pbn__UseWhitelist.GetValueOrDefault();
+        set => __pbn__UseWhitelist = value;
+    }
+    public bool ShouldSerializeUseWhitelist() => __pbn__UseWhitelist != null;
+    public void ResetUseWhitelist() => __pbn__UseWhitelist = null;
+    private bool? __pbn__UseWhitelist;
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class SearchResult : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+        public uint GuildId
+        {
+            get => __pbn__GuildId.GetValueOrDefault();
+            set => __pbn__GuildId = value;
+        }
+        public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+        public void ResetGuildId() => __pbn__GuildId = null;
+        private uint? __pbn__GuildId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"guild_summary")]
+        public CMsgGuildSummary GuildSummary { get; set; }
+
+    }
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCReportGuildContent : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
+    public uint GuildId
+    {
+        get => __pbn__GuildId.GetValueOrDefault();
+        set => __pbn__GuildId = value;
+    }
+    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
+    public void ResetGuildId() => __pbn__GuildId = null;
+    private uint? __pbn__GuildId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"guild_content_flags")]
+    public uint GuildContentFlags
+    {
+        get => __pbn__GuildContentFlags.GetValueOrDefault();
+        set => __pbn__GuildContentFlags = value;
+    }
+    public bool ShouldSerializeGuildContentFlags() => __pbn__GuildContentFlags != null;
+    public void ResetGuildContentFlags() => __pbn__GuildContentFlags = null;
+    private uint? __pbn__GuildContentFlags;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EContentFlags
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eNone")]
+        keNone = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInappropriateName")]
+        keInappropriateName = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInappropriateTag")]
+        keInappropriateTag = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInappropriateLogo")]
+        keInappropriateLogo = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eValidFlags")]
+        keValidFlags = 7,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCReportGuildContentResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eGuildNotFound")]
+        keGuildNotFound = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eFlagsInvalid")]
+        keFlagsInvalid = 6,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRequestAccountGuildPersonaInfo : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -320,949 +2264,166 @@ public partial class CMsgDOTAAccountGuildMembershipsSDO : global::ProtoBuf.IExte
     public void ResetAccountId() => __pbn__AccountId = null;
     private uint? __pbn__AccountId;
 
-    [global::ProtoBuf.ProtoMember(2, Name = @"memberships")]
-    public global::System.Collections.Generic.List<Membership> Memberships { get; } = new global::System.Collections.Generic.List<Membership>();
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"invitations")]
-    public global::System.Collections.Generic.List<Invitation> Invitations { get; } = new global::System.Collections.Generic.List<Invitation>();
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class Membership : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-        public uint GuildId
-        {
-            get => __pbn__GuildId.GetValueOrDefault();
-            set => __pbn__GuildId = value;
-        }
-        public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-        public void ResetGuildId() => __pbn__GuildId = null;
-        private uint? __pbn__GuildId;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"role")]
-        public uint Role
-        {
-            get => __pbn__Role.GetValueOrDefault();
-            set => __pbn__Role = value;
-        }
-        public bool ShouldSerializeRole() => __pbn__Role != null;
-        public void ResetRole() => __pbn__Role = null;
-        private uint? __pbn__Role;
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class Invitation : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-        public uint GuildId
-        {
-            get => __pbn__GuildId.GetValueOrDefault();
-            set => __pbn__GuildId = value;
-        }
-        public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-        public void ResetGuildId() => __pbn__GuildId = null;
-        private uint? __pbn__GuildId;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"time_sent")]
-        public uint TimeSent
-        {
-            get => __pbn__TimeSent.GetValueOrDefault();
-            set => __pbn__TimeSent = value;
-        }
-        public bool ShouldSerializeTimeSent() => __pbn__TimeSent != null;
-        public void ResetTimeSent() => __pbn__TimeSent = null;
-        private uint? __pbn__TimeSent;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"account_id_sender")]
-        public uint AccountIdSender
-        {
-            get => __pbn__AccountIdSender.GetValueOrDefault();
-            set => __pbn__AccountIdSender = value;
-        }
-        public bool ShouldSerializeAccountIdSender() => __pbn__AccountIdSender != null;
-        public void ResetAccountIdSender() => __pbn__AccountIdSender = null;
-        private uint? __pbn__AccountIdSender;
-
-    }
-
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildCreateRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Name
-    {
-        get => __pbn__Name ?? "";
-        set => __pbn__Name = value;
-    }
-    public bool ShouldSerializeName() => __pbn__Name != null;
-    public void ResetName() => __pbn__Name = null;
-    private string __pbn__Name;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"tag")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Tag
-    {
-        get => __pbn__Tag ?? "";
-        set => __pbn__Tag = value;
-    }
-    public bool ShouldSerializeTag() => __pbn__Tag != null;
-    public void ResetTag() => __pbn__Tag = null;
-    private string __pbn__Tag;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"logo")]
-    public ulong Logo
-    {
-        get => __pbn__Logo.GetValueOrDefault();
-        set => __pbn__Logo = value;
-    }
-    public bool ShouldSerializeLogo() => __pbn__Logo != null;
-    public void ResetLogo() => __pbn__Logo = null;
-    private ulong? __pbn__Logo;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"base_logo")]
-    public ulong BaseLogo
-    {
-        get => __pbn__BaseLogo.GetValueOrDefault();
-        set => __pbn__BaseLogo = value;
-    }
-    public bool ShouldSerializeBaseLogo() => __pbn__BaseLogo != null;
-    public void ResetBaseLogo() => __pbn__BaseLogo = null;
-    private ulong? __pbn__BaseLogo;
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"banner_logo")]
-    public ulong BannerLogo
-    {
-        get => __pbn__BannerLogo.GetValueOrDefault();
-        set => __pbn__BannerLogo = value;
-    }
-    public bool ShouldSerializeBannerLogo() => __pbn__BannerLogo != null;
-    public void ResetBannerLogo() => __pbn__BannerLogo = null;
-    private ulong? __pbn__BannerLogo;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildCreateResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"errors")]
-    public global::System.Collections.Generic.List<EError> Errors { get; } = new global::System.Collections.Generic.List<EError>();
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum EError
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"UNSPECIFIED")]
-        Unspecified = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"NAME_EMPTY")]
-        NameEmpty = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"NAME_BAD_CHARACTERS")]
-        NameBadCharacters = 2,
-        [global::ProtoBuf.ProtoEnum(Name = @"NAME_TOO_LONG")]
-        NameTooLong = 3,
-        [global::ProtoBuf.ProtoEnum(Name = @"NAME_TAKEN")]
-        NameTaken = 4,
-        [global::ProtoBuf.ProtoEnum(Name = @"TAG_EMPTY")]
-        TagEmpty = 5,
-        [global::ProtoBuf.ProtoEnum(Name = @"TAG_BAD_CHARACTERS")]
-        TagBadCharacters = 6,
-        [global::ProtoBuf.ProtoEnum(Name = @"TAG_TOO_LONG")]
-        TagTooLong = 7,
-        [global::ProtoBuf.ProtoEnum(Name = @"ACCOUNT_TOO_MANY_GUILDS")]
-        AccountTooManyGuilds = 8,
-        [global::ProtoBuf.ProtoEnum(Name = @"LOGO_UPLOAD_FAILED")]
-        LogoUploadFailed = 9,
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildSetAccountRoleRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
-    public uint TargetAccountId
-    {
-        get => __pbn__TargetAccountId.GetValueOrDefault();
-        set => __pbn__TargetAccountId = value;
-    }
-    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
-    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
-    private uint? __pbn__TargetAccountId;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"target_role")]
-    public uint TargetRole
-    {
-        get => __pbn__TargetRole.GetValueOrDefault();
-        set => __pbn__TargetRole = value;
-    }
-    public bool ShouldSerializeTargetRole() => __pbn__TargetRole != null;
-    public void ResetTargetRole() => __pbn__TargetRole = null;
-    private uint? __pbn__TargetRole;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildSetAccountRoleResponse : global::ProtoBuf.IExtensible
+public partial class CMsgClientToGCRequestAccountGuildPersonaInfoResponse : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EResult.Success)]
-    public EResult Result
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
     {
-        get => __pbn__Result ?? EResult.Success;
+        get => __pbn__Result ?? EResponse.keInternalError;
         set => __pbn__Result = value;
     }
     public bool ShouldSerializeResult() => __pbn__Result != null;
     public void ResetResult() => __pbn__Result = null;
-    private EResult? __pbn__Result;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"persona_info")]
+    public CMsgAccountGuildsPersonaInfo PersonaInfo { get; set; }
 
     [global::ProtoBuf.ProtoContract()]
-    public enum EResult
+    public enum EResponse
     {
-        [global::ProtoBuf.ProtoEnum(Name = @"SUCCESS")]
-        Success = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_UNSPECIFIED")]
-        ErrorUnspecified = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_NO_PERMISSION")]
-        ErrorNoPermission = 2,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_NO_OTHER_LEADER")]
-        ErrorNoOtherLeader = 3,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_ACCOUNT_TOO_MANY_GUILDS")]
-        ErrorAccountTooManyGuilds = 4,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_GUILD_TOO_MANY_MEMBERS")]
-        ErrorGuildTooManyMembers = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidAccount")]
+        keInvalidAccount = 5,
     }
 
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildInviteAccountRequest : global::ProtoBuf.IExtensible
+public partial class CMsgClientToGCRequestAccountGuildPersonaInfoBatch : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
-    public uint TargetAccountId
-    {
-        get => __pbn__TargetAccountId.GetValueOrDefault();
-        set => __pbn__TargetAccountId = value;
-    }
-    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
-    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
-    private uint? __pbn__TargetAccountId;
+    [global::ProtoBuf.ProtoMember(1, Name = @"account_ids")]
+    public uint[] AccountIds { get; set; }
 
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildInviteAccountResponse : global::ProtoBuf.IExtensible
+public partial class CMsgClientToGCRequestAccountGuildPersonaInfoBatchResponse : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EResult.Success)]
-    public EResult Result
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
     {
-        get => __pbn__Result ?? EResult.Success;
+        get => __pbn__Result ?? EResponse.keInternalError;
         set => __pbn__Result = value;
     }
     public bool ShouldSerializeResult() => __pbn__Result != null;
     public void ResetResult() => __pbn__Result = null;
-    private EResult? __pbn__Result;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"persona_infos")]
+    public global::System.Collections.Generic.List<CMsgAccountGuildsPersonaInfo> PersonaInfos { get; } = new global::System.Collections.Generic.List<CMsgAccountGuildsPersonaInfo>();
 
     [global::ProtoBuf.ProtoContract()]
-    public enum EResult
+    public enum EResponse
     {
-        [global::ProtoBuf.ProtoEnum(Name = @"SUCCESS")]
-        Success = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_UNSPECIFIED")]
-        ErrorUnspecified = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_NO_PERMISSION")]
-        ErrorNoPermission = 2,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_ACCOUNT_ALREADY_INVITED")]
-        ErrorAccountAlreadyInvited = 3,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_ACCOUNT_ALREADY_IN_GUILD")]
-        ErrorAccountAlreadyInGuild = 4,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_ACCOUNT_TOO_MANY_INVITES")]
-        ErrorAccountTooManyInvites = 5,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_GUILD_TOO_MANY_INVITES")]
-        ErrorGuildTooManyInvites = 6,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_ACCOUNT_TOO_MANY_GUILDS")]
-        ErrorAccountTooManyGuilds = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidRequest")]
+        keInvalidRequest = 5,
     }
 
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildCancelInviteRequest : global::ProtoBuf.IExtensible
+public enum EGuildAuditAction
 {
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"target_account_id")]
-    public uint TargetAccountId
-    {
-        get => __pbn__TargetAccountId.GetValueOrDefault();
-        set => __pbn__TargetAccountId = value;
-    }
-    public bool ShouldSerializeTargetAccountId() => __pbn__TargetAccountId != null;
-    public void ResetTargetAccountId() => __pbn__TargetAccountId = null;
-    private uint? __pbn__TargetAccountId;
-
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_Invalid")]
+    kEGuildAuditActionInvalid = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildCreated")]
+    kEGuildAuditActionGuildCreated = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildLanguageChanged")]
+    kEGuildAuditActionGuildLanguageChanged = 2,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildFlagsChanged")]
+    kEGuildAuditActionGuildFlagsChanged = 3,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildMemberJoined")]
+    kEGuildAuditActionGuildMemberJoined = 5,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildMemberLeft")]
+    kEGuildAuditActionGuildMemberLeft = 6,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildMemberKicked")]
+    kEGuildAuditActionGuildMemberKicked = 7,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildMemberRoleChanged")]
+    kEGuildAuditActionGuildMemberRoleChanged = 8,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildLogoChanged")]
+    kEGuildAuditActionGuildLogoChanged = 9,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildRegionChanged")]
+    kEGuildAuditActionGuildRegionChanged = 10,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildDescriptionChanged")]
+    kEGuildAuditActionGuildDescriptionChanged = 11,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildPrimaryColorChanged")]
+    kEGuildAuditActionGuildPrimaryColorChanged = 12,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildSecondaryColorChanged")]
+    kEGuildAuditActionGuildSecondaryColorChanged = 13,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildPatternChanged")]
+    kEGuildAuditActionGuildPatternChanged = 14,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminClearedLogo")]
+    kEGuildAuditActionAdminClearedLogo = 15,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildRequiredRankChanged")]
+    kEGuildAuditActionGuildRequiredRankChanged = 16,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildMotDChanged")]
+    kEGuildAuditActionGuildMotDChanged = 18,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminResetName")]
+    kEGuildAuditActionAdminResetName = 19,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminResetTag")]
+    kEGuildAuditActionAdminResetTag = 20,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminLock")]
+    kEGuildAuditActionAdminLock = 21,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildNameChanged")]
+    kEGuildAuditActionGuildNameChanged = 22,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_GuildTagChanged")]
+    kEGuildAuditActionGuildTagChanged = 23,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminPermitted")]
+    kEGuildAuditActionAdminPermitted = 24,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminBlocked")]
+    kEGuildAuditActionAdminBlocked = 25,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminBannedUser")]
+    kEGuildAuditActionAdminBannedUser = 26,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildAuditAction_AdminExonerated")]
+    kEGuildAuditActionAdminExonerated = 27,
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildCancelInviteResponse : global::ProtoBuf.IExtensible
+public enum EGuildChatType
 {
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EResult.Success)]
-    public EResult Result
-    {
-        get => __pbn__Result ?? EResult.Success;
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private EResult? __pbn__Result;
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum EResult
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"SUCCESS")]
-        Success = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_UNSPECIFIED")]
-        ErrorUnspecified = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_NO_PERMISSION")]
-        ErrorNoPermission = 2,
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildUpdateDetailsRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"logo")]
-    public ulong Logo
-    {
-        get => __pbn__Logo.GetValueOrDefault();
-        set => __pbn__Logo = value;
-    }
-    public bool ShouldSerializeLogo() => __pbn__Logo != null;
-    public void ResetLogo() => __pbn__Logo = null;
-    private ulong? __pbn__Logo;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"base_logo")]
-    public ulong BaseLogo
-    {
-        get => __pbn__BaseLogo.GetValueOrDefault();
-        set => __pbn__BaseLogo = value;
-    }
-    public bool ShouldSerializeBaseLogo() => __pbn__BaseLogo != null;
-    public void ResetBaseLogo() => __pbn__BaseLogo = null;
-    private ulong? __pbn__BaseLogo;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"banner_logo")]
-    public ulong BannerLogo
-    {
-        get => __pbn__BannerLogo.GetValueOrDefault();
-        set => __pbn__BannerLogo = value;
-    }
-    public bool ShouldSerializeBannerLogo() => __pbn__BannerLogo != null;
-    public void ResetBannerLogo() => __pbn__BannerLogo = null;
-    private ulong? __pbn__BannerLogo;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildUpdateDetailsResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EResult.Success)]
-    public EResult Result
-    {
-        get => __pbn__Result ?? EResult.Success;
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private EResult? __pbn__Result;
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum EResult
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"SUCCESS")]
-        Success = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_UNSPECIFIED")]
-        ErrorUnspecified = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_NO_PERMISSION")]
-        ErrorNoPermission = 2,
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGCToGCUpdateOpenGuildPartyRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"party_id")]
-    public ulong PartyId
-    {
-        get => __pbn__PartyId.GetValueOrDefault();
-        set => __pbn__PartyId = value;
-    }
-    public bool ShouldSerializePartyId() => __pbn__PartyId != null;
-    public void ResetPartyId() => __pbn__PartyId = null;
-    private ulong? __pbn__PartyId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"member_account_ids")]
-    public uint[] MemberAccountIds { get; set; }
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"description")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Description
-    {
-        get => __pbn__Description ?? "";
-        set => __pbn__Description = value;
-    }
-    public bool ShouldSerializeDescription() => __pbn__Description != null;
-    public void ResetDescription() => __pbn__Description = null;
-    private string __pbn__Description;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGCToGCUpdateOpenGuildPartyResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"maintain_association")]
-    public bool MaintainAssociation
-    {
-        get => __pbn__MaintainAssociation.GetValueOrDefault();
-        set => __pbn__MaintainAssociation = value;
-    }
-    public bool ShouldSerializeMaintainAssociation() => __pbn__MaintainAssociation != null;
-    public void ResetMaintainAssociation() => __pbn__MaintainAssociation = null;
-    private bool? __pbn__MaintainAssociation;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGCToGCDestroyOpenGuildPartyRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"party_id")]
-    public ulong PartyId
-    {
-        get => __pbn__PartyId.GetValueOrDefault();
-        set => __pbn__PartyId = value;
-    }
-    public bool ShouldSerializePartyId() => __pbn__PartyId != null;
-    public void ResetPartyId() => __pbn__PartyId = null;
-    private ulong? __pbn__PartyId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGCToGCDestroyOpenGuildPartyResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAPartySetOpenGuildRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"description")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Description
-    {
-        get => __pbn__Description ?? "";
-        set => __pbn__Description = value;
-    }
-    public bool ShouldSerializeDescription() => __pbn__Description != null;
-    public void ResetDescription() => __pbn__Description = null;
-    private string __pbn__Description;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAPartySetOpenGuildResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EResult.Success)]
-    public EResult Result
-    {
-        get => __pbn__Result ?? EResult.Success;
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private EResult? __pbn__Result;
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum EResult
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"SUCCESS")]
-        Success = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_UNSPECIFIED")]
-        ErrorUnspecified = 1,
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAJoinOpenGuildPartyRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"party_id")]
-    public ulong PartyId
-    {
-        get => __pbn__PartyId.GetValueOrDefault();
-        set => __pbn__PartyId = value;
-    }
-    public bool ShouldSerializePartyId() => __pbn__PartyId != null;
-    public void ResetPartyId() => __pbn__PartyId = null;
-    private ulong? __pbn__PartyId;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAJoinOpenGuildPartyResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EResult.Success)]
-    public EResult Result
-    {
-        get => __pbn__Result ?? EResult.Success;
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private EResult? __pbn__Result;
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum EResult
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"SUCCESS")]
-        Success = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"ERROR_UNSPECIFIED")]
-        ErrorUnspecified = 1,
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildOpenPartyRefresh : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"open_parties")]
-    public global::System.Collections.Generic.List<OpenParty> OpenParties { get; } = new global::System.Collections.Generic.List<OpenParty>();
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class OpenParty : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"party_id")]
-        public ulong PartyId
-        {
-            get => __pbn__PartyId.GetValueOrDefault();
-            set => __pbn__PartyId = value;
-        }
-        public bool ShouldSerializePartyId() => __pbn__PartyId != null;
-        public void ResetPartyId() => __pbn__PartyId = null;
-        private ulong? __pbn__PartyId;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"member_account_ids")]
-        public uint[] MemberAccountIds { get; set; }
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"time_created")]
-        public uint TimeCreated
-        {
-            get => __pbn__TimeCreated.GetValueOrDefault();
-            set => __pbn__TimeCreated = value;
-        }
-        public bool ShouldSerializeTimeCreated() => __pbn__TimeCreated != null;
-        public void ResetTimeCreated() => __pbn__TimeCreated = null;
-        private uint? __pbn__TimeCreated;
-
-        [global::ProtoBuf.ProtoMember(4, Name = @"description")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string Description
-        {
-            get => __pbn__Description ?? "";
-            set => __pbn__Description = value;
-        }
-        public bool ShouldSerializeDescription() => __pbn__Description != null;
-        public void ResetDescription() => __pbn__Description = null;
-        private string __pbn__Description;
-
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTARequestGuildData : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildInviteData : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"invited_to_guild")]
-    public bool InvitedToGuild
-    {
-        get => __pbn__InvitedToGuild.GetValueOrDefault();
-        set => __pbn__InvitedToGuild = value;
-    }
-    public bool ShouldSerializeInvitedToGuild() => __pbn__InvitedToGuild != null;
-    public void ResetInvitedToGuild() => __pbn__InvitedToGuild = null;
-    private bool? __pbn__InvitedToGuild;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"guild_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string GuildName
-    {
-        get => __pbn__GuildName ?? "";
-        set => __pbn__GuildName = value;
-    }
-    public bool ShouldSerializeGuildName() => __pbn__GuildName != null;
-    public void ResetGuildName() => __pbn__GuildName = null;
-    private string __pbn__GuildName;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"guild_tag")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string GuildTag
-    {
-        get => __pbn__GuildTag ?? "";
-        set => __pbn__GuildTag = value;
-    }
-    public bool ShouldSerializeGuildTag() => __pbn__GuildTag != null;
-    public void ResetGuildTag() => __pbn__GuildTag = null;
-    private string __pbn__GuildTag;
-
-    [global::ProtoBuf.ProtoMember(5, Name = @"logo")]
-    public ulong Logo
-    {
-        get => __pbn__Logo.GetValueOrDefault();
-        set => __pbn__Logo = value;
-    }
-    public bool ShouldSerializeLogo() => __pbn__Logo != null;
-    public void ResetLogo() => __pbn__Logo = null;
-    private ulong? __pbn__Logo;
-
-    [global::ProtoBuf.ProtoMember(6, Name = @"inviter")]
-    public uint Inviter
-    {
-        get => __pbn__Inviter.GetValueOrDefault();
-        set => __pbn__Inviter = value;
-    }
-    public bool ShouldSerializeInviter() => __pbn__Inviter != null;
-    public void ResetInviter() => __pbn__Inviter = null;
-    private uint? __pbn__Inviter;
-
-    [global::ProtoBuf.ProtoMember(7, Name = @"inviter_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string InviterName
-    {
-        get => __pbn__InviterName ?? "";
-        set => __pbn__InviterName = value;
-    }
-    public bool ShouldSerializeInviterName() => __pbn__InviterName != null;
-    public void ResetInviterName() => __pbn__InviterName = null;
-    private string __pbn__InviterName;
-
-    [global::ProtoBuf.ProtoMember(8, Name = @"member_count")]
-    public uint MemberCount
-    {
-        get => __pbn__MemberCount.GetValueOrDefault();
-        set => __pbn__MemberCount = value;
-    }
-    public bool ShouldSerializeMemberCount() => __pbn__MemberCount != null;
-    public void ResetMemberCount() => __pbn__MemberCount = null;
-    private uint? __pbn__MemberCount;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildUpdateMessage : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"message")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Message
-    {
-        get => __pbn__Message ?? "";
-        set => __pbn__Message = value;
-    }
-    public bool ShouldSerializeMessage() => __pbn__Message != null;
-    public void ResetMessage() => __pbn__Message = null;
-    private string __pbn__Message;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildEditLogoRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"logo")]
-    public ulong Logo
-    {
-        get => __pbn__Logo.GetValueOrDefault();
-        set => __pbn__Logo = value;
-    }
-    public bool ShouldSerializeLogo() => __pbn__Logo != null;
-    public void ResetLogo() => __pbn__Logo = null;
-    private ulong? __pbn__Logo;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAGuildEditLogoResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"guild_id")]
-    public uint GuildId
-    {
-        get => __pbn__GuildId.GetValueOrDefault();
-        set => __pbn__GuildId = value;
-    }
-    public bool ShouldSerializeGuildId() => __pbn__GuildId != null;
-    public void ResetGuildId() => __pbn__GuildId = null;
-    private uint? __pbn__GuildId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EResult.Success)]
-    public EResult Result
-    {
-        get => __pbn__Result ?? EResult.Success;
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private EResult? __pbn__Result;
-
-    [global::ProtoBuf.ProtoContract()]
-    public enum EResult
-    {
-        [global::ProtoBuf.ProtoEnum(Name = @"SUCCESS")]
-        Success = 0,
-        [global::ProtoBuf.ProtoEnum(Name = @"NO_PERMISSION")]
-        NoPermission = 1,
-        [global::ProtoBuf.ProtoEnum(Name = @"LOGO_UPLOAD_FAILED")]
-        LogoUploadFailed = 2,
-        [global::ProtoBuf.ProtoEnum(Name = @"UNSPECIFIED_ERROR")]
-        UnspecifiedError = 3,
-    }
-
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildChatType_Unspecified")]
+    kEGuildChatTypeUnspecified = 0,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildChatType_SteamChatGroup")]
+    kEGuildChatTypeSteamChatGroup = 1,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EGuildChatType_GC")]
+    kEGuildChatTypeGC = 2,
 }
 
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, CS8981, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

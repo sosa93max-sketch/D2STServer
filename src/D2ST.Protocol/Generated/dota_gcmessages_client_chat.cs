@@ -204,109 +204,6 @@ public partial class CMsgGCToClientPrivateChatResponse : global::ProtoBuf.IExten
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgClientToGCPrivateChatInfoRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"private_chat_channel_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string PrivateChatChannelName
-    {
-        get => __pbn__PrivateChatChannelName ?? "";
-        set => __pbn__PrivateChatChannelName = value;
-    }
-    public bool ShouldSerializePrivateChatChannelName() => __pbn__PrivateChatChannelName != null;
-    public void ResetPrivateChatChannelName() => __pbn__PrivateChatChannelName = null;
-    private string __pbn__PrivateChatChannelName;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGCToClientPrivateChatInfoResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"private_chat_channel_name")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string PrivateChatChannelName
-    {
-        get => __pbn__PrivateChatChannelName ?? "";
-        set => __pbn__PrivateChatChannelName = value;
-    }
-    public bool ShouldSerializePrivateChatChannelName() => __pbn__PrivateChatChannelName != null;
-    public void ResetPrivateChatChannelName() => __pbn__PrivateChatChannelName = null;
-    private string __pbn__PrivateChatChannelName;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"members")]
-    public global::System.Collections.Generic.List<Member> Members { get; } = new global::System.Collections.Generic.List<Member>();
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"creator")]
-    public uint Creator
-    {
-        get => __pbn__Creator.GetValueOrDefault();
-        set => __pbn__Creator = value;
-    }
-    public bool ShouldSerializeCreator() => __pbn__Creator != null;
-    public void ResetCreator() => __pbn__Creator = null;
-    private uint? __pbn__Creator;
-
-    [global::ProtoBuf.ProtoMember(4, Name = @"creation_date")]
-    public uint CreationDate
-    {
-        get => __pbn__CreationDate.GetValueOrDefault();
-        set => __pbn__CreationDate = value;
-    }
-    public bool ShouldSerializeCreationDate() => __pbn__CreationDate != null;
-    public void ResetCreationDate() => __pbn__CreationDate = null;
-    private uint? __pbn__CreationDate;
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class Member : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
-        public uint AccountId
-        {
-            get => __pbn__AccountId.GetValueOrDefault();
-            set => __pbn__AccountId = value;
-        }
-        public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
-        public void ResetAccountId() => __pbn__AccountId = null;
-        private uint? __pbn__AccountId;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"name")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string Name
-        {
-            get => __pbn__Name ?? "";
-            set => __pbn__Name = value;
-        }
-        public bool ShouldSerializeName() => __pbn__Name != null;
-        public void ResetName() => __pbn__Name = null;
-        private string __pbn__Name;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"status")]
-        public uint Status
-        {
-            get => __pbn__Status.GetValueOrDefault();
-            set => __pbn__Status = value;
-        }
-        public bool ShouldSerializeStatus() => __pbn__Status != null;
-        public void ResetStatus() => __pbn__Status = null;
-        private uint? __pbn__Status;
-
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
 public partial class CMsgDOTAJoinChatChannel : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -334,6 +231,16 @@ public partial class CMsgDOTAJoinChatChannel : global::ProtoBuf.IExtensible
     public bool ShouldSerializeChannelType() => __pbn__ChannelType != null;
     public void ResetChannelType() => __pbn__ChannelType = null;
     private DOTAChatChannelTypet? __pbn__ChannelType;
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"silent_rejection")]
+    public bool SilentRejection
+    {
+        get => __pbn__SilentRejection.GetValueOrDefault();
+        set => __pbn__SilentRejection = value;
+    }
+    public bool ShouldSerializeSilentRejection() => __pbn__SilentRejection != null;
+    public void ResetSilentRejection() => __pbn__SilentRejection = null;
+    private bool? __pbn__SilentRejection;
 
 }
 
@@ -386,21 +293,41 @@ public partial class CMsgGCChatReportPublicSpam : global::ProtoBuf.IExtensible
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAClientIgnoredUser : global::ProtoBuf.IExtensible
+public partial class CMsgDOTAChatModeratorBan : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-    [global::ProtoBuf.ProtoMember(1, Name = @"ignored_account_id")]
-    public uint IgnoredAccountId
+    [global::ProtoBuf.ProtoMember(1, Name = @"channel_id")]
+    public ulong ChannelId
     {
-        get => __pbn__IgnoredAccountId.GetValueOrDefault();
-        set => __pbn__IgnoredAccountId = value;
+        get => __pbn__ChannelId.GetValueOrDefault();
+        set => __pbn__ChannelId = value;
     }
-    public bool ShouldSerializeIgnoredAccountId() => __pbn__IgnoredAccountId != null;
-    public void ResetIgnoredAccountId() => __pbn__IgnoredAccountId = null;
-    private uint? __pbn__IgnoredAccountId;
+    public bool ShouldSerializeChannelId() => __pbn__ChannelId != null;
+    public void ResetChannelId() => __pbn__ChannelId = null;
+    private ulong? __pbn__ChannelId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"account_id")]
+    public uint AccountId
+    {
+        get => __pbn__AccountId.GetValueOrDefault();
+        set => __pbn__AccountId = value;
+    }
+    public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
+    public void ResetAccountId() => __pbn__AccountId = null;
+    private uint? __pbn__AccountId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"duration")]
+    public uint Duration
+    {
+        get => __pbn__Duration.GetValueOrDefault();
+        set => __pbn__Duration = value;
+    }
+    public bool ShouldSerializeDuration() => __pbn__Duration != null;
+    public void ResetDuration() => __pbn__Duration = null;
+    private uint? __pbn__Duration;
 
 }
 
@@ -523,16 +450,6 @@ public partial class CMsgDOTAChatMessage : global::ProtoBuf.IExtensible
     public bool ShouldSerializeSuggestInviteToLobby() => __pbn__SuggestInviteToLobby != null;
     public void ResetSuggestInviteToLobby() => __pbn__SuggestInviteToLobby = null;
     private bool? __pbn__SuggestInviteToLobby;
-
-    [global::ProtoBuf.ProtoMember(12, Name = @"event_points")]
-    public uint EventPoints
-    {
-        get => __pbn__EventPoints.GetValueOrDefault();
-        set => __pbn__EventPoints = value;
-    }
-    public bool ShouldSerializeEventPoints() => __pbn__EventPoints != null;
-    public void ResetEventPoints() => __pbn__EventPoints = null;
-    private uint? __pbn__EventPoints;
 
     [global::ProtoBuf.ProtoMember(13, Name = @"coin_flip")]
     public bool CoinFlip
@@ -670,14 +587,14 @@ public partial class CMsgDOTAChatMessage : global::ProtoBuf.IExtensible
     private uint? __pbn__BadgeLevel;
 
     [global::ProtoBuf.ProtoMember(26, Name = @"suggest_pick_hero_id")]
-    public uint SuggestPickHeroId
+    public int SuggestPickHeroId
     {
         get => __pbn__SuggestPickHeroId.GetValueOrDefault();
         set => __pbn__SuggestPickHeroId = value;
     }
     public bool ShouldSerializeSuggestPickHeroId() => __pbn__SuggestPickHeroId != null;
     public void ResetSuggestPickHeroId() => __pbn__SuggestPickHeroId = null;
-    private uint? __pbn__SuggestPickHeroId;
+    private int? __pbn__SuggestPickHeroId;
 
     [global::ProtoBuf.ProtoMember(27, Name = @"suggest_pick_hero_role")]
     [global::System.ComponentModel.DefaultValue("")]
@@ -691,27 +608,28 @@ public partial class CMsgDOTAChatMessage : global::ProtoBuf.IExtensible
     private string __pbn__SuggestPickHeroRole;
 
     [global::ProtoBuf.ProtoMember(30, Name = @"suggest_ban_hero_id")]
-    public uint SuggestBanHeroId
+    public int SuggestBanHeroId
     {
         get => __pbn__SuggestBanHeroId.GetValueOrDefault();
         set => __pbn__SuggestBanHeroId = value;
     }
     public bool ShouldSerializeSuggestBanHeroId() => __pbn__SuggestBanHeroId != null;
     public void ResetSuggestBanHeroId() => __pbn__SuggestBanHeroId = null;
-    private uint? __pbn__SuggestBanHeroId;
+    private int? __pbn__SuggestBanHeroId;
 
     [global::ProtoBuf.ProtoMember(32, Name = @"trivia_answer")]
     public TriviaAnswered TriviaAnswer { get; set; }
 
     [global::ProtoBuf.ProtoMember(33, Name = @"requested_ability_id")]
-    public uint RequestedAbilityId
+    [global::System.ComponentModel.DefaultValue(-1)]
+    public int RequestedAbilityId
     {
-        get => __pbn__RequestedAbilityId.GetValueOrDefault();
+        get => __pbn__RequestedAbilityId ?? -1;
         set => __pbn__RequestedAbilityId = value;
     }
     public bool ShouldSerializeRequestedAbilityId() => __pbn__RequestedAbilityId != null;
     public void ResetRequestedAbilityId() => __pbn__RequestedAbilityId = null;
-    private uint? __pbn__RequestedAbilityId;
+    private int? __pbn__RequestedAbilityId;
 
     [global::ProtoBuf.ProtoMember(34, Name = @"chat_flags")]
     public uint ChatFlags
@@ -722,6 +640,103 @@ public partial class CMsgDOTAChatMessage : global::ProtoBuf.IExtensible
     public bool ShouldSerializeChatFlags() => __pbn__ChatFlags != null;
     public void ResetChatFlags() => __pbn__ChatFlags = null;
     private uint? __pbn__ChatFlags;
+
+    [global::ProtoBuf.ProtoMember(35, Name = @"started_finding_match")]
+    public bool StartedFindingMatch
+    {
+        get => __pbn__StartedFindingMatch.GetValueOrDefault();
+        set => __pbn__StartedFindingMatch = value;
+    }
+    public bool ShouldSerializeStartedFindingMatch() => __pbn__StartedFindingMatch != null;
+    public void ResetStartedFindingMatch() => __pbn__StartedFindingMatch = null;
+    private bool? __pbn__StartedFindingMatch;
+
+    [global::ProtoBuf.ProtoMember(36, Name = @"ctrl_is_down")]
+    public bool CtrlIsDown
+    {
+        get => __pbn__CtrlIsDown.GetValueOrDefault();
+        set => __pbn__CtrlIsDown = value;
+    }
+    public bool ShouldSerializeCtrlIsDown() => __pbn__CtrlIsDown != null;
+    public void ResetCtrlIsDown() => __pbn__CtrlIsDown = null;
+    private bool? __pbn__CtrlIsDown;
+
+    [global::ProtoBuf.ProtoMember(37, Name = @"favorite_team_id")]
+    public uint FavoriteTeamId
+    {
+        get => __pbn__FavoriteTeamId.GetValueOrDefault();
+        set => __pbn__FavoriteTeamId = value;
+    }
+    public bool ShouldSerializeFavoriteTeamId() => __pbn__FavoriteTeamId != null;
+    public void ResetFavoriteTeamId() => __pbn__FavoriteTeamId = null;
+    private uint? __pbn__FavoriteTeamId;
+
+    [global::ProtoBuf.ProtoMember(38, Name = @"favorite_team_quality")]
+    public uint FavoriteTeamQuality
+    {
+        get => __pbn__FavoriteTeamQuality.GetValueOrDefault();
+        set => __pbn__FavoriteTeamQuality = value;
+    }
+    public bool ShouldSerializeFavoriteTeamQuality() => __pbn__FavoriteTeamQuality != null;
+    public void ResetFavoriteTeamQuality() => __pbn__FavoriteTeamQuality = null;
+    private uint? __pbn__FavoriteTeamQuality;
+
+    [global::ProtoBuf.ProtoMember(39, Name = @"suggest_player_draft_pick")]
+    [global::System.ComponentModel.DefaultValue(-1)]
+    public int SuggestPlayerDraftPick
+    {
+        get => __pbn__SuggestPlayerDraftPick ?? -1;
+        set => __pbn__SuggestPlayerDraftPick = value;
+    }
+    public bool ShouldSerializeSuggestPlayerDraftPick() => __pbn__SuggestPlayerDraftPick != null;
+    public void ResetSuggestPlayerDraftPick() => __pbn__SuggestPlayerDraftPick = null;
+    private int? __pbn__SuggestPlayerDraftPick;
+
+    [global::ProtoBuf.ProtoMember(40)]
+    public PlayerDraftPick player_draft_pick { get; set; }
+
+    [global::ProtoBuf.ProtoMember(41)]
+    public ChatWheelMessage chat_wheel_message { get; set; }
+
+    [global::ProtoBuf.ProtoMember(42, Name = @"event_level")]
+    public uint EventLevel
+    {
+        get => __pbn__EventLevel.GetValueOrDefault();
+        set => __pbn__EventLevel = value;
+    }
+    public bool ShouldSerializeEventLevel() => __pbn__EventLevel != null;
+    public void ResetEventLevel() => __pbn__EventLevel = null;
+    private uint? __pbn__EventLevel;
+
+    [global::ProtoBuf.ProtoMember(43, Name = @"suggest_pick_hero_facet")]
+    public uint SuggestPickHeroFacet
+    {
+        get => __pbn__SuggestPickHeroFacet.GetValueOrDefault();
+        set => __pbn__SuggestPickHeroFacet = value;
+    }
+    public bool ShouldSerializeSuggestPickHeroFacet() => __pbn__SuggestPickHeroFacet != null;
+    public void ResetSuggestPickHeroFacet() => __pbn__SuggestPickHeroFacet = null;
+    private uint? __pbn__SuggestPickHeroFacet;
+
+    [global::ProtoBuf.ProtoMember(44, Name = @"requested_hero_id")]
+    public int RequestedHeroId
+    {
+        get => __pbn__RequestedHeroId.GetValueOrDefault();
+        set => __pbn__RequestedHeroId = value;
+    }
+    public bool ShouldSerializeRequestedHeroId() => __pbn__RequestedHeroId != null;
+    public void ResetRequestedHeroId() => __pbn__RequestedHeroId = null;
+    private int? __pbn__RequestedHeroId;
+
+    [global::ProtoBuf.ProtoMember(45, Name = @"requested_hero_facet_key")]
+    public ulong RequestedHeroFacetKey
+    {
+        get => __pbn__RequestedHeroFacetKey.GetValueOrDefault();
+        set => __pbn__RequestedHeroFacetKey = value;
+    }
+    public bool ShouldSerializeRequestedHeroFacetKey() => __pbn__RequestedHeroFacetKey != null;
+    public void ResetRequestedHeroFacetKey() => __pbn__RequestedHeroFacetKey = null;
+    private ulong? __pbn__RequestedHeroFacetKey;
 
     [global::ProtoBuf.ProtoContract()]
     public partial class DiceRoll : global::ProtoBuf.IExtensible
@@ -818,6 +833,87 @@ public partial class CMsgDOTAChatMessage : global::ProtoBuf.IExtensible
         public bool ShouldSerializePartyTriviaPoints() => __pbn__PartyTriviaPoints != null;
         public void ResetPartyTriviaPoints() => __pbn__PartyTriviaPoints = null;
         private uint? __pbn__PartyTriviaPoints;
+
+    }
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class PlayerDraftPick : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"player_id")]
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int PlayerId
+        {
+            get => __pbn__PlayerId ?? -1;
+            set => __pbn__PlayerId = value;
+        }
+        public bool ShouldSerializePlayerId() => __pbn__PlayerId != null;
+        public void ResetPlayerId() => __pbn__PlayerId = null;
+        private int? __pbn__PlayerId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"team")]
+        public int Team
+        {
+            get => __pbn__Team.GetValueOrDefault();
+            set => __pbn__Team = value;
+        }
+        public bool ShouldSerializeTeam() => __pbn__Team != null;
+        public void ResetTeam() => __pbn__Team = null;
+        private int? __pbn__Team;
+
+    }
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class ChatWheelMessage : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"message_id")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
+        public uint MessageId
+        {
+            get => __pbn__MessageId ?? 4294967295u;
+            set => __pbn__MessageId = value;
+        }
+        public bool ShouldSerializeMessageId() => __pbn__MessageId != null;
+        public void ResetMessageId() => __pbn__MessageId = null;
+        private uint? __pbn__MessageId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"emoticon_id")]
+        public uint EmoticonId
+        {
+            get => __pbn__EmoticonId.GetValueOrDefault();
+            set => __pbn__EmoticonId = value;
+        }
+        public bool ShouldSerializeEmoticonId() => __pbn__EmoticonId != null;
+        public void ResetEmoticonId() => __pbn__EmoticonId = null;
+        private uint? __pbn__EmoticonId;
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"message_text")]
+        [global::System.ComponentModel.DefaultValue("")]
+        public string MessageText
+        {
+            get => __pbn__MessageText ?? "";
+            set => __pbn__MessageText = value;
+        }
+        public bool ShouldSerializeMessageText() => __pbn__MessageText != null;
+        public void ResetMessageText() => __pbn__MessageText = null;
+        private string __pbn__MessageText;
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"hero_badge_tier")]
+        public uint HeroBadgeTier
+        {
+            get => __pbn__HeroBadgeTier.GetValueOrDefault();
+            set => __pbn__HeroBadgeTier = value;
+        }
+        public bool ShouldSerializeHeroBadgeTier() => __pbn__HeroBadgeTier != null;
+        public void ResetHeroBadgeTier() => __pbn__HeroBadgeTier = null;
+        private uint? __pbn__HeroBadgeTier;
 
     }
 
@@ -977,6 +1073,17 @@ public partial class CMsgDOTAJoinChatChannelResponse : global::ProtoBuf.IExtensi
     public void ResetWelcomeMessage() => __pbn__WelcomeMessage = null;
     private string __pbn__WelcomeMessage;
 
+    [global::ProtoBuf.ProtoMember(11, Name = @"special_privileges")]
+    [global::System.ComponentModel.DefaultValue(EChatSpecialPrivileges.kEChatSpecialPrivilegesNone)]
+    public EChatSpecialPrivileges SpecialPrivileges
+    {
+        get => __pbn__SpecialPrivileges ?? EChatSpecialPrivileges.kEChatSpecialPrivilegesNone;
+        set => __pbn__SpecialPrivileges = value;
+    }
+    public bool ShouldSerializeSpecialPrivileges() => __pbn__SpecialPrivileges != null;
+    public void ResetSpecialPrivileges() => __pbn__SpecialPrivileges = null;
+    private EChatSpecialPrivileges? __pbn__SpecialPrivileges;
+
     [global::ProtoBuf.ProtoContract()]
     public enum Result
     {
@@ -1010,29 +1117,15 @@ public partial class CMsgDOTAJoinChatChannelResponse : global::ProtoBuf.IExtensi
         PrivateChatKicked = 13,
         [global::ProtoBuf.ProtoEnum(Name = @"USER_NOT_ALLOWED")]
         UserNotAllowed = 14,
+        [global::ProtoBuf.ProtoEnum(Name = @"ENSURE_SPECIAL_PRIVILEGES_FAILED")]
+        EnsureSpecialPrivilegesFailed = 15,
+        [global::ProtoBuf.ProtoEnum(Name = @"NEW_PLAYER_USER_NOT_ELIGIBLE")]
+        NewPlayerUserNotEligible = 16,
+        [global::ProtoBuf.ProtoEnum(Name = @"SILENT_ERROR")]
+        SilentError = 17,
+        [global::ProtoBuf.ProtoEnum(Name = @"NEW_PLAYER_USER_BANNED")]
+        NewPlayerUserBanned = 18,
     }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAChatChannelFullUpdate : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"channel_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong ChannelId
-    {
-        get => __pbn__ChannelId.GetValueOrDefault();
-        set => __pbn__ChannelId = value;
-    }
-    public bool ShouldSerializeChannelId() => __pbn__ChannelId != null;
-    public void ResetChannelId() => __pbn__ChannelId = null;
-    private ulong? __pbn__ChannelId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"members")]
-    public global::System.Collections.Generic.List<CMsgDOTAChatMember> Members { get; } = new global::System.Collections.Generic.List<CMsgDOTAChatMember>();
 
 }
 
@@ -1136,81 +1229,6 @@ public partial class CMsgDOTAOtherLeftChatChannel : global::ProtoBuf.IExtensible
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAChatChannelMemberUpdate : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"channel_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong ChannelId
-    {
-        get => __pbn__ChannelId.GetValueOrDefault();
-        set => __pbn__ChannelId = value;
-    }
-    public bool ShouldSerializeChannelId() => __pbn__ChannelId != null;
-    public void ResetChannelId() => __pbn__ChannelId = null;
-    private ulong? __pbn__ChannelId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"left_steam_ids", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong[] LeftSteamIds { get; set; }
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"joined_members")]
-    public global::System.Collections.Generic.List<JoinedMember> JoinedMembers { get; } = new global::System.Collections.Generic.List<JoinedMember>();
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class JoinedMember : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"steam_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-        public ulong SteamId
-        {
-            get => __pbn__SteamId.GetValueOrDefault();
-            set => __pbn__SteamId = value;
-        }
-        public bool ShouldSerializeSteamId() => __pbn__SteamId != null;
-        public void ResetSteamId() => __pbn__SteamId = null;
-        private ulong? __pbn__SteamId;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"persona_name")]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string PersonaName
-        {
-            get => __pbn__PersonaName ?? "";
-            set => __pbn__PersonaName = value;
-        }
-        public bool ShouldSerializePersonaName() => __pbn__PersonaName != null;
-        public void ResetPersonaName() => __pbn__PersonaName = null;
-        private string __pbn__PersonaName;
-
-        [global::ProtoBuf.ProtoMember(3, Name = @"channel_user_id")]
-        public uint ChannelUserId
-        {
-            get => __pbn__ChannelUserId.GetValueOrDefault();
-            set => __pbn__ChannelUserId = value;
-        }
-        public bool ShouldSerializeChannelUserId() => __pbn__ChannelUserId != null;
-        public void ResetChannelUserId() => __pbn__ChannelUserId = null;
-        private uint? __pbn__ChannelUserId;
-
-        [global::ProtoBuf.ProtoMember(4, Name = @"status")]
-        public uint Status
-        {
-            get => __pbn__Status.GetValueOrDefault();
-            set => __pbn__Status = value;
-        }
-        public bool ShouldSerializeStatus() => __pbn__Status != null;
-        public void ResetStatus() => __pbn__Status = null;
-        private uint? __pbn__Status;
-
-    }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
 public partial class CMsgDOTARequestChatChannelList : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -1269,25 +1287,6 @@ public partial class CMsgDOTARequestChatChannelListResponse : global::ProtoBuf.I
         private DOTAChatChannelTypet? __pbn__ChannelType;
 
     }
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgDOTAChatGetUserList : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"channel_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public ulong ChannelId
-    {
-        get => __pbn__ChannelId.GetValueOrDefault();
-        set => __pbn__ChannelId = value;
-    }
-    public bool ShouldSerializeChannelId() => __pbn__ChannelId != null;
-    public void ResetChannelId() => __pbn__ChannelId = null;
-    private ulong? __pbn__ChannelId;
 
 }
 

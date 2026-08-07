@@ -170,8 +170,12 @@ public static class GameCoordinatorEndpoints
                     (uint)lobby.GameState,
                     lobby.Lan,
                     lobby.ServerId,
-                    lobby.Members
-                        .Select(member => new GcLobbyMember(member.Id, member.Name, (int)member.Team, member.Slot))
+                    lobby.AllMembers
+                        .Select(member => new GcLobbyMember(
+                            member.Id,
+                            lobbies.MemberName(lobby.LobbyId, member.Id),
+                            (int)member.Team,
+                            member.Slot))
                         .ToList()));
         });
 

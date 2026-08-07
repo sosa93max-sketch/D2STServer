@@ -198,7 +198,7 @@ guest_token, guest = logon(90102, "Guest")
 third_token, third = logon(90103, "Third")
 
 for token in (host_token, guest_token, third_token):
-    exchange(token, 4006, varint_field(1, 3756))
+    exchange(token, 4006, varint_field(1, 6783))
     poll(token)
 
 # create a lobby with a pass key, a name and a region
@@ -284,7 +284,7 @@ poll(host_token)
 poll(guest_token)
 
 # a reconnect gets the lobby back in its welcome
-_, welcome = exchange(guest_token, 4006, varint_field(1, 3756))
+_, welcome = exchange(guest_token, 4006, varint_field(1, 6783))
 welcome_caches = [decode(cache) for cache in decode(welcome[1][1]).get(3, [])]
 lobby_caches = [cache for cache in welcome_caches if decode(cache[4][0])[1][0] == 3]
 check("the welcome carries the lobby cache", len(lobby_caches) == 1, len(welcome_caches))

@@ -2,14 +2,14 @@
 # Regenerates src/D2ST.Protocol/Generated/*.cs from Valve's .proto files.
 #
 # The ref is pinned to the GameTracking-Dota2 commit for the Dota build this
-# server targets (7.22g / ClientVersion 3756), so the generated contracts match
-# what the client actually speaks. Pass a different ref to retarget.
+# server targets (ClientVersion 6783, May 2026), so the generated contracts
+# match what the client actually speaks. Pass a different ref to retarget.
 #
 # Usage: tools/regenerate-protos.sh [git-ref]
 # Requires: .NET SDK (for the protogen dotnet tool) and internet access.
 set -euo pipefail
 
-REF="${1:-decc6ad2cbc8b4269ce5dda8938cdac0792f441c}" # build 3756, 2019-09-06
+REF="${1:-4b28dd7d49f7a1a4b073f3b5dcd22c1ad17423f0}" # build 6783, 2026-05-04
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT="$ROOT/src/D2ST.Protocol/Generated"
 WORK="$(mktemp -d)"

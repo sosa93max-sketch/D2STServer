@@ -73,9 +73,10 @@ public partial class CMsgAdjustItemEquippedState : global::ProtoBuf.IExtensible
     private uint? __pbn__NewSlot;
 
     [global::ProtoBuf.ProtoMember(4, Name = @"style_index")]
+    [global::System.ComponentModel.DefaultValue(255u)]
     public uint StyleIndex
     {
-        get => __pbn__StyleIndex.GetValueOrDefault();
+        get => __pbn__StyleIndex ?? 255u;
         set => __pbn__StyleIndex = value;
     }
     public bool ShouldSerializeStyleIndex() => __pbn__StyleIndex != null;
@@ -152,71 +153,6 @@ public partial class CMsgEconPlayerStrangeCountAdjustment : global::ProtoBuf.IEx
         private uint? __pbn__Adjustment;
 
     }
-
-}
-
-[global::ProtoBuf.ProtoContract(Name = @"CMsgRequestItemPurgatory_FinalizePurchase")]
-public partial class CMsgRequestItemPurgatoryFinalizePurchase : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"item_ids")]
-    public ulong[] ItemIds { get; set; }
-
-}
-
-[global::ProtoBuf.ProtoContract(Name = @"CMsgRequestItemPurgatory_FinalizePurchaseResponse")]
-public partial class CMsgRequestItemPurgatoryFinalizePurchaseResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    public uint Result
-    {
-        get => __pbn__Result.GetValueOrDefault();
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private uint? __pbn__Result;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"item_ids")]
-    public ulong[] ItemIds { get; set; }
-
-}
-
-[global::ProtoBuf.ProtoContract(Name = @"CMsgRequestItemPurgatory_RefundPurchase")]
-public partial class CMsgRequestItemPurgatoryRefundPurchase : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"item_ids")]
-    public ulong[] ItemIds { get; set; }
-
-}
-
-[global::ProtoBuf.ProtoContract(Name = @"CMsgRequestItemPurgatory_RefundPurchaseResponse")]
-public partial class CMsgRequestItemPurgatoryRefundPurchaseResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    public uint Result
-    {
-        get => __pbn__Result.GetValueOrDefault();
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private uint? __pbn__Result;
 
 }
 
@@ -554,6 +490,9 @@ public partial class CMsgRequestCrateItemsResponse : global::ProtoBuf.IExtensibl
     [global::ProtoBuf.ProtoMember(3, Name = @"peek_item_defs")]
     public uint[] PeekItemDefs { get; set; }
 
+    [global::ProtoBuf.ProtoMember(4, Name = @"peek_items")]
+    public global::System.Collections.Generic.List<CSOEconItem> PeekItems { get; } = new global::System.Collections.Generic.List<CSOEconItem>();
+
     [global::ProtoBuf.ProtoContract()]
     public enum EResult
     {
@@ -869,64 +808,6 @@ public partial class CMsgGCToGCRefreshSOCache : global::ProtoBuf.IExtensible
 }
 
 [global::ProtoBuf.ProtoContract()]
-public partial class CMsgGCToGCCheckAccountTradeStatus : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
-    public uint AccountId
-    {
-        get => __pbn__AccountId.GetValueOrDefault();
-        set => __pbn__AccountId = value;
-    }
-    public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
-    public void ResetAccountId() => __pbn__AccountId = null;
-    private uint? __pbn__AccountId;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"initiator")]
-    public bool Initiator
-    {
-        get => __pbn__Initiator.GetValueOrDefault();
-        set => __pbn__Initiator = value;
-    }
-    public bool ShouldSerializeInitiator() => __pbn__Initiator != null;
-    public void ResetInitiator() => __pbn__Initiator = null;
-    private bool? __pbn__Initiator;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGCToGCCheckAccountTradeStatusResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"can_trade")]
-    public bool CanTrade
-    {
-        get => __pbn__CanTrade.GetValueOrDefault();
-        set => __pbn__CanTrade = value;
-    }
-    public bool ShouldSerializeCanTrade() => __pbn__CanTrade != null;
-    public void ResetCanTrade() => __pbn__CanTrade = null;
-    private bool? __pbn__CanTrade;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"error_code")]
-    public uint ErrorCode
-    {
-        get => __pbn__ErrorCode.GetValueOrDefault();
-        set => __pbn__ErrorCode = value;
-    }
-    public bool ShouldSerializeErrorCode() => __pbn__ErrorCode != null;
-    public void ResetErrorCode() => __pbn__ErrorCode = null;
-    private uint? __pbn__ErrorCode;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
 public partial class CMsgGCToGCAddSubscriptionTime : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -1054,6 +935,17 @@ public partial class CMsgGCToGCGrantAccountRolledItems : global::ProtoBuf.IExten
         public void ResetInventoryToken() => __pbn__InventoryToken = null;
         private uint? __pbn__InventoryToken;
 
+        [global::ProtoBuf.ProtoMember(8, Name = @"quality")]
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int Quality
+        {
+            get => __pbn__Quality ?? -1;
+            set => __pbn__Quality = value;
+        }
+        public bool ShouldSerializeQuality() => __pbn__Quality != null;
+        public void ResetQuality() => __pbn__Quality = null;
+        private int? __pbn__Quality;
+
         [global::ProtoBuf.ProtoContract()]
         public partial class DynamicAttribute : global::ProtoBuf.IExtensible
         {
@@ -1149,6 +1041,31 @@ public partial class CMsgGCToGCGrantAccountRolledItems : global::ProtoBuf.IExten
 }
 
 [global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToGCBetaDeleteItems : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
+    public uint AccountId
+    {
+        get => __pbn__AccountId.GetValueOrDefault();
+        set => __pbn__AccountId = value;
+    }
+    public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
+    public void ResetAccountId() => __pbn__AccountId = null;
+    private uint? __pbn__AccountId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"item_ids")]
+    public ulong[] ItemIds { get; set; }
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"item_defs")]
+    public uint[] ItemDefs { get; set; }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
 public partial class CMsgGCToGCGrantSelfMadeItemToAccount : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -1174,6 +1091,45 @@ public partial class CMsgGCToGCGrantSelfMadeItemToAccount : global::ProtoBuf.IEx
     public bool ShouldSerializeAccountid() => __pbn__Accountid != null;
     public void ResetAccountid() => __pbn__Accountid = null;
     private uint? __pbn__Accountid;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToGCUnlockCrate : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
+    public uint AccountId
+    {
+        get => __pbn__AccountId.GetValueOrDefault();
+        set => __pbn__AccountId = value;
+    }
+    public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
+    public void ResetAccountId() => __pbn__AccountId = null;
+    private uint? __pbn__AccountId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"crate_item_id")]
+    public ulong CrateItemId
+    {
+        get => __pbn__CrateItemId.GetValueOrDefault();
+        set => __pbn__CrateItemId = value;
+    }
+    public bool ShouldSerializeCrateItemId() => __pbn__CrateItemId != null;
+    public void ResetCrateItemId() => __pbn__CrateItemId = null;
+    private ulong? __pbn__CrateItemId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"key_item_id")]
+    public ulong KeyItemId
+    {
+        get => __pbn__KeyItemId.GetValueOrDefault();
+        set => __pbn__KeyItemId = value;
+    }
+    public bool ShouldSerializeKeyItemId() => __pbn__KeyItemId != null;
+    public void ResetKeyItemId() => __pbn__KeyItemId = null;
+    private ulong? __pbn__KeyItemId;
 
 }
 
@@ -1273,45 +1229,6 @@ public partial class CMsgUseMultipleItems : global::ProtoBuf.IExtensible
 
 }
 
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGCPartnerBalanceRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGCPartnerBalanceResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EGCPartnerRequestResponse.kEPartnerRequestOK)]
-    public EGCPartnerRequestResponse Result
-    {
-        get => __pbn__Result ?? EGCPartnerRequestResponse.kEPartnerRequestOK;
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private EGCPartnerRequestResponse? __pbn__Result;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"balance")]
-    public uint Balance
-    {
-        get => __pbn__Balance.GetValueOrDefault();
-        set => __pbn__Balance = value;
-    }
-    public bool ShouldSerializeBalance() => __pbn__Balance != null;
-    public void ResetBalance() => __pbn__Balance = null;
-    private uint? __pbn__Balance;
-
-}
-
 [global::ProtoBuf.ProtoContract(Name = @"CGCStoreRechargeRedirect_LineItem")]
 public partial class CGCStoreRechargeRedirectLineItem : global::ProtoBuf.IExtensible
 {
@@ -1338,49 +1255,6 @@ public partial class CGCStoreRechargeRedirectLineItem : global::ProtoBuf.IExtens
     public bool ShouldSerializeQuantity() => __pbn__Quantity != null;
     public void ResetQuantity() => __pbn__Quantity = null;
     private uint? __pbn__Quantity;
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGCPartnerRechargeRedirectURLRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"line_items")]
-    public global::System.Collections.Generic.List<CGCStoreRechargeRedirectLineItem> LineItems { get; } = new global::System.Collections.Generic.List<CGCStoreRechargeRedirectLineItem>();
-
-}
-
-[global::ProtoBuf.ProtoContract()]
-public partial class CMsgGCPartnerRechargeRedirectURLResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
-    [global::System.ComponentModel.DefaultValue(EGCPartnerRequestResponse.kEPartnerRequestOK)]
-    public EGCPartnerRequestResponse Result
-    {
-        get => __pbn__Result ?? EGCPartnerRequestResponse.kEPartnerRequestOK;
-        set => __pbn__Result = value;
-    }
-    public bool ShouldSerializeResult() => __pbn__Result != null;
-    public void ResetResult() => __pbn__Result = null;
-    private EGCPartnerRequestResponse? __pbn__Result;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"url")]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string Url
-    {
-        get => __pbn__Url ?? "";
-        set => __pbn__Url = value;
-    }
-    public bool ShouldSerializeUrl() => __pbn__Url != null;
-    public void ResetUrl() => __pbn__Url = null;
-    private string __pbn__Url;
 
 }
 
@@ -1611,6 +1485,16 @@ public partial class CMsgDevNewItemRequest : global::ProtoBuf.IExtensible
     [global::ProtoBuf.ProtoMember(6, Name = @"attr_value")]
     public global::System.Collections.Generic.List<string> AttrValues { get; } = new global::System.Collections.Generic.List<string>();
 
+    [global::ProtoBuf.ProtoMember(7, Name = @"item_quality")]
+    public uint ItemQuality
+    {
+        get => __pbn__ItemQuality.GetValueOrDefault();
+        set => __pbn__ItemQuality = value;
+    }
+    public bool ShouldSerializeItemQuality() => __pbn__ItemQuality != null;
+    public void ResetItemQuality() => __pbn__ItemQuality = null;
+    private uint? __pbn__ItemQuality;
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -1715,25 +1599,49 @@ public partial class CMsgGCAddGiftItem : global::ProtoBuf.IExtensible
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-    [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
-    public uint AccountId
+    [global::ProtoBuf.ProtoMember(1, Name = @"gifter_account_id")]
+    public uint GifterAccountId
     {
-        get => __pbn__AccountId.GetValueOrDefault();
-        set => __pbn__AccountId = value;
+        get => __pbn__GifterAccountId.GetValueOrDefault();
+        set => __pbn__GifterAccountId = value;
     }
-    public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
-    public void ResetAccountId() => __pbn__AccountId = null;
-    private uint? __pbn__AccountId;
+    public bool ShouldSerializeGifterAccountId() => __pbn__GifterAccountId != null;
+    public void ResetGifterAccountId() => __pbn__GifterAccountId = null;
+    private uint? __pbn__GifterAccountId;
 
-    [global::ProtoBuf.ProtoMember(2, Name = @"item_id")]
-    public ulong ItemId
+    [global::ProtoBuf.ProtoMember(2, Name = @"receiver_account_id")]
+    public uint ReceiverAccountId
     {
-        get => __pbn__ItemId.GetValueOrDefault();
-        set => __pbn__ItemId = value;
+        get => __pbn__ReceiverAccountId.GetValueOrDefault();
+        set => __pbn__ReceiverAccountId = value;
     }
-    public bool ShouldSerializeItemId() => __pbn__ItemId != null;
-    public void ResetItemId() => __pbn__ItemId = null;
-    private ulong? __pbn__ItemId;
+    public bool ShouldSerializeReceiverAccountId() => __pbn__ReceiverAccountId != null;
+    public void ResetReceiverAccountId() => __pbn__ReceiverAccountId = null;
+    private uint? __pbn__ReceiverAccountId;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"wrapped_item")]
+    public CSOEconItem WrappedItem { get; set; }
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"gift_message")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string GiftMessage
+    {
+        get => __pbn__GiftMessage ?? "";
+        set => __pbn__GiftMessage = value;
+    }
+    public bool ShouldSerializeGiftMessage() => __pbn__GiftMessage != null;
+    public void ResetGiftMessage() => __pbn__GiftMessage = null;
+    private string __pbn__GiftMessage;
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"is_wallet_cash_trusted")]
+    public bool IsWalletCashTrusted
+    {
+        get => __pbn__IsWalletCashTrusted.GetValueOrDefault();
+        set => __pbn__IsWalletCashTrusted = value;
+    }
+    public bool ShouldSerializeIsWalletCashTrusted() => __pbn__IsWalletCashTrusted != null;
+    public void ResetIsWalletCashTrusted() => __pbn__IsWalletCashTrusted = null;
+    private bool? __pbn__IsWalletCashTrusted;
 
 }
 
@@ -1774,6 +1682,35 @@ public partial class CMsgClientToGCWrapAndDeliverGift : global::ProtoBuf.IExtens
     public bool ShouldSerializeGiftMessage() => __pbn__GiftMessage != null;
     public void ResetGiftMessage() => __pbn__GiftMessage = null;
     private string __pbn__GiftMessage;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgSQLGCToGCRevokeUntrustedGift : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"account_id")]
+    public uint AccountId
+    {
+        get => __pbn__AccountId.GetValueOrDefault();
+        set => __pbn__AccountId = value;
+    }
+    public bool ShouldSerializeAccountId() => __pbn__AccountId != null;
+    public void ResetAccountId() => __pbn__AccountId = null;
+    private uint? __pbn__AccountId;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"sent_item_id")]
+    public ulong SentItemId
+    {
+        get => __pbn__SentItemId.GetValueOrDefault();
+        set => __pbn__SentItemId = value;
+    }
+    public bool ShouldSerializeSentItemId() => __pbn__SentItemId != null;
+    public void ResetSentItemId() => __pbn__SentItemId = null;
+    private ulong? __pbn__SentItemId;
 
 }
 
@@ -2044,6 +1981,93 @@ public partial class CMsgClientToGCUnpackBundleResponse : global::ProtoBuf.IExte
 }
 
 [global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCPackBundle : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"item_ids")]
+    public ulong[] ItemIds { get; set; }
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"bundle_item_def_index")]
+    public uint BundleItemDefIndex
+    {
+        get => __pbn__BundleItemDefIndex.GetValueOrDefault();
+        set => __pbn__BundleItemDefIndex = value;
+    }
+    public bool ShouldSerializeBundleItemDefIndex() => __pbn__BundleItemDefIndex != null;
+    public void ResetBundleItemDefIndex() => __pbn__BundleItemDefIndex = null;
+    private uint? __pbn__BundleItemDefIndex;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCPackBundleResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"item_id")]
+    public ulong ItemId
+    {
+        get => __pbn__ItemId.GetValueOrDefault();
+        set => __pbn__ItemId = value;
+    }
+    public bool ShouldSerializeItemId() => __pbn__ItemId != null;
+    public void ResetItemId() => __pbn__ItemId = null;
+    private ulong? __pbn__ItemId;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"response")]
+    [global::System.ComponentModel.DefaultValue(EPackBundle.kPackBundleSucceeded)]
+    public EPackBundle Response
+    {
+        get => __pbn__Response ?? EPackBundle.kPackBundleSucceeded;
+        set => __pbn__Response = value;
+    }
+    public bool ShouldSerializeResponse() => __pbn__Response != null;
+    public void ResetResponse() => __pbn__Response = null;
+    private EPackBundle? __pbn__Response;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EPackBundle
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Succeeded")]
+        kPackBundleSucceeded = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_InternalError")]
+        kPackBundleFailedInternalError = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemIsNotBundle")]
+        kPackBundleFailedItemIsNotBundle = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_SOCacheError")]
+        kPackBundleFailedSOCacheError = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemIsInvalid")]
+        kPackBundleFailedItemIsInvalid = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_BadItemQuantity")]
+        kPackBundleFailedBadItemQuantity = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_UnableToDeleteItem")]
+        kPackBundleFailedUnableToDeleteItem = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_BundleCannotBePacked")]
+        kPackBundleFailedBundleCannotBePacked = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemIsUntradeable")]
+        kPackBundleFailedItemIsUntradeable = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemIsEquipped")]
+        kPackBundleFailedItemIsEquipped = 9,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemHasGems")]
+        kPackBundleFailedItemHasGems = 10,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemMixedQuality")]
+        kPackBundleFailedItemMixedQuality = 11,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemInvalidQuality")]
+        kPackBundleFailedItemInvalidQuality = 12,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_ItemIsNonEconomy")]
+        kPackBundleFailedItemIsNonEconomy = 13,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_PackBundle_Failed_Disabled")]
+        kPackBundleFailedDisabled = 14,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
 public partial class CMsgGCToClientStoreTransactionCompleted : global::ProtoBuf.IExtensible
 {
     private global::ProtoBuf.IExtension __pbn__extensionData;
@@ -2114,9 +2138,10 @@ public partial class CMsgClientToGCSetItemStyle : global::ProtoBuf.IExtensible
     private ulong? __pbn__ItemId;
 
     [global::ProtoBuf.ProtoMember(2, Name = @"style_index")]
+    [global::System.ComponentModel.DefaultValue(255u)]
     public uint StyleIndex
     {
-        get => __pbn__StyleIndex.GetValueOrDefault();
+        get => __pbn__StyleIndex ?? 255u;
         set => __pbn__StyleIndex = value;
     }
     public bool ShouldSerializeStyleIndex() => __pbn__StyleIndex != null;
@@ -2174,9 +2199,10 @@ public partial class CMsgClientToGCUnlockItemStyle : global::ProtoBuf.IExtensibl
     private ulong? __pbn__ItemToUnlock;
 
     [global::ProtoBuf.ProtoMember(2, Name = @"style_index")]
+    [global::System.ComponentModel.DefaultValue(255u)]
     public uint StyleIndex
     {
-        get => __pbn__StyleIndex.GetValueOrDefault();
+        get => __pbn__StyleIndex ?? 255u;
         set => __pbn__StyleIndex = value;
     }
     public bool ShouldSerializeStyleIndex() => __pbn__StyleIndex != null;
@@ -2217,9 +2243,10 @@ public partial class CMsgClientToGCUnlockItemStyleResponse : global::ProtoBuf.IE
     private ulong? __pbn__ItemId;
 
     [global::ProtoBuf.ProtoMember(3, Name = @"style_index")]
+    [global::System.ComponentModel.DefaultValue(255u)]
     public uint StyleIndex
     {
-        get => __pbn__StyleIndex.GetValueOrDefault();
+        get => __pbn__StyleIndex ?? 255u;
         set => __pbn__StyleIndex = value;
     }
     public bool ShouldSerializeStyleIndex() => __pbn__StyleIndex != null;
@@ -2227,9 +2254,10 @@ public partial class CMsgClientToGCUnlockItemStyleResponse : global::ProtoBuf.IE
     private uint? __pbn__StyleIndex;
 
     [global::ProtoBuf.ProtoMember(4, Name = @"style_prereq")]
+    [global::System.ComponentModel.DefaultValue(255u)]
     public uint StylePrereq
     {
-        get => __pbn__StylePrereq.GetValueOrDefault();
+        get => __pbn__StylePrereq ?? 255u;
         set => __pbn__StylePrereq = value;
     }
     public bool ShouldSerializeStylePrereq() => __pbn__StylePrereq != null;
@@ -2667,6 +2695,16 @@ public partial class CAttributeItemDynamicRecipeComponent : global::ProtoBuf.IEx
     public void ResetFulfilledItemId() => __pbn__FulfilledItemId = null;
     private ulong? __pbn__FulfilledItemId;
 
+    [global::ProtoBuf.ProtoMember(10, Name = @"associated_item_def")]
+    public uint AssociatedItemDef
+    {
+        get => __pbn__AssociatedItemDef.GetValueOrDefault();
+        set => __pbn__AssociatedItemDef = value;
+    }
+    public bool ShouldSerializeAssociatedItemDef() => __pbn__AssociatedItemDef != null;
+    public void ResetAssociatedItemDef() => __pbn__AssociatedItemDef = null;
+    private uint? __pbn__AssociatedItemDef;
+
 }
 
 [global::ProtoBuf.ProtoContract()]
@@ -2855,6 +2893,48 @@ public partial class CProtoItemSocketStrange : global::ProtoBuf.IExtensible
     public bool ShouldSerializeStrangeValue() => __pbn__StrangeValue != null;
     public void ResetStrangeValue() => __pbn__StrangeValue = null;
     private uint? __pbn__StrangeValue;
+
+}
+
+[global::ProtoBuf.ProtoContract(Name = @"CProtoItemSocket_Strange_DESERIALIZE_FROM_STRING_ONLY")]
+public partial class CProtoItemSocketStrangeDESERIALIZEFROMSTRINGONLY : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"socket")]
+    public CProtoItemSocket Socket { get; set; }
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"strange_type")]
+    public uint StrangeType
+    {
+        get => __pbn__StrangeType.GetValueOrDefault();
+        set => __pbn__StrangeType = value;
+    }
+    public bool ShouldSerializeStrangeType() => __pbn__StrangeType != null;
+    public void ResetStrangeType() => __pbn__StrangeType = null;
+    private uint? __pbn__StrangeType;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"strange_value")]
+    public uint StrangeValue
+    {
+        get => __pbn__StrangeValue.GetValueOrDefault();
+        set => __pbn__StrangeValue = value;
+    }
+    public bool ShouldSerializeStrangeValue() => __pbn__StrangeValue != null;
+    public void ResetStrangeValue() => __pbn__StrangeValue = null;
+    private uint? __pbn__StrangeValue;
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"ability_effect")]
+    public uint AbilityEffect
+    {
+        get => __pbn__AbilityEffect.GetValueOrDefault();
+        set => __pbn__AbilityEffect = value;
+    }
+    public bool ShouldSerializeAbilityEffect() => __pbn__AbilityEffect != null;
+    public void ResetAbilityEffect() => __pbn__AbilityEffect = null;
+    private uint? __pbn__AbilityEffect;
 
 }
 
@@ -3722,6 +3802,16 @@ public partial class CMsgProcessTransactionOrder : global::ProtoBuf.IExtensible
         public void ResetIsUserFacing() => __pbn__IsUserFacing = null;
         private bool? __pbn__IsUserFacing;
 
+        [global::ProtoBuf.ProtoMember(11, Name = @"price_index")]
+        public int PriceIndex
+        {
+            get => __pbn__PriceIndex.GetValueOrDefault();
+            set => __pbn__PriceIndex = value;
+        }
+        public bool ShouldSerializePriceIndex() => __pbn__PriceIndex != null;
+        public void ResetPriceIndex() => __pbn__PriceIndex = null;
+        private int? __pbn__PriceIndex;
+
     }
 
 }
@@ -3745,6 +3835,16 @@ public partial class CMsgGCToGCStoreProcessCDKeyTransaction : global::ProtoBuf.I
     public bool ShouldSerializeReasonCode() => __pbn__ReasonCode != null;
     public void ResetReasonCode() => __pbn__ReasonCode = null;
     private uint? __pbn__ReasonCode;
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"partner")]
+    public uint Partner
+    {
+        get => __pbn__Partner.GetValueOrDefault();
+        set => __pbn__Partner = value;
+    }
+    public bool ShouldSerializePartner() => __pbn__Partner != null;
+    public void ResetPartner() => __pbn__Partner = null;
+    private uint? __pbn__Partner;
 
 }
 
@@ -3776,16 +3876,6 @@ public partial class CMsgGCToGCStoreProcessSettlement : global::ProtoBuf.IExtens
 
     [global::ProtoBuf.ProtoMember(1, Name = @"order")]
     public CMsgProcessTransactionOrder Order { get; set; }
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"partner")]
-    public uint Partner
-    {
-        get => __pbn__Partner.GetValueOrDefault();
-        set => __pbn__Partner = value;
-    }
-    public bool ShouldSerializePartner() => __pbn__Partner != null;
-    public void ResetPartner() => __pbn__Partner = null;
-    private uint? __pbn__Partner;
 
 }
 
@@ -3837,14 +3927,15 @@ public partial class CMsgGCToGCBroadcastConsoleCommand : global::ProtoBuf.IExten
     private bool? __pbn__ReportOutput;
 
     [global::ProtoBuf.ProtoMember(3, Name = @"sending_gc")]
-    public uint SendingGc
+    [global::System.ComponentModel.DefaultValue(-1)]
+    public int SendingGc
     {
-        get => __pbn__SendingGc.GetValueOrDefault();
+        get => __pbn__SendingGc ?? -1;
         set => __pbn__SendingGc = value;
     }
     public bool ShouldSerializeSendingGc() => __pbn__SendingGc != null;
     public void ResetSendingGc() => __pbn__SendingGc = null;
-    private uint? __pbn__SendingGc;
+    private int? __pbn__SendingGc;
 
     [global::ProtoBuf.ProtoMember(4, Name = @"output_initiator")]
     [global::System.ComponentModel.DefaultValue("")]
@@ -3856,6 +3947,17 @@ public partial class CMsgGCToGCBroadcastConsoleCommand : global::ProtoBuf.IExten
     public bool ShouldSerializeOutputInitiator() => __pbn__OutputInitiator != null;
     public void ResetOutputInitiator() => __pbn__OutputInitiator = null;
     private string __pbn__OutputInitiator;
+
+    [global::ProtoBuf.ProtoMember(5, Name = @"sender_source")]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string SenderSource
+    {
+        get => __pbn__SenderSource ?? "";
+        set => __pbn__SenderSource = value;
+    }
+    public bool ShouldSerializeSenderSource() => __pbn__SenderSource != null;
+    public void ResetSenderSource() => __pbn__SenderSource = null;
+    private string __pbn__SenderSource;
 
 }
 
@@ -3878,17 +3980,28 @@ public partial class CMsgGCToGCConsoleOutput : global::ProtoBuf.IExtensible
     private string __pbn__Initiator;
 
     [global::ProtoBuf.ProtoMember(2, Name = @"sending_gc")]
-    public uint SendingGc
+    [global::System.ComponentModel.DefaultValue(-1)]
+    public int SendingGc
     {
-        get => __pbn__SendingGc.GetValueOrDefault();
+        get => __pbn__SendingGc ?? -1;
         set => __pbn__SendingGc = value;
     }
     public bool ShouldSerializeSendingGc() => __pbn__SendingGc != null;
     public void ResetSendingGc() => __pbn__SendingGc = null;
-    private uint? __pbn__SendingGc;
+    private int? __pbn__SendingGc;
 
     [global::ProtoBuf.ProtoMember(3, Name = @"msgs")]
     public global::System.Collections.Generic.List<OutputLine> Msgs { get; } = new global::System.Collections.Generic.List<OutputLine>();
+
+    [global::ProtoBuf.ProtoMember(4, Name = @"is_last_for_source_job")]
+    public bool IsLastForSourceJob
+    {
+        get => __pbn__IsLastForSourceJob.GetValueOrDefault();
+        set => __pbn__IsLastForSourceJob = value;
+    }
+    public bool ShouldSerializeIsLastForSourceJob() => __pbn__IsLastForSourceJob != null;
+    public void ResetIsLastForSourceJob() => __pbn__IsLastForSourceJob = null;
+    private bool? __pbn__IsLastForSourceJob;
 
     [global::ProtoBuf.ProtoContract()]
     public partial class OutputLine : global::ProtoBuf.IExtensible
@@ -3971,14 +4084,15 @@ public partial class CMsgGCToGCInternalTestMsg : global::ProtoBuf.IExtensible
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(1, Name = @"sending_gc")]
-    public uint SendingGc
+    [global::System.ComponentModel.DefaultValue(-1)]
+    public int SendingGc
     {
-        get => __pbn__SendingGc.GetValueOrDefault();
+        get => __pbn__SendingGc ?? -1;
         set => __pbn__SendingGc = value;
     }
     public bool ShouldSerializeSendingGc() => __pbn__SendingGc != null;
     public void ResetSendingGc() => __pbn__SendingGc = null;
-    private uint? __pbn__SendingGc;
+    private int? __pbn__SendingGc;
 
     [global::ProtoBuf.ProtoMember(2, Name = @"sender_id", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
     public ulong SenderId
@@ -4195,64 +4309,6 @@ public partial class CMsgBannedWordList : global::ProtoBuf.IExtensible
 
 }
 
-[global::ProtoBuf.ProtoContract(Name = @"CEcon_FlushInventoryCache_Request")]
-public partial class CEconFlushInventoryCacheRequest : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"steamid")]
-    public ulong Steamid
-    {
-        get => __pbn__Steamid.GetValueOrDefault();
-        set => __pbn__Steamid = value;
-    }
-    public bool ShouldSerializeSteamid() => __pbn__Steamid != null;
-    public void ResetSteamid() => __pbn__Steamid = null;
-    private ulong? __pbn__Steamid;
-
-    [global::ProtoBuf.ProtoMember(2, Name = @"appid")]
-    public uint Appid
-    {
-        get => __pbn__Appid.GetValueOrDefault();
-        set => __pbn__Appid = value;
-    }
-    public bool ShouldSerializeAppid() => __pbn__Appid != null;
-    public void ResetAppid() => __pbn__Appid = null;
-    private uint? __pbn__Appid;
-
-    [global::ProtoBuf.ProtoMember(3, Name = @"contextid")]
-    public ulong Contextid
-    {
-        get => __pbn__Contextid.GetValueOrDefault();
-        set => __pbn__Contextid = value;
-    }
-    public bool ShouldSerializeContextid() => __pbn__Contextid != null;
-    public void ResetContextid() => __pbn__Contextid = null;
-    private ulong? __pbn__Contextid;
-
-}
-
-[global::ProtoBuf.ProtoContract(Name = @"CEcon_FlushInventoryCache_Response")]
-public partial class CEconFlushInventoryCacheResponse : global::ProtoBuf.IExtensible
-{
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-    [global::ProtoBuf.ProtoMember(1, Name = @"success")]
-    public bool Success
-    {
-        get => __pbn__Success.GetValueOrDefault();
-        set => __pbn__Success = value;
-    }
-    public bool ShouldSerializeSuccess() => __pbn__Success != null;
-    public void ResetSuccess() => __pbn__Success = null;
-    private bool? __pbn__Success;
-
-}
-
 [global::ProtoBuf.ProtoContract()]
 public partial class CMsgGCToGCFlushSteamInventoryCache : global::ProtoBuf.IExtensible
 {
@@ -4383,12 +4439,452 @@ public partial class CMsgGCToGCGetInfuxIntervalStatsResponse : global::ProtoBuf.
 }
 
 [global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToGCPurchaseSucceeded : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCGetLimitedItemPurchaseQuantity : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"item_def")]
+    public uint ItemDef
+    {
+        get => __pbn__ItemDef.GetValueOrDefault();
+        set => __pbn__ItemDef = value;
+    }
+    public bool ShouldSerializeItemDef() => __pbn__ItemDef != null;
+    public void ResetItemDef() => __pbn__ItemDef = null;
+    private uint? __pbn__ItemDef;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCGetLimitedItemPurchaseQuantityResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"quantity_purchased")]
+    public uint QuantityPurchased
+    {
+        get => __pbn__QuantityPurchased.GetValueOrDefault();
+        set => __pbn__QuantityPurchased = value;
+    }
+    public bool ShouldSerializeQuantityPurchased() => __pbn__QuantityPurchased != null;
+    public void ResetQuantityPurchased() => __pbn__QuantityPurchased = null;
+    private uint? __pbn__QuantityPurchased;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidItemDef")]
+        keInvalidItemDef = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eItemDefNotLimited")]
+        keItemDefNotLimited = 6,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCGetInFlightItemCharges : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"item_def")]
+    public uint ItemDef
+    {
+        get => __pbn__ItemDef.GetValueOrDefault();
+        set => __pbn__ItemDef = value;
+    }
+    public bool ShouldSerializeItemDef() => __pbn__ItemDef != null;
+    public void ResetItemDef() => __pbn__ItemDef = null;
+    private uint? __pbn__ItemDef;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCGetInFlightItemChargesResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"charges_in_flight")]
+    public uint ChargesInFlight
+    {
+        get => __pbn__ChargesInFlight.GetValueOrDefault();
+        set => __pbn__ChargesInFlight = value;
+    }
+    public bool ShouldSerializeChargesInFlight() => __pbn__ChargesInFlight != null;
+    public void ResetChargesInFlight() => __pbn__ChargesInFlight = null;
+    private uint? __pbn__ChargesInFlight;
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidItemDef")]
+        keInvalidItemDef = 5,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCPurchaseChargeCostItems : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"items")]
+    public global::System.Collections.Generic.List<Item> Items { get; } = new global::System.Collections.Generic.List<Item>();
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"currency")]
+    public uint Currency
+    {
+        get => __pbn__Currency.GetValueOrDefault();
+        set => __pbn__Currency = value;
+    }
+    public bool ShouldSerializeCurrency() => __pbn__Currency != null;
+    public void ResetCurrency() => __pbn__Currency = null;
+    private uint? __pbn__Currency;
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class Item : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"item_def_index")]
+        public uint ItemDefIndex
+        {
+            get => __pbn__ItemDefIndex.GetValueOrDefault();
+            set => __pbn__ItemDefIndex = value;
+        }
+        public bool ShouldSerializeItemDefIndex() => __pbn__ItemDefIndex != null;
+        public void ResetItemDefIndex() => __pbn__ItemDefIndex = null;
+        private uint? __pbn__ItemDefIndex;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"quantity")]
+        public uint Quantity
+        {
+            get => __pbn__Quantity.GetValueOrDefault();
+            set => __pbn__Quantity = value;
+        }
+        public bool ShouldSerializeQuantity() => __pbn__Quantity != null;
+        public void ResetQuantity() => __pbn__Quantity = null;
+        private uint? __pbn__Quantity;
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"source_reference_id")]
+        public ulong SourceReferenceId
+        {
+            get => __pbn__SourceReferenceId.GetValueOrDefault();
+            set => __pbn__SourceReferenceId = value;
+        }
+        public bool ShouldSerializeSourceReferenceId() => __pbn__SourceReferenceId != null;
+        public void ResetSourceReferenceId() => __pbn__SourceReferenceId = null;
+        private ulong? __pbn__SourceReferenceId;
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"price_index")]
+        public int PriceIndex
+        {
+            get => __pbn__PriceIndex.GetValueOrDefault();
+            set => __pbn__PriceIndex = value;
+        }
+        public bool ShouldSerializePriceIndex() => __pbn__PriceIndex != null;
+        public void ResetPriceIndex() => __pbn__PriceIndex = null;
+        private int? __pbn__PriceIndex;
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCPurchaseChargeCostItemsResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    [global::System.ComponentModel.DefaultValue(EResponse.keInternalError)]
+    public EResponse Result
+    {
+        get => __pbn__Result ?? EResponse.keInternalError;
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private EResponse? __pbn__Result;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"item_ids")]
+    public ulong[] ItemIds { get; set; }
+
+    [global::ProtoBuf.ProtoContract()]
+    public enum EResponse
+    {
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInternalError")]
+        keInternalError = 0,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eSuccess")]
+        keSuccess = 1,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTooBusy")]
+        keTooBusy = 2,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eDisabled")]
+        keDisabled = 3,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eTimeout")]
+        keTimeout = 4,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidParam")]
+        keInvalidParam = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInvalidPrice")]
+        keInvalidPrice = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eInsufficientCharges")]
+        keInsufficientCharges = 7,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eLimitedItem")]
+        keLimitedItem = 8,
+        [global::ProtoBuf.ProtoEnum(Name = @"k_eMissingPrereq")]
+        keMissingPrereq = 10,
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToClientInFlightChargesUpdated : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"in_flight_charges")]
+    public global::System.Collections.Generic.List<ItemCharges> InFlightCharges { get; } = new global::System.Collections.Generic.List<ItemCharges>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class ItemCharges : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"item_def")]
+        public uint ItemDef
+        {
+            get => __pbn__ItemDef.GetValueOrDefault();
+            set => __pbn__ItemDef = value;
+        }
+        public bool ShouldSerializeItemDef() => __pbn__ItemDef != null;
+        public void ResetItemDef() => __pbn__ItemDef = null;
+        private uint? __pbn__ItemDef;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"charges_in_flight")]
+        public uint ChargesInFlight
+        {
+            get => __pbn__ChargesInFlight.GetValueOrDefault();
+            set => __pbn__ChargesInFlight = value;
+        }
+        public bool ShouldSerializeChargesInFlight() => __pbn__ChargesInFlight != null;
+        public void ResetChargesInFlight() => __pbn__ChargesInFlight = null;
+        private uint? __pbn__ChargesInFlight;
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCCancelUnfinalizedTransactions : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"unused")]
+    public uint Unused
+    {
+        get => __pbn__Unused.GetValueOrDefault();
+        set => __pbn__Unused = value;
+    }
+    public bool ShouldSerializeUnused() => __pbn__Unused != null;
+    public void ResetUnused() => __pbn__Unused = null;
+    private uint? __pbn__Unused;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCCancelUnfinalizedTransactionsResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"result")]
+    public uint Result
+    {
+        get => __pbn__Result.GetValueOrDefault();
+        set => __pbn__Result = value;
+    }
+    public bool ShouldSerializeResult() => __pbn__Result != null;
+    public void ResetResult() => __pbn__Result = null;
+    private uint? __pbn__Result;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgGCToGCUpdateWelcomeMsg : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"server")]
+    public bool Server
+    {
+        get => __pbn__Server.GetValueOrDefault();
+        set => __pbn__Server = value;
+    }
+    public bool ShouldSerializeServer() => __pbn__Server != null;
+    public void ResetServer() => __pbn__Server = null;
+    private bool? __pbn__Server;
+
+    [global::ProtoBuf.ProtoMember(2, Name = @"new_msg")]
+    public CExtraMsgBlock NewMsg { get; set; }
+
+    [global::ProtoBuf.ProtoMember(3, Name = @"broadcast")]
+    public bool Broadcast
+    {
+        get => __pbn__Broadcast.GetValueOrDefault();
+        set => __pbn__Broadcast = value;
+    }
+    public bool ShouldSerializeBroadcast() => __pbn__Broadcast != null;
+    public void ResetBroadcast() => __pbn__Broadcast = null;
+    private bool? __pbn__Broadcast;
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRecycleMultipleItems : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"items")]
+    public global::System.Collections.Generic.List<Item> Items { get; } = new global::System.Collections.Generic.List<Item>();
+
+    [global::ProtoBuf.ProtoContract()]
+    public partial class Item : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+        [global::ProtoBuf.ProtoMember(1, Name = @"item_id")]
+        public ulong ItemId
+        {
+            get => __pbn__ItemId.GetValueOrDefault();
+            set => __pbn__ItemId = value;
+        }
+        public bool ShouldSerializeItemId() => __pbn__ItemId != null;
+        public void ResetItemId() => __pbn__ItemId = null;
+        private ulong? __pbn__ItemId;
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"slot_id")]
+        public uint SlotId
+        {
+            get => __pbn__SlotId.GetValueOrDefault();
+            set => __pbn__SlotId = value;
+        }
+        public bool ShouldSerializeSlotId() => __pbn__SlotId != null;
+        public void ResetSlotId() => __pbn__SlotId = null;
+        private uint? __pbn__SlotId;
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"recipe_def_index")]
+        public uint RecipeDefIndex
+        {
+            get => __pbn__RecipeDefIndex.GetValueOrDefault();
+            set => __pbn__RecipeDefIndex = value;
+        }
+        public bool ShouldSerializeRecipeDefIndex() => __pbn__RecipeDefIndex != null;
+        public void ResetRecipeDefIndex() => __pbn__RecipeDefIndex = null;
+        private uint? __pbn__RecipeDefIndex;
+
+    }
+
+}
+
+[global::ProtoBuf.ProtoContract()]
+public partial class CMsgClientToGCRecycleMultipleItemsResponse : global::ProtoBuf.IExtensible
+{
+    private global::ProtoBuf.IExtension __pbn__extensionData;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+
+    [global::ProtoBuf.ProtoMember(1, Name = @"responses")]
+    public global::System.Collections.Generic.List<CMsgClientToGCCreateStaticRecipeResponse> Responses { get; } = new global::System.Collections.Generic.List<CMsgClientToGCCreateStaticRecipeResponse>();
+
+}
+
+[global::ProtoBuf.ProtoContract()]
 public enum EGCItemMsg
 {
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCBase")]
     kEMsgGCBase = 1000,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCSetItemPosition")]
     kEMsgGCSetItemPosition = 1001,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCPackBundle")]
+    kEMsgClientToGCPackBundle = 1002,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCPackBundleResponse")]
+    kEMsgClientToGCPackBundleResponse = 1003,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCDelete")]
     kEMsgGCDelete = 1004,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCVerifyCacheSubscription")]
@@ -4399,116 +4895,40 @@ public enum EGCItemMsg
     kEMsgGCPaintItem = 1009,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPaintItemResponse")]
     kEMsgGCPaintItemResponse = 1010,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCGoldenWrenchBroadcast")]
-    kEMsgGCGoldenWrenchBroadcast = 1011,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCMOTDRequest")]
-    kEMsgGCMOTDRequest = 1012,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCMOTDRequestResponse")]
-    kEMsgGCMOTDRequestResponse = 1013,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAddItemToSocket_DEPRECATED")]
-    kEMsgGCAddItemToSocketDEPRECATED = 1014,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAddItemToSocketResponse_DEPRECATED")]
-    kEMsgGCAddItemToSocketResponseDEPRECATED = 1015,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAddSocketToBaseItem_DEPRECATED")]
-    kEMsgGCAddSocketToBaseItemDEPRECATED = 1016,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAddSocketToItem_DEPRECATED")]
-    kEMsgGCAddSocketToItemDEPRECATED = 1017,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAddSocketToItemResponse_DEPRECATED")]
-    kEMsgGCAddSocketToItemResponseDEPRECATED = 1018,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCNameBaseItem")]
     kEMsgGCNameBaseItem = 1019,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCNameBaseItemResponse")]
     kEMsgGCNameBaseItemResponse = 1020,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveSocketItem_DEPRECATED")]
-    kEMsgGCRemoveSocketItemDEPRECATED = 1021,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveSocketItemResponse_DEPRECATED")]
-    kEMsgGCRemoveSocketItemResponseDEPRECATED = 1022,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCCustomizeItemTexture")]
-    kEMsgGCCustomizeItemTexture = 1023,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCCustomizeItemTextureResponse")]
-    kEMsgGCCustomizeItemTextureResponse = 1024,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCUseItemRequest")]
     kEMsgGCUseItemRequest = 1025,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCUseItemResponse")]
     kEMsgGCUseItemResponse = 1026,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCGiftedItems")]
     kEMsgGCGiftedItems = 1027,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveItemName")]
-    kEMsgGCRemoveItemName = 1030,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveItemPaint")]
-    kEMsgGCRemoveItemPaint = 1031,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCUnwrapGiftRequest")]
     kEMsgGCUnwrapGiftRequest = 1037,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCUnwrapGiftResponse")]
     kEMsgGCUnwrapGiftResponse = 1038,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCSetItemStyle_DEPRECATED")]
-    kEMsgGCSetItemStyleDEPRECATED = 1039,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCUsedClaimCodeItem")]
-    kEMsgGCUsedClaimCodeItem = 1040,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCSortItems")]
     kEMsgGCSortItems = 1041,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGC_RevolvingLootList_DEPRECATED")]
-    kEMsgGCRevolvingLootListDEPRECATED = 1042,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCUpdateItemSchema")]
-    kEMsgGCUpdateItemSchema = 1049,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveCustomTexture")]
-    kEMsgGCRemoveCustomTexture = 1051,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveCustomTextureResponse")]
-    kEMsgGCRemoveCustomTextureResponse = 1052,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveMakersMark")]
-    kEMsgGCRemoveMakersMark = 1053,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveMakersMarkResponse")]
-    kEMsgGCRemoveMakersMarkResponse = 1054,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveUniqueCraftIndex")]
-    kEMsgGCRemoveUniqueCraftIndex = 1055,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveUniqueCraftIndexResponse")]
-    kEMsgGCRemoveUniqueCraftIndexResponse = 1056,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCSaxxyBroadcast")]
-    kEMsgGCSaxxyBroadcast = 1057,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCBackpackSortFinished")]
     kEMsgGCBackpackSortFinished = 1058,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAdjustItemEquippedState")]
     kEMsgGCAdjustItemEquippedState = 1059,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCCollectItem")]
-    kEMsgGCCollectItem = 1061,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCItemAcknowledged")]
     kEMsgGCItemAcknowledged = 1062,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPresets_SelectPresetForClass")]
-    kEMsgGCPresetsSelectPresetForClass = 1063,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPresets_SetItemPosition")]
-    kEMsgGCPresetsSetItemPosition = 1064,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPresets_SelectPresetForClassReply")]
-    kEMsgGCPresetsSelectPresetForClassReply = 1067,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCNameItemResponse")]
     kEMsgClientToGCNameItemResponse = 1068,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCApplyConsumableEffects")]
-    kEMsgGCApplyConsumableEffects = 1069,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCShowItemsPickedUp")]
-    kEMsgGCShowItemsPickedUp = 1071,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCClientDisplayNotification")]
-    kEMsgGCClientDisplayNotification = 1072,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCApplyStrangePart")]
     kEMsgGCApplyStrangePart = 1073,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGC_IncrementKillCountResponse")]
-    kEMsgGCIncrementKillCountResponse = 1075,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCApplyPennantUpgrade")]
     kEMsgGCApplyPennantUpgrade = 1076,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCSetItemPositions")]
     kEMsgGCSetItemPositions = 1077,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCSetItemPositions_RateLimited")]
-    kEMsgGCSetItemPositionsRateLimited = 1096,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCApplyEggEssence")]
     kEMsgGCApplyEggEssence = 1078,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCNameEggEssenceResponse")]
     kEMsgGCNameEggEssenceResponse = 1079,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCFulfillDynamicRecipeComponent")]
-    kEMsgGCFulfillDynamicRecipeComponent = 1082,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCFulfillDynamicRecipeComponentResponse")]
-    kEMsgGCFulfillDynamicRecipeComponentResponse = 1083,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCClientRequestMarketData")]
-    kEMsgGCClientRequestMarketData = 1084,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCClientRequestMarketDataResponse")]
-    kEMsgGCClientRequestMarketDataResponse = 1085,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCExtractGems")]
     kEMsgGCExtractGems = 1086,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAddSocket")]
@@ -4533,14 +4953,8 @@ public enum EGCItemMsg
     kEMsgGCServerUseItemRequest = 1103,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCAddGiftItem")]
     kEMsgGCAddGiftItem = 1104,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveItemGiftMessage")]
-    kEMsgGCRemoveItemGiftMessage = 1105,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveItemGiftMessageResponse")]
-    kEMsgGCRemoveItemGiftMessageResponse = 1106,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveItemGifterAccountId")]
-    kEMsgGCRemoveItemGifterAccountId = 1107,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRemoveItemGifterAccountIdResponse")]
-    kEMsgGCRemoveItemGifterAccountIdResponse = 1108,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgSQLGCToGCRevokeUntrustedGift")]
+    kEMsgSQLGCToGCRevokeUntrustedGift = 1105,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCRemoveItemGifterAttributes")]
     kEMsgClientToGCRemoveItemGifterAttributes = 1109,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCRemoveItemName")]
@@ -4549,24 +4963,6 @@ public enum EGCItemMsg
     kEMsgClientToGCRemoveItemDescription = 1111,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCRemoveItemAttributeResponse")]
     kEMsgClientToGCRemoveItemAttributeResponse = 1112,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCTradingBase")]
-    kEMsgGCTradingBase = 1500,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCTrading_InitiateTradeRequest")]
-    kEMsgGCTradingInitiateTradeRequest = 1501,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCTrading_InitiateTradeResponse")]
-    kEMsgGCTradingInitiateTradeResponse = 1502,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCTrading_StartSession")]
-    kEMsgGCTradingStartSession = 1503,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCTrading_SessionClosed")]
-    kEMsgGCTradingSessionClosed = 1509,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCTrading_InitiateTradeRequestResponse")]
-    kEMsgGCTradingInitiateTradeRequestResponse = 1514,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCServerBrowser_FavoriteServer")]
-    kEMsgGCServerBrowserFavoriteServer = 1601,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCServerBrowser_BlacklistServer")]
-    kEMsgGCServerBrowserBlacklistServer = 1602,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCServerRentalsBase")]
-    kEMsgGCServerRentalsBase = 1700,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCDev_NewItemRequest")]
     kEMsgGCDevNewItemRequest = 2001,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCDev_NewItemRequestResponse")]
@@ -4591,8 +4987,6 @@ public enum EGCItemMsg
     kEMsgGCToGCBannedWordListUpdated = 2515,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCDirtySDOCache")]
     kEMsgGCToGCDirtySDOCache = 2516,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCDirtyMultipleSDOCache")]
-    kEMsgGCToGCDirtyMultipleSDOCache = 2517,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCUpdateSQLKeyValue")]
     kEMsgGCToGCUpdateSQLKeyValue = 2518,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCBroadcastConsoleCommand")]
@@ -4605,14 +4999,8 @@ public enum EGCItemMsg
     kEMsgGCToGCWebAPIAccountChanged = 2524,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCClientVersionUpdated")]
     kEMsgGCClientVersionUpdated = 2528,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCItemPurgatory_FinalizePurchase")]
-    kEMsgGCItemPurgatoryFinalizePurchase = 2531,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCItemPurgatory_FinalizePurchaseResponse")]
-    kEMsgGCItemPurgatoryFinalizePurchaseResponse = 2532,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCItemPurgatory_RefundPurchase")]
-    kEMsgGCItemPurgatoryRefundPurchase = 2533,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCItemPurgatory_RefundPurchaseResponse")]
-    kEMsgGCItemPurgatoryRefundPurchaseResponse = 2534,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCUpdateWelcomeMsg")]
+    kEMsgGCToGCUpdateWelcomeMsg = 2529,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCPlayerStrangeCountAdjustments")]
     kEMsgGCToGCPlayerStrangeCountAdjustments = 2535,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRequestStoreSalesData")]
@@ -4633,36 +5021,18 @@ public enum EGCItemMsg
     kEMsgGCToGCGetUserServerMembers = 2543,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCGetUserServerMembersResponse")]
     kEMsgGCToGCGetUserServerMembersResponse = 2544,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCGetUserPCBangNo")]
-    kEMsgGCToGCGetUserPCBangNo = 2545,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCGetUserPCBangNoResponse")]
-    kEMsgGCToGCGetUserPCBangNoResponse = 2546,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCCanUseDropRateBonus")]
     kEMsgGCToGCCanUseDropRateBonus = 2547,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgSQLAddDropRateBonus")]
     kEMsgSQLAddDropRateBonus = 2548,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCRefreshSOCache")]
     kEMsgGCToGCRefreshSOCache = 2549,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCApplyLocalizationDiff")]
-    kEMsgGCToGCApplyLocalizationDiff = 2550,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCApplyLocalizationDiffResponse")]
-    kEMsgGCToGCApplyLocalizationDiffResponse = 2551,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCCheckAccountTradeStatus")]
-    kEMsgGCToGCCheckAccountTradeStatus = 2552,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCCheckAccountTradeStatusResponse")]
-    kEMsgGCToGCCheckAccountTradeStatusResponse = 2553,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCGrantAccountRolledItems")]
     kEMsgGCToGCGrantAccountRolledItems = 2554,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCGrantSelfMadeItemToAccount")]
     kEMsgGCToGCGrantSelfMadeItemToAccount = 2555,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPartnerBalanceRequest")]
-    kEMsgGCPartnerBalanceRequest = 2557,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPartnerBalanceResponse")]
-    kEMsgGCPartnerBalanceResponse = 2558,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPartnerRechargeRedirectURLRequest")]
-    kEMsgGCPartnerRechargeRedirectURLRequest = 2559,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCPartnerRechargeRedirectURLResponse")]
-    kEMsgGCPartnerRechargeRedirectURLResponse = 2560,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCUnlockCrate")]
+    kEMsgGCToGCUnlockCrate = 2556,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCStatueCraft")]
     kEMsgGCStatueCraft = 2561,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCRedeemCode")]
@@ -4705,8 +5075,6 @@ public enum EGCItemMsg
     kEMsgClientToGCLookupAccountName = 2581,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCLookupAccountNameResponse")]
     kEMsgClientToGCLookupAccountNameResponse = 2582,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCDevRevokeUserItems")]
-    kEMsgGCToGCDevRevokeUserItems = 2583,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCCreateStaticRecipe")]
     kEMsgClientToGCCreateStaticRecipe = 2584,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCCreateStaticRecipeResponse")]
@@ -4753,38 +5121,32 @@ public enum EGCItemMsg
     kEMsgGCToGCGetInfuxIntervalStats = 2606,
     [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCGetInfuxIntervalStatsResponse")]
     kEMsgGCToGCGetInfuxIntervalStatsResponse = 2607,
-}
-
-[global::ProtoBuf.ProtoContract(Name = @"EItemPurgatoryResponse_Finalize")]
-public enum EItemPurgatoryResponseFinalize
-{
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Finalize_Succeeded")]
-    kItemPurgatoryResponseFinalizeSucceeded = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Finalize_Failed_Incomplete")]
-    kItemPurgatoryResponseFinalizeFailedIncomplete = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Finalize_Failed_ItemsNotInPurgatory")]
-    kItemPurgatoryResponseFinalizeFailedItemsNotInPurgatory = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Finalize_Failed_CouldNotFindItems")]
-    kItemPurgatoryResponseFinalizeFailedCouldNotFindItems = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Finalize_Failed_NoSOCache")]
-    kItemPurgatoryResponseFinalizeFailedNoSOCache = 4,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Finalize_BackpackFull")]
-    kItemPurgatoryResponseFinalizeBackpackFull = 5,
-}
-
-[global::ProtoBuf.ProtoContract(Name = @"EItemPurgatoryResponse_Refund")]
-public enum EItemPurgatoryResponseRefund
-{
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Refund_Succeeded")]
-    kItemPurgatoryResponseRefundSucceeded = 0,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Refund_Failed_ItemNotInPurgatory")]
-    kItemPurgatoryResponseRefundFailedItemNotInPurgatory = 1,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Refund_Failed_CouldNotFindItem")]
-    kItemPurgatoryResponseRefundFailedCouldNotFindItem = 2,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Refund_Failed_NoSOCache")]
-    kItemPurgatoryResponseRefundFailedNoSOCache = 3,
-    [global::ProtoBuf.ProtoEnum(Name = @"k_ItemPurgatoryResponse_Refund_Failed_NoDetail")]
-    kItemPurgatoryResponseRefundFailedNoDetail = 4,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCPurchaseSucceeded")]
+    kEMsgGCToGCPurchaseSucceeded = 2608,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCGetLimitedItemPurchaseQuantity")]
+    kEMsgClientToGCGetLimitedItemPurchaseQuantity = 2609,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCGetLimitedItemPurchaseQuantityResponse")]
+    kEMsgClientToGCGetLimitedItemPurchaseQuantityResponse = 2610,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToGCBetaDeleteItems")]
+    kEMsgGCToGCBetaDeleteItems = 2611,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCGetInFlightItemCharges")]
+    kEMsgClientToGCGetInFlightItemCharges = 2612,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCGetInFlightItemChargesResponse")]
+    kEMsgClientToGCGetInFlightItemChargesResponse = 2613,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgGCToClientInFlightChargesUpdated")]
+    kEMsgGCToClientInFlightChargesUpdated = 2614,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCPurchaseChargeCostItems")]
+    kEMsgClientToGCPurchaseChargeCostItems = 2615,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCPurchaseChargeCostItemsResponse")]
+    kEMsgClientToGCPurchaseChargeCostItemsResponse = 2616,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCCancelUnfinalizedTransactions")]
+    kEMsgClientToGCCancelUnfinalizedTransactions = 2617,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCCancelUnfinalizedTransactionsResponse")]
+    kEMsgClientToGCCancelUnfinalizedTransactionsResponse = 2618,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCRecycleMultipleItems")]
+    kEMsgClientToGCRecycleMultipleItems = 2619,
+    [global::ProtoBuf.ProtoEnum(Name = @"k_EMsgClientToGCRecycleMultipleItemsResponse")]
+    kEMsgClientToGCRecycleMultipleItemsResponse = 2620,
 }
 
 [global::ProtoBuf.ProtoContract()]

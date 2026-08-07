@@ -21,11 +21,9 @@ MSG = {
     7013: "OtherJoinedChannel", 7014: "OtherLeftChannel",
     7060: "RequestChatChannelList", 7061: "RequestChatChannelListResponse",
     7272: "LeaveChatChannel", 7273: "ChatMessage",
-    7403: "ChatGetUserList", 7404: "ChatGetUserListResponse",
     8048: "ChatGetMemberCount", 8049: "ChatGetMemberCountResponse",
     8084: "PrivateChatInvite", 8088: "PrivateChatKick", 8089: "PrivateChatPromote",
     8090: "PrivateChatDemote", 8091: "PrivateChatResponse",
-    8092: "PrivateChatInfoRequest", 8093: "PrivateChatInfoResponse",
 }
 
 REGIONAL, CUSTOM, PRIVATE = 0, 1, 17
@@ -168,7 +166,7 @@ alice_token, alice = logon(90301, "Alice")
 bob_token, bob = logon(90302, "Bob")
 
 # --- default channels -------------------------------------------------------
-exchange(alice_token, 4006, varint_field(1, 3756))
+exchange(alice_token, 4006, varint_field(1, 6783))
 # The auto-join is pushed, not returned: a live client is fed through the event
 # stream, which is the channel the shim's event pump drains.
 joins = of_type(poll(alice_token), 7010)
@@ -180,7 +178,7 @@ if joins:
     check("the auto-join reply carries the welcome message", b"D2MAX" in join.get(10, [b""])[0], join)
 channel_id = decode(joins[0]).get(3, [0])[0] if joins else 0
 
-exchange(bob_token, 4006, varint_field(1, 3756))
+exchange(bob_token, 4006, varint_field(1, 6783))
 poll(bob_token)
 
 handled, replies = exchange(alice_token, 7060, b"")
@@ -222,10 +220,6 @@ check("the sender gets no copy of its own line, which its client already drew",
 
 exchange(bob_token, 7273, varint_field(2, channel_id + 9999) + string_field(4, "nowhere"))
 check("a line in a channel that does not exist publishes nothing", poll(alice_token) == [])
-
-handled, replies = exchange(alice_token, 7403, fixed64(1, trade_id))
-members = decode(replies[0][1]).get(2, [])
-check("7403 answers 7404 with both members", handled and len(members) == 2, names(replies))
 
 handled, replies = exchange(alice_token, 8048, string_field(1, "Trade") + varint_field(2, CUSTOM))
 count = decode(replies[0][1])
@@ -269,11 +263,6 @@ handled, replies = exchange(alice_token, 8084, string_field(1, "secret") + varin
 check("8084 answers 8091 with SUCCESS", handled and replies[0][0] == 8091 and decode(replies[0][1]).get(2, [0])[0] == 0)
 handled, replies = exchange(bob_token, 7009, string_field(2, "secret") + varint_field(4, PRIVATE))
 check("the invited player may now enter", decode(replies[0][1]).get(1, [0])[0] == 0)
-
-handled, replies = exchange(alice_token, 8092, string_field(1, "secret"))
-info = decode(replies[0][1])
-check("8092 answers 8093 with both members and the creator",
-      handled and len(info.get(2, [])) == 2 and info.get(3, [0])[0] == 90301, info)
 
 handled, replies = exchange(alice_token, 8090, string_field(1, "secret") + varint_field(2, 90301))
 check("the last admin may not be demoted", decode(replies[0][1]).get(2, [0])[0] == 8, decode(replies[0][1]))

@@ -84,14 +84,14 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
     private float? __pbn__GlyphCooldown;
 
     [global::ProtoBuf.ProtoMember(8, Name = @"glyph_cooldown_enemy")]
-    public uint GlyphCooldownEnemy
+    public float GlyphCooldownEnemy
     {
         get => __pbn__GlyphCooldownEnemy.GetValueOrDefault();
         set => __pbn__GlyphCooldownEnemy = value;
     }
     public bool ShouldSerializeGlyphCooldownEnemy() => __pbn__GlyphCooldownEnemy != null;
     public void ResetGlyphCooldownEnemy() => __pbn__GlyphCooldownEnemy = null;
-    private uint? __pbn__GlyphCooldownEnemy;
+    private float? __pbn__GlyphCooldownEnemy;
 
     [global::ProtoBuf.ProtoMember(10, Name = @"players")]
     public global::System.Collections.Generic.List<Player> Players { get; } = new global::System.Collections.Generic.List<Player>();
@@ -102,8 +102,14 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
     [global::ProtoBuf.ProtoMember(12, Name = @"dropped_items")]
     public global::System.Collections.Generic.List<DroppedItem> DroppedItems { get; } = new global::System.Collections.Generic.List<DroppedItem>();
 
+    [global::ProtoBuf.ProtoMember(112, Name = @"dropped_items_deltas")]
+    public int[] DroppedItemsDeltas { get; set; }
+
     [global::ProtoBuf.ProtoMember(13, Name = @"rune_infos")]
     public global::System.Collections.Generic.List<RuneInfo> RuneInfos { get; } = new global::System.Collections.Generic.List<RuneInfo>();
+
+    [global::ProtoBuf.ProtoMember(113, Name = @"rune_infos_deltas")]
+    public int[] RuneInfosDeltas { get; set; }
 
     [global::ProtoBuf.ProtoMember(14, Name = @"incoming_teleports")]
     public global::System.Collections.Generic.List<TeleportInfo> IncomingTeleports { get; } = new global::System.Collections.Generic.List<TeleportInfo>();
@@ -139,14 +145,35 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
-        [global::ProtoBuf.ProtoMember(1, Name = @"x", IsRequired = true)]
-        public float X { get; set; }
+        [global::ProtoBuf.ProtoMember(1, Name = @"x")]
+        public float X
+        {
+            get => __pbn__X.GetValueOrDefault();
+            set => __pbn__X = value;
+        }
+        public bool ShouldSerializeX() => __pbn__X != null;
+        public void ResetX() => __pbn__X = null;
+        private float? __pbn__X;
 
-        [global::ProtoBuf.ProtoMember(2, Name = @"y", IsRequired = true)]
-        public float Y { get; set; }
+        [global::ProtoBuf.ProtoMember(2, Name = @"y")]
+        public float Y
+        {
+            get => __pbn__Y.GetValueOrDefault();
+            set => __pbn__Y = value;
+        }
+        public bool ShouldSerializeY() => __pbn__Y != null;
+        public void ResetY() => __pbn__Y = null;
+        private float? __pbn__Y;
 
-        [global::ProtoBuf.ProtoMember(3, Name = @"z", IsRequired = true)]
-        public float Z { get; set; }
+        [global::ProtoBuf.ProtoMember(3, Name = @"z")]
+        public float Z
+        {
+            get => __pbn__Z.GetValueOrDefault();
+            set => __pbn__Z = value;
+        }
+        public bool ShouldSerializeZ() => __pbn__Z != null;
+        public void ResetZ() => __pbn__Z = null;
+        private float? __pbn__Z;
 
     }
 
@@ -168,14 +195,14 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__PlayerId;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"hero_id")]
-        public uint HeroId
+        public int HeroId
         {
             get => __pbn__HeroId.GetValueOrDefault();
             set => __pbn__HeroId = value;
         }
         public bool ShouldSerializeHeroId() => __pbn__HeroId != null;
         public void ResetHeroId() => __pbn__HeroId = null;
-        private uint? __pbn__HeroId;
+        private int? __pbn__HeroId;
 
         [global::ProtoBuf.ProtoMember(3, Name = @"is_alive")]
         public bool IsAlive
@@ -237,6 +264,30 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         public void ResetTeamId() => __pbn__TeamId = null;
         private uint? __pbn__TeamId;
 
+        [global::ProtoBuf.ProtoMember(9, Name = @"primary_unit_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
+        public uint PrimaryUnitHandle
+        {
+            get => __pbn__PrimaryUnitHandle ?? 4294967295u;
+            set => __pbn__PrimaryUnitHandle = value;
+        }
+        public bool ShouldSerializePrimaryUnitHandle() => __pbn__PrimaryUnitHandle != null;
+        public void ResetPrimaryUnitHandle() => __pbn__PrimaryUnitHandle = null;
+        private uint? __pbn__PrimaryUnitHandle;
+
+        [global::ProtoBuf.ProtoMember(10, Name = @"mmr")]
+        public int Mmr
+        {
+            get => __pbn__Mmr.GetValueOrDefault();
+            set => __pbn__Mmr = value;
+        }
+        public bool ShouldSerializeMmr() => __pbn__Mmr != null;
+        public void ResetMmr() => __pbn__Mmr = null;
+        private int? __pbn__Mmr;
+
+        [global::ProtoBuf.ProtoMember(11, Name = @"location")]
+        public CMsgBotWorldState.Vector Location { get; set; }
+
     }
 
     [global::ProtoBuf.ProtoContract()]
@@ -257,14 +308,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__Handle;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"ability_id")]
-        public uint AbilityId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int AbilityId
         {
-            get => __pbn__AbilityId.GetValueOrDefault();
+            get => __pbn__AbilityId ?? -1;
             set => __pbn__AbilityId = value;
         }
         public bool ShouldSerializeAbilityId() => __pbn__AbilityId != null;
         public void ResetAbilityId() => __pbn__AbilityId = null;
-        private uint? __pbn__AbilityId;
+        private int? __pbn__AbilityId;
 
         [global::ProtoBuf.ProtoMember(3, Name = @"slot")]
         public uint Slot
@@ -277,9 +329,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__Slot;
 
         [global::ProtoBuf.ProtoMember(5, Name = @"caster_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint CasterHandle
         {
-            get => __pbn__CasterHandle.GetValueOrDefault();
+            get => __pbn__CasterHandle ?? 4294967295u;
             set => __pbn__CasterHandle = value;
         }
         public bool ShouldSerializeCasterHandle() => __pbn__CasterHandle != null;
@@ -438,14 +491,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"item_id")]
-        public uint ItemId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int ItemId
         {
-            get => __pbn__ItemId.GetValueOrDefault();
+            get => __pbn__ItemId ?? -1;
             set => __pbn__ItemId = value;
         }
         public bool ShouldSerializeItemId() => __pbn__ItemId != null;
         public void ResetItemId() => __pbn__ItemId = null;
-        private uint? __pbn__ItemId;
+        private int? __pbn__ItemId;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"location")]
         public CMsgBotWorldState.Vector Location { get; set; }
@@ -533,6 +587,16 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
+        [global::ProtoBuf.ProtoMember(7, Name = @"handle")]
+        public uint Handle
+        {
+            get => __pbn__Handle.GetValueOrDefault();
+            set => __pbn__Handle = value;
+        }
+        public bool ShouldSerializeHandle() => __pbn__Handle != null;
+        public void ResetHandle() => __pbn__Handle = null;
+        private uint? __pbn__Handle;
+
         [global::ProtoBuf.ProtoMember(1, Name = @"name")]
         [global::System.ComponentModel.DefaultValue("")]
         public string Name
@@ -555,9 +619,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__StackCount;
 
         [global::ProtoBuf.ProtoMember(3, Name = @"ability_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint AbilityHandle
         {
-            get => __pbn__AbilityHandle.GetValueOrDefault();
+            get => __pbn__AbilityHandle ?? 4294967295u;
             set => __pbn__AbilityHandle = value;
         }
         public bool ShouldSerializeAbilityHandle() => __pbn__AbilityHandle != null;
@@ -565,14 +630,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__AbilityHandle;
 
         [global::ProtoBuf.ProtoMember(4, Name = @"ability_id")]
-        public uint AbilityId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int AbilityId
         {
-            get => __pbn__AbilityId.GetValueOrDefault();
+            get => __pbn__AbilityId ?? -1;
             set => __pbn__AbilityId = value;
         }
         public bool ShouldSerializeAbilityId() => __pbn__AbilityId != null;
         public void ResetAbilityId() => __pbn__AbilityId = null;
-        private uint? __pbn__AbilityId;
+        private int? __pbn__AbilityId;
 
         [global::ProtoBuf.ProtoMember(5, Name = @"remaining_duration")]
         public float RemainingDuration
@@ -607,9 +673,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__Handle;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"caster_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint CasterHandle
         {
-            get => __pbn__CasterHandle.GetValueOrDefault();
+            get => __pbn__CasterHandle ?? 4294967295u;
             set => __pbn__CasterHandle = value;
         }
         public bool ShouldSerializeCasterHandle() => __pbn__CasterHandle != null;
@@ -638,9 +705,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__CasterPlayerId;
 
         [global::ProtoBuf.ProtoMember(4, Name = @"ability_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint AbilityHandle
         {
-            get => __pbn__AbilityHandle.GetValueOrDefault();
+            get => __pbn__AbilityHandle ?? 4294967295u;
             set => __pbn__AbilityHandle = value;
         }
         public bool ShouldSerializeAbilityHandle() => __pbn__AbilityHandle != null;
@@ -648,14 +716,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__AbilityHandle;
 
         [global::ProtoBuf.ProtoMember(5, Name = @"ability_id")]
-        public uint AbilityId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int AbilityId
         {
-            get => __pbn__AbilityId.GetValueOrDefault();
+            get => __pbn__AbilityId ?? -1;
             set => __pbn__AbilityId = value;
         }
         public bool ShouldSerializeAbilityId() => __pbn__AbilityId != null;
         public void ResetAbilityId() => __pbn__AbilityId = null;
-        private uint? __pbn__AbilityId;
+        private int? __pbn__AbilityId;
 
         [global::ProtoBuf.ProtoMember(6, Name = @"location")]
         public CMsgBotWorldState.Vector Location { get; set; }
@@ -682,10 +751,21 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
+        [global::ProtoBuf.ProtoMember(10, Name = @"handle")]
+        public uint Handle
+        {
+            get => __pbn__Handle.GetValueOrDefault();
+            set => __pbn__Handle = value;
+        }
+        public bool ShouldSerializeHandle() => __pbn__Handle != null;
+        public void ResetHandle() => __pbn__Handle = null;
+        private uint? __pbn__Handle;
+
         [global::ProtoBuf.ProtoMember(1, Name = @"caster_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint CasterHandle
         {
-            get => __pbn__CasterHandle.GetValueOrDefault();
+            get => __pbn__CasterHandle ?? 4294967295u;
             set => __pbn__CasterHandle = value;
         }
         public bool ShouldSerializeCasterHandle() => __pbn__CasterHandle != null;
@@ -714,9 +794,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__CasterPlayerId;
 
         [global::ProtoBuf.ProtoMember(3, Name = @"ability_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint AbilityHandle
         {
-            get => __pbn__AbilityHandle.GetValueOrDefault();
+            get => __pbn__AbilityHandle ?? 4294967295u;
             set => __pbn__AbilityHandle = value;
         }
         public bool ShouldSerializeAbilityHandle() => __pbn__AbilityHandle != null;
@@ -724,14 +805,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__AbilityHandle;
 
         [global::ProtoBuf.ProtoMember(4, Name = @"ability_id")]
-        public uint AbilityId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int AbilityId
         {
-            get => __pbn__AbilityId.GetValueOrDefault();
+            get => __pbn__AbilityId ?? -1;
             set => __pbn__AbilityId = value;
         }
         public bool ShouldSerializeAbilityId() => __pbn__AbilityId != null;
         public void ResetAbilityId() => __pbn__AbilityId = null;
-        private uint? __pbn__AbilityId;
+        private int? __pbn__AbilityId;
 
         [global::ProtoBuf.ProtoMember(5, Name = @"location")]
         public CMsgBotWorldState.Vector Location { get; set; }
@@ -779,9 +861,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         public CMsgBotWorldState.Vector Location { get; set; }
 
         [global::ProtoBuf.ProtoMember(2, Name = @"caster_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint CasterHandle
         {
-            get => __pbn__CasterHandle.GetValueOrDefault();
+            get => __pbn__CasterHandle ?? 4294967295u;
             set => __pbn__CasterHandle = value;
         }
         public bool ShouldSerializeCasterHandle() => __pbn__CasterHandle != null;
@@ -810,9 +893,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__CasterPlayerId;
 
         [global::ProtoBuf.ProtoMember(4, Name = @"ability_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint AbilityHandle
         {
-            get => __pbn__AbilityHandle.GetValueOrDefault();
+            get => __pbn__AbilityHandle ?? 4294967295u;
             set => __pbn__AbilityHandle = value;
         }
         public bool ShouldSerializeAbilityHandle() => __pbn__AbilityHandle != null;
@@ -820,14 +904,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__AbilityHandle;
 
         [global::ProtoBuf.ProtoMember(5, Name = @"ability_id")]
-        public uint AbilityId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int AbilityId
         {
-            get => __pbn__AbilityId.GetValueOrDefault();
+            get => __pbn__AbilityId ?? -1;
             set => __pbn__AbilityId = value;
         }
         public bool ShouldSerializeAbilityId() => __pbn__AbilityId != null;
         public void ResetAbilityId() => __pbn__AbilityId = null;
-        private uint? __pbn__AbilityId;
+        private int? __pbn__AbilityId;
 
         [global::ProtoBuf.ProtoMember(6, Name = @"radius")]
         public uint Radius
@@ -889,14 +974,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
             => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
         [global::ProtoBuf.ProtoMember(1, Name = @"ability_id")]
-        public uint AbilityId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int AbilityId
         {
-            get => __pbn__AbilityId.GetValueOrDefault();
+            get => __pbn__AbilityId ?? -1;
             set => __pbn__AbilityId = value;
         }
         public bool ShouldSerializeAbilityId() => __pbn__AbilityId != null;
         public void ResetAbilityId() => __pbn__AbilityId = null;
-        private uint? __pbn__AbilityId;
+        private int? __pbn__AbilityId;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"player_id")]
         public int PlayerId
@@ -909,9 +995,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__PlayerId;
 
         [global::ProtoBuf.ProtoMember(3, Name = @"unit_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint UnitHandle
         {
-            get => __pbn__UnitHandle.GetValueOrDefault();
+            get => __pbn__UnitHandle ?? 4294967295u;
             set => __pbn__UnitHandle = value;
         }
         public bool ShouldSerializeUnitHandle() => __pbn__UnitHandle != null;
@@ -961,9 +1048,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__VictimPlayerId;
 
         [global::ProtoBuf.ProtoMember(3, Name = @"victim_unit_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint VictimUnitHandle
         {
-            get => __pbn__VictimUnitHandle.GetValueOrDefault();
+            get => __pbn__VictimUnitHandle ?? 4294967295u;
             set => __pbn__VictimUnitHandle = value;
         }
         public bool ShouldSerializeVictimUnitHandle() => __pbn__VictimUnitHandle != null;
@@ -981,9 +1069,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__AttackerPlayerId;
 
         [global::ProtoBuf.ProtoMember(5, Name = @"attacker_unit_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint AttackerUnitHandle
         {
-            get => __pbn__AttackerUnitHandle.GetValueOrDefault();
+            get => __pbn__AttackerUnitHandle ?? 4294967295u;
             set => __pbn__AttackerUnitHandle = value;
         }
         public bool ShouldSerializeAttackerUnitHandle() => __pbn__AttackerUnitHandle != null;
@@ -991,14 +1080,15 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__AttackerUnitHandle;
 
         [global::ProtoBuf.ProtoMember(6, Name = @"ability_id")]
-        public uint AbilityId
+        [global::System.ComponentModel.DefaultValue(-1)]
+        public int AbilityId
         {
-            get => __pbn__AbilityId.GetValueOrDefault();
+            get => __pbn__AbilityId ?? -1;
             set => __pbn__AbilityId = value;
         }
         public bool ShouldSerializeAbilityId() => __pbn__AbilityId != null;
         public void ResetAbilityId() => __pbn__AbilityId = null;
-        private uint? __pbn__AbilityId;
+        private int? __pbn__AbilityId;
 
     }
 
@@ -1020,9 +1110,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__TeamId;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"courier_unit_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint CourierUnitHandle
         {
-            get => __pbn__CourierUnitHandle.GetValueOrDefault();
+            get => __pbn__CourierUnitHandle ?? 4294967295u;
             set => __pbn__CourierUnitHandle = value;
         }
         public bool ShouldSerializeCourierUnitHandle() => __pbn__CourierUnitHandle != null;
@@ -1040,9 +1131,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__KillerPlayerId;
 
         [global::ProtoBuf.ProtoMember(4, Name = @"killer_unit_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint KillerUnitHandle
         {
-            get => __pbn__KillerUnitHandle.GetValueOrDefault();
+            get => __pbn__KillerUnitHandle ?? 4294967295u;
             set => __pbn__KillerUnitHandle = value;
         }
         public bool ShouldSerializeKillerUnitHandle() => __pbn__KillerUnitHandle != null;
@@ -1069,9 +1161,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__KillerPlayerId;
 
         [global::ProtoBuf.ProtoMember(2, Name = @"killer_unit_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint KillerUnitHandle
         {
-            get => __pbn__KillerUnitHandle.GetValueOrDefault();
+            get => __pbn__KillerUnitHandle ?? 4294967295u;
             set => __pbn__KillerUnitHandle = value;
         }
         public bool ShouldSerializeKillerUnitHandle() => __pbn__KillerUnitHandle != null;
@@ -1455,9 +1548,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private int? __pbn__AttackProjectileSpeed;
 
         [global::ProtoBuf.ProtoMember(49, Name = @"attack_target_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint AttackTargetHandle
         {
-            get => __pbn__AttackTargetHandle.GetValueOrDefault();
+            get => __pbn__AttackTargetHandle ?? 4294967295u;
             set => __pbn__AttackTargetHandle = value;
         }
         public bool ShouldSerializeAttackTargetHandle() => __pbn__AttackTargetHandle != null;
@@ -1538,9 +1632,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private bool? __pbn__IsChanneling;
 
         [global::ProtoBuf.ProtoMember(66, Name = @"active_ability_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint ActiveAbilityHandle
         {
-            get => __pbn__ActiveAbilityHandle.GetValueOrDefault();
+            get => __pbn__ActiveAbilityHandle ?? 4294967295u;
             set => __pbn__ActiveAbilityHandle = value;
         }
         public bool ShouldSerializeActiveAbilityHandle() => __pbn__ActiveAbilityHandle != null;
@@ -1727,6 +1822,16 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         public void ResetHasScepter() => __pbn__HasScepter = null;
         private bool? __pbn__HasScepter;
 
+        [global::ProtoBuf.ProtoMember(94, Name = @"is_specially_undeniable")]
+        public bool IsSpeciallyUndeniable
+        {
+            get => __pbn__IsSpeciallyUndeniable.GetValueOrDefault();
+            set => __pbn__IsSpeciallyUndeniable = value;
+        }
+        public bool ShouldSerializeIsSpeciallyUndeniable() => __pbn__IsSpeciallyUndeniable != null;
+        public void ResetIsSpeciallyUndeniable() => __pbn__IsSpeciallyUndeniable = null;
+        private bool? __pbn__IsSpeciallyUndeniable;
+
         [global::ProtoBuf.ProtoMember(90, Name = @"abilities")]
         public global::System.Collections.Generic.List<CMsgBotWorldState.Ability> Abilities { get; } = new global::System.Collections.Generic.List<CMsgBotWorldState.Ability>();
 
@@ -1750,9 +1855,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         private uint? __pbn__ActionType;
 
         [global::ProtoBuf.ProtoMember(101, Name = @"ability_target_handle")]
+        [global::System.ComponentModel.DefaultValue(4294967295u)]
         public uint AbilityTargetHandle
         {
-            get => __pbn__AbilityTargetHandle.GetValueOrDefault();
+            get => __pbn__AbilityTargetHandle ?? 4294967295u;
             set => __pbn__AbilityTargetHandle = value;
         }
         public bool ShouldSerializeAbilityTargetHandle() => __pbn__AbilityTargetHandle != null;
@@ -2015,1472 +2121,6 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public partial class Actions : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, Name = @"dota_time")]
-        [global::System.ComponentModel.DefaultValue(-100f)]
-        public float DotaTime
-        {
-            get => __pbn__DotaTime ?? -100f;
-            set => __pbn__DotaTime = value;
-        }
-        public bool ShouldSerializeDotaTime() => __pbn__DotaTime != null;
-        public void ResetDotaTime() => __pbn__DotaTime = null;
-        private float? __pbn__DotaTime;
-
-        [global::ProtoBuf.ProtoMember(2)]
-        public global::System.Collections.Generic.List<CMsgBotWorldState.Action> actions { get; } = new global::System.Collections.Generic.List<CMsgBotWorldState.Action>();
-
-        [global::ProtoBuf.ProtoMember(3)]
-        [global::System.ComponentModel.DefaultValue("")]
-        public string extraData
-        {
-            get => __pbn__extraData ?? "";
-            set => __pbn__extraData = value;
-        }
-        public bool ShouldSerializeextraData() => __pbn__extraData != null;
-        public void ResetextraData() => __pbn__extraData = null;
-        private string __pbn__extraData;
-
-        [global::ProtoBuf.ProtoMember(4)]
-        public OceanAnnotation oceanAnnotation { get; set; }
-
-        [global::ProtoBuf.ProtoMember(5)]
-        public Header header { get; set; }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class OceanAnnotation : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"heroes")]
-            public global::System.Collections.Generic.List<Hero> Heroes { get; } = new global::System.Collections.Generic.List<Hero>();
-
-            [global::ProtoBuf.ProtoMember(5)]
-            [global::System.ComponentModel.DefaultValue("")]
-            public string agentID
-            {
-                get => __pbn__agentID ?? "";
-                set => __pbn__agentID = value;
-            }
-            public bool ShouldSerializeagentID() => __pbn__agentID != null;
-            public void ResetagentID() => __pbn__agentID = null;
-            private string __pbn__agentID;
-
-            [global::ProtoBuf.ProtoMember(6, Name = @"rewards")]
-            public float[] Rewards { get; set; }
-
-            [global::ProtoBuf.ProtoMember(7, Name = @"reward_names")]
-            public global::System.Collections.Generic.List<string> RewardNames { get; } = new global::System.Collections.Generic.List<string>();
-
-            [global::ProtoBuf.ProtoContract()]
-            public partial class Hero : global::ProtoBuf.IExtensible
-            {
-                private global::ProtoBuf.IExtension __pbn__extensionData;
-                global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                    => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-                [global::ProtoBuf.ProtoMember(1, IsRequired = true)]
-                public int playerID { get; set; }
-
-                [global::ProtoBuf.ProtoMember(2)]
-                public float valueFunction
-                {
-                    get => __pbn__valueFunction.GetValueOrDefault();
-                    set => __pbn__valueFunction = value;
-                }
-                public bool ShouldSerializevalueFunction() => __pbn__valueFunction != null;
-                public void ResetvalueFunction() => __pbn__valueFunction = null;
-                private float? __pbn__valueFunction;
-
-                [global::ProtoBuf.ProtoMember(3)]
-                public float actionLogp
-                {
-                    get => __pbn__actionLogp.GetValueOrDefault();
-                    set => __pbn__actionLogp = value;
-                }
-                public bool ShouldSerializeactionLogp() => __pbn__actionLogp != null;
-                public void ResetactionLogp() => __pbn__actionLogp = null;
-                private float? __pbn__actionLogp;
-
-                [global::ProtoBuf.ProtoMember(4, Name = @"reward")]
-                public float Reward
-                {
-                    get => __pbn__Reward.GetValueOrDefault();
-                    set => __pbn__Reward = value;
-                }
-                public bool ShouldSerializeReward() => __pbn__Reward != null;
-                public void ResetReward() => __pbn__Reward = null;
-                private float? __pbn__Reward;
-
-                [global::ProtoBuf.ProtoMember(5, Name = @"internalAction")]
-                public int[] internalActions { get; set; }
-
-                [global::ProtoBuf.ProtoMember(6)]
-                [global::System.ComponentModel.DefaultValue("")]
-                public string actionName
-                {
-                    get => __pbn__actionName ?? "";
-                    set => __pbn__actionName = value;
-                }
-                public bool ShouldSerializeactionName() => __pbn__actionName != null;
-                public void ResetactionName() => __pbn__actionName = null;
-                private string __pbn__actionName;
-
-                [global::ProtoBuf.ProtoMember(7)]
-                public byte[] detailedStats
-                {
-                    get => __pbn__detailedStats;
-                    set => __pbn__detailedStats = value;
-                }
-                public bool ShouldSerializedetailedStats() => __pbn__detailedStats != null;
-                public void ResetdetailedStats() => __pbn__detailedStats = null;
-                private byte[] __pbn__detailedStats;
-
-            }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class Header : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1)]
-            public float startTime
-            {
-                get => __pbn__startTime.GetValueOrDefault();
-                set => __pbn__startTime = value;
-            }
-            public bool ShouldSerializestartTime() => __pbn__startTime != null;
-            public void ResetstartTime() => __pbn__startTime = null;
-            private float? __pbn__startTime;
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"name")]
-            [global::System.ComponentModel.DefaultValue("")]
-            public string Name
-            {
-                get => __pbn__Name ?? "";
-                set => __pbn__Name = value;
-            }
-            public bool ShouldSerializeName() => __pbn__Name != null;
-            public void ResetName() => __pbn__Name = null;
-            private string __pbn__Name;
-
-        }
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
-    public partial class Action : global::ProtoBuf.IExtensible
-    {
-        private global::ProtoBuf.IExtension __pbn__extensionData;
-        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-            => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        [global::ProtoBuf.ProtoMember(1, IsRequired = true)]
-        public Type actionType { get; set; } = Type.DotaUnitOrderNone;
-
-        [global::ProtoBuf.ProtoMember(2, Name = @"player")]
-        [global::System.ComponentModel.DefaultValue(-1)]
-        public int Player
-        {
-            get => __pbn__Player ?? -1;
-            set => __pbn__Player = value;
-        }
-        public bool ShouldSerializePlayer() => __pbn__Player != null;
-        public void ResetPlayer() => __pbn__Player = null;
-        private int? __pbn__Player;
-
-        [global::ProtoBuf.ProtoMember(4)]
-        [global::System.ComponentModel.DefaultValue(-1)]
-        public int actionID
-        {
-            get => __pbn__actionID ?? -1;
-            set => __pbn__actionID = value;
-        }
-        public bool ShouldSerializeactionID() => __pbn__actionID != null;
-        public void ResetactionID() => __pbn__actionID = null;
-        private int? __pbn__actionID;
-
-        [global::ProtoBuf.ProtoMember(10)]
-        [global::System.ComponentModel.DefaultValue(0)]
-        public int actionDelay
-        {
-            get => __pbn__actionDelay ?? 0;
-            set => __pbn__actionDelay = value;
-        }
-        public bool ShouldSerializeactionDelay() => __pbn__actionDelay != null;
-        public void ResetactionDelay() => __pbn__actionDelay = null;
-        private int? __pbn__actionDelay;
-
-        [global::ProtoBuf.ProtoMember(101)]
-        public MoveToLocation moveToLocation
-        {
-            get => __pbn__ActionData.Is(101) ? ((MoveToLocation)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(101, value);
-        }
-        public bool ShouldSerializemoveToLocation() => __pbn__ActionData.Is(101);
-        public void ResetmoveToLocation() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 101);
-
-        private global::ProtoBuf.DiscriminatedUnionObject __pbn__ActionData;
-
-        [global::ProtoBuf.ProtoMember(102)]
-        public MoveToTarget moveToTarget
-        {
-            get => __pbn__ActionData.Is(102) ? ((MoveToTarget)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(102, value);
-        }
-        public bool ShouldSerializemoveToTarget() => __pbn__ActionData.Is(102);
-        public void ResetmoveToTarget() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 102);
-
-        [global::ProtoBuf.ProtoMember(103)]
-        public AttackMove attackMove
-        {
-            get => __pbn__ActionData.Is(103) ? ((AttackMove)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(103, value);
-        }
-        public bool ShouldSerializeattackMove() => __pbn__ActionData.Is(103);
-        public void ResetattackMove() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 103);
-
-        [global::ProtoBuf.ProtoMember(104)]
-        public AttackTarget attackTarget
-        {
-            get => __pbn__ActionData.Is(104) ? ((AttackTarget)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(104, value);
-        }
-        public bool ShouldSerializeattackTarget() => __pbn__ActionData.Is(104);
-        public void ResetattackTarget() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 104);
-
-        [global::ProtoBuf.ProtoMember(105)]
-        public CastLocation castLocation
-        {
-            get => __pbn__ActionData.Is(105) ? ((CastLocation)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(105, value);
-        }
-        public bool ShouldSerializecastLocation() => __pbn__ActionData.Is(105);
-        public void ResetcastLocation() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 105);
-
-        [global::ProtoBuf.ProtoMember(106)]
-        public CastTarget castTarget
-        {
-            get => __pbn__ActionData.Is(106) ? ((CastTarget)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(106, value);
-        }
-        public bool ShouldSerializecastTarget() => __pbn__ActionData.Is(106);
-        public void ResetcastTarget() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 106);
-
-        [global::ProtoBuf.ProtoMember(107)]
-        public CastTree castTree
-        {
-            get => __pbn__ActionData.Is(107) ? ((CastTree)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(107, value);
-        }
-        public bool ShouldSerializecastTree() => __pbn__ActionData.Is(107);
-        public void ResetcastTree() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 107);
-
-        [global::ProtoBuf.ProtoMember(108)]
-        public Cast cast
-        {
-            get => __pbn__ActionData.Is(108) ? ((Cast)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(108, value);
-        }
-        public bool ShouldSerializecast() => __pbn__ActionData.Is(108);
-        public void Resetcast() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 108);
-
-        [global::ProtoBuf.ProtoMember(109)]
-        public CastToggle castToggle
-        {
-            get => __pbn__ActionData.Is(109) ? ((CastToggle)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(109, value);
-        }
-        public bool ShouldSerializecastToggle() => __pbn__ActionData.Is(109);
-        public void ResetcastToggle() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 109);
-
-        [global::ProtoBuf.ProtoMember(110)]
-        public HoldLocation holdLocation
-        {
-            get => __pbn__ActionData.Is(110) ? ((HoldLocation)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(110, value);
-        }
-        public bool ShouldSerializeholdLocation() => __pbn__ActionData.Is(110);
-        public void ResetholdLocation() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 110);
-
-        [global::ProtoBuf.ProtoMember(111)]
-        public TrainAbility trainAbility
-        {
-            get => __pbn__ActionData.Is(111) ? ((TrainAbility)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(111, value);
-        }
-        public bool ShouldSerializetrainAbility() => __pbn__ActionData.Is(111);
-        public void ResettrainAbility() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 111);
-
-        [global::ProtoBuf.ProtoMember(112)]
-        public DropItem dropItem
-        {
-            get => __pbn__ActionData.Is(112) ? ((DropItem)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(112, value);
-        }
-        public bool ShouldSerializedropItem() => __pbn__ActionData.Is(112);
-        public void ResetdropItem() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 112);
-
-        [global::ProtoBuf.ProtoMember(114)]
-        public PickUpItem pickUpItem
-        {
-            get => __pbn__ActionData.Is(114) ? ((PickUpItem)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(114, value);
-        }
-        public bool ShouldSerializepickUpItem() => __pbn__ActionData.Is(114);
-        public void ResetpickUpItem() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 114);
-
-        [global::ProtoBuf.ProtoMember(115)]
-        public PickupRune pickupRune
-        {
-            get => __pbn__ActionData.Is(115) ? ((PickupRune)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(115, value);
-        }
-        public bool ShouldSerializepickupRune() => __pbn__ActionData.Is(115);
-        public void ResetpickupRune() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 115);
-
-        [global::ProtoBuf.ProtoMember(116)]
-        public PurchaseItem purchaseItem
-        {
-            get => __pbn__ActionData.Is(116) ? ((PurchaseItem)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(116, value);
-        }
-        public bool ShouldSerializepurchaseItem() => __pbn__ActionData.Is(116);
-        public void ResetpurchaseItem() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 116);
-
-        [global::ProtoBuf.ProtoMember(117)]
-        public SellItem sellItem
-        {
-            get => __pbn__ActionData.Is(117) ? ((SellItem)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(117, value);
-        }
-        public bool ShouldSerializesellItem() => __pbn__ActionData.Is(117);
-        public void ResetsellItem() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 117);
-
-        [global::ProtoBuf.ProtoMember(118)]
-        public DisassembleItem disassembleItem
-        {
-            get => __pbn__ActionData.Is(118) ? ((DisassembleItem)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(118, value);
-        }
-        public bool ShouldSerializedisassembleItem() => __pbn__ActionData.Is(118);
-        public void ResetdisassembleItem() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 118);
-
-        [global::ProtoBuf.ProtoMember(132)]
-        public SetCombineLockItem setCombineLockItem
-        {
-            get => __pbn__ActionData.Is(132) ? ((SetCombineLockItem)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(132, value);
-        }
-        public bool ShouldSerializesetCombineLockItem() => __pbn__ActionData.Is(132);
-        public void ResetsetCombineLockItem() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 132);
-
-        [global::ProtoBuf.ProtoMember(121)]
-        public Stop stop
-        {
-            get => __pbn__ActionData.Is(121) ? ((Stop)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(121, value);
-        }
-        public bool ShouldSerializestop() => __pbn__ActionData.Is(121);
-        public void Resetstop() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 121);
-
-        [global::ProtoBuf.ProtoMember(140)]
-        public Chat chat
-        {
-            get => __pbn__ActionData.Is(140) ? ((Chat)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(140, value);
-        }
-        public bool ShouldSerializechat() => __pbn__ActionData.Is(140);
-        public void Resetchat() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 140);
-
-        [global::ProtoBuf.ProtoMember(141)]
-        public SwapItems swapItems
-        {
-            get => __pbn__ActionData.Is(141) ? ((SwapItems)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(141, value);
-        }
-        public bool ShouldSerializeswapItems() => __pbn__ActionData.Is(141);
-        public void ResetswapItems() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 141);
-
-        [global::ProtoBuf.ProtoMember(142)]
-        public UseShrine useShrine
-        {
-            get => __pbn__ActionData.Is(142) ? ((UseShrine)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(142, value);
-        }
-        public bool ShouldSerializeuseShrine() => __pbn__ActionData.Is(142);
-        public void ResetuseShrine() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 142);
-
-        [global::ProtoBuf.ProtoMember(143)]
-        public Courier courier
-        {
-            get => __pbn__ActionData.Is(143) ? ((Courier)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(143, value);
-        }
-        public bool ShouldSerializecourier() => __pbn__ActionData.Is(143);
-        public void Resetcourier() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 143);
-
-        [global::ProtoBuf.ProtoMember(144)]
-        public GetActualIncomingDamage getActualIncomingDamage
-        {
-            get => __pbn__ActionData.Is(144) ? ((GetActualIncomingDamage)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(144, value);
-        }
-        public bool ShouldSerializegetActualIncomingDamage() => __pbn__ActionData.Is(144);
-        public void ResetgetActualIncomingDamage() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 144);
-
-        [global::ProtoBuf.ProtoMember(145)]
-        public GetEstimatedDamageToTarget getEstimatedDamageToTarget
-        {
-            get => __pbn__ActionData.Is(145) ? ((GetEstimatedDamageToTarget)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(145, value);
-        }
-        public bool ShouldSerializegetEstimatedDamageToTarget() => __pbn__ActionData.Is(145);
-        public void ResetgetEstimatedDamageToTarget() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 145);
-
-        [global::ProtoBuf.ProtoMember(146)]
-        public Glyph glyph
-        {
-            get => __pbn__ActionData.Is(146) ? ((Glyph)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(146, value);
-        }
-        public bool ShouldSerializeglyph() => __pbn__ActionData.Is(146);
-        public void Resetglyph() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 146);
-
-        [global::ProtoBuf.ProtoMember(148)]
-        public SoftReset softReset
-        {
-            get => __pbn__ActionData.Is(148) ? ((SoftReset)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(148, value);
-        }
-        public bool ShouldSerializesoftReset() => __pbn__ActionData.Is(148);
-        public void ResetsoftReset() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 148);
-
-        [global::ProtoBuf.ProtoMember(149)]
-        public Buyback buyback
-        {
-            get => __pbn__ActionData.Is(149) ? ((Buyback)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(149, value);
-        }
-        public bool ShouldSerializebuyback() => __pbn__ActionData.Is(149);
-        public void Resetbuyback() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 149);
-
-        [global::ProtoBuf.ProtoMember(150)]
-        public ScriptingDebugDrawText scriptingDebugDrawText
-        {
-            get => __pbn__ActionData.Is(150) ? ((ScriptingDebugDrawText)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(150, value);
-        }
-        public bool ShouldSerializescriptingDebugDrawText() => __pbn__ActionData.Is(150);
-        public void ResetscriptingDebugDrawText() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 150);
-
-        [global::ProtoBuf.ProtoMember(151)]
-        public ScriptingDebugDrawLine scriptingDebugDrawLine
-        {
-            get => __pbn__ActionData.Is(151) ? ((ScriptingDebugDrawLine)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(151, value);
-        }
-        public bool ShouldSerializescriptingDebugDrawLine() => __pbn__ActionData.Is(151);
-        public void ResetscriptingDebugDrawLine() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 151);
-
-        [global::ProtoBuf.ProtoMember(152)]
-        public ScriptingDebugDrawScreenText scriptingDebugDrawScreenText
-        {
-            get => __pbn__ActionData.Is(152) ? ((ScriptingDebugDrawScreenText)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(152, value);
-        }
-        public bool ShouldSerializescriptingDebugDrawScreenText() => __pbn__ActionData.Is(152);
-        public void ResetscriptingDebugDrawScreenText() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 152);
-
-        [global::ProtoBuf.ProtoMember(153)]
-        public ScriptingDebugDrawBox scriptingDebugDrawBox
-        {
-            get => __pbn__ActionData.Is(153) ? ((ScriptingDebugDrawBox)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(153, value);
-        }
-        public bool ShouldSerializescriptingDebugDrawBox() => __pbn__ActionData.Is(153);
-        public void ResetscriptingDebugDrawBox() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 153);
-
-        [global::ProtoBuf.ProtoMember(154)]
-        public ScriptingDebugDrawCircle scriptingDebugDrawCircle
-        {
-            get => __pbn__ActionData.Is(154) ? ((ScriptingDebugDrawCircle)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(154, value);
-        }
-        public bool ShouldSerializescriptingDebugDrawCircle() => __pbn__ActionData.Is(154);
-        public void ResetscriptingDebugDrawCircle() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 154);
-
-        [global::ProtoBuf.ProtoMember(155)]
-        public ScriptingDebugDrawClear scriptingDebugDrawClear
-        {
-            get => __pbn__ActionData.Is(155) ? ((ScriptingDebugDrawClear)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(155, value);
-        }
-        public bool ShouldSerializescriptingDebugDrawClear() => __pbn__ActionData.Is(155);
-        public void ResetscriptingDebugDrawClear() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 155);
-
-        [global::ProtoBuf.ProtoMember(159)]
-        public ScriptingDebugScreenTextPretty scriptingDebugScreenTextPretty
-        {
-            get => __pbn__ActionData.Is(159) ? ((ScriptingDebugScreenTextPretty)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(159, value);
-        }
-        public bool ShouldSerializescriptingDebugScreenTextPretty() => __pbn__ActionData.Is(159);
-        public void ResetscriptingDebugScreenTextPretty() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 159);
-
-        [global::ProtoBuf.ProtoMember(156)]
-        public MoveToLocation moveDirectly
-        {
-            get => __pbn__ActionData.Is(156) ? ((MoveToLocation)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(156, value);
-        }
-        public bool ShouldSerializemoveDirectly() => __pbn__ActionData.Is(156);
-        public void ResetmoveDirectly() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 156);
-
-        [global::ProtoBuf.ProtoMember(157)]
-        public OceanWinGame oceanWinGame
-        {
-            get => __pbn__ActionData.Is(157) ? ((OceanWinGame)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(157, value);
-        }
-        public bool ShouldSerializeoceanWinGame() => __pbn__ActionData.Is(157);
-        public void ResetoceanWinGame() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 157);
-
-        [global::ProtoBuf.ProtoMember(158)]
-        public OceanReplayCorrectTime oceanReplayCorrectTime
-        {
-            get => __pbn__ActionData.Is(158) ? ((OceanReplayCorrectTime)__pbn__ActionData.Object) : default;
-            set => __pbn__ActionData = new global::ProtoBuf.DiscriminatedUnionObject(158, value);
-        }
-        public bool ShouldSerializeoceanReplayCorrectTime() => __pbn__ActionData.Is(158);
-        public void ResetoceanReplayCorrectTime() => global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__ActionData, 158);
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class MoveToLocation : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"location", IsRequired = true)]
-            public CMsgBotWorldState.Vector Location { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class MoveToTarget : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"target", IsRequired = true)]
-            public int Target { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class AttackMove : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"location", IsRequired = true)]
-            public CMsgBotWorldState.Vector Location { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class AttackTarget : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"target", IsRequired = true)]
-            public int Target { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"once")]
-            public bool Once
-            {
-                get => __pbn__Once.GetValueOrDefault();
-                set => __pbn__Once = value;
-            }
-            public bool ShouldSerializeOnce() => __pbn__Once != null;
-            public void ResetOnce() => __pbn__Once = null;
-            private bool? __pbn__Once;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class HoldLocation : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class Stop : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class CastLocation : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public int abilitySlot { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"location", IsRequired = true)]
-            public CMsgBotWorldState.Vector Location { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class CastTarget : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public int abilitySlot { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"target", IsRequired = true)]
-            public int Target { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class CastTree : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public int abilitySlot { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"tree", IsRequired = true)]
-            public int Tree { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class Cast : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public int abilitySlot { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class CastToggle : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public int abilitySlot { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class TrainAbility : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"ability", IsRequired = true)]
-            public string Ability { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"level")]
-            public int Level
-            {
-                get => __pbn__Level.GetValueOrDefault();
-                set => __pbn__Level = value;
-            }
-            public bool ShouldSerializeLevel() => __pbn__Level != null;
-            public void ResetLevel() => __pbn__Level = null;
-            private int? __pbn__Level;
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"unit")]
-            public int Unit
-            {
-                get => __pbn__Unit.GetValueOrDefault();
-                set => __pbn__Unit = value;
-            }
-            public bool ShouldSerializeUnit() => __pbn__Unit != null;
-            public void ResetUnit() => __pbn__Unit = null;
-            private int? __pbn__Unit;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class DropItem : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"unit")]
-            public int Unit
-            {
-                get => __pbn__Unit.GetValueOrDefault();
-                set => __pbn__Unit = value;
-            }
-            public bool ShouldSerializeUnit() => __pbn__Unit != null;
-            public void ResetUnit() => __pbn__Unit = null;
-            private int? __pbn__Unit;
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"slot")]
-            public int Slot
-            {
-                get => __pbn__Slot.GetValueOrDefault();
-                set => __pbn__Slot = value;
-            }
-            public bool ShouldSerializeSlot() => __pbn__Slot != null;
-            public void ResetSlot() => __pbn__Slot = null;
-            private int? __pbn__Slot;
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"location")]
-            public CMsgBotWorldState.Vector Location { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class PickUpItem : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"unit")]
-            public int Unit
-            {
-                get => __pbn__Unit.GetValueOrDefault();
-                set => __pbn__Unit = value;
-            }
-            public bool ShouldSerializeUnit() => __pbn__Unit != null;
-            public void ResetUnit() => __pbn__Unit = null;
-            private int? __pbn__Unit;
-
-            [global::ProtoBuf.ProtoMember(2)]
-            public int itemId
-            {
-                get => __pbn__itemId.GetValueOrDefault();
-                set => __pbn__itemId = value;
-            }
-            public bool ShouldSerializeitemId() => __pbn__itemId != null;
-            public void ResetitemId() => __pbn__itemId = null;
-            private int? __pbn__itemId;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class PurchaseItem : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"item")]
-            public int Item
-            {
-                get => __pbn__Item.GetValueOrDefault();
-                set => __pbn__Item = value;
-            }
-            public bool ShouldSerializeItem() => __pbn__Item != null;
-            public void ResetItem() => __pbn__Item = null;
-            private int? __pbn__Item;
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"item_name")]
-            [global::System.ComponentModel.DefaultValue("")]
-            public string ItemName
-            {
-                get => __pbn__ItemName ?? "";
-                set => __pbn__ItemName = value;
-            }
-            public bool ShouldSerializeItemName() => __pbn__ItemName != null;
-            public void ResetItemName() => __pbn__ItemName = null;
-            private string __pbn__ItemName;
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"unit")]
-            public int Unit
-            {
-                get => __pbn__Unit.GetValueOrDefault();
-                set => __pbn__Unit = value;
-            }
-            public bool ShouldSerializeUnit() => __pbn__Unit != null;
-            public void ResetUnit() => __pbn__Unit = null;
-            private int? __pbn__Unit;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class SellItem : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"item")]
-            public int Item
-            {
-                get => __pbn__Item.GetValueOrDefault();
-                set => __pbn__Item = value;
-            }
-            public bool ShouldSerializeItem() => __pbn__Item != null;
-            public void ResetItem() => __pbn__Item = null;
-            private int? __pbn__Item;
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"slot")]
-            public int Slot
-            {
-                get => __pbn__Slot.GetValueOrDefault();
-                set => __pbn__Slot = value;
-            }
-            public bool ShouldSerializeSlot() => __pbn__Slot != null;
-            public void ResetSlot() => __pbn__Slot = null;
-            private int? __pbn__Slot;
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"unit")]
-            public int Unit
-            {
-                get => __pbn__Unit.GetValueOrDefault();
-                set => __pbn__Unit = value;
-            }
-            public bool ShouldSerializeUnit() => __pbn__Unit != null;
-            public void ResetUnit() => __pbn__Unit = null;
-            private int? __pbn__Unit;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class SwapItems : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"slot_a", IsRequired = true)]
-            public int SlotA { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"slot_b", IsRequired = true)]
-            public int SlotB { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"unit")]
-            public int Unit
-            {
-                get => __pbn__Unit.GetValueOrDefault();
-                set => __pbn__Unit = value;
-            }
-            public bool ShouldSerializeUnit() => __pbn__Unit != null;
-            public void ResetUnit() => __pbn__Unit = null;
-            private int? __pbn__Unit;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class DisassembleItem : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"slot", IsRequired = true)]
-            public int Slot { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class SetCombineLockItem : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"slot", IsRequired = true)]
-            public int Slot { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"value", IsRequired = true)]
-            public bool Value { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class PickupRune : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"rune", IsRequired = true)]
-            public int Rune { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class Chat : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"message", IsRequired = true)]
-            public string Message { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"to_allchat", IsRequired = true)]
-            public bool ToAllchat { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class UseShrine : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"units")]
-            public int[] Units { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"shrine", IsRequired = true)]
-            public int Shrine { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class Courier : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"unit", IsRequired = true)]
-            public int Unit { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public int courier { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"action", IsRequired = true)]
-            public int Action { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class GetActualIncomingDamage : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"unit", IsRequired = true)]
-            public int Unit { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public float nDamage { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, IsRequired = true)]
-            public int nDamageType { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class GetEstimatedDamageToTarget : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"unit", IsRequired = true)]
-            public int Unit { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public bool bCurrentlyAvailable { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, IsRequired = true)]
-            public int hTarget { get; set; }
-
-            [global::ProtoBuf.ProtoMember(4, IsRequired = true)]
-            public float fDuration { get; set; }
-
-            [global::ProtoBuf.ProtoMember(5, IsRequired = true)]
-            public int nDamageTypes { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class Glyph : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"unit", IsRequired = true)]
-            public int Unit { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class SoftReset : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1)]
-            [global::System.ComponentModel.DefaultValue("")]
-            public string minigameConfig
-            {
-                get => __pbn__minigameConfig ?? "";
-                set => __pbn__minigameConfig = value;
-            }
-            public bool ShouldSerializeminigameConfig() => __pbn__minigameConfig != null;
-            public void ResetminigameConfig() => __pbn__minigameConfig = null;
-            private string __pbn__minigameConfig;
-
-            [global::ProtoBuf.ProtoMember(2)]
-            [global::System.ComponentModel.DefaultValue("")]
-            public string snapshotData
-            {
-                get => __pbn__snapshotData ?? "";
-                set => __pbn__snapshotData = value;
-            }
-            public bool ShouldSerializesnapshotData() => __pbn__snapshotData != null;
-            public void ResetsnapshotData() => __pbn__snapshotData = null;
-            private string __pbn__snapshotData;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class Buyback : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"unit", IsRequired = true)]
-            public int Unit { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class ScriptingDebugDrawText : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"origin", IsRequired = true)]
-            public CMsgBotWorldState.Vector Origin { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"text", IsRequired = true)]
-            public string Text { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, IsRequired = true)]
-            public bool bViewCheck { get; set; }
-
-            [global::ProtoBuf.ProtoMember(4, Name = @"duration", IsRequired = true)]
-            public float Duration { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class ScriptingDebugDrawLine : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"origin", IsRequired = true)]
-            public CMsgBotWorldState.Vector Origin { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"target", IsRequired = true)]
-            public CMsgBotWorldState.Vector Target { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"r", IsRequired = true)]
-            public int R { get; set; }
-
-            [global::ProtoBuf.ProtoMember(4, Name = @"g", IsRequired = true)]
-            public int G { get; set; }
-
-            [global::ProtoBuf.ProtoMember(5, Name = @"b", IsRequired = true)]
-            public int B { get; set; }
-
-            [global::ProtoBuf.ProtoMember(6, Name = @"ztest", IsRequired = true)]
-            public bool Ztest { get; set; }
-
-            [global::ProtoBuf.ProtoMember(7, Name = @"duration", IsRequired = true)]
-            public float Duration { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class ScriptingDebugDrawScreenText : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"x", IsRequired = true)]
-            public float X { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"y", IsRequired = true)]
-            public float Y { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, IsRequired = true)]
-            public int lineOffset { get; set; }
-
-            [global::ProtoBuf.ProtoMember(4, Name = @"text", IsRequired = true)]
-            public string Text { get; set; }
-
-            [global::ProtoBuf.ProtoMember(5, Name = @"r", IsRequired = true)]
-            public int R { get; set; }
-
-            [global::ProtoBuf.ProtoMember(6, Name = @"g", IsRequired = true)]
-            public int G { get; set; }
-
-            [global::ProtoBuf.ProtoMember(7, Name = @"b", IsRequired = true)]
-            public int B { get; set; }
-
-            [global::ProtoBuf.ProtoMember(8, Name = @"a", IsRequired = true)]
-            public int A { get; set; }
-
-            [global::ProtoBuf.ProtoMember(9, Name = @"duration", IsRequired = true)]
-            public float Duration { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class ScriptingDebugScreenTextPretty : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"x", IsRequired = true)]
-            public float X { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"y", IsRequired = true)]
-            public float Y { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, IsRequired = true)]
-            public int lineOffset { get; set; }
-
-            [global::ProtoBuf.ProtoMember(4, Name = @"text", IsRequired = true)]
-            public string Text { get; set; }
-
-            [global::ProtoBuf.ProtoMember(5, Name = @"r", IsRequired = true)]
-            public int R { get; set; }
-
-            [global::ProtoBuf.ProtoMember(6, Name = @"g", IsRequired = true)]
-            public int G { get; set; }
-
-            [global::ProtoBuf.ProtoMember(7, Name = @"b", IsRequired = true)]
-            public int B { get; set; }
-
-            [global::ProtoBuf.ProtoMember(8, Name = @"a", IsRequired = true)]
-            public int A { get; set; }
-
-            [global::ProtoBuf.ProtoMember(9, Name = @"duration", IsRequired = true)]
-            public float Duration { get; set; }
-
-            [global::ProtoBuf.ProtoMember(10, Name = @"font", IsRequired = true)]
-            public string Font { get; set; }
-
-            [global::ProtoBuf.ProtoMember(11, Name = @"size", IsRequired = true)]
-            public float Size { get; set; }
-
-            [global::ProtoBuf.ProtoMember(12, IsRequired = true)]
-            public bool bBold { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class ScriptingDebugDrawBox : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"origin", IsRequired = true)]
-            public CMsgBotWorldState.Vector Origin { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"minimum", IsRequired = true)]
-            public CMsgBotWorldState.Vector Minimum { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"maximum", IsRequired = true)]
-            public CMsgBotWorldState.Vector Maximum { get; set; }
-
-            [global::ProtoBuf.ProtoMember(4, Name = @"r", IsRequired = true)]
-            public int R { get; set; }
-
-            [global::ProtoBuf.ProtoMember(5, Name = @"g", IsRequired = true)]
-            public int G { get; set; }
-
-            [global::ProtoBuf.ProtoMember(6, Name = @"b", IsRequired = true)]
-            public int B { get; set; }
-
-            [global::ProtoBuf.ProtoMember(7, Name = @"a", IsRequired = true)]
-            public int A { get; set; }
-
-            [global::ProtoBuf.ProtoMember(8, Name = @"duration", IsRequired = true)]
-            public float Duration { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class ScriptingDebugDrawCircle : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"center", IsRequired = true)]
-            public CMsgBotWorldState.Vector Center { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, IsRequired = true)]
-            public CMsgBotWorldState.Vector vRgb { get; set; }
-
-            [global::ProtoBuf.ProtoMember(3, Name = @"a", IsRequired = true)]
-            public float A { get; set; }
-
-            [global::ProtoBuf.ProtoMember(4, Name = @"rad", IsRequired = true)]
-            public float Rad { get; set; }
-
-            [global::ProtoBuf.ProtoMember(5, Name = @"ztest", IsRequired = true)]
-            public bool Ztest { get; set; }
-
-            [global::ProtoBuf.ProtoMember(6, Name = @"duration", IsRequired = true)]
-            public float Duration { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class ScriptingDebugDrawClear : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class OceanWinGame : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"team", IsRequired = true)]
-            public string Team { get; set; }
-
-            [global::ProtoBuf.ProtoMember(2, Name = @"reward")]
-            public float Reward
-            {
-                get => __pbn__Reward.GetValueOrDefault();
-                set => __pbn__Reward = value;
-            }
-            public bool ShouldSerializeReward() => __pbn__Reward != null;
-            public void ResetReward() => __pbn__Reward = null;
-            private float? __pbn__Reward;
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public partial class OceanReplayCorrectTime : global::ProtoBuf.IExtensible
-        {
-            private global::ProtoBuf.IExtension __pbn__extensionData;
-            global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-                => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-
-            [global::ProtoBuf.ProtoMember(1, Name = @"delta", IsRequired = true)]
-            public float Delta { get; set; }
-
-        }
-
-        [global::ProtoBuf.ProtoContract()]
-        public enum Type
-        {
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_NONE")]
-            DotaUnitOrderNone = 0,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_MOVE_TO_POSITION")]
-            DotaUnitOrderMoveToPosition = 1,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_MOVE_TO_TARGET")]
-            DotaUnitOrderMoveToTarget = 2,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_ATTACK_MOVE")]
-            DotaUnitOrderAttackMove = 3,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_ATTACK_TARGET")]
-            DotaUnitOrderAttackTarget = 4,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CAST_POSITION")]
-            DotaUnitOrderCastPosition = 5,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CAST_TARGET")]
-            DotaUnitOrderCastTarget = 6,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CAST_TARGET_TREE")]
-            DotaUnitOrderCastTargetTree = 7,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CAST_NO_TARGET")]
-            DotaUnitOrderCastNoTarget = 8,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CAST_TOGGLE")]
-            DotaUnitOrderCastToggle = 9,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_HOLD_POSITION")]
-            DotaUnitOrderHoldPosition = 10,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_TRAIN_ABILITY")]
-            DotaUnitOrderTrainAbility = 11,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_DROP_ITEM")]
-            DotaUnitOrderDropItem = 12,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_GIVE_ITEM")]
-            DotaUnitOrderGiveItem = 13,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_PICKUP_ITEM")]
-            DotaUnitOrderPickupItem = 14,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_PICKUP_RUNE")]
-            DotaUnitOrderPickupRune = 15,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_PURCHASE_ITEM")]
-            DotaUnitOrderPurchaseItem = 16,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_SELL_ITEM")]
-            DotaUnitOrderSellItem = 17,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_DISASSEMBLE_ITEM")]
-            DotaUnitOrderDisassembleItem = 18,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_MOVE_ITEM")]
-            DotaUnitOrderMoveItem = 19,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CAST_TOGGLE_AUTO")]
-            DotaUnitOrderCastToggleAuto = 20,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_STOP")]
-            DotaUnitOrderStop = 21,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_TAUNT")]
-            DotaUnitOrderTaunt = 22,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_BUYBACK")]
-            DotaUnitOrderBuyback = 23,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_GLYPH")]
-            DotaUnitOrderGlyph = 24,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_EJECT_ITEM_FROM_STASH")]
-            DotaUnitOrderEjectItemFromStash = 25,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CAST_RUNE")]
-            DotaUnitOrderCastRune = 26,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_PING_ABILITY")]
-            DotaUnitOrderPingAbility = 27,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_MOVE_TO_DIRECTION")]
-            DotaUnitOrderMoveToDirection = 28,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_PATROL")]
-            DotaUnitOrderPatrol = 29,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_VECTOR_TARGET_POSITION")]
-            DotaUnitOrderVectorTargetPosition = 30,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_RADAR")]
-            DotaUnitOrderRadar = 31,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_SET_ITEM_COMBINE_LOCK")]
-            DotaUnitOrderSetItemCombineLock = 32,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_CONTINUE")]
-            DotaUnitOrderContinue = 33,
-            [global::ProtoBuf.ProtoEnum(Name = @"ACTION_CHAT")]
-            ActionChat = 40,
-            [global::ProtoBuf.ProtoEnum(Name = @"ACTION_SWAP_ITEMS")]
-            ActionSwapItems = 41,
-            [global::ProtoBuf.ProtoEnum(Name = @"ACTION_USE_SHRINE")]
-            ActionUseShrine = 42,
-            [global::ProtoBuf.ProtoEnum(Name = @"ACTION_COURIER")]
-            ActionCourier = 43,
-            [global::ProtoBuf.ProtoEnum(Name = @"RPC_GET_ACTUAL_INCOMING_DAMAGE")]
-            RpcGetActualIncomingDamage = 44,
-            [global::ProtoBuf.ProtoEnum(Name = @"RPC_GET_ESTIMATED_DAMAGE_TO_TARGET")]
-            RpcGetEstimatedDamageToTarget = 45,
-            [global::ProtoBuf.ProtoEnum(Name = @"OCEAN_FULL_UPDATE")]
-            OceanFullUpdate = 50,
-            [global::ProtoBuf.ProtoEnum(Name = @"OCEAN_RELOAD_CODE")]
-            OceanReloadCode = 51,
-            [global::ProtoBuf.ProtoEnum(Name = @"OCEAN_SOFT_RESET")]
-            OceanSoftReset = 52,
-            [global::ProtoBuf.ProtoEnum(Name = @"OCEAN_HOLD_FRAMESKIP")]
-            OceanHoldFrameskip = 54,
-            [global::ProtoBuf.ProtoEnum(Name = @"OCEAN_WIN_GAME")]
-            OceanWinGame = 63,
-            [global::ProtoBuf.ProtoEnum(Name = @"OCEAN_REPLAY_CORRECT_TIME")]
-            OceanReplayCorrectTime = 64,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DEBUG_DRAW_TEXT")]
-            ScriptingDebugDrawText = 55,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DEBUG_DRAW_LINE")]
-            ScriptingDebugDrawLine = 56,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DOTA_UNIT_ORDER_MOVE_TO_POSITION")]
-            ScriptingDotaUnitOrderMoveToPosition = 57,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DEBUG_DRAW_SCREEN_TEXT")]
-            ScriptingDebugDrawScreenText = 58,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DEBUG_DRAW_BOX")]
-            ScriptingDebugDrawBox = 59,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DEBUG_DRAW_CIRCLE")]
-            ScriptingDebugDrawCircle = 60,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DEBUG_DRAW_CLEAR")]
-            ScriptingDebugDrawClear = 61,
-            [global::ProtoBuf.ProtoEnum(Name = @"SCRIPTING_DEBUG_SCREEN_TEXT_PRETTY")]
-            ScriptingDebugScreenTextPretty = 65,
-            [global::ProtoBuf.ProtoEnum(Name = @"DOTA_UNIT_ORDER_MOVE_DIRECTLY")]
-            DotaUnitOrderMoveDirectly = 62,
-        }
-
-    }
-
-    [global::ProtoBuf.ProtoContract()]
     public enum UnitType
     {
         [global::ProtoBuf.ProtoEnum(Name = @"INVALID")]
@@ -3528,6 +2168,10 @@ public partial class CMsgBotWorldState : global::ProtoBuf.IExtensible
         CourierStateReturningToBase = 4,
         [global::ProtoBuf.ProtoEnum(Name = @"COURIER_STATE_DEAD")]
         CourierStateDead = 5,
+        [global::ProtoBuf.ProtoEnum(Name = @"COURIER_STATE_GOING_TO_SECRET_SHOP")]
+        CourierStateGoingToSecretShop = 6,
+        [global::ProtoBuf.ProtoEnum(Name = @"COURIER_STATE_AT_SECRET_SHOP")]
+        CourierStateAtSecretShop = 7,
     }
 
 }
