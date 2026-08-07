@@ -27,4 +27,7 @@ public interface ISessionStore
 
     /// <summary>Drops every client session of an account (explicit logoff).</summary>
     int RemoveClientSessions(uint accountId);
+
+    /// <summary>Drops every session of an account (account deletion).</summary>
+    int RemoveAll(uint accountId);
 }

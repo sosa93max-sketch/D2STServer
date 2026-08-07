@@ -39,6 +39,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapAuthEndpoints();
+app.MapAdminEndpoints();
 app.MapUserEndpoints();
 app.MapFriendEndpoints();
 app.MapLobbyEndpoints();

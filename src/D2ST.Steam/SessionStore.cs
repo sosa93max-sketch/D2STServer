@@ -79,6 +79,20 @@ public sealed class SessionStore : ISessionStore
         return removed;
     }
 
+    public int RemoveAll(uint accountId)
+    {
+        var removed = 0;
+        foreach (var pair in _sessions)
+        {
+            if (pair.Value.Account.AccountId == accountId && _sessions.TryRemove(pair))
+            {
+                removed++;
+            }
+        }
+
+        return removed;
+    }
+
     private static bool IsLiveClient(SteamSession session, uint accountId, DateTimeOffset since) =>
         session.Account.AccountId == accountId &&
         session.ProcessRole == ProcessRoles.Client &&

@@ -22,6 +22,24 @@ public sealed record SteamSessionRequest(
 
 public sealed record SteamSessionResponse(string AccessToken, string RefreshToken, ApiUser User);
 
+/// <summary>One account as the admin web lists it.</summary>
+public sealed record AdminUserResponse(
+    uint AccountId,
+    ulong SteamId,
+    string Username,
+    string? PersonaName,
+    bool Online,
+    DateTimeOffset CreatedAt,
+    bool HasAvatar);
+
+public sealed record AdminCreateUserRequest(string Username, string Password, string? PersonaName);
+
+public sealed record AdminSetPasswordRequest(string Password);
+
+public sealed record AdminSetPersonaRequest(string PersonaName);
+
+public sealed record AdminMessageResponse(string Message);
+
 /// <summary>
 /// A player as the client renders it. Presence members are zeroed for offline
 /// players: the client treats a non-zero AppId as "currently playing".

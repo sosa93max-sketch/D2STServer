@@ -8,6 +8,10 @@
     <ProjectReference Include="..\D2ST.Persistence\D2ST.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Admin\admin.html" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -161,4 +161,67 @@ public sealed class SteamAuthService : ISteamAuthService
     /// never be claimed through the password endpoint.
     /// </summary>
     private static string RandomPassword() => GenerateToken();
+
+    public async Task<bool> CreateUserAsync(
+        string username,
+        string password,
+        string? personaName,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        {
+            return false;
+        }
+
+        var exists = await _db.Accounts
+            .AnyAsync(entity => entity.Username == username, cancellationToken);
+        if (exists)
+        {
+            return false;
+        }
+
+        var account = await RegisterAsync(username, password, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(personaName) && account.PersonaName != personaName)
+        {
+            account.PersonaName = personaName;
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+
+        return true;
+    }
+
+    public async Task<bool> SetPasswordAsync(
+        uint accountId,
+        string password,
+        CancellationToken cancellationToken = default)
+    {
+        var account = await _db.Accounts
+            .SingleOrDefaultAsync(entity => entity.AccountId == accountId, cancellationToken);
+        if (account is null || string.IsNullOrWhiteSpace(password))
+        {
+            return false;
+        }
+
+        account.PasswordSalt = RandomNumberGenerator.GetBytes(SaltSize);
+        account.PasswordHash = Hash(password, account.PasswordSalt);
+        await _db.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
+    public async Task<bool> SetPersonaAsync(
+        uint accountId,
+        string personaName,
+        CancellationToken cancellationToken = default)
+    {
+        var account = await _db.Accounts
+            .SingleOrDefaultAsync(entity => entity.AccountId == accountId, cancellationToken);
+        if (account is null || string.IsNullOrWhiteSpace(personaName))
+        {
+            return false;
+        }
+
+        account.PersonaName = personaName;
+        await _db.SaveChangesAsync(cancellationToken);
+        return true;
+    }
 }

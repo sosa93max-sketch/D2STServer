@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D2ST · Administración</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #1f6feb;
+    --green: #3fb950;
+    --red: #f85149;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px 60px; }
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 18px; margin-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: linear-gradient(135deg, #1f6feb, #0a2540);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #fff; font-size: 15px;
+  }
+  h1 { font-size: 18px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .spacer { flex: 1; }
+  .pill {
+    font-size: 12px; font-weight: 700; padding: 5px 12px;
+    border-radius: 999px; border: 1px solid var(--border); color: var(--muted);
+  }
+  .pill.online { color: var(--green); border-color: var(--green); }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 20px;
+  }
+  h2 { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: #c9d1d9; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  input {
+    background: #0d1117; color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; font-size: 13px; outline: none; min-width: 0;
+  }
+  input:focus { border-color: var(--accent); }
+  input.grow { flex: 1; min-width: 160px; }
+  button {
+    background: #21262d; color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 16px; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover { background: #30363d; }
+  button.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.accent:hover { background: #388bfd; }
+  button.danger { color: var(--red); }
+  button.danger:hover { background: rgba(248, 81, 73, 0.12); }
+  button.link {
+    background: transparent; border: none; padding: 4px 8px;
+    font-size: 12px; color: var(--accent); text-decoration: underline;
+  }
+  button.link.danger { color: var(--red); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left; color: var(--muted); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+  }
+  td { padding: 10px; border-bottom: 1px solid #21262d; vertical-align: middle; }
+  tr:hover td { background: rgba(255, 255, 255, 0.02); }
+  .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red); margin-right: 6px;
+  }
+  .dot.on { background: var(--green); }
+  .msg {
+    display: none; margin-top: 12px; padding: 10px 14px;
+    border-radius: 8px; font-size: 13px;
+  }
+  .msg.error { display: block; background: rgba(248, 81, 73, 0.12); color: var(--red); }
+  .msg.ok { display: block; background: rgba(63, 185, 80, 0.12); color: var(--green); }
+  .empty { color: var(--muted); padding: 18px; text-align: center; }
+  .hide { display: none !important; }
+  .actions { white-space: nowrap; }
+  .meta { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">D2</div>
+    <div>
+      <h1>D2ST · Administración</h1>
+      <div class="sub">Gestión de usuarios del servidor Dota 2</div>
+    </div>
+    <div class="spacer"></div>
+    <span id="whoami" class="pill hide"></span>
+    <button id="logoutBtn" class="hide">Cerrar sesión</button>
+  </header>
+
+  <!-- login -->
+  <section id="loginCard" class="card" style="max-width: 420px; margin: 60px auto;">
+    <h2>Iniciar sesión</h2>
+    <div class="row" style="flex-direction: column; align-items: stretch; gap: 10px;">
+      <input id="loginUser" placeholder="Usuario" autocomplete="username">
+      <input id="loginPass" type="password" placeholder="Contraseña" autocomplete="current-password">
+      <button id="loginBtn" class="accent">Entrar</button>
+    </div>
+    <div id="loginMsg" class="msg"></div>
+  </section>
+
+  <!-- panel -->
+  <section id="panel" class="hide">
+    <div class="card">
+      <h2>Crear usuario</h2>
+      <div class="row">
+        <input id="newUser" class="grow" placeholder="Usuario">
+        <input id="newPass" class="grow" type="password" placeholder="Contraseña">
+        <input id="newPersona" class="grow" placeholder="Persona (opcional)">
+        <button id="createBtn" class="accent">Crear</button>
+      </div>
+      <div id="createMsg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Usuarios <span id="counts" class="meta"></span></h2>
+      <div id="tableWrap"></div>
+      <div id="usersMsg" class="msg"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let token = sessionStorage.getItem('d2st_admin_token') || '';
+let adminName = sessionStorage.getItem('d2st_admin_user') || '';
+
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const response = await fetch(path, { ...options, headers });
+  let body = null;
+  const text = await response.text();
+  if (text) { try { body = JSON.parse(text); } catch { body = text; } }
+  return { ok: response.ok, status: response.status, body };
+}
+
+function show(el, message, kind) {
+  el.textContent = message;
+  el.className = 'msg ' + (kind || 'error');
+}
+
+async function login() {
+  const user = $('loginUser').value.trim();
+  const pass = $('loginPass').value;
+  if (!user || !pass) { show($('loginMsg'), 'Usuario y contraseña son obligatorios'); return; }
+  const result = await api('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ Username: user, Password: pass })
+  });
+  if (!result.ok || !result.body || !result.body.Token) {
+    show($('loginMsg'), result.status === 401 ? 'Usuario o contraseña incorrectos' : 'Error al iniciar sesión');
+    return;
+  }
+  token = result.body.Token;
+  adminName = user;
+  sessionStorage.setItem('d2st_admin_token', token);
+  sessionStorage.setItem('d2st_admin_user', user);
+  enter();
+}
+
+function enter() {
+  $('loginCard').classList.add('hide');
+  $('panel').classList.remove('hide');
+  $('whoami').textContent = adminName;
+  $('whoami').classList.remove('hide');
+  $('logoutBtn').classList.remove('hide');
+  loadUsers();
+}
+
+function logout() {
+  token = '';
+  sessionStorage.removeItem('d2st_admin_token');
+  sessionStorage.removeItem('d2st_admin_user');
+  $('panel').classList.add('hide');
+  $('whoami').classList.add('hide');
+  $('logoutBtn').classList.add('hide');
+  $('loginCard').classList.remove('hide');
+  $('loginPass').value = '';
+}
+
+function tr(label, value, cls) {
+  const td = document.createElement('td');
+  td.textContent = value == null ? '—' : value;
+  if (cls) td.className = cls;
+  return td;
+}
+
+function actionLink(label, cls, handler) {
+  const button = document.createElement('button');
+  button.className = 'link ' + (cls || '');
+  button.textContent = label;
+  button.addEventListener('click', handler);
+  return button;
+}
+
+async function loadUsers() {
+  const result = await api('/api/admin/users');
+  if (!result.ok) {
+    if (result.status === 401 || result.status === 403) { logout(); return; }
+    show($('usersMsg'), 'No se pudieron cargar los usuarios (HTTP ' + result.status + ')');
+    return;
+  }
+  const users = result.body || [];
+  const online = users.filter((u) => u.Online).length;
+  $('counts').textContent = users.length + ' usuarios · ' + online + ' en línea';
+
+  const wrap = $('tableWrap');
+  wrap.innerHTML = '';
+  if (users.length === 0) {
+    wrap.innerHTML = '<div class="empty">Aún no hay usuarios.</div>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  const head = document.createElement('tr');
+  ['ID', 'Usuario', 'Persona', 'Steam ID', 'Estado', 'Creado', 'Avatar', 'Acciones'].forEach((h) => {
+    const th = document.createElement('th');
+    th.textContent = h;
+    head.appendChild(th);
+  });
+  table.appendChild(head);
+
+  for (const user of users) {
+    const row = document.createElement('tr');
+    row.appendChild(tr('', user.AccountId));
+    row.appendChild(tr('', user.Username));
+    row.appendChild(tr('', user.PersonaName || '—'));
+    row.appendChild(tr('', String(user.SteamId)));
+    const state = document.createElement('td');
+    const dot = document.createElement('span');
+    dot.className = 'dot' + (user.Online ? ' on' : '');
+    state.appendChild(dot);
+    state.appendChild(document.createTextNode(user.Online ? 'En línea' : 'Offline'));
+    row.appendChild(state);
+    row.appendChild(tr('', new Date(user.CreatedAt).toLocaleString()));
+    row.appendChild(tr('', user.HasAvatar ? 'Sí' : 'No'));
+    const actions = document.createElement('td');
+    actions.className = 'actions';
+    actions.appendChild(actionLink('Renombrar', '', () => renameUser(user)));
+    actions.appendChild(actionLink('Contraseña', '', () => resetPassword(user)));
+    actions.appendChild(actionLink('Eliminar', 'danger', () => deleteUser(user)));
+    row.appendChild(actions);
+    table.appendChild(row);
+  }
+  wrap.appendChild(table);
+}
+
+async function createUser() {
+  const username = $('newUser').value.trim();
+  const password = $('newPass').value;
+  const persona = $('newPersona').value.trim();
+  if (!username || !password) { show($('createMsg'), 'Usuario y contraseña son obligatorios'); return; }
+  const result = await api('/api/admin/users', {
+    method: 'POST',
+    body: JSON.stringify({ Username: username, Password: password, PersonaName: persona || null })
+  });
+  show($('createMsg'), result.ok ? 'Usuario creado.' : messageOf(result), result.ok ? 'ok' : 'error');
+  if (result.ok) {
+    $('newUser').value = '';
+    $('newPass').value = '';
+    $('newPersona').value = '';
+    loadUsers();
+  }
+}
+
+async function renameUser(user) {
+  const persona = prompt('Nuevo nombre de persona para ' + user.Username + ':', user.PersonaName || '');
+  if (persona == null) return;
+  const result = await api('/api/admin/users/' + user.AccountId + '/persona', {
+    method: 'PATCH',
+    body: JSON.stringify({ PersonaName: persona.trim() })
+  });
+  if (result.ok) loadUsers();
+  else alert(messageOf(result));
+}
+
+async function resetPassword(user) {
+  const password = prompt('Nueva contraseña para ' + user.Username + ':');
+  if (password == null || password === '') return;
+  const result = await api('/api/admin/users/' + user.AccountId + '/password', {
+    method: 'POST',
+    body: JSON.stringify({ Password: password })
+  });
+  if (result.ok) alert('Contraseña actualizada.');
+  else alert(messageOf(result));
+}
+
+async function deleteUser(user) {
+  if (!confirm('¿Eliminar al usuario "' + user.Username + '" (ID ' + user.AccountId + ')?\nSe borran sus amigos, partidas guardadas, stats y sesiones.')) return;
+  const result = await api('/api/admin/users/' + user.AccountId, { method: 'DELETE' });
+  if (result.ok) loadUsers();
+  else alert(messageOf(result));
+}
+
+function messageOf(result) {
+  if (result.body && typeof result.body === 'object') return result.body.Message || result.body.message || ('HTTP ' + result.status);
+  if (typeof result.body === 'string' && result.body) return result.body;
+  return 'HTTP ' + result.status;
+}
+
+$('loginBtn').addEventListener('click', login);
+$('loginPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+$('logoutBtn').addEventListener('click', logout);
+$('createBtn').addEventListener('click', createUser);
+$('newPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') createUser(); });
+
+if (token) enter();
+</script>
+</body>
+</html>
