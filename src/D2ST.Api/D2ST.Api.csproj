@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\D2ST.Core\D2ST.Core.csproj" />
+    <ProjectReference Include="..\D2ST.Protocol\D2ST.Protocol.csproj" />
+    <ProjectReference Include="..\D2ST.Steam\D2ST.Steam.csproj" />
+    <ProjectReference Include="..\D2ST.GameCoordinator\D2ST.GameCoordinator.csproj" />
+    <ProjectReference Include="..\D2ST.Persistence\D2ST.Persistence.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

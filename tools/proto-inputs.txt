@@ -1,0 +1,32 @@
+# Dota 2 / Steamworks .proto inputs used to regenerate the protobuf-net
+# contracts in src/D2ST.Protocol/Generated/*.cs.
+#
+# One proto file name per line (no path). Blank lines and lines starting with
+# '#' are ignored.
+#
+# Source: https://github.com/SteamDatabase/GameTracking-Dota2 (Protobufs/)
+
+steammessages.proto
+gcsdk_gcmessages.proto
+gcsystemmsgs.proto
+base_gcmessages.proto
+econ_shared_enums.proto
+econ_gcmessages.proto
+dota_shared_enums.proto
+dota_client_enums.proto
+dota_gcmessages_common.proto
+dota_gcmessages_common_league.proto
+dota_gcmessages_common_match_management.proto
+dota_gcmessages_common_bot_script.proto
+dota_gcmessages_client.proto
+dota_gcmessages_client_chat.proto
+dota_gcmessages_client_fantasy.proto
+dota_gcmessages_client_guild.proto
+dota_gcmessages_client_match_management.proto
+dota_gcmessages_client_team.proto
+dota_gcmessages_client_tournament.proto
+dota_gcmessages_client_watch.proto
+dota_gcmessages_msgid.proto
+network_connection.proto
+dota_gcmessages_server.proto
+dota_match_metadata.proto

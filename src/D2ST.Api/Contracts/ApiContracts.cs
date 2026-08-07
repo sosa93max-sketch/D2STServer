@@ -1,0 +1,416 @@
+namespace D2ST.Api.Contracts;
+
+// Wire shapes below mirror the DTOs the injected Steamworks shim
+// (soulhuntermax/steam_api, Managers/APIClient.cs) serializes, including their
+// PascalCase member names, so the two sides stay byte-compatible.
+
+public sealed record VersionResponse(string Version);
+
+public sealed record LoginRequest(string Username, string Password);
+
+public sealed record LoginResponse(ulong SteamId, uint AccountId, string Token);
+
+/// <summary>Body of the shim's POST /api/auth/steam/session logon.</summary>
+public sealed record SteamSessionRequest(
+    uint AccountId,
+    ulong SteamId,
+    uint AppId,
+    string? PersonaName,
+    string? ClientInstanceId,
+    string? ProcessRole,
+    bool UseActiveWebUser);
+
+public sealed record SteamSessionResponse(string AccessToken, string RefreshToken, ApiUser User);
+
+/// <summary>
+/// A player as the client renders it. Presence members are zeroed for offline
+/// players: the client treats a non-zero AppId as "currently playing".
+/// </summary>
+public sealed record ApiUser(
+    uint AccountId,
+    ulong SteamId,
+    string PersonaName,
+    uint AppId,
+    ulong LobbyId,
+    ulong GameServerSteamId,
+    uint GameServerIp,
+    ushort GameServerPort,
+    bool HasFriend,
+    int FriendRelationship,
+    int PersonaState,
+    int PlayerLevel,
+    IReadOnlyDictionary<string, string> RichPresence);
+
+public sealed record PersonaUpdateRequest(string PersonaName);
+
+public sealed record PresenceUpdateRequest(string Key, string? Value);
+
+public sealed record GameServerPresenceUpdateRequest(ulong SteamId, uint Ip, ushort Port);
+
+public sealed record AvatarUpdateRequest(string ContentBase64);
+
+/// <summary>Target of a friend action, by Steam id or by persona/username.</summary>
+public sealed record FriendActionRequest(ulong SteamId, string? Identifier);
+
+/// <summary>
+/// One pushed event. Members outside the event's own type stay at their
+/// defaults; the client only reads the ones its handler for
+/// <paramref name="Type"/> cares about.
+/// </summary>
+public sealed record ApiEvent(
+    string Type,
+    ulong SteamId,
+    uint AccountId,
+    string PersonaName,
+    uint AppId,
+    ulong LobbyId,
+    ulong GameServerSteamId,
+    uint GameServerIp,
+    ushort GameServerPort,
+    int PersonaState,
+    int ChangeFlags,
+    int FriendRelationship,
+    string RequestId,
+    string GameName,
+    ApiLobby? Lobby,
+    string PayloadBase64,
+    uint MessageType,
+    ulong? TargetJobId,
+    bool Protobuf,
+    ulong RemoteSteamId,
+    int Channel,
+    string Transport,
+    int VirtualPort,
+    uint SourceConnectionId,
+    uint TargetConnectionId,
+    IReadOnlyDictionary<string, string> RichPresence,
+    string StatName,
+    uint StatValue,
+    string AchievementName,
+    bool AchievementEarned,
+    uint AchievementProgress,
+    uint AchievementMaxProgress);
+
+/// <param name="Cursor">Echoed back on the next poll to resume where this batch ended.</param>
+public sealed record ApiEventEnvelope(string Cursor, IReadOnlyList<ApiEvent> Events);
+
+/// <summary>
+/// One GC message in either direction. The body is the protobuf payload only:
+/// the shim builds and strips the 8-byte GC header itself, carrying the job id
+/// out of band in <paramref name="TargetJobId"/>.
+/// </summary>
+public sealed record GcMessageDto(
+    uint AppId,
+    uint MessageType,
+    string PayloadBase64,
+    ulong? TargetJobId,
+    bool Protobuf);
+
+public sealed record GcExchangeRequest(
+    uint AppId,
+    uint MessageType,
+    string? BodyBase64,
+    ulong SourceJobId,
+    ulong SteamId,
+    bool GameServer);
+
+public sealed record GcPollRequest(uint AppId, ulong SteamId, bool GameServer);
+
+public sealed record GcExchangeResponse(bool Handled, IReadOnlyList<GcMessageDto> Messages);
+
+/// <summary>
+/// Puts an item definition in an account's inventory. There is no drop system or
+/// store behind the GC, so this is how a player comes to own anything.
+/// </summary>
+public sealed record GcGrantItemRequest(ulong SteamId, uint DefIndex, uint Quantity);
+
+public sealed record GcGrantItemResponse(ulong ItemId, uint DefIndex, uint Quantity, ulong CacheVersion);
+
+public sealed record GcInventoryItem(ulong ItemId, uint DefIndex, uint Quantity, uint Style, uint Inventory);
+
+public sealed record GcInventoryResponse(IReadOnlyList<GcInventoryItem> Items, ulong CacheVersion);
+
+/// <summary>
+/// A party as the GC holds it, for inspecting the Shared Object without a Dota
+/// client. Parties are created by the GC party messages, never over HTTP.
+/// </summary>
+public sealed record GcPartyResponse(
+    ulong PartyId,
+    ulong LeaderSteamId,
+    IReadOnlyList<ulong> MemberSteamIds,
+    IReadOnlyList<bool> MemberCoachFlags,
+    uint ReadyCheckFinishTimestamp);
+
+/// <summary>
+/// A GC lobby as the Shared Object holds it, for inspecting it without a Dota
+/// client. Lobbies are created by the GC practice lobby messages, never over
+/// HTTP.
+/// </summary>
+public sealed record GcLobbyResponse(
+    ulong LobbyId,
+    ulong LeaderSteamId,
+    string GameName,
+    uint GameMode,
+    uint ServerRegion,
+    string State,
+    bool RequiresPassKey,
+    IReadOnlyList<GcLobbyMember> Members);
+
+public sealed record GcLobbyMember(ulong SteamId, string Name, int Team, uint Slot);
+
+/// <summary>A lobby as the shim's SkyNetLobbyDto.</summary>
+public sealed record ApiLobby(
+    ulong SteamId,
+    uint AppId,
+    ulong OwnerSteamId,
+    int LobbyType,
+    int MaxMembers,
+    bool Joinable,
+    IReadOnlyDictionary<string, string> LobbyData,
+    IReadOnlyList<ApiLobbyMember> Members,
+    ApiLobbyGameServer GameServer);
+
+/// <summary>Member data is a list of pairs, not a map, to match the shim.</summary>
+public sealed record ApiLobbyMember(ulong SteamId, IReadOnlyList<ApiLobbyMetaData> Data);
+
+public sealed record ApiLobbyMetaData(string Key, string Value);
+
+public sealed record ApiLobbyGameServer(ulong SteamId, uint IP, uint Port);
+
+public sealed record CreateLobbyRequest(
+    uint AppId,
+    int LobbyType,
+    int MaxMembers,
+    Dictionary<string, string>? LobbyData);
+
+public sealed record LobbyQueryRequest(
+    uint AppId,
+    int Distance,
+    int SlotsAvailable,
+    int ResultCount,
+    string? KeyToMatch,
+    int ValueToMatch,
+    int ComparisonType,
+    string? StringValueToMatch,
+    IReadOnlyList<LobbyNumericalFilterRequest>? NumericalFilters,
+    IReadOnlyList<LobbyStringFilterRequest>? StringFilters,
+    IReadOnlyList<LobbyNearValueFilterRequest>? NearValueFilters);
+
+public sealed record LobbyNumericalFilterRequest(string? KeyToMatch, int ValueToMatch, int ComparisonType);
+
+public sealed record LobbyStringFilterRequest(string? KeyToMatch, string? ValueToMatch, int ComparisonType);
+
+public sealed record LobbyNearValueFilterRequest(string? KeyToMatch, int ValueToBeCloseTo);
+
+public sealed record LobbyDataUpdateRequest(string Key, string? Value);
+
+public sealed record LobbyDeleteDataRequest(string Key);
+
+public sealed record LobbyChatRequest(string? MessageBase64);
+
+public sealed record LobbyInviteRequest(ulong InviteeSteamId);
+
+public sealed record LobbyGameServerUpdateRequest(ulong SteamIdGameServer, uint IP, uint Port);
+
+public sealed record LobbySettingsUpdateRequest(bool? Joinable, int? LobbyType, ulong? OwnerSteamId, int? MaxMembers);
+
+public sealed record GameInviteRequest(ulong InviteeSteamId, string? ConnectString);
+
+/// <summary>One relayed P2P datagram (the shim's SkyNetP2PPacketSendDto).</summary>
+public sealed record P2PPacketRequest(
+    ulong RemoteSteamId,
+    string? BufferBase64,
+    int SendType,
+    int Channel,
+    string? Transport,
+    int VirtualPort,
+    uint SourceConnectionId,
+    uint TargetConnectionId);
+
+public sealed record P2PPacketBatchRequest(IReadOnlyList<P2PPacketRequest>? Packets);
+
+
+
+// ---- Stage 3: tickets, game servers, storage, stats, leaderboards, workshop ----
+
+public sealed record AuthTicketRequest(uint AppId, ulong SteamId, bool GameServer, int TicketBufferSize);
+
+public sealed record AuthTicketResponse(uint Handle, string TicketBase64, uint TicketSize);
+
+public sealed record EncryptedAppTicketRequest(uint AppId, string? UserDataBase64);
+
+/// <param name="Result">EResult; 1 is k_EResultOK.</param>
+public sealed record EncryptedAppTicketResponse(int Result, string TicketBase64);
+
+public sealed record AuthValidateRequest(ulong SteamId, string? TicketBase64, bool GameServer, uint AppId);
+
+public sealed record AuthValidateResponse(
+    int BeginAuthSessionResult,
+    int AuthSessionResponse,
+    ulong OwnerSteamId,
+    bool Success);
+
+public sealed record ConnectAuthRequest(uint IpClient, ulong SteamId, string? AuthBlobBase64, uint AppId);
+
+public sealed record ConnectAuthResponse(
+    bool Success,
+    ulong SteamId,
+    ulong OwnerSteamId,
+    int DenyReason,
+    string DenyMessage);
+
+public sealed record AuthEndSessionRequest(ulong SteamId, bool GameServer);
+
+public sealed record CancelAuthTicketRequest(uint Handle, bool GameServer);
+
+/// <summary>A game server as the shim's SkyNetGameServerDto.</summary>
+public sealed record ApiGameServer(
+    ulong SteamId,
+    uint AppId,
+    uint IP,
+    int Port,
+    int QueryPort,
+    uint Flags,
+    byte Secure,
+    string VersionString,
+    string Product,
+    string Description,
+    string ModDir,
+    bool Dedicated,
+    int MaxPlayers,
+    int BotPlayers,
+    string ServerName,
+    string MapName,
+    bool PasswordProtected,
+    uint SpectatorPort,
+    string SpectatorServerName,
+    string GameTags,
+    string GameData,
+    string Region,
+    bool LoggedOn,
+    bool AdvertiseActive,
+    IReadOnlyDictionary<string, string> KeyValues,
+    IReadOnlyList<ApiGameServerPlayer> Players);
+
+public sealed record ApiGameServerPlayer(ulong SteamId, string Name, int Score, float TimePlayedSeconds);
+
+public sealed record GameServerStateRequest(ApiGameServer? Server, string? Token, bool Anonymous);
+
+public sealed record GameServerResult(bool Success, uint PublicIP, byte Secure, ulong SteamId);
+
+public sealed record GameServerPublicIpResponse(uint PublicIP);
+
+public sealed record GameServerUserDataRequest(ulong SteamId, string? PlayerName, uint Score);
+
+public sealed record DisconnectGameServerUserRequest(ulong SteamId);
+
+public sealed record ApiStat(string Name, uint Data);
+
+public sealed record ApiAchievement(string Name, bool Earned, DateTimeOffset Date, uint Progress, uint MaxProgress);
+
+public sealed record ApiStatsEnvelope(
+    ulong SteamId,
+    IReadOnlyList<ApiStat> Stats,
+    IReadOnlyList<ApiAchievement> Achievements,
+    int CurrentPlayers);
+
+public sealed record StoreStatsRequest(
+    ulong SteamId,
+    IReadOnlyList<ApiStat>? Stats,
+    IReadOnlyList<ApiAchievement>? Achievements);
+
+public sealed record RemoteStorageUploadRequest(string FileName, string? ContentBase64, uint? SyncPlatforms);
+
+public sealed record ApiRemoteStorageFile(
+    string FileName,
+    string ContentBase64,
+    int Size,
+    uint Timestamp,
+    string Sha256,
+    uint SyncPlatforms,
+    int Version);
+
+public sealed record ApiRemoteStorageFileListItem(
+    string FileName,
+    int Size,
+    uint Timestamp,
+    string Sha256,
+    uint SyncPlatforms,
+    int Version);
+
+public sealed record RemoteStorageFileNameRequest(string FileName);
+
+/// <param name="Result">EResult of the share; 1 is k_EResultOK.</param>
+public sealed record ApiRemoteStorageShare(ulong Handle, int Result);
+
+public sealed record ApiRemoteStorageQuota(ulong TotalBytes, ulong AvailableBytes);
+
+public sealed record LeaderboardFindRequest(string Name, int SortMethod, int DisplayType);
+
+public sealed record ApiLeaderboard(ulong Id, uint AppId, string Name, int SortMethod, int DisplayType, int EntryCount);
+
+public sealed record LeaderboardEntriesRequest(
+    int DataRequest,
+    int RangeStart,
+    int RangeEnd,
+    IReadOnlyList<ulong>? Users);
+
+public sealed record ApiLeaderboardEntry(
+    ulong SteamId,
+    int GlobalRank,
+    int Score,
+    IReadOnlyList<int> Details,
+    ulong UgcHandle);
+
+public sealed record ApiLeaderboardEntries(ApiLeaderboard Leaderboard, IReadOnlyList<ApiLeaderboardEntry> Entries);
+
+public sealed record LeaderboardScoreUploadRequest(int UploadMethod, int Score, IReadOnlyList<int>? Details);
+
+public sealed record LeaderboardScoreUploadResponse(
+    bool Success,
+    bool ScoreChanged,
+    int Score,
+    int GlobalRankNew,
+    int GlobalRankPrevious);
+
+public sealed record ApiWorkshopItem(
+    ulong PublishedFileId,
+    uint CreatorAppId,
+    uint ConsumerAppId,
+    ulong OwnerSteamId,
+    int FileType,
+    string Title,
+    string Description,
+    string Tags,
+    string FileName,
+    string Metadata,
+    string PreviewUrl,
+    int Visibility,
+    bool Banned,
+    bool AcceptedForUse,
+    uint TimeCreated,
+    uint TimeUpdated,
+    long FileSize,
+    long TotalFilesSize,
+    uint VotesUp,
+    uint VotesDown,
+    float Score);
+
+public sealed record ApiWorkshopSubscription(
+    ulong PublishedFileId,
+    DateTimeOffset SubscribedAtUtc,
+    bool DisabledLocally,
+    ApiWorkshopItem? Item);
+
+public sealed record ApiWorkshopMutation(bool Success, ApiWorkshopSubscription? Subscription);
+
+/// <summary>One chat channel as the GC holds it, for reading the chat without a Dota client.</summary>
+public sealed record GcChatChannelResponse(
+    ulong ChannelId,
+    string Name,
+    string Type,
+    int MaxMembers,
+    bool Configured,
+    IReadOnlyList<GcChatMember> Members);
+
+public sealed record GcChatMember(ulong SteamId, string PersonaName);
