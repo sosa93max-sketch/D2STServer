@@ -15,6 +15,7 @@ BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:5199"
 
 MSG = {
     4006: "ClientHello", 4004: "ClientWelcome", 4009: "ConnectionStatus",
+    4007: "GameServerHello", 4005: "ServerWelcome",
     21: "SOCreate", 22: "SOUpdate", 23: "SODestroy",
     24: "SOCacheSubscribed", 25: "SOCacheUnsubscribed",
     7038: "PracticeLobbyCreate", 7040: "PracticeLobbyLeave", 7041: "PracticeLobbyLaunch",
@@ -22,6 +23,8 @@ MSG = {
     7046: "PracticeLobbySetDetails", 7047: "PracticeLobbySetTeamSlot",
     7055: "PracticeLobbyResponse", 7081: "PracticeLobbyKick",
     7113: "PracticeLobbyJoinResponse", 8047: "PracticeLobbyKickFromTeam",
+    2579: "GCGenericResult", 4506: "ServerAvailable", 4508: "GameServerInfo",
+    4511: "LANServerAvailable", 7034: "ConnectedPlayers", 7088: "PlayerFailedToConnect",
 }
 
 RADIANT, DIRE, PLAYER_POOL = 0, 1, 4
@@ -63,6 +66,10 @@ def field(number, wire, payload):
 
 def fixed64(number, value):
     return field(number, 1, value.to_bytes(8, "little"))
+
+
+def fixed32(number, value):
+    return field(number, 5, value.to_bytes(4, "little"))
 
 
 def varint_field(number, value):
@@ -283,14 +290,49 @@ lobby_caches = [cache for cache in welcome_caches if decode(cache[4][0])[1][0] =
 check("the welcome carries the lobby cache", len(lobby_caches) == 1, len(welcome_caches))
 poll(guest_token)
 
-# launching
-exchange(guest_token, 7041)
+# launching: the host gets the generic-result reply and the lobby goes to
+# SERVERSETUP with no server yet, then the game server announces itself
+_, replies = exchange(guest_token, 7041)
 check("a member cannot launch", get("/api/gamecoordinator/lobby", host_token)["State"] == "Ui")
-exchange(host_token, 7041)
-check("the host launches the lobby", get("/api/gamecoordinator/lobby", host_token)["State"] == "Serversetup")
+check("a member launch answers failure", replies[0][0] == 2579 and result_of(replies) == 0, replies)
+_, replies = exchange(host_token, 7041)
+lobby = get("/api/gamecoordinator/lobby", host_token)
+check("the host launches the lobby", lobby["State"] == "Serversetup", lobby)
+check("7041 answers the generic result with success",
+      replies[0][0] == 2579 and result_of(replies) == 1, names(replies))
+check("a launched lobby has no server yet", lobby["Connect"] == "" and lobby["ServerId"] == 0, lobby)
 check("the launch reaches the members", ("SOUpdate", 3, lobby_id) in owners(poll(guest_token)))
 _, replies = exchange(third_token, 7044, varint_field(1, lobby_id) + string_field(3, "secret"))
 check("a launched lobby cannot be joined", result_of(replies) == 1, replies)
+
+# the host's local listen server reports its address (127.0.0.1:27015) and
+# availability; the lobby now carries the connect string the members dial
+exchange(host_token, 4508, fixed32(2, 0x0100007F) + varint_field(3, 27015))
+lobby = get("/api/gamecoordinator/lobby", host_token)
+check("game server info installs the connect string",
+      lobby["State"] == "Serversetup" and lobby["Connect"] == "127.0.0.1:27015", lobby)
+exchange(host_token, 4511, fixed64(1, lobby_id))
+lobby = get("/api/gamecoordinator/lobby", host_token)
+check("the LAN server is attached", lobby["ServerId"] == host and lobby["Connect"] == "127.0.0.1:27015", lobby)
+check("the connect string reaches the members", ("SOUpdate", 3, lobby_id) in owners(poll(guest_token)))
+
+# the server is up: the lobby runs, gets a match id and a start time
+exchange(host_token, 4506)
+lobby = get("/api/gamecoordinator/lobby", host_token)
+check("the server start moves the lobby to RUN",
+      lobby["State"] == "Run" and lobby["MatchId"] == lobby_id and lobby["GameStartTime"] > 0, lobby)
+check("the running lobby reaches the members", ("SOUpdate", 3, lobby_id) in owners(poll(guest_token)))
+
+# the server reports who is in: the game state follows the server
+exchange(host_token, 7034, varint_field(2, 1) + varint_field(8, 2)
+        + bytes_field(1, fixed64(1, guest) + varint_field(2, 10)))
+lobby = get("/api/gamecoordinator/lobby", host_token)
+check("connected players update the game state", lobby["GameState"] == 1, lobby)
+
+# a player who failed to load aborts the launch back to the UI state
+exchange(host_token, 7088, bytes_field(1, guest.to_bytes(8, "little")))
+check("a failed loader returns the lobby to the UI state",
+      get("/api/gamecoordinator/lobby", host_token)["State"] == "Ui")
 poll(host_token)
 
 # the host leaving closes the lobby

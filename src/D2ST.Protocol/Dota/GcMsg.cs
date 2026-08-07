@@ -57,6 +57,22 @@ public static class GcMsg
     public const uint PracticeLobbyKick = (uint)EDOTAGCMsg.kEMsgGCPracticeLobbyKick;
     public const uint PracticeLobbyKickFromTeam = (uint)EDOTAGCMsg.kEMsgGCPracticeLobbyKickFromTeam;
 
+    /// <summary>
+    /// The one-message answer to a launch: a <c>CMsgGenericResult</c> whose
+    /// <c>eresult</c> tells the client whether the game started.
+    /// </summary>
+    public const uint GCGenericResult = (uint)EGCEconBaseMsg.kEMsgGCGenericResult;
+
+    /// <summary>
+    /// The messages a game server (dedicated, or the listen server a launched
+    /// lobby starts) uses to tell the GC where it is and that the match runs.
+    /// </summary>
+    public const uint GCServerAvailable = (uint)EGCBaseMsg.kEMsgGCServerAvailable;
+    public const uint GCGameServerInfo = (uint)EGCBaseMsg.kEMsgGCGameServerInfo;
+    public const uint GCLANServerAvailable = (uint)EGCBaseMsg.kEMsgGCLANServerAvailable;
+    public const uint GCConnectedPlayers = (uint)EDOTAGCMsg.kEMsgGCConnectedPlayers;
+    public const uint GCPlayerFailedToConnect = (uint)EDOTAGCMsg.kEMsgGCPlayerFailedToConnect;
+
     public const uint JoinChatChannel = (uint)EDOTAGCMsg.kEMsgGCJoinChatChannel;
     public const uint JoinChatChannelResponse = (uint)EDOTAGCMsg.kEMsgGCJoinChatChannelResponse;
     public const uint LeaveChatChannel = (uint)EDOTAGCMsg.kEMsgGCLeaveChatChannel;

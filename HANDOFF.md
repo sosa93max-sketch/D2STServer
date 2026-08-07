@@ -8,7 +8,10 @@ how to build/run/test, and exactly what remains.
 - **Language/stack:** C# / .NET 10, ASP.NET Core Minimal API, protobuf-net, EF Core + SQLite.
 - **No test project.** It was removed on request; verification is `dotnet build`
   plus a capture from the real client. Do not add one back unless asked.
-- **Last update:** stage 4h — chat: the channels a client joins, talks in and
+- **Last update:** the practice-lobby launch flow (stage 4g continuation): a
+  launch is answered, the lobby's game server is welcomed and attached, and the
+  lobby moves to `RUN` with a connect string and a match id — the handoff a 1v1
+  start needs. See §3.18. Before that: stage 4h — chat: the channels a client joins, talks in and
   leaves, with the ones that exist before anybody joins them (and which of them
   a client is put in at logon) configured on the server, plus private chats.
   See §3.21. Before that: the push channel fix — a client-bound GC message now travels
@@ -205,12 +208,23 @@ Design rules being followed:
     lobby whose game already started are refused with the result the client
     renders. Only the host may change the settings, kick or launch, and its
     departure closes the lobby (a practice lobby cannot be handed over), while
-    another member leaving only shrinks it. There is no game server to hand a
-    launched lobby to, so it stops at `SERVERSETUP` instead of faking a match.
+    another member leaving only shrinks it.
+    **Launching is a real flow now:** 7041 is answered with a `CMsgGenericResult`
+    (the job the host's client waits on before it starts its local game
+    server); the lobby moves to `SERVERSETUP` with an empty connect string; the
+    game server's hello (4007) gets its welcome (4005) — without it the listen
+    server never finishes its GC connection, which is what used to take the
+    whole client down on "Start"; its address (4508/4511) installs the connect
+    string the members dial (`127.0.0.1:27015` for a local listen server);
+    4506 moves the lobby to `RUN` with a match id and a start time; 7034
+    mirrors connected players, heroes and leaver states onto the object; and
+    7088 aborts a launch whose player failed to load, back to `UI`. The
+    listen-server (region 0) path works without any dedicated server; a
+    non-zero region still has no dedicated-server launcher.
     A reconnecting client gets the lobby back through `IGcWelcomeContributor`,
     and `GET /api/gamecoordinator/lobby` reads one without a Dota client. Still
-    to come in the second half: lobby invites (`CSODOTALobbyInvite`), chat,
-    spectators/broadcast channels and the party↔lobby link.
+    to come in the second half: lobby invites (`CSODOTALobbyInvite`), lobby
+    chat, spectators/broadcast channels and the party↔lobby link.
 19. **Capture pipeline (stage 4b)** — a rolling file log next to the API and a
     JSON Lines dump of every GC message without a handler (id, resolved enum
     name, job ids, payload in base64 and hex), plus `tools/capture-gc-logs.ps1`
@@ -318,6 +332,19 @@ Design rules being followed:
   `tools/verify-lobby.py` 35). The party harness needed one change of its own:
   a batch pushed to a player is no longer only Shared Objects, since logging on
   is now announced to the default chat channel the players share.
+- Stage 4g launch over HTTP (`tools/verify-lobby.py`, now 45 checks): 7041
+  answers 2579 with success only for the host (a member gets failure and no
+  state change); the lobby moves to `SERVERSETUP` with no server; 4508/4511
+  install the connect string (`127.0.0.1:27015`) while still in `SERVERSETUP`;
+  4506 moves it to `RUN` with the lobby id as the match id and a start time,
+  and every step reaches the members as an `SOUpdate`; 7034 advances the game
+  state; 7088 aborts the launch back to `UI`. Party (27/27) and chat (37/37)
+  still pass unchanged on a freshly started server.
+- Packed-encoding caveat: `CMsgDOTAPlayerFailedToConnect`'s repeated `fixed64`
+  members are generated as packed arrays by protobuf-net, and the harness
+  encodes them packed. The 2019 proto declares them unpacked, so if a real
+  7.22g capture shows unpacked `failed_loaders`/`abandoned_loaders`, flip those
+  members to `IsPacked = false` in the generated contract.
 - Stage 4e over HTTP: a grant pushes `SOCreate` 21 and shows up in
   `/econ/items`; equipping publishes `SOUpdate` 22 and the 2570 reply carries
   the new cache version; equipping a second item onto the same hero slot
@@ -656,10 +683,13 @@ Ordered by dependency. Each stage is a separate branch + PR.
    stage 4d added the SO cache + push foundation (see §3.15) that party, lobby,
    chat and econ all build on; stage 4e added econ/inventory (see §3.16);
    stage 4f added party (see §3.17); the first half of stage 4g added practice
-   lobbies (see §3.18).
+   lobbies (see §3.18), and the launch flow that hands a launched lobby to its
+   game server (still §3.18).
    stage 4h added chat (see §3.21).
    Planned order for the rest, one PR each: **4g second half** (lobby invites,
-   lobby chat, spectators/broadcast channels and the party↔lobby link),
+   lobby chat, spectators/broadcast channels and the party↔lobby link; the
+   listen-server launch path is done, a dedicated-server launcher for
+   non-zero regions is still missing),
    **4i** matchmaking (`StartFindingMatch` and the
    queue state), which only makes sense once party and lobby exist. Reference
    for each: the module of the same name under `SKY_server/GC/570/modules/`.
@@ -737,10 +767,12 @@ equip/style/position deltas, and the econ replies 7.22g expects (stage 4e).
 messages, ready check included, restored into the welcome after a reconnect
 (stage 4f).
 **Also working:** practice lobbies — the lobby Shared Object with create, join,
-leave, settings, team slots, kick, launch and the browser listing (first half of
-stage 4g).
-**Not done:** the rest of stage 4 (the second half of the lobby work, chat and
-matchmaking handlers,
-plus an item catalogue behind the econ grant), EF migrations, the `steam_api_new` redesign, and
+leave, settings, team slots, kick, launch and the browser listing, plus the
+launch handoff: the game server is welcomed, its address installs the connect
+string and the lobby runs with a match id (listen-server / LAN flow).
+**Not done:** the rest of stage 4 (the second half of the lobby work — lobby
+invites, lobby chat, spectators/broadcast channels, the party↔lobby link and
+the dedicated-server launch path — plus matchmaking handlers and an item
+catalogue behind the econ grant), EF migrations, the `steam_api_new` redesign, and
 real-client validation. This is a
 solid foundation, **not** a complete GC.

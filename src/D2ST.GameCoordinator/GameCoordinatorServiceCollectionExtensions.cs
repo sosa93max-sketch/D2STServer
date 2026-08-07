@@ -75,6 +75,12 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, PracticeLobbyKickFromTeamHandler>();
         services.AddSingleton<IGcMessageHandler, PracticeLobbyLaunchHandler>();
         services.AddSingleton<IGcMessageHandler, PracticeLobbyListHandler>();
+        services.AddSingleton<IGcMessageHandler, GameServerHelloHandler>();
+        services.AddSingleton<IGcMessageHandler, GameServerInfoHandler>();
+        services.AddSingleton<IGcMessageHandler, LanServerAvailableHandler>();
+        services.AddSingleton<IGcMessageHandler, ServerAvailableHandler>();
+        services.AddSingleton<IGcMessageHandler, ConnectedPlayersHandler>();
+        services.AddSingleton<IGcMessageHandler, PlayerFailedToConnectHandler>();
         services.AddSingleton<IGcMessageHandler, JoinChatChannelHandler>();
         services.AddSingleton<IGcMessageHandler, LeaveChatChannelHandler>();
         services.AddSingleton<IGcMessageHandler, ChatMessageHandler>();

@@ -154,6 +154,12 @@ public sealed record GcLobbyResponse(
     uint ServerRegion,
     string State,
     bool RequiresPassKey,
+    string Connect,
+    ulong MatchId,
+    uint GameStartTime,
+    uint GameState,
+    bool Lan,
+    ulong ServerId,
     IReadOnlyList<GcLobbyMember> Members);
 
 public sealed record GcLobbyMember(ulong SteamId, string Name, int Team, uint Slot);
