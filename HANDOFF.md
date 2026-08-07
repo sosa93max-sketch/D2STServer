@@ -13,7 +13,10 @@ how to build/run/test, and exactly what remains.
   GameTracking-Dota2 `4b28dd7d49` (tools/regenerate-protos.sh), the lobby SO
   migrated to the new `AllMembers`/indices model, and the chat/guild messages
   the new build removed (user list 7403, private chat info 8092, legacy guild
-  7226) were dropped. See §3.7/§3.18/§3.21. Before that: the practice-lobby launch flow (stage 4g continuation): a
+  7226) were dropped, and the first real build-6783 capture drove 14 new
+  "nothing here" handlers (rank, notifications, guilds, showcase, stickers,
+  quests, social feed, matches, coaching, Monster Hunter, store
+  cancellation, telemetry). See §3.7/§3.18/§3.21. Before that: the practice-lobby launch flow (stage 4g continuation): a
   launch is answered, the lobby's game server is welcomed and attached, and the
   lobby moves to `RUN` with a connect string and a match id — the handoff a 1v1
   start needs. See §3.18. Before that: stage 4h — chat: the channels a client joins, talks in and
@@ -289,6 +292,18 @@ Design rules being followed:
     client. The build-6783 protos removed the chat user list (7403) and the
     private chat info round-trip (8092/8093); the corresponding handlers were
     dropped.
+22. **Build-6783 capture handlers** — the first real capture from the new
+    client listed 14 messages without a handler; each now answers "nothing
+    here" so the client's jobs complete: rank (8879→8880), private coaching
+    session (8793→8794), notifications (7427→7428), account guild persona
+    (8727→8728), showcase user data (8886→8887), social feed (8303→8304),
+    minimal matches (8063→8064), cancel unfinalized store transactions
+    (2617→2618), guild data (8673→8674), guild membership (8676→8677), hero
+    stickers (8853→8854), Monster Hunter user data (9023→9024), quest progress
+    (8078→8079) and aggregate metrics (4523, fire-and-forget, no reply).
+    `dota_gcmessages_client_coaching.proto` and
+    `dota_gcmessages_client_showcase.proto` were added to the generation list
+    for the coaching/showcase types.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).

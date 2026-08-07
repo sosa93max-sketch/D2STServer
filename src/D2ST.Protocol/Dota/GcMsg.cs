@@ -103,6 +103,39 @@ public static class GcMsg
     public const uint GetEventPoints = (uint)EDOTAGCMsg.kEMsgDOTAGetEventPoints;
     public const uint GetEventPointsResponse = (uint)EDOTAGCMsg.kEMsgDOTAGetEventPointsResponse;
 
+    // Messages the build-6783 client asks for at logon and in the menus; all of
+    // them answer "nothing here" until the server implements the feature.
+    public const uint ClientToGCRankRequest = (uint)EDOTAGCMsg.kEMsgClientToGCRankRequest;
+    public const uint GCToClientRankResponse = (uint)EDOTAGCMsg.kEMsgGCToClientRankResponse;
+    public const uint ClientToGCGetCurrentPrivateCoachingSession = (uint)EDOTAGCMsg.kEMsgClientToGCGetCurrentPrivateCoachingSession;
+    public const uint ClientToGCGetCurrentPrivateCoachingSessionResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetCurrentPrivateCoachingSessionResponse;
+    public const uint GCNotificationsRequest = (uint)EDOTAGCMsg.kEMsgGCNotificationsRequest;
+    public const uint GCNotificationsResponse = (uint)EDOTAGCMsg.kEMsgGCNotificationsResponse;
+    public const uint ClientToGCRequestAccountGuildPersonaInfo = (uint)EDOTAGCMsg.kEMsgClientToGCRequestAccountGuildPersonaInfo;
+    public const uint ClientToGCRequestAccountGuildPersonaInfoResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRequestAccountGuildPersonaInfoResponse;
+    public const uint ClientToGCShowcaseGetUserData = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseGetUserData;
+    public const uint ClientToGCShowcaseGetUserDataResponse = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseGetUserDataResponse;
+    public const uint ClientToGCRequestSocialFeed = (uint)EDOTAGCMsg.kEMsgClientToGCRequestSocialFeed;
+    public const uint ClientToGCRequestSocialFeedResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRequestSocialFeedResponse;
+    public const uint ClientToGCMatchesMinimalRequest = (uint)EDOTAGCMsg.kEMsgClientToGCMatchesMinimalRequest;
+    public const uint ClientToGCMatchesMinimalResponse = (uint)EDOTAGCMsg.kEMsgClientToGCMatchesMinimalResponse;
+    public const uint ClientToGCRequestGuildData = (uint)EDOTAGCMsg.kEMsgClientToGCRequestGuildData;
+    public const uint ClientToGCRequestGuildDataResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRequestGuildDataResponse;
+    public const uint ClientToGCRequestGuildMembership = (uint)EDOTAGCMsg.kEMsgClientToGCRequestGuildMembership;
+    public const uint ClientToGCRequestGuildMembershipResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRequestGuildMembershipResponse;
+    public const uint ClientToGCGetHeroStickers = (uint)EDOTAGCMsg.kEMsgClientToGCGetHeroStickers;
+    public const uint ClientToGCGetHeroStickersResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetHeroStickersResponse;
+    public const uint ClientToGCMonsterHunterGetUserData = (uint)EDOTAGCMsg.kEMsgClientToGCMonsterHunterGetUserData;
+    public const uint ClientToGCMonsterHunterGetUserDataResponse = (uint)EDOTAGCMsg.kEMsgClientToGCMonsterHunterGetUserDataResponse;
+    public const uint ClientToGCGetQuestProgress = (uint)EDOTAGCMsg.kEMsgClientToGCGetQuestProgress;
+    public const uint ClientToGCGetQuestProgressResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetQuestProgressResponse;
+
+    public const uint ClientToGCCancelUnfinalizedTransactions = (uint)EGCItemMsg.kEMsgClientToGCCancelUnfinalizedTransactions;
+    public const uint ClientToGCCancelUnfinalizedTransactionsResponse = (uint)EGCItemMsg.kEMsgClientToGCCancelUnfinalizedTransactionsResponse;
+
+    /// <summary>Fire-and-forget telemetry; the real GC never answers it.</summary>
+    public const uint ClientToGCAggregateMetrics = (uint)EGCBaseMsg.kEMsgClientToGCAggregateMetrics;
+
     public const uint RequestStoreSalesData = (uint)EGCItemMsg.kEMsgGCRequestStoreSalesData;
     public const uint RequestStoreSalesDataResponse = (uint)EGCItemMsg.kEMsgGCRequestStoreSalesDataResponse;
 
