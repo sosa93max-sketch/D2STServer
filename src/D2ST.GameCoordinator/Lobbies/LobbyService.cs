@@ -790,6 +790,27 @@ public sealed class LobbyService : IGcWelcomeContributor
 
     private void Write(CSODOTALobby lobby)
     {
+        // The modern client reads member_indices to know who is in the room:
+        // without them the lobby renders empty even though all_members is set.
+        lobby.MemberIndices = lobby.AllMembers.Count == 0
+            ? []
+            : Enumerable.Range(0, lobby.AllMembers.Count).Select(index => (uint)index).ToArray();
+
+        if (lobby.LobbyCreationTime == 0)
+        {
+            // The lobby id embeds the creation second in its high bits.
+            lobby.LobbyCreationTime = (uint)(lobby.LobbyId >> SequenceBits);
+        }
+
+        if (lobby.ExtraMessages.Count == 0)
+        {
+            lobby.ExtraMessages.Add(new CSODOTALobby.CExtraMsg
+            {
+                Id = 8821,
+                Contents = new byte[] { 8, 0 }
+            });
+        }
+
         _soCache.Set(
             SoCacheKey.Lobby(lobby.LobbyId),
             new SoObjectKey(DotaSoCache.TypeDotaLobby, lobby.LobbyId),

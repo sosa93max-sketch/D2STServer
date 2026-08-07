@@ -159,6 +159,13 @@ public static class GcMsg
     public const uint ClientToGCRequestEventPointLogV2 = (uint)EDOTAGCMsg.kEMsgClientToGCRequestEventPointLogV2;
     public const uint ClientToGCRequestEventPointLogResponseV2 = (uint)EDOTAGCMsg.kEMsgClientToGCRequestEventPointLogResponseV2;
 
+    public const uint ClientToGCFindTopSourceTVGames = (uint)EDOTAGCMsg.kEMsgClientToGCFindTopSourceTVGames;
+    public const uint GCToClientFindTopSourceTVGamesResponse = (uint)EDOTAGCMsg.kEMsgGCToClientFindTopSourceTVGamesResponse;
+    public const uint ClientToGCTopLeagueMatchesRequest = (uint)EDOTAGCMsg.kEMsgClientToGCTopLeagueMatchesRequest;
+    public const uint GCToClientTopLeagueMatchesResponse = (uint)EDOTAGCMsg.kEMsgGCToClientTopLeagueMatchesResponse;
+    public const uint ClientToGCTopFriendMatchesRequest = (uint)EDOTAGCMsg.kEMsgClientToGCTopFriendMatchesRequest;
+    public const uint GCToClientTopFriendMatchesResponse = (uint)EDOTAGCMsg.kEMsgGCToClientTopFriendMatchesResponse;
+
     public const uint ClientToGCCancelUnfinalizedTransactions = (uint)EGCItemMsg.kEMsgClientToGCCancelUnfinalizedTransactions;
     public const uint ClientToGCCancelUnfinalizedTransactionsResponse = (uint)EGCItemMsg.kEMsgClientToGCCancelUnfinalizedTransactionsResponse;
 

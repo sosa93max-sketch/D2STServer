@@ -325,6 +325,12 @@ Design rules being followed:
     fails; `LobbyService.Write` now writes all five on every change (mirrors
     SKY_server). Verified: the pushed subscription lists
     `[2004, 2013, 2014, 2015, 2016]` and verify-lobby.py stays 45/45.
+25. **Lobby member indices** — the modern client reads `member_indices` to know
+    who is in the room; without them the lobby rendered empty even though
+    `all_members` was set. `LobbyService.Write` now sets `member_indices`
+    (`[0..n-1]`), `lobby_creation_time` (from the id's high bits) and the
+    `extra_messages` marker (8821 / `[8,0]`), mirroring SKY_server. Also added
+    the Watch-tab queries (8009→8010, 8036→8061, 8037→8062) answering empty.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).

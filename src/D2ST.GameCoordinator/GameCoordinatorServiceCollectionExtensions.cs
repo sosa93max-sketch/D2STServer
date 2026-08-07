@@ -72,6 +72,9 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, GetProfileTicketsHandler>();
         services.AddSingleton<IGcMessageHandler, RecalibrateMMRHandler>();
         services.AddSingleton<IGcMessageHandler, RequestEventPointLogV2Handler>();
+        services.AddSingleton<IGcMessageHandler, FindTopSourceTVGamesHandler>();
+        services.AddSingleton<IGcMessageHandler, TopLeagueMatchesHandler>();
+        services.AddSingleton<IGcMessageHandler, TopFriendMatchesHandler>();
         services.AddSingleton<IGcMessageHandler, EquipItemsHandler>();
         services.AddSingleton<IGcMessageHandler, SetItemStyleHandler>();
         services.AddSingleton<IGcMessageHandler, UnlockItemStyleHandler>();
