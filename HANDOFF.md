@@ -344,6 +344,17 @@ Design rules being followed:
     forever. The launch overlay's cancel button (7035 `AbandonCurrentGame`) is
     now handled: it aborts a launch in progress back to the UI state (or leaves
     the lobby when nothing is launching), so the X actually cancels.
+28. **Lobby MMR + medals** — practice-lobby matches are rated: the game server's
+    sign-out (7004, `GCGameMatchSignOut`) picks the winner from `good_guys_win`,
+    winners gain Elo (K=32) against the losers' average and losers lose the
+    symmetric amount. Ratings persist in a new `PlayerRanks` table (created by
+    hand at startup for existing databases until migrations land), start at 0
+    MMR (Herald 1, the lowest medal) and map to Dota's tier*10+star encoding
+    (Herald 1 = 11 … Immortal 5 = 85). The rank request (8879→8880) and the
+    profile card now return the real medal. Logic lives in
+    `D2ST.Core/Ranking/RankMath.cs` (pure), the GC sees `IRankStore`, and the
+    EF implementation is `D2ST.Api/Ranks/RankStore.cs`. Verified over HTTP:
+    a Radiant win gave the winner +16 (1-0) and the Dire loser −16 (0-1).
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).

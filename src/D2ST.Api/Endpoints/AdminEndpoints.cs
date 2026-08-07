@@ -238,6 +238,7 @@ public static class AdminEndpoints
             db.RemoteStorageFiles.RemoveRange(db.RemoteStorageFiles.Where(file => file.AccountId == id));
             db.UserStats.RemoveRange(db.UserStats.Where(stat => stat.AccountId == id));
             db.UserAchievements.RemoveRange(db.UserAchievements.Where(achievement => achievement.AccountId == id));
+            db.PlayerRanks.RemoveRange(db.PlayerRanks.Where(rank => rank.AccountId == id));
             db.LeaderboardEntries.RemoveRange(db.LeaderboardEntries.Where(entry => entry.AccountId == id));
             db.WorkshopSubscriptions.RemoveRange(
                 db.WorkshopSubscriptions.Where(subscription => subscription.AccountId == id));

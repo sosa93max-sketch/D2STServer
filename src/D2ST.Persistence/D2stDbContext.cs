@@ -11,6 +11,8 @@ public sealed class D2stDbContext : DbContext
 
     public DbSet<AccountEntity> Accounts => Set<AccountEntity>();
 
+    public DbSet<PlayerRankEntity> PlayerRanks => Set<PlayerRankEntity>();
+
     public DbSet<FriendshipEntity> Friendships => Set<FriendshipEntity>();
 
     public DbSet<FriendRequestEntity> FriendRequests => Set<FriendRequestEntity>();
@@ -34,6 +36,9 @@ public sealed class D2stDbContext : DbContext
         modelBuilder.Entity<AccountEntity>()
             .HasIndex(account => account.Username)
             .IsUnique();
+
+        modelBuilder.Entity<PlayerRankEntity>()
+            .HasKey(rank => rank.AccountId);
 
         modelBuilder.Entity<FriendshipEntity>()
             .HasKey(friendship => new { friendship.AccountId, friendship.FriendAccountId });

@@ -1,11 +1,14 @@
 using D2ST.Api;
 using D2ST.Api.Endpoints;
 using D2ST.Api.Logging;
+using D2ST.Api.Ranks;
 using D2ST.GameCoordinator;
 using D2ST.GameCoordinator.Messaging;
 using D2ST.GameCoordinator.Players;
+using D2ST.GameCoordinator.Ranks;
 using D2ST.Persistence;
 using D2ST.Steam;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,7 @@ builder.Services.AddD2stPersistence(connectionString);
 builder.Services.AddSteamServices(builder.Configuration);
 builder.Services.AddSingleton<IGcPlayerDirectory, SessionGcPlayerDirectory>();
 builder.Services.AddSingleton<IGcMessageQueue, EventStreamGcMessageQueue>();
+builder.Services.AddSingleton<IRankStore, RankStore>();
 builder.Services.AddGameCoordinator(builder.Configuration, builder.Environment.ContentRootPath);
 
 // The shim serializes/deserializes with PascalCase member names, so keep the
@@ -36,6 +40,20 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
     db.Database.EnsureCreated();
+
+    // EnsureCreated() only creates tables on a brand-new database, so tables
+    // added later are created by hand here until stage 5 introduces migrations.
+    db.Database.ExecuteSqlRaw(
+        """
+        CREATE TABLE IF NOT EXISTS "PlayerRanks" (
+            "AccountId" INTEGER NOT NULL CONSTRAINT "PK_PlayerRanks" PRIMARY KEY,
+            "Mmr" INTEGER NOT NULL,
+            "Wins" INTEGER NOT NULL,
+            "Losses" INTEGER NOT NULL,
+            "Games" INTEGER NOT NULL,
+            "UpdatedAt" TEXT NOT NULL
+        );
+        """);
 }
 
 app.MapAuthEndpoints();

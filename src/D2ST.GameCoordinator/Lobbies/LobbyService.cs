@@ -49,6 +49,24 @@ public sealed class LobbyService : IGcWelcomeContributor
         }
     }
 
+    /// <summary>The lobby a game server is attached to, or null.</summary>
+    public CSODOTALobby? FindByServer(ulong steamId)
+    {
+        lock (_gate)
+        {
+            return LobbyOfServer(steamId);
+        }
+    }
+
+    /// <summary>Writes a lobby state change out to its subscribers.</summary>
+    public void Publish(CSODOTALobby lobby)
+    {
+        lock (_gate)
+        {
+            Write(lobby);
+        }
+    }
+
     /// <summary>
     /// Hosts a new lobby. A player can only be in one, so an existing lobby is
     /// left first — the client sends a create straight from a lobby it is

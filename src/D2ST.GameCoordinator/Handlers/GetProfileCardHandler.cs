@@ -1,4 +1,6 @@
 using D2ST.Core.GameCoordinator;
+using D2ST.Core.Ranking;
+using D2ST.GameCoordinator.Ranks;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Handlers;
@@ -10,6 +12,13 @@ namespace D2ST.GameCoordinator.Handlers;
 /// </summary>
 public sealed class GetProfileCardHandler : IGcMessageHandler
 {
+    private readonly IRankStore _ranks;
+
+    public GetProfileCardHandler(IRankStore ranks)
+    {
+        _ranks = ranks;
+    }
+
     public uint MessageType => GcMsg.ClientToGCGetProfileCard;
 
     public IReadOnlyList<GcMessage> Handle(GcContext context, GcMessage request)
@@ -19,12 +28,14 @@ public sealed class GetProfileCardHandler : IGcMessageHandler
 
         // Nothing here tracks badges, ranks or showcase slots yet; the card is
         // the identity only, which is enough for the client to render it.
+        var rank = _ranks.GetOrCreate(accountId);
+        var info = RankMath.RankFor(rank.Mmr);
         var card = new CMsgDOTAProfileCard
         {
             AccountId = accountId,
             BadgePoints = 0,
             EventId = 0,
-            RankTier = 0,
+            RankTier = (uint)info.Tier,
             LeaderboardRank = 0,
             IsPlusSubscriber = false
         };
