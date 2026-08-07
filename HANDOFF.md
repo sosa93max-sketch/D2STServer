@@ -925,6 +925,9 @@ launcher account left the first account in the ini and that creating
   only to migrate them, prunes empty legacy directories and never deletes real
   Workshop content recursively. Its shutdown path marks the account offline,
   cancels active HTTP/event/queue workers and closes the TCP server.
+- The first Windows build of `steam_api` exposed a missing `SKYNET.Helpers` import
+  in `WorkQueue` plus a .NET Framework definite-assignment issue in the worker
+  dequeue condition; both are fixed in `steam_api` commit `92fb8fa`.
 
 These changes still require a Windows DllExport build and a real two-account,
 two-consecutive-launch test. Do not claim the client issue is fully validated
