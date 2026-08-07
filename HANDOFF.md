@@ -16,7 +16,11 @@ how to build/run/test, and exactly what remains.
   7226) were dropped, and the first real build-6783 capture drove 14 new
   "nothing here" handlers (rank, notifications, guilds, showcase, stickers,
   quests, social feed, matches, coaching, Monster Hunter, store
-  cancellation, telemetry). See §3.7/§3.18/§3.21. Before that: the practice-lobby launch flow (stage 4g continuation): a
+  cancellation, telemetry), and a second capture added 14 more: coaching
+  session summary, showcase write, event action claim, the new lobby browser
+  (8011, reusing the practice lobby list), friends' practice lobbies, hero
+  standings/order/progress, match history, teammate stats, trophies, profile
+  tickets, MMR recalibration and event point log. See §3.7/§3.18/§3.21. Before that: the practice-lobby launch flow (stage 4g continuation): a
   launch is answered, the lobby's game server is welcomed and attached, and the
   lobby moves to `RUN` with a connect string and a match id — the handoff a 1v1
   start needs. See §3.18. Before that: stage 4h — chat: the channels a client joins, talks in and
@@ -304,6 +308,15 @@ Design rules being followed:
     `dota_gcmessages_client_coaching.proto` and
     `dota_gcmessages_client_showcase.proto` were added to the generation list
     for the coaching/showcase types.
+23. **Second build-6783 capture** — 14 more messages answered "nothing here":
+    available coaching sessions summary (8800→8801), showcase write
+    (8888→8889), claim event action (8209→8210), the lobby browser's new
+    request (8011→8012, served from the same practice-lobby list), friends'
+    practice lobbies (7111→7112), hero standings (7274→7275), all-hero
+    progress (7521→7522), hero grid order (7606→7607), player match history
+    (7408→7409), teammate stats (8124→8125), trophy list (7527→7528), profile
+    tickets (8073→8074), MMR recalibration (8759→8760) and event point log V2
+    (8298→8299). All verified over HTTP.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).

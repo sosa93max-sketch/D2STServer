@@ -130,6 +130,35 @@ public static class GcMsg
     public const uint ClientToGCGetQuestProgress = (uint)EDOTAGCMsg.kEMsgClientToGCGetQuestProgress;
     public const uint ClientToGCGetQuestProgressResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetQuestProgressResponse;
 
+    public const uint ClientToGCGetAvailablePrivateCoachingSessionsSummary = (uint)EDOTAGCMsg.kEMsgClientToGCGetAvailablePrivateCoachingSessionsSummary;
+    public const uint ClientToGCGetAvailablePrivateCoachingSessionsSummaryResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetAvailablePrivateCoachingSessionsSummaryResponse;
+    public const uint ClientToGCShowcaseSetUserData = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseSetUserData;
+    public const uint ClientToGCShowcaseSetUserDataResponse = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseSetUserDataResponse;
+    public const uint DOTAClaimEventAction = (uint)EDOTAGCMsg.kEMsgDOTAClaimEventAction;
+    public const uint DOTAClaimEventActionResponse = (uint)EDOTAGCMsg.kEMsgDOTAClaimEventActionResponse;
+    public const uint GCLobbyList = (uint)EDOTAGCMsg.kEMsgGCLobbyList;
+    public const uint GCLobbyListResponse = (uint)EDOTAGCMsg.kEMsgGCLobbyListResponse;
+    public const uint GCFriendPracticeLobbyListRequest = (uint)EDOTAGCMsg.kEMsgGCFriendPracticeLobbyListRequest;
+    public const uint GCFriendPracticeLobbyListResponse = (uint)EDOTAGCMsg.kEMsgGCFriendPracticeLobbyListResponse;
+    public const uint GCGetHeroStandings = (uint)EDOTAGCMsg.kEMsgGCGetHeroStandings;
+    public const uint GCGetHeroStandingsResponse = (uint)EDOTAGCMsg.kEMsgGCGetHeroStandingsResponse;
+    public const uint ClientToGCGetAllHeroProgress = (uint)EDOTAGCMsg.kEMsgClientToGCGetAllHeroProgress;
+    public const uint ClientToGCGetAllHeroProgressResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetAllHeroProgressResponse;
+    public const uint ClientToGCGetAllHeroOrder = (uint)EDOTAGCMsg.kEMsgClientToGCGetAllHeroOrder;
+    public const uint ClientToGCGetAllHeroOrderResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetAllHeroOrderResponse;
+    public const uint DOTAGetPlayerMatchHistory = (uint)EDOTAGCMsg.kEMsgDOTAGetPlayerMatchHistory;
+    public const uint DOTAGetPlayerMatchHistoryResponse = (uint)EDOTAGCMsg.kEMsgDOTAGetPlayerMatchHistoryResponse;
+    public const uint ClientToGCTeammateStatsRequest = (uint)EDOTAGCMsg.kEMsgClientToGCTeammateStatsRequest;
+    public const uint ClientToGCTeammateStatsResponse = (uint)EDOTAGCMsg.kEMsgClientToGCTeammateStatsResponse;
+    public const uint ClientToGCGetTrophyList = (uint)EDOTAGCMsg.kEMsgClientToGCGetTrophyList;
+    public const uint ClientToGCGetTrophyListResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetTrophyListResponse;
+    public const uint ClientToGCGetProfileTickets = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileTickets;
+    public const uint ClientToGCGetProfileTicketsResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileTicketsResponse;
+    public const uint ClientToGCRecalibrateMMR = (uint)EDOTAGCMsg.kEMsgClientToGCRecalibrateMMR;
+    public const uint ClientToGCRecalibrateMMRResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRecalibrateMMRResponse;
+    public const uint ClientToGCRequestEventPointLogV2 = (uint)EDOTAGCMsg.kEMsgClientToGCRequestEventPointLogV2;
+    public const uint ClientToGCRequestEventPointLogResponseV2 = (uint)EDOTAGCMsg.kEMsgClientToGCRequestEventPointLogResponseV2;
+
     public const uint ClientToGCCancelUnfinalizedTransactions = (uint)EGCItemMsg.kEMsgClientToGCCancelUnfinalizedTransactions;
     public const uint ClientToGCCancelUnfinalizedTransactionsResponse = (uint)EGCItemMsg.kEMsgClientToGCCancelUnfinalizedTransactionsResponse;
 
