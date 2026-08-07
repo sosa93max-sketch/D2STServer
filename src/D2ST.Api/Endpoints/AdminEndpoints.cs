@@ -57,7 +57,7 @@ public static class AdminEndpoints
             var online = sessions.OnlineAccounts();
             return Results.Ok(accounts.Select(account => new AdminUserResponse(
                 account.AccountId,
-                SteamAccount.SteamIdFromAccountId(account.AccountId),
+                SteamAccount.SteamIdFromAccountId(account.AccountId).ToString(),
                 account.Username,
                 account.PersonaName,
                 online.Contains(account.AccountId),
@@ -108,7 +108,7 @@ public static class AdminEndpoints
 
             return Results.Ok(new AdminUserResponse(
                 account!.AccountId,
-                SteamAccount.SteamIdFromAccountId(account.AccountId),
+                SteamAccount.SteamIdFromAccountId(account.AccountId).ToString(),
                 account.Username,
                 account.PersonaName,
                 false,

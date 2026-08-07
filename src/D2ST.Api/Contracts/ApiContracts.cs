@@ -25,7 +25,7 @@ public sealed record SteamSessionResponse(string AccessToken, string RefreshToke
 /// <summary>One account as the admin web lists it.</summary>
 public sealed record AdminUserResponse(
     uint AccountId,
-    ulong SteamId,
+    string SteamId,
     string Username,
     string? PersonaName,
     bool Online,
