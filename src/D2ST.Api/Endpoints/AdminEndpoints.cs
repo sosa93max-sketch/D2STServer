@@ -101,8 +101,8 @@ public static class AdminEndpoints
                 account.Avatar is { Length: > 0 }));
         });
 
-        app.MapPost("/api/admin/users/{accountId:uint}/password", async (
-            uint accountId,
+        app.MapPost("/api/admin/users/{accountId:long}/password", async (
+            long accountId,
             AdminSetPasswordRequest request,
             HttpContext http,
             ISessionStore sessions,
@@ -122,13 +122,13 @@ public static class AdminEndpoints
                 return Forbidden();
             }
 
-            return await auth.SetPasswordAsync(accountId, request.Password, ct)
+            return await auth.SetPasswordAsync((uint)accountId, request.Password, ct)
                 ? Results.Ok(new AdminMessageResponse("Contraseña actualizada."))
                 : Json(new AdminMessageResponse("Usuario no encontrado."), 404);
         });
 
-        app.MapPatch("/api/admin/users/{accountId:uint}/persona", async (
-            uint accountId,
+        app.MapPatch("/api/admin/users/{accountId:long}/persona", async (
+            long accountId,
             AdminSetPersonaRequest request,
             HttpContext http,
             ISessionStore sessions,
@@ -148,13 +148,13 @@ public static class AdminEndpoints
                 return Forbidden();
             }
 
-            return await auth.SetPersonaAsync(accountId, request.PersonaName, ct)
+            return await auth.SetPersonaAsync((uint)accountId, request.PersonaName, ct)
                 ? Results.Ok(new AdminMessageResponse("Persona actualizada."))
                 : Json(new AdminMessageResponse("Usuario no encontrado."), 404);
         });
 
-        app.MapDelete("/api/admin/users/{accountId:uint}", async (
-            uint accountId,
+        app.MapDelete("/api/admin/users/{accountId:long}", async (
+            long accountId,
             HttpContext http,
             ISessionStore sessions,
             D2stDbContext db,
@@ -172,38 +172,39 @@ public static class AdminEndpoints
                 return Forbidden();
             }
 
-            if (accountId == context.Session.Account.AccountId)
+            var id = (uint)accountId;
+            if (id == context.Session.Account.AccountId)
             {
                 return Json(new AdminMessageResponse("No puedes eliminar tu propia cuenta."), 403);
             }
 
             var account = await db.Accounts
-                .SingleOrDefaultAsync(entity => entity.AccountId == accountId, ct);
+                .SingleOrDefaultAsync(entity => entity.AccountId == id, ct);
             if (account is null)
             {
                 return Json(new AdminMessageResponse("Usuario no encontrado."), 404);
             }
 
             db.Friendships.RemoveRange(db.Friendships.Where(
-                friendship => friendship.AccountId == accountId || friendship.FriendAccountId == accountId));
+                friendship => friendship.AccountId == id || friendship.FriendAccountId == id));
             db.FriendRequests.RemoveRange(db.FriendRequests.Where(
-                request => request.FromAccountId == accountId || request.ToAccountId == accountId));
-            db.RemoteStorageFiles.RemoveRange(db.RemoteStorageFiles.Where(file => file.AccountId == accountId));
-            db.UserStats.RemoveRange(db.UserStats.Where(stat => stat.AccountId == accountId));
-            db.UserAchievements.RemoveRange(db.UserAchievements.Where(achievement => achievement.AccountId == accountId));
-            db.LeaderboardEntries.RemoveRange(db.LeaderboardEntries.Where(entry => entry.AccountId == accountId));
+                request => request.FromAccountId == id || request.ToAccountId == id));
+            db.RemoteStorageFiles.RemoveRange(db.RemoteStorageFiles.Where(file => file.AccountId == id));
+            db.UserStats.RemoveRange(db.UserStats.Where(stat => stat.AccountId == id));
+            db.UserAchievements.RemoveRange(db.UserAchievements.Where(achievement => achievement.AccountId == id));
+            db.LeaderboardEntries.RemoveRange(db.LeaderboardEntries.Where(entry => entry.AccountId == id));
             db.WorkshopSubscriptions.RemoveRange(
-                db.WorkshopSubscriptions.Where(subscription => subscription.AccountId == accountId));
+                db.WorkshopSubscriptions.Where(subscription => subscription.AccountId == id));
 
             var owned = db.WorkshopItems.Where(
-                item => item.OwnerSteamId == SteamAccount.SteamIdFromAccountId(accountId));
+                item => item.OwnerSteamId == SteamAccount.SteamIdFromAccountId(id));
             db.WorkshopSubscriptions.RemoveRange(
                 db.WorkshopSubscriptions.Where(subscription =>
                     owned.Any(item => item.PublishedFileId == subscription.PublishedFileId)));
             db.WorkshopItems.RemoveRange(owned);
             db.Accounts.Remove(account);
             await db.SaveChangesAsync(ct);
-            sessions.RemoveAll(accountId);
+            sessions.RemoveAll(id);
 
             return Results.Ok(new AdminMessageResponse("Usuario eliminado."));
         });
