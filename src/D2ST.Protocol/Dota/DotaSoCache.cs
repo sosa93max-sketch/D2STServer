@@ -36,4 +36,13 @@ public static class DotaSoCache
     public const int TypeDotaPartyInvite = 2006;
     public const int TypeDotaPlayerChallenge = 2010;
     public const int TypeDotaGameAccountPlus = 2012;
+
+    // The modern lobby cache carries five buckets: the lobby itself, the empty
+    // lobby-invite bucket, the static lobby (names), the server lobby and the
+    // server static lobby. Without them the 2026 client rejects the lobby
+    // cache subscription and creating a lobby fails.
+    public const int TypeDotaLobbyInviteBucket = 2013;
+    public const int TypeDotaStaticLobby = 2014;
+    public const int TypeDotaServerLobby = 2015;
+    public const int TypeDotaServerStaticLobby = 2016;
 }

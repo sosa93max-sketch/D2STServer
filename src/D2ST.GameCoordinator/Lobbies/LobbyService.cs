@@ -788,11 +788,52 @@ public sealed class LobbyService : IGcWelcomeContributor
             new SoObjectKey(DotaSoCache.TypeDotaLobby, lobbyId),
             out lobby);
 
-    private void Write(CSODOTALobby lobby) =>
+    private void Write(CSODOTALobby lobby)
+    {
         _soCache.Set(
             SoCacheKey.Lobby(lobby.LobbyId),
             new SoObjectKey(DotaSoCache.TypeDotaLobby, lobby.LobbyId),
             lobby);
+        WriteAuxiliary(lobby);
+    }
+
+    /// <summary>
+    /// The other buckets of the lobby cache the modern client subscribes to:
+    /// the empty invite bucket, the static lobby (names), the server lobby and
+    /// the server static lobby. Mirrors what a real GC publishes.
+    /// </summary>
+    private void WriteAuxiliary(CSODOTALobby lobby)
+    {
+        var key = SoCacheKey.Lobby(lobby.LobbyId);
+        _soCache.Set(
+            key,
+            new SoObjectKey(DotaSoCache.TypeDotaLobbyInviteBucket, lobby.LobbyId),
+            new CSODOTALobbyInvite());
+
+        var staticLobby = new CSODOTAStaticLobby { IsPlayerDraft = false };
+        var serverLobby = new CSODOTAServerLobby();
+        var serverStatic = new CSODOTAServerStaticLobby();
+
+        foreach (var member in lobby.AllMembers)
+        {
+            var name = MemberName(lobby.LobbyId, member.Id);
+            staticLobby.AllMembers.Add(new CSODOTAStaticLobbyMember { Name = name });
+            serverLobby.AllMembers.Add(new CSODOTAServerLobbyMember());
+            serverStatic.AllMembers.Add(new CSODOTAServerStaticLobbyMember
+            {
+                SteamId = member.Id,
+                WasMvpLastGame = false,
+                IsPlusSubscriber = true,
+                FavoriteTeamPacked = 0,
+                IsSteamChina = false,
+                BannedHeroIds = new[] { 75, 0, 0, 0 }
+            });
+        }
+
+        _soCache.Set(key, new SoObjectKey(DotaSoCache.TypeDotaStaticLobby, lobby.LobbyId), staticLobby);
+        _soCache.Set(key, new SoObjectKey(DotaSoCache.TypeDotaServerLobby, lobby.LobbyId), serverLobby);
+        _soCache.Set(key, new SoObjectKey(DotaSoCache.TypeDotaServerStaticLobby, lobby.LobbyId), serverStatic);
+    }
 
     /// <summary>The persona name a member joined with (the lobby SO carries no names).</summary>
     public string MemberName(ulong lobbyId, ulong steamId) =>

@@ -317,6 +317,14 @@ Design rules being followed:
     (7408→7409), teammate stats (8124→8125), trophy list (7527→7528), profile
     tickets (8073→8074), MMR recalibration (8759→8760) and event point log V2
     (8298→8299). All verified over HTTP.
+24. **Lobby cache buckets for the modern client** — the 2026 client expects the
+    lobby cache subscription to carry five buckets: the lobby (2004), the empty
+    lobby-invite bucket (2013), the static lobby (2014, member names), the
+    server lobby (2015) and the server static lobby (2016, per-member flags).
+    Without them the client rejects the subscription and creating a lobby
+    fails; `LobbyService.Write` now writes all five on every change (mirrors
+    SKY_server). Verified: the pushed subscription lists
+    `[2004, 2013, 2014, 2015, 2016]` and verify-lobby.py stays 45/45.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).
