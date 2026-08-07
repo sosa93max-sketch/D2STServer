@@ -164,6 +164,12 @@ public static class GameCoordinatorEndpoints
                     lobby.ServerRegion,
                     lobby.state.ToString(),
                     !string.IsNullOrEmpty(lobby.PassKey),
+                    lobby.Connect,
+                    lobby.MatchId,
+                    lobby.GameStartTime,
+                    (uint)lobby.GameState,
+                    lobby.Lan,
+                    lobby.ServerId,
                     lobby.Members
                         .Select(member => new GcLobbyMember(member.Id, member.Name, (int)member.Team, member.Slot))
                         .ToList()));

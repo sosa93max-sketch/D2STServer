@@ -23,11 +23,14 @@ public sealed class LobbyService : IGcWelcomeContributor
 
     private const int SequenceBits = 20;
     private const ulong SequenceMask = (1UL << SequenceBits) - 1;
+    private const uint DefaultServerPort = 27015;
 
     private readonly SoCacheService _soCache;
     private readonly TimeProvider _time;
     private readonly Lock _gate = new();
     private readonly Dictionary<ulong, ulong> _memberships = [];
+    private readonly Dictionary<ulong, LobbyServer> _servers = [];
+    private readonly Dictionary<ulong, ulong> _serversBySteamId = [];
     private ulong _sequence;
 
     public LobbyService(SoCacheService soCache, TimeProvider time)
@@ -237,11 +240,13 @@ public sealed class LobbyService : IGcWelcomeContributor
     }
 
     /// <summary>
-    /// Starts the game. There is no game server to hand the lobby to, so the
-    /// lobby moves to <c>SERVERSETUP</c> and stays there: the members see the
-    /// launch, and nothing pretends a match exists.
+    /// Starts the game. Region 0 (the local listen server the 1v1 flow uses)
+    /// moves the lobby to <c>SERVERSETUP</c> with an empty connect string and
+    /// lets the game server announce itself; the members draw the launch from
+    /// the cache delta and the <see cref="GcMsg.GCGenericResult"/> reply tells
+    /// the host's client whether the launch is accepted.
     /// </summary>
-    public void Launch(GcContext context)
+    public bool Launch(GcContext context)
     {
         lock (_gate)
         {
@@ -249,12 +254,284 @@ public sealed class LobbyService : IGcWelcomeContributor
                 lobby.LeaderId != context.SteamId ||
                 lobby.state != CSODOTALobby.State.Ui)
             {
+                return false;
+            }
+
+            MarkTeamsIncomplete(lobby);
+            lobby.state = CSODOTALobby.State.Serversetup;
+            lobby.Connect = string.Empty;
+            lobby.ServerId = 0;
+            lobby.GameStartTime = 0;
+            lobby.GameState = DOTAGameState.DotaGamerulesStateInit;
+            lobby.Lan = lobby.ServerRegion == 0;
+            DropServer(lobby.LobbyId);
+            Write(lobby);
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// The game server reports where it is. The address is transport state, not
+    /// a lobby field: the members only ever see the connect string the GC
+    /// builds from it, which is what the clients dial.
+    /// </summary>
+    public void ServerInfo(GcContext context, CMsgGameServerInfo info)
+    {
+        lock (_gate)
+        {
+            var lobby = LobbyForServer(context);
+            if (lobby is null)
+            {
                 return;
             }
 
-            lobby.state = CSODOTALobby.State.Serversetup;
+            _servers[lobby.LobbyId] = new LobbyServer(
+                Ipv4ToString(info.ServerPublicIpAddr),
+                Ipv4ToString(info.ServerPrivateIpAddr),
+                info.ServerPort != 0 ? info.ServerPort : DefaultServerPort);
+            AttachServer(lobby, context.SteamId, running: false);
+        }
+    }
+
+    /// <summary>
+    /// A local listen server announces itself for a lobby. The lobby becomes
+    /// reachable (its connect string is published) while still in
+    /// <c>SERVERSETUP</c>; the game is only "running" once the server reports
+    /// that, see <see cref="ServerAvailable"/>.
+    /// </summary>
+    public void LanServerAvailable(GcContext context, CMsgLANServerAvailable request)
+    {
+        lock (_gate)
+        {
+            if (!TryGetLobby(request.LobbyId, out var lobby))
+            {
+                return;
+            }
+
+            _servers.TryAdd(lobby.LobbyId, new LobbyServer(string.Empty, string.Empty, DefaultServerPort));
+            AttachServer(lobby, context.SteamId, running: false);
+        }
+    }
+
+    /// <summary>
+    /// The game server is up and the match is on: the lobby moves to <c>RUN</c>
+    /// with a match id and a start time, and every member learns where to
+    /// connect from the next cache delta.
+    /// </summary>
+    public void ServerAvailable(GcContext context)
+    {
+        lock (_gate)
+        {
+            var lobby = LobbyForServer(context);
+            if (lobby is not null)
+            {
+                AttachServer(lobby, context.SteamId, running: true);
+            }
+        }
+    }
+
+    /// <summary>
+    /// The game server reports who made it in. Hero picks and leaver states are
+    /// mirrored onto the lobby members so the client redraws the scoreboard;
+    /// only an actual change publishes a delta.
+    /// </summary>
+    public void ConnectedPlayers(GcContext context, CMsgConnectedPlayers request)
+    {
+        lock (_gate)
+        {
+            var lobby = LobbyForServer(context);
+            if (lobby is null)
+            {
+                return;
+            }
+
+            var changed = false;
+            if (request.send_reason == CMsgConnectedPlayers.SendReason.GameState ||
+                request.GameState != DOTAGameState.DotaGamerulesStateInit)
+            {
+                if (lobby.GameState != request.GameState)
+                {
+                    lobby.GameState = request.GameState;
+                    changed = true;
+                }
+            }
+
+            if (request.send_reason is CMsgConnectedPlayers.SendReason.GameState
+                or CMsgConnectedPlayers.SendReason.PlayerHero)
+            {
+                foreach (var player in request.ConnectedPlayers)
+                {
+                    var member = lobby.Members.FirstOrDefault(entry => entry.Id == player.SteamId);
+                    if (member is null)
+                    {
+                        continue;
+                    }
+
+                    if (member.HeroId != player.HeroId)
+                    {
+                        member.HeroId = player.HeroId;
+                        changed = true;
+                    }
+
+                    if (member.LeaverStatus != DOTALeaverStatust.DotaLeaverNone)
+                    {
+                        member.LeaverStatus = DOTALeaverStatust.DotaLeaverNone;
+                        changed = true;
+                    }
+                }
+
+                foreach (var player in request.DisconnectedPlayers)
+                {
+                    var member = lobby.Members.FirstOrDefault(entry => entry.Id == player.SteamId);
+                    if (member is not null && member.LeaverStatus != DOTALeaverStatust.DotaLeaverDisconnected)
+                    {
+                        member.LeaverStatus = DOTALeaverStatust.DotaLeaverDisconnected;
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                Write(lobby);
+            }
+        }
+    }
+
+    /// <summary>
+    /// A player failed to load. The launch aborts: the lobby returns to the UI
+    /// state (the client offers to start over) and the failed player is marked
+    /// disconnected, exactly what a real GC does.
+    /// </summary>
+    public void PlayerFailedToConnect(GcContext context, CMsgDOTAPlayerFailedToConnect request)
+    {
+        lock (_gate)
+        {
+            var lobby = LobbyForServer(context);
+            if (lobby is null)
+            {
+                return;
+            }
+
+            var failedId = request.FailedLoaders.FirstOrDefault();
+            if (failedId == 0)
+            {
+                failedId = request.AbandonedLoaders.FirstOrDefault();
+            }
+
+            var member = failedId != 0 ? lobby.Members.FirstOrDefault(entry => entry.Id == failedId) : null;
+            if (member is not null)
+            {
+                member.LeaverStatus = DOTALeaverStatust.DotaLeaverDisconnected;
+            }
+
+            lobby.state = CSODOTALobby.State.Ui;
             Write(lobby);
         }
+    }
+
+    private void AttachServer(CSODOTALobby lobby, ulong serverSteamId, bool running)
+    {
+        _servers.TryGetValue(lobby.LobbyId, out var server);
+        server ??= new LobbyServer(string.Empty, string.Empty, DefaultServerPort);
+        _servers[lobby.LobbyId] = server;
+        _serversBySteamId[serverSteamId] = lobby.LobbyId;
+        lobby.ServerId = serverSteamId;
+
+        if (running)
+        {
+            lobby.state = CSODOTALobby.State.Run;
+            if (lobby.MatchId == 0)
+            {
+                lobby.MatchId = lobby.LobbyId;
+            }
+
+            if (lobby.GameStartTime == 0)
+            {
+                lobby.GameStartTime = (uint)_time.GetUtcNow().ToUnixTimeSeconds();
+            }
+
+            foreach (var member in lobby.Members)
+            {
+                member.LeaverStatus = DOTALeaverStatust.DotaLeaverNone;
+            }
+        }
+        else if (lobby.state != CSODOTALobby.State.Run)
+        {
+            lobby.state = CSODOTALobby.State.Serversetup;
+        }
+
+        lobby.Connect = BuildConnectString(server);
+        lobby.Lan = lobby.ServerRegion == 0;
+        Write(lobby);
+    }
+
+    private CSODOTALobby? LobbyOfServer(ulong steamId) =>
+        _serversBySteamId.TryGetValue(steamId, out var lobbyId) && TryGetLobby(lobbyId, out var lobby)
+            ? lobby
+            : null;
+
+    /// <summary>
+    /// The lobby a game server talks about. Once attached, the server is mapped
+    /// to its lobby; until then (the server's very first message of a launch)
+    /// the lobby waiting in <c>SERVERSETUP</c> with no server is the one.
+    /// </summary>
+    private CSODOTALobby? LobbyForServer(GcContext context) =>
+        LobbyOfServer(context.SteamId) ??
+        AllLobbies()
+            .Where(candidate => candidate.state == CSODOTALobby.State.Serversetup && candidate.ServerId == 0)
+            .OrderByDescending(candidate => candidate.LobbyId)
+            .FirstOrDefault();
+
+    private void DropServer(ulong lobbyId)
+    {
+        _servers.Remove(lobbyId);
+        foreach (var pair in _serversBySteamId.Where(entry => entry.Value == lobbyId).ToList())
+        {
+            _serversBySteamId.Remove(pair.Key);
+        }
+    }
+
+    /// <summary>Both teams start incomplete; the game server completes them.</summary>
+    private static void MarkTeamsIncomplete(CSODOTALobby lobby)
+    {
+        while (lobby.TeamDetails.Count < 2)
+        {
+            lobby.TeamDetails.Add(new CLobbyTeamDetails());
+        }
+
+        for (var i = 0; i < 2; i++)
+        {
+            lobby.TeamDetails[i].TeamComplete = false;
+        }
+    }
+
+    private static string BuildConnectString(LobbyServer server)
+    {
+        var endpoints = new[] { server.PublicIp, server.PrivateIp }
+            .Where(ip => ip.Length > 0)
+            .Select(ip => $"{ip}:{server.Port}")
+            .Distinct()
+            .ToList();
+
+        if (endpoints.Count == 0)
+        {
+            endpoints.Add($"127.0.0.1:{server.Port}");
+        }
+
+        return string.Join(" ", endpoints);
+    }
+
+    private static string Ipv4ToString(uint value)
+    {
+        if (value == 0)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(
+            ".",
+            new[] { value & 0xFF, (value >> 8) & 0xFF, (value >> 16) & 0xFF, (value >> 24) & 0xFF });
     }
 
     /// <summary>
@@ -319,6 +596,7 @@ public sealed class LobbyService : IGcWelcomeContributor
             _memberships.Remove(member.Id);
         }
 
+        DropServer(lobby.LobbyId);
         _soCache.RemoveOwner(SoOwner.ForLobby(lobby.LobbyId));
     }
 
@@ -518,4 +796,7 @@ public sealed class LobbyService : IGcWelcomeContributor
         _sequence = (_sequence + 1) & SequenceMask;
         return ((ulong)_time.GetUtcNow().ToUnixTimeSeconds() << SequenceBits) | _sequence;
     }
+
+    /// <summary>Transport state of a launched game server, kept out of the SO.</summary>
+    private sealed record LobbyServer(string PublicIp, string PrivateIp, uint Port);
 }
