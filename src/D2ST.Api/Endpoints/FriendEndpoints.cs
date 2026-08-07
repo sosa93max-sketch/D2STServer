@@ -21,8 +21,8 @@ public static class FriendEndpoints
                 return Results.Unauthorized();
             }
 
-            var friends = await users.ListFriendsAsync(session.Account.AccountId, ct);
-            return Results.Ok(friends.Select(friend => friend.ToApiUser()).ToList());
+            var relationships = await users.ListFriendsAsync(session.Account.AccountId, ct);
+            return Results.Ok(relationships.Select(relationship => relationship.ToApiUser()).ToList());
         });
 
         app.MapPost("/api/friends/request", async (

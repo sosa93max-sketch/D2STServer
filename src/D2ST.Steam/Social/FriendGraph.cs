@@ -23,6 +23,33 @@ public sealed class FriendGraph
             .Select(friendship => friendship.FriendAccountId)
             .ToListAsync(cancellationToken);
 
+    /// <summary>
+    /// Returns every account that has a visible relationship with the player:
+    /// confirmed friends plus either side of a pending invitation. The shim's
+    /// full friends refresh replaces its local cache, so pending invitations
+    /// must be part of this snapshot as well as the pushed event stream.
+    /// </summary>
+    public async Task<List<uint>> RelatedIdsAsync(
+        uint accountId,
+        CancellationToken cancellationToken)
+    {
+        var ids = await FriendIdsAsync(accountId, cancellationToken);
+
+        var pendingIds = await _db.FriendRequests
+            .Where(request => request.Status == FriendRequestStatus.Pending &&
+                (request.FromAccountId == accountId || request.ToAccountId == accountId))
+            .Select(request => request.FromAccountId == accountId
+                ? request.ToAccountId
+                : request.FromAccountId)
+            .ToListAsync(cancellationToken);
+
+        return ids
+            .Concat(pendingIds)
+            .Where(id => id != accountId)
+            .Distinct()
+            .ToList();
+    }
+
     public Task<FriendRequestEntity?> FindPendingAsync(uint fromAccountId, uint toAccountId, CancellationToken cancellationToken) =>
         _db.FriendRequests.FirstOrDefaultAsync(
             request => request.Status == FriendRequestStatus.Pending &&

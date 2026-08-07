@@ -53,14 +53,30 @@ public sealed class UserDirectory : IUserDirectory
         uint viewerAccountId,
         CancellationToken cancellationToken = default)
     {
-        var friendIds = await _graph.FriendIdsAsync(viewerAccountId, cancellationToken);
+        // This endpoint is consumed as a complete replacement snapshot by the
+        // shim. Include pending requests or a refresh would erase the
+        // friend_request_sent/received state that the event stream just added.
+        var relatedIds = await _graph.RelatedIdsAsync(viewerAccountId, cancellationToken);
         var accounts = await _db.Accounts
             .AsNoTracking()
-            .Where(entity => friendIds.Contains(entity.AccountId))
+            .Where(entity => relatedIds.Contains(entity.AccountId))
             .ToListAsync(cancellationToken);
 
-        return accounts
-            .Select(account => ToProfile(account, FriendRelationship.Friend))
+        var profiles = new List<UserProfile>(accounts.Count);
+        foreach (var account in accounts)
+        {
+            var relationship = await _graph.RelationshipAsync(
+                viewerAccountId,
+                account.AccountId,
+                cancellationToken);
+
+            if (relationship != FriendRelationship.None)
+            {
+                profiles.Add(ToProfile(account, relationship));
+            }
+        }
+
+        return profiles
             .OrderBy(profile => profile.PersonaName, StringComparer.OrdinalIgnoreCase)
             .ToList();
     }

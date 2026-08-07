@@ -11,6 +11,10 @@ public interface IUserDirectory
 {
     Task<UserProfile?> FindAsync(uint viewerAccountId, uint accountId, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Full relationship snapshot consumed by the Steam shim. It includes
+    /// confirmed friends and pending invitations in either direction.
+    /// </summary>
     Task<IReadOnlyList<UserProfile>> ListFriendsAsync(uint viewerAccountId, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<UserProfile>> ListAllAsync(uint viewerAccountId, CancellationToken cancellationToken = default);

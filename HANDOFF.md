@@ -4,7 +4,7 @@ This document is a complete snapshot of the project so **any developer or AI can
 continue in a fresh chat** without prior context. It states what exists, why,
 how to build/run/test, and exactly what remains.
 
-- **Repo:** https://github.com/mukipromax-web/D2STServer (public)
+- **Repo:** https://github.com/sosa93max-sketch/D2STServer (public)
 - **Language/stack:** C# / .NET 10, ASP.NET Core Minimal API, protobuf-net, EF Core + SQLite.
 - **No test project.** It was removed on request; verification is `dotnet build`
   plus a capture from the real client. Do not add one back unless asked.
@@ -381,6 +381,20 @@ Design rules being followed:
     (`5000 → 72/90%`, `5020 → 73/0%`, `5620 → 80/100%`). The current agent
     environment has no `dotnet` executable, so `dotnet build D2STServer.sln
     -c Release` must be run in the deployment/CI environment before release.
+31. **Friend-request snapshot fix** — `GET /api/friends` is a full replacement
+    snapshot in the shim, not an append-only list. It now includes confirmed
+    friendships plus pending invitations in either direction, with the exact
+    `FriendRelationship` (`Friend`, `RequestInitiator` or `RequestRecipient`)
+    calculated from the database. Before this fix, the `friendadd` action could
+    create the pending row and publish its event, but the immediate refresh
+    returned only confirmed friends and erased the pending state from the
+    client cache. The change is in `FriendGraph.RelatedIdsAsync` and
+    `UserDirectory.ListFriendsAsync`; the event stream remains the live update
+    path. The shim still opens the target profile after dispatching
+    `ActivateGameOverlayToUser("friendadd", steamId)`, which is expected
+    overlay behavior; the friend request itself is processed in its work queue.
+    Validation in this environment is static (`git diff --check`); the real
+    Dota client/shim flow still requires a Windows run.
 
 ### Verified this session
 - `dotnet build D2STServer.sln -c Release` → clean (0 warnings; warnings-as-errors on).
@@ -667,7 +681,7 @@ All endpoints except `/api/version`, `/api/auth/login` and
 | PATCH | `/api/users/me/persona` | Rename; notifies friends. |
 | GET | `/api/users/{steamId}/avatar` | PNG + `X-SKYNET-Avatar-SteamId` / `-Default` headers. |
 | PUT | `/api/users/me/avatar` | Upload avatar (`ContentBase64`). |
-| GET | `/api/friends` | Friend list. |
+| GET | `/api/friends` | Full relationship snapshot: friends and pending invitations. |
 | POST | `/api/friends/request` | Invite by `SteamId` or `Identifier`. |
 | POST | `/api/friends/{steamId}/accept` | Accept an invitation. |
 | POST | `/api/friends/{steamId}/remove` | Unfriend / decline / withdraw. |
@@ -844,7 +858,8 @@ client (build 6783) + a `steam_api` shim that supports its interface versions.
 
 ## 7. Constraints & conventions
 
-- Branch per change; do **not** commit to `main` directly. Open PRs.
+- Repository delivery convention for this deployment: update `HANDOFF.md`
+  first, then commit and push every completed change directly to `main`.
 - No destructive git (`reset --hard`, `clean -fd`), no `git add .`, no `--no-verify`.
 - Keep `TreatWarningsAsErrors` green.
 - Don't claim 7.22g compatibility without a real-client test.
