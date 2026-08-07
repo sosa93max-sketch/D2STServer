@@ -4,6 +4,7 @@ using D2ST.Core.Accounts;
 using D2ST.Core.Steam;
 using D2ST.Persistence;
 using D2ST.Steam;
+using D2ST.Steam.Social;
 using Microsoft.EntityFrameworkCore;
 
 namespace D2ST.Api.Endpoints;
@@ -19,6 +20,8 @@ public static class AdminEndpoints
     // Results.Json uses the default serializer options, not the app's
     // PascalCase HttpJsonOptions, so error bodies carry the same naming.
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = null };
+    private const int MaxAvatarBytes = 2 * 1024 * 1024;
+    private static readonly byte[] PngSignature = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 
     public static IEndpointRouteBuilder MapAdminEndpoints(this IEndpointRouteBuilder app)
     {
@@ -91,6 +94,18 @@ public static class AdminEndpoints
 
             var account = await db.Accounts.AsNoTracking()
                 .SingleOrDefaultAsync(entity => entity.Username == request.Username, ct);
+            if (account is not null && account.Avatar is not { Length: > 0 })
+            {
+                var entity = await db.Accounts
+                    .SingleOrDefaultAsync(entity => entity.AccountId == account.AccountId, ct);
+                if (entity is not null)
+                {
+                    entity.Avatar = DefaultAvatar.Bytes;
+                    await db.SaveChangesAsync(ct);
+                    account = entity;
+                }
+            }
+
             return Results.Ok(new AdminUserResponse(
                 account!.AccountId,
                 SteamAccount.SteamIdFromAccountId(account.AccountId),
@@ -99,6 +114,37 @@ public static class AdminEndpoints
                 false,
                 account.CreatedAt,
                 account.Avatar is { Length: > 0 }));
+        });
+
+        app.MapPut("/api/admin/users/{accountId:long}/avatar", async (
+            long accountId,
+            AdminSetAvatarRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration config,
+            IUserDirectory users,
+            CancellationToken ct) =>
+        {
+            var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
+            if (context is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.IsAdmin)
+            {
+                return Forbidden();
+            }
+
+            if (!TryDecodeAvatar(request.ContentBase64, out var content))
+            {
+                return Json(new AdminMessageResponse("Imagen inválida: debe ser un PNG de hasta 2 MB."), 400);
+            }
+
+            return await users.SetAvatarAsync((uint)accountId, content, ct)
+                ? Results.Ok(new AdminMessageResponse("Avatar actualizado."))
+                : Json(new AdminMessageResponse("Usuario no encontrado."), 404);
         });
 
         app.MapPost("/api/admin/users/{accountId:long}/password", async (
@@ -238,6 +284,24 @@ public static class AdminEndpoints
 
     private static IResult Json(object value, int statusCode) =>
         Results.Json(value, JsonOptions, statusCode: statusCode);
+
+    private static bool TryDecodeAvatar(string? contentBase64, out byte[] content)
+    {
+        content = [];
+        if (string.IsNullOrWhiteSpace(contentBase64))
+        {
+            return false;
+        }
+
+        var buffer = new byte[(contentBase64.Length * 3 / 4) + 3];
+        if (!Convert.TryFromBase64String(contentBase64, buffer, out var written) || written == 0)
+        {
+            return false;
+        }
+
+        content = buffer[..written];
+        return content.Length <= MaxAvatarBytes && content.AsSpan().StartsWith(PngSignature);
+    }
 
     private sealed record AdminContext(SteamSession Session, bool IsAdmin);
 }

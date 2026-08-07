@@ -216,6 +216,40 @@ function actionLink(label, cls, handler) {
   return button;
 }
 
+function defaultAvatarSrc(user) {
+  const letter = (((user.PersonaName || user.Username || '?').trim()[0]) || '?').toUpperCase();
+  const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>"
+    + "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>"
+    + "<stop offset='0' stop-color='#1f6feb'/><stop offset='1' stop-color='#0a2540'/></linearGradient></defs>"
+    + "<rect width='40' height='40' rx='10' fill='url(#g)'/>"
+    + "<text x='20' y='27' font-family='Arial, sans-serif' font-size='18' font-weight='bold' fill='#fff' text-anchor='middle'>"
+    + letter + "</text></svg>";
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+function avatarCell(user) {
+  const td = document.createElement('td');
+  const img = document.createElement('img');
+  img.width = 32;
+  img.height = 32;
+  img.style.borderRadius = '50%';
+  img.style.objectFit = 'cover';
+  img.style.verticalAlign = 'middle';
+  img.style.background = '#21262d';
+  img.alt = '';
+  img.src = defaultAvatarSrc(user);
+  if (user.HasAvatar) {
+    fetch('/api/users/' + user.SteamId + '/avatar', {
+      headers: { Authorization: 'Bearer ' + token }
+    })
+      .then((r) => (r.ok ? r.blob() : Promise.reject()))
+      .then((blob) => { img.src = URL.createObjectURL(blob); })
+      .catch(() => {});
+  }
+  td.appendChild(img);
+  return td;
+}
+
 async function loadUsers() {
   const result = await api('/api/admin/users');
   if (!result.ok) {
@@ -256,9 +290,10 @@ async function loadUsers() {
     state.appendChild(document.createTextNode(user.Online ? 'En línea' : 'Offline'));
     row.appendChild(state);
     row.appendChild(tr('', new Date(user.CreatedAt).toLocaleString()));
-    row.appendChild(tr('', user.HasAvatar ? 'Sí' : 'No'));
+    row.appendChild(avatarCell(user));
     const actions = document.createElement('td');
     actions.className = 'actions';
+    actions.appendChild(actionLink('Avatar', '', () => uploadAvatar(user)));
     actions.appendChild(actionLink('Renombrar', '', () => renameUser(user)));
     actions.appendChild(actionLink('Contraseña', '', () => resetPassword(user)));
     actions.appendChild(actionLink('Eliminar', 'danger', () => deleteUser(user)));
@@ -266,6 +301,30 @@ async function loadUsers() {
     table.appendChild(row);
   }
   wrap.appendChild(table);
+}
+
+function uploadAvatar(user) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/png';
+  input.onchange = async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const base64 = dataUrl.split(',')[1];
+    const result = await api('/api/admin/users/' + user.AccountId + '/avatar', {
+      method: 'PUT',
+      body: JSON.stringify({ ContentBase64: base64 })
+    });
+    if (result.ok) loadUsers();
+    else alert(messageOf(result));
+  };
+  input.click();
 }
 
 async function createUser() {

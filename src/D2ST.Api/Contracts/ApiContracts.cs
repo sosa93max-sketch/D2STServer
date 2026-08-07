@@ -38,6 +38,8 @@ public sealed record AdminSetPasswordRequest(string Password);
 
 public sealed record AdminSetPersonaRequest(string PersonaName);
 
+public sealed record AdminSetAvatarRequest(string ContentBase64);
+
 public sealed record AdminMessageResponse(string Message);
 
 /// <summary>
