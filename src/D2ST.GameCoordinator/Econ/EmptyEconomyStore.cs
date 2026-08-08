@@ -49,4 +49,8 @@ internal sealed class EmptyEconomyStore : IEconomyStore
         StoreOperationResult.Failed("economy_unavailable", "La economía persistente no está disponible.");
 
     public bool UpsertCatalogItem(StoreCatalogItem item) => false;
+
+    public CatalogImportSummary ImportCatalog(
+        IReadOnlyList<StoreCatalogItem> items,
+        bool preserveExisting) => new(0, 0, items.Count);
 }

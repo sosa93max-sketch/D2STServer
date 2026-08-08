@@ -289,24 +289,17 @@ public sealed class EconomyStore : IEconomyStore
 
     public bool UpsertCatalogItem(StoreCatalogItem item)
     {
-        var catalogComponents = item.Components ?? [];
-        if (item.ProductId == 0 || string.IsNullOrWhiteSpace(item.Name)
-            || item.PriceCredits <= 0
-            || item.ProductType is not (StoreProductType.Item or StoreProductType.Set)
-            || catalogComponents.Any(component => component.ProductId == 0 || component.Quantity == 0))
-        {
-            return false;
-        }
+        var result = ImportCatalog([item], preserveExisting: false);
+        return result.ImportedCount + result.UpdatedCount == 1;
+    }
 
-        var productType = item.ProductType;
-        var defIndex = productType == StoreProductType.Item
-            ? item.DefIndex != 0 ? item.DefIndex : item.ProductId
-            : 0;
-        if (productType == StoreProductType.Item && catalogComponents.Count != 0
-            || productType == StoreProductType.Set && catalogComponents.Count == 0
-            || catalogComponents.Any(component => component.ProductId == item.ProductId))
+    public CatalogImportSummary ImportCatalog(
+        IReadOnlyList<StoreCatalogItem> items,
+        bool preserveExisting)
+    {
+        if (items is null || items.Count == 0)
         {
-            return false;
+            return new CatalogImportSummary(0, 0, 0);
         }
 
         lock (_gate)
@@ -315,45 +308,139 @@ public sealed class EconomyStore : IEconomyStore
             var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
             using var transaction = db.Database.BeginTransaction();
             var now = DateTimeOffset.UtcNow;
-            var entity = db.StoreCatalogItems.SingleOrDefault(row => row.ProductId == item.ProductId);
-            if (entity is null)
-            {
-                entity = new StoreCatalogItemEntity
-                {
-                    ProductId = item.ProductId,
-                    CreatedAt = now,
-                    Name = item.Name
-                };
-                db.StoreCatalogItems.Add(entity);
-            }
+            var existing = db.StoreCatalogItems.ToDictionary(row => row.ProductId);
+            var seen = new HashSet<uint>();
+            var imported = 0;
+            var updated = 0;
+            var skipped = 0;
 
-            entity.DefIndex = defIndex;
-            entity.ProductType = productType;
-            entity.PriceCredits = item.PriceCredits;
-            entity.Name = item.Name.Trim();
-            entity.Category = item.Category?.Trim() ?? string.Empty;
-            entity.Description = item.Description?.Trim() ?? string.Empty;
-            entity.BuildVersion = item.BuildVersion;
-            entity.Active = item.Active;
-            entity.UpdatedAt = now;
-
-            var oldComponents = db.StoreCatalogComponents
-                .Where(component => component.ProductId == item.ProductId)
-                .ToList();
-            db.StoreCatalogComponents.RemoveRange(oldComponents);
-            foreach (var component in catalogComponents.GroupBy(component => component.ProductId))
+            foreach (var source in items)
             {
-                db.StoreCatalogComponents.Add(new StoreCatalogComponentEntity
+                if (!TryNormalizeCatalogItem(source, out var item)
+                    || !seen.Add(item.ProductId))
                 {
-                    ProductId = item.ProductId,
-                    ComponentProductId = component.Key,
-                    Quantity = checked((uint)component.Sum(value => (long)value.Quantity))
-                });
+                    skipped++;
+                    continue;
+                }
+
+                if (!existing.TryGetValue(item.ProductId, out var entity))
+                {
+                    entity = new StoreCatalogItemEntity
+                    {
+                        ProductId = item.ProductId,
+                        CreatedAt = now,
+                        Name = item.Name
+                    };
+                    db.StoreCatalogItems.Add(entity);
+                    existing[item.ProductId] = entity;
+                    imported++;
+                }
+                else
+                {
+                    if (preserveExisting && entity.ProductType != item.ProductType)
+                    {
+                        skipped++;
+                        continue;
+                    }
+
+                    if (preserveExisting)
+                    {
+                        item = item with
+                        {
+                            ProductId = entity.ProductId,
+                            PriceCredits = entity.PriceCredits,
+                            Active = entity.Active
+                        };
+                    }
+
+                    updated++;
+                }
+
+                ApplyCatalogEntity(db, entity, item, now);
             }
 
             db.SaveChanges();
             transaction.Commit();
+            return new CatalogImportSummary(imported, updated, skipped);
+        }
+    }
+
+    private static bool TryNormalizeCatalogItem(
+        StoreCatalogItem source,
+        out StoreCatalogItem normalized)
+    {
+        normalized = source;
+        var components = source.Components ?? [];
+        if (source.ProductId == 0 || string.IsNullOrWhiteSpace(source.Name)
+            || source.PriceCredits <= 0
+            || source.ProductType is not (StoreProductType.Item or StoreProductType.Set)
+            || components.Any(component => component.ProductId == 0 || component.Quantity == 0))
+        {
+            return false;
+        }
+
+        var defIndex = source.ProductType == StoreProductType.Item
+            ? source.DefIndex != 0 ? source.DefIndex : source.ProductId
+            : 0;
+        if (source.ProductType == StoreProductType.Item && components.Count != 0
+            || source.ProductType == StoreProductType.Set && components.Count == 0
+            || components.Any(component => component.ProductId == source.ProductId))
+        {
+            return false;
+        }
+
+        try
+        {
+            var normalizedComponents = components
+                .GroupBy(component => component.ProductId)
+                .Select(group => new StoreCatalogComponent(
+                    group.Key,
+                    checked((uint)group.Sum(value => (long)value.Quantity))))
+                .ToArray();
+            normalized = source with
+            {
+                DefIndex = defIndex,
+                Name = source.Name.Trim(),
+                Category = source.Category?.Trim() ?? string.Empty,
+                Description = source.Description?.Trim() ?? string.Empty,
+                Components = normalizedComponents
+            };
             return true;
+        }
+        catch (OverflowException)
+        {
+            return false;
+        }
+    }
+
+    private static void ApplyCatalogEntity(
+        D2stDbContext db,
+        StoreCatalogItemEntity entity,
+        StoreCatalogItem item,
+        DateTimeOffset now)
+    {
+        entity.DefIndex = item.ProductType == StoreProductType.Item ? item.DefIndex : 0;
+        entity.ProductType = item.ProductType;
+        entity.PriceCredits = item.PriceCredits;
+        entity.Name = item.Name;
+        entity.Category = item.Category;
+        entity.Description = item.Description;
+        entity.BuildVersion = item.BuildVersion;
+        entity.Active = item.Active;
+        entity.UpdatedAt = now;
+
+        var oldComponents = db.StoreCatalogComponents
+            .Where(component => component.ProductId == item.ProductId)
+            .ToList();
+        db.StoreCatalogComponents.RemoveRange(oldComponents);
+        foreach (var component in item.Components)
+        {
+            db.StoreCatalogComponents.Add(new StoreCatalogComponentEntity
+            {
+                ProductId = item.ProductId,
+                ComponentProductId = component.ProductId,
+                Quantity = component.Quantity
+            });
         }
     }
 

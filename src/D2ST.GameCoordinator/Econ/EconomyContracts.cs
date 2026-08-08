@@ -54,6 +54,11 @@ public sealed record StoreOperationResult(
         new(false, code, message, 0, [], [], wallet ?? WalletSnapshot.Empty(0));
 }
 
+public sealed record CatalogImportSummary(
+    int ImportedCount,
+    int UpdatedCount,
+    int SkippedCount);
+
 /// <summary>
 /// Persistence boundary for the local wallet, catalog and econ inventory. The
 /// GC project consumes this contract without taking a dependency on EF Core.
@@ -85,4 +90,8 @@ public interface IEconomyStore
     StoreOperationResult Purchase(uint accountId, IReadOnlyList<StorePurchaseLine> lines);
 
     bool UpsertCatalogItem(StoreCatalogItem item);
+
+    CatalogImportSummary ImportCatalog(
+        IReadOnlyList<StoreCatalogItem> items,
+        bool preserveExisting);
 }

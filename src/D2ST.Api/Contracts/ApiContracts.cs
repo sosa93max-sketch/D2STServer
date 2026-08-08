@@ -195,6 +195,53 @@ public sealed record StoreCatalogItemResponse(
     IReadOnlyList<StoreCatalogComponent> Components,
     uint OwnedQuantity);
 
+public sealed record DotaCatalogDiscoverRequest(
+    string DotaPath,
+    string? Search = null,
+    int Take = 500);
+
+public sealed record DotaCatalogImportRequest(
+    string DotaPath,
+    long DefaultPriceCredits = 100,
+    bool Activate = false,
+    uint? BuildVersion = null,
+    IReadOnlyList<uint>? DefIndexes = null);
+
+public sealed record DotaCatalogDefinitionResponse(
+    uint DefIndex,
+    string Name,
+    string ItemName,
+    string Description,
+    string Prefab,
+    string Slot,
+    string Quality,
+    string Rarity,
+    string ImageInventory,
+    IReadOnlyList<string> HeroNames);
+
+public sealed record DotaCatalogDiscoverResponse(
+    string DotaPath,
+    string PakPath,
+    string? SteamInfPath,
+    uint ClientVersion,
+    int ParsedDefinitionCount,
+    int CandidateCount,
+    IReadOnlyList<DotaCatalogDefinitionResponse> Items);
+
+public sealed record DotaCatalogImportResponse(
+    string DotaPath,
+    string PakPath,
+    string? SteamInfPath,
+    uint ClientVersion,
+    int ParsedDefinitionCount,
+    int CandidateCount,
+    int ImportedCount,
+    int UpdatedCount,
+    int SkippedCount,
+    long DefaultPriceCredits,
+    bool Activate,
+    string Message);
+
 public sealed record StoreWalletResponse(
     uint AccountId,
     long BalanceCredits,

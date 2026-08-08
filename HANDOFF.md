@@ -570,6 +570,43 @@ official Steam wallet, Valve Market and Valve item ownership:
   client purchase/finalize sequence remains pending; server protocol and API
   paths are compile/startup/smoke verified only.
 
+### Phase 12 follow-up — client catalog discovery and administration
+
+The administrator can now discover the definitions that the target Dota client
+actually carries instead of inventing `DefIndex` values manually:
+
+- `DotaCatalogImporter` reads `pak01_dir.vpk`, extracts
+  `scripts/items/items_game.txt`, parses client item definitions and reads
+  `ClientVersion` from `steam.inf` when available.
+- The importer keeps cosmetic candidates (hero wearables and global loadout
+  cosmetics) and excludes defaults, tools, recipes, treasures and other
+  non-equipable definitions. The gameplay `item_cost` field is deliberately
+  ignored because it is gold, not local store credits.
+- `GET /api/admin/store/catalog` lists active and inactive products for an
+  authenticated administrator. `POST .../discover` previews the client
+  definitions and `POST .../import` upserts them with a configurable default
+  price. Existing prices and activation states are preserved; new products are
+  inactive by default unless explicitly activated.
+- `/admin` now has a Catálogo tab with client-path discovery, import, product
+  editing, activation/deactivation and manual set creation. Sets use existing
+  product IDs as components and do not require a client `DefIndex` of their
+  own.
+
+The path supplied to discovery is resolved on the machine running D2STServer.
+If the server is remote, the Dota installation must be copied/available there
+or a separate export/upload flow must be added; a browser cannot read another
+machine's local VPK by path alone.
+
+### Evidence for catalog discovery and administration
+
+- `/tmp/d2st-dotnet/dotnet build D2STServer.sln -c Release --no-restore`:
+  passed with 0 warnings and 0 errors after the importer, batch upsert and UI
+  changes.
+- `admin.html` JavaScript syntax check: passed.
+- `git diff --check`: passed.
+- A real Windows Dota installation is still required to validate the VPK
+  reader's discovered count, build number and the resulting client store UI.
+
 ## Match close data flow
 
 ```text
@@ -618,9 +655,10 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Populate the local store catalog from item definitions confirmed by the
-   target build, then validate one real Windows client through catalog display,
-   balance, purchase, reconnect and inventory rendering.
+1. Run `/admin` on the machine with the target Dota installation, discover the
+   build 6783 definitions, assign prices/activate the intended products, then
+   validate one real Windows client through catalog display, balance, purchase,
+   reconnect and inventory rendering.
 2. Validate web-account login, friend request and conduct/feature-gate refresh,
    then continue with Dota bots through create -> enable `FillWithBots` ->
    launch -> play -> `7004` -> reward -> purchase -> reconnect/profile/history.
@@ -692,8 +730,13 @@ is the planning reference for the work that follows the real-client gate.
   `__EFMigrationsHistory` existed; it is not used for fresh databases.
 - The local economy is not Steam Wallet or Valve Market. `StoreCatalogItems`
   starts empty on a fresh installation and must be populated by an administrator
-  with definitions/prices appropriate for the target client build. The server
-  does not claim official Valve ownership or market values.
+  with definitions/prices appropriate for the target client build. The new
+  importer reads local client definitions, but it does not infer local prices
+  from `item_cost` and does not claim official Valve ownership or market values.
+- Client catalog discovery reads the VPK on the D2STServer machine. A remote
+  browser cannot make the server read a path on the administrator's PC; use a
+  shared installation/export or add a dedicated upload path before deploying
+  the server on another host.
 - The match reward is currently a fixed local policy: `100` credits per clean
   winning human row, once per persisted `MatchId`/account reference. No
   refund, trade, gift, real-money payment or cross-server wallet sync exists.

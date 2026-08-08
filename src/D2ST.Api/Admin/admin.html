@@ -95,6 +95,18 @@
   .hide { display: none !important; }
   .actions { white-space: nowrap; }
   .meta { font-size: 12px; color: var(--muted); }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .hint { color: var(--muted); font-size: 12px; line-height: 1.5; margin: -4px 0 14px; }
+  .wide { width: 100%; }
+  .check { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
+  .check input { min-width: auto; }
+  .catalog-table { overflow-x: auto; }
+  .catalog-table table { min-width: 900px; }
+  .tag { display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border); }
+  .tag.on { color: var(--green); border-color: var(--green); }
+  .tag.off { color: var(--muted); }
+  .muted { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -103,7 +115,7 @@
     <div class="logo">D2</div>
     <div>
       <h1>D2ST · Administración</h1>
-      <div class="sub">Gestión de usuarios del servidor Dota 2</div>
+      <div class="sub">Gestión de usuarios y economía local del servidor Dota 2</div>
     </div>
     <div class="spacer"></div>
     <span id="whoami" class="pill hide"></span>
@@ -123,6 +135,12 @@
 
   <!-- panel -->
   <section id="panel" class="hide">
+    <div class="tabs">
+      <button id="usersTab" class="tab active">Usuarios</button>
+      <button id="catalogTab" class="tab">Catálogo</button>
+    </div>
+
+    <div id="usersView">
     <div class="card">
       <h2>Crear usuario</h2>
       <div class="row">
@@ -139,6 +157,62 @@
       <div id="tableWrap"></div>
       <div id="usersMsg" class="msg"></div>
     </div>
+    </div>
+
+    <div id="catalogView" class="hide">
+      <div class="card">
+        <h2>Detectar productos del cliente</h2>
+        <div class="hint">La ruta debe existir en el equipo donde se ejecuta D2STServer. El importador lee <code>pak01_dir.vpk</code>, extrae <code>scripts/items/items_game.txt</code> y detecta el ClientVersion de <code>steam.inf</code>.</div>
+        <div class="row">
+          <input id="dotaPath" class="grow" placeholder="C:\\Program Files (x86)\\Steam\\steamapps\\common\\dota 2 beta">
+          <input id="catalogSearch" placeholder="Buscar ID, nombre, héroe o slot">
+          <button id="discoverBtn" class="accent">Detectar</button>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+          <input id="defaultPrice" type="number" min="1" value="100" placeholder="Precio base">
+          <label class="check"><input id="activateImported" type="checkbox"> Activar productos nuevos</label>
+          <button id="importBtn">Importar al catálogo</button>
+        </div>
+        <div id="catalogSource" class="meta" style="margin-top: 12px;"></div>
+        <div id="discoverMsg" class="msg"></div>
+      </div>
+
+      <div class="card">
+        <h2>Definiciones reconocidas por el cliente <span id="discoveryCounts" class="meta"></span></h2>
+        <div id="discoveryWrap" class="catalog-table"><div class="empty">Indica la ruta de Dota y pulsa “Detectar”.</div></div>
+      </div>
+
+      <div class="card">
+        <h2>Crear o editar producto</h2>
+        <div class="hint">Para un set usa Tipo “Set”, deja DefIndex en 0 y escribe componentes con el formato <code>ProductId:Cantidad</code>, separados por comas. Ejemplo: <code>1001:1,1002:1</code>.</div>
+        <div class="row">
+          <input id="catalogProductId" type="number" min="1" placeholder="ProductId">
+          <input id="catalogDefIndex" type="number" min="0" placeholder="DefIndex">
+          <input id="catalogName" class="grow" placeholder="Nombre">
+          <select id="catalogType" style="background:#0d1117;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;">
+            <option value="0">Item</option>
+            <option value="1">Set</option>
+          </select>
+          <input id="catalogPrice" type="number" min="1" placeholder="Precio">
+        </div>
+        <div class="row" style="margin-top: 10px;">
+          <input id="catalogCategory" placeholder="Categoría">
+          <input id="catalogBuildVersion" type="number" min="0" placeholder="BuildVersion">
+          <input id="catalogDescription" class="grow" placeholder="Descripción opcional">
+          <input id="catalogComponents" class="grow" placeholder="Componentes (1001:1,1002:1)">
+          <label class="check"><input id="catalogActive" type="checkbox"> Activo</label>
+          <button id="saveCatalogBtn" class="accent">Guardar producto</button>
+          <button id="clearCatalogBtn">Limpiar</button>
+        </div>
+        <div id="manualCatalogMsg" class="msg"></div>
+      </div>
+
+      <div class="card">
+        <h2>Catálogo publicado <span id="catalogCounts" class="meta"></span></h2>
+        <div id="catalogWrap" class="catalog-table"><div class="empty">No hay productos cargados.</div></div>
+        <div id="catalogMsg" class="msg"></div>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -146,6 +220,8 @@
 const $ = (id) => document.getElementById(id);
 let token = sessionStorage.getItem('d2st_admin_token') || '';
 let adminName = sessionStorage.getItem('d2st_admin_user') || '';
+let catalogItems = [];
+let discoveredItems = [];
 
 async function api(path, options = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
@@ -188,6 +264,7 @@ function enter() {
   $('whoami').classList.remove('hide');
   $('logoutBtn').classList.remove('hide');
   loadUsers();
+  loadCatalog();
 }
 
 function logout() {
@@ -317,6 +394,248 @@ async function loadUsers() {
   wrap.appendChild(table);
 }
 
+function showView(view) {
+  const catalog = view === 'catalog';
+  $('usersView').classList.toggle('hide', catalog);
+  $('catalogView').classList.toggle('hide', !catalog);
+  $('usersTab').classList.toggle('active', !catalog);
+  $('catalogTab').classList.toggle('active', catalog);
+}
+
+function catalogTypeLabel(item) {
+  return Number(item.ProductType) === 1 ? 'Set' : 'Item';
+}
+
+function catalogComponentsLabel(item) {
+  const components = item.Components || [];
+  return components.length
+    ? components.map((component) => component.ProductId + ' × ' + component.Quantity).join(', ')
+    : '—';
+}
+
+function renderCatalog() {
+  const wrap = $('catalogWrap');
+  wrap.innerHTML = '';
+  const active = catalogItems.filter((item) => item.Active).length;
+  $('catalogCounts').textContent = catalogItems.length + ' productos · ' + active + ' activos';
+  if (catalogItems.length === 0) {
+    wrap.innerHTML = '<div class="empty">No hay productos cargados.</div>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  const head = document.createElement('tr');
+  ['ProductId', 'DefIndex', 'Nombre', 'Tipo', 'Precio', 'Build', 'Componentes', 'Estado', 'Acciones']
+    .forEach((label) => {
+      const th = document.createElement('th');
+      th.textContent = label;
+      head.appendChild(th);
+    });
+  table.appendChild(head);
+
+  for (const item of catalogItems) {
+    const row = document.createElement('tr');
+    row.appendChild(tr('', item.ProductId));
+    row.appendChild(tr('', item.DefIndex || '—'));
+    row.appendChild(tr('', item.Name));
+    row.appendChild(tr('', catalogTypeLabel(item)));
+    row.appendChild(tr('', item.PriceCredits + ' créditos'));
+    row.appendChild(tr('', item.BuildVersion || '—'));
+    row.appendChild(tr('', catalogComponentsLabel(item), 'meta'));
+    const state = document.createElement('td');
+    const tag = document.createElement('span');
+    tag.className = 'tag ' + (item.Active ? 'on' : 'off');
+    tag.textContent = item.Active ? 'Activo' : 'Inactivo';
+    state.appendChild(tag);
+    row.appendChild(state);
+    const actions = document.createElement('td');
+    actions.className = 'actions';
+    actions.appendChild(actionLink('Editar', '', () => editCatalog(item)));
+    actions.appendChild(actionLink(item.Active ? 'Desactivar' : 'Activar', item.Active ? 'danger' : '', () => toggleCatalog(item)));
+    row.appendChild(actions);
+    table.appendChild(row);
+  }
+  wrap.appendChild(table);
+}
+
+function renderDiscovery() {
+  const wrap = $('discoveryWrap');
+  wrap.innerHTML = '';
+  $('discoveryCounts').textContent = discoveredItems.length
+    ? discoveredItems.length + ' mostrados'
+    : '';
+  if (discoveredItems.length === 0) {
+    wrap.innerHTML = '<div class="empty">No se encontraron definiciones con ese filtro.</div>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  const head = document.createElement('tr');
+  ['DefIndex', 'Nombre', 'ItemName', 'Slot', 'Prefab', 'Calidad', 'Héroes'].forEach((label) => {
+    const th = document.createElement('th');
+    th.textContent = label;
+    head.appendChild(th);
+  });
+  table.appendChild(head);
+  for (const item of discoveredItems) {
+    const row = document.createElement('tr');
+    row.appendChild(tr('', item.DefIndex));
+    row.appendChild(tr('', item.Name));
+    row.appendChild(tr('', item.ItemName || '—', 'meta'));
+    row.appendChild(tr('', item.Slot || '—'));
+    row.appendChild(tr('', item.Prefab || '—', 'meta'));
+    row.appendChild(tr('', item.Quality || item.Rarity || '—'));
+    row.appendChild(tr('', (item.HeroNames || []).join(', ') || 'Global', 'meta'));
+    table.appendChild(row);
+  }
+  wrap.appendChild(table);
+}
+
+async function loadCatalog() {
+  const result = await api('/api/admin/store/catalog');
+  if (!result.ok) {
+    if (result.status === 401 || result.status === 403) { logout(); return; }
+    show($('catalogMsg'), 'No se pudo cargar el catálogo (HTTP ' + result.status + ')');
+    return;
+  }
+  catalogItems = result.body || [];
+  renderCatalog();
+}
+
+async function discoverCatalog() {
+  const path = $('dotaPath').value.trim();
+  if (!path) { show($('discoverMsg'), 'Indica la ruta de instalación de Dota 2.'); return; }
+  const result = await api('/api/admin/store/catalog/discover', {
+    method: 'POST',
+    body: JSON.stringify({ DotaPath: path, Search: $('catalogSearch').value.trim() || null, Take: 1000 })
+  });
+  if (!result.ok) { show($('discoverMsg'), messageOf(result)); return; }
+  const body = result.body;
+  discoveredItems = body.Items || [];
+  $('catalogSource').textContent = 'ClientVersion: ' + (body.ClientVersion || 'no detectado')
+    + ' · Definiciones leídas: ' + body.ParsedDefinitionCount
+    + ' · Candidatos cosméticos: ' + body.CandidateCount
+    + ' · VPK: ' + body.PakPath;
+  show($('discoverMsg'), 'Detección completada. Revisa la lista y luego importa.', 'ok');
+  renderDiscovery();
+}
+
+async function importCatalog() {
+  const path = $('dotaPath').value.trim();
+  const price = parseInt($('defaultPrice').value, 10);
+  if (!path) { show($('discoverMsg'), 'Indica la ruta de instalación de Dota 2.'); return; }
+  if (!Number.isFinite(price) || price <= 0) { show($('discoverMsg'), 'El precio base debe ser mayor que cero.'); return; }
+  const result = await api('/api/admin/store/catalog/import', {
+    method: 'POST',
+    body: JSON.stringify({
+      DotaPath: path,
+      DefaultPriceCredits: price,
+      Activate: $('activateImported').checked
+    })
+  });
+  if (!result.ok) { show($('discoverMsg'), messageOf(result)); return; }
+  show($('discoverMsg'), result.body.Message || 'Catálogo importado.', 'ok');
+  await loadCatalog();
+}
+
+function parseComponents(value) {
+  if (!value.trim()) return [];
+  const components = [];
+  for (const raw of value.split(',')) {
+    const parts = raw.trim().split(':');
+    const productId = parseInt(parts[0], 10);
+    const quantity = parseInt(parts[1] || '1', 10);
+    if (!Number.isFinite(productId) || productId <= 0 || !Number.isFinite(quantity) || quantity <= 0) return null;
+    components.push({ ProductId: productId, Quantity: quantity });
+  }
+  return components;
+}
+
+function clearCatalogForm() {
+  $('catalogProductId').value = '';
+  $('catalogDefIndex').value = '';
+  $('catalogName').value = '';
+  $('catalogType').value = '0';
+  $('catalogPrice').value = '';
+  $('catalogCategory').value = '';
+  $('catalogBuildVersion').value = '';
+  $('catalogDescription').value = '';
+  $('catalogComponents').value = '';
+  $('catalogActive').checked = false;
+}
+
+function editCatalog(item) {
+  $('catalogProductId').value = item.ProductId;
+  $('catalogDefIndex').value = item.DefIndex || 0;
+  $('catalogName').value = item.Name || '';
+  $('catalogType').value = String(item.ProductType || 0);
+  $('catalogPrice').value = item.PriceCredits;
+  $('catalogCategory').value = item.Category || '';
+  $('catalogBuildVersion').value = item.BuildVersion || 0;
+  $('catalogDescription').value = item.Description || '';
+  $('catalogComponents').value = (item.Components || [])
+    .map((component) => component.ProductId + ':' + component.Quantity).join(',');
+  $('catalogActive').checked = !!item.Active;
+  $('catalogName').focus();
+}
+
+async function saveCatalog() {
+  const productId = parseInt($('catalogProductId').value, 10);
+  const defIndex = parseInt($('catalogDefIndex').value || '0', 10);
+  const name = $('catalogName').value.trim();
+  const productType = parseInt($('catalogType').value, 10);
+  const price = parseInt($('catalogPrice').value, 10);
+  const components = parseComponents($('catalogComponents').value);
+  if (!Number.isFinite(productId) || productId <= 0 || !name || !Number.isFinite(price) || price <= 0) {
+    show($('manualCatalogMsg'), 'ProductId, nombre y precio son obligatorios; el precio debe ser mayor que cero.');
+    return;
+  }
+  if (components === null || (productType === 0 && components.length > 0) || (productType === 1 && components.length === 0)) {
+    show($('manualCatalogMsg'), 'Los componentes no son válidos para el tipo seleccionado.');
+    return;
+  }
+  const result = await api('/api/admin/store/catalog', {
+    method: 'POST',
+    body: JSON.stringify({
+      ProductId: productId,
+      DefIndex: Number.isFinite(defIndex) ? defIndex : 0,
+      Name: name,
+      ProductType: productType,
+      PriceCredits: price,
+      Category: $('catalogCategory').value.trim(),
+      Description: $('catalogDescription').value.trim(),
+      BuildVersion: parseInt($('catalogBuildVersion').value || '0', 10),
+      Active: $('catalogActive').checked,
+      Components: components
+    })
+  });
+  if (!result.ok) { show($('manualCatalogMsg'), messageOf(result)); return; }
+  show($('manualCatalogMsg'), 'Producto guardado.', 'ok');
+  await loadCatalog();
+}
+
+async function toggleCatalog(item) {
+  const action = item.Active ? 'desactivar' : 'activar';
+  if (!confirm('¿Quieres ' + action + ' "' + item.Name + '"?')) return;
+  const result = await api('/api/admin/store/catalog', {
+    method: 'POST',
+    body: JSON.stringify({
+      ProductId: item.ProductId,
+      DefIndex: item.DefIndex || 0,
+      Name: item.Name,
+      ProductType: Number(item.ProductType),
+      PriceCredits: item.PriceCredits,
+      Category: item.Category || '',
+      Description: item.Description || '',
+      BuildVersion: item.BuildVersion || 0,
+      Active: !item.Active,
+      Components: item.Components || []
+    })
+  });
+  if (result.ok) loadCatalog();
+  else alert(messageOf(result));
+}
+
 async function adjustMmr(user, sign) {
   const amount = prompt((sign > 0 ? 'Sumar' : 'Restar') + ' MMR a ' + user.Username + ' (máximo 5000):', '25');
   if (amount == null) return;
@@ -419,6 +738,13 @@ $('loginPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') login
 $('logoutBtn').addEventListener('click', logout);
 $('createBtn').addEventListener('click', createUser);
 $('newPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') createUser(); });
+$('usersTab').addEventListener('click', () => showView('users'));
+$('catalogTab').addEventListener('click', () => showView('catalog'));
+$('discoverBtn').addEventListener('click', discoverCatalog);
+$('importBtn').addEventListener('click', importCatalog);
+$('saveCatalogBtn').addEventListener('click', saveCatalog);
+$('clearCatalogBtn').addEventListener('click', clearCatalogForm);
+$('catalogSearch').addEventListener('keydown', (e) => { if (e.key === 'Enter') discoverCatalog(); });
 
 if (token) enter();
 </script>

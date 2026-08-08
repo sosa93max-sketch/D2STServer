@@ -32,6 +32,7 @@ builder.Services.AddSingleton<IMatchStore, MatchStore>();
 builder.Services.AddSingleton<IProfileStore, ProfileCardStore>();
 builder.Services.AddSingleton<IShowcaseStore, ShowcaseStore>();
 builder.Services.AddSingleton<IEconomyStore, EconomyStore>();
+builder.Services.AddSingleton<DotaCatalogImporter>();
 builder.Services.AddGameCoordinator(builder.Configuration, builder.Environment.ContentRootPath);
 
 // The shim serializes/deserializes with PascalCase member names, so keep the

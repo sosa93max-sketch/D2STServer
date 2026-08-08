@@ -211,8 +211,8 @@ una fuente persistente; no deben rellenarse con valores de conveniencia.
 
 ## 6. Fase 8 — showcase, economía local y ownership
 
-**Estado: showcase y economía local implementados; catálogo real del build y
-validación del cliente pendientes.**
+**Estado: showcase, economía local e importación administrativa del catálogo
+implementados; validación del cliente real pendiente.**
 
 Los handlers `8886 -> 8887` y `8888 -> 8889` ya persisten y sirven por cuenta
 los showcases de perfil y mini perfil. El editor solo puede escribir para la
@@ -228,8 +228,11 @@ de forma idempotente; el checkout reserva, debita y entrega los componentes
 del producto dentro de transacciones SQLite. La consulta REST está disponible
 en `/api/store/catalog`, `/api/store/wallet`, `/api/store/transactions` y
 `/api/store/inventory`; el catálogo se administra mediante
-`POST /api/admin/store/catalog`. La ruta GC cubre ventas, init, finalize,
-cancelación y limpieza de transacciones pendientes.
+`GET/POST /api/admin/store/catalog`. `/api/admin/store/catalog/discover` lee
+las definiciones cosméticas del `pak01_dir.vpk` del cliente y
+`/api/admin/store/catalog/import` las incorpora con precio base configurable,
+conservando precios y activación existentes. La ruta GC cubre ventas, init,
+finalize, cancelación y limpieza de transacciones pendientes.
 
 La ampliación aún pendiente requiere captura del cliente y catálogo local del
 build objetivo:
@@ -338,10 +341,12 @@ necesita, porque su coste de almacenamiento y privacidad es mayor.
 
 ## 10. Fase 12 — catálogo de héroes e ítems del build objetivo
 
-**Prioridad: P1. Dependencia: archivos disponibles del cliente 6783.**
+**Prioridad: P1. Estado: importación de ítems implementada; dependencia
+pendiente: archivos y validación del cliente 6783 en Windows.**
 
-Los endpoints actuales conocen los héroes que ya aparecen en partidas. Para
-mostrar un catálogo completo y coherente con el cliente se puede:
+El panel `/admin`, mediante el importador local, ya puede leer
+`pak01_dir.vpk/scripts/items/items_game.txt` y `steam.inf`. Para completar y
+validar un catálogo coherente con el cliente se debe:
 
 - importar héroes desde los archivos del build objetivo;
 - importar ítems, nombres, IDs, tipos e imágenes disponibles localmente;
@@ -351,6 +356,11 @@ mostrar un catálogo completo y coherente con el cliente se puede:
 - usar el catálogo para validar showcase y tarjeta de perfil;
 - exponer héroes sin partidas en listas cuando el contrato lo requiera;
 - añadir una tarea administrativa de actualización/reindexación.
+
+Los productos nuevos se importan inactivos por defecto y requieren precio local
+antes de ponerse a la venta. Los sets siguen siendo una composición
+administrativa de productos importados; el coste de oro de `items_game.txt` no
+se usa como precio de la tienda.
 
 El catálogo local no equivale a tener la economía oficial. No se deben crear
 inventarios o valores de mercado que el servidor no pueda respaldar.
@@ -530,7 +540,7 @@ P0  Robustecer cierres, desconexiones, reconexiones y duplicados
 P1  Ampliar perfil, 8034/8035 y estadísticas derivadas
 P1  Validar showcase contra catálogo/ownership local y completar variantes
 P1  Añadir detalle de partida, analítica y observabilidad
-P1  Importar catálogo del build objetivo
+P1  Validar/importar catálogo del build objetivo desde `/admin` en Windows
 P2  Integrar party, invitaciones, chat y visibilidad social
 P2  Añadir espectadores
 P2  Añadir matchmaking local

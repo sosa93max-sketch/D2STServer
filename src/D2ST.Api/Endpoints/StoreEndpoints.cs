@@ -1,4 +1,5 @@
 using D2ST.Api.Contracts;
+using D2ST.Api.Economy;
 using D2ST.GameCoordinator.Econ;
 using D2ST.Persistence;
 using D2ST.Steam;
@@ -72,6 +73,29 @@ public static class StoreEndpoints
                 inventory.CacheVersion(session.Account.SteamId)));
         });
 
+        app.MapGet("/api/admin/store/catalog", async (
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration configuration,
+            IEconomyStore economy,
+            CancellationToken cancellationToken) =>
+        {
+            var authorization = await AuthorizeAdminAsync(
+                http, sessions, db, configuration, cancellationToken);
+            if (!authorization.Authenticated)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!authorization.Authorized)
+            {
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            return Results.Ok(ToCatalogResponse(economy.GetCatalog(false), []));
+        });
+
         app.MapPost("/api/store/purchase", (
             StorePurchaseRequest request,
             HttpContext http,
@@ -139,8 +163,184 @@ public static class StoreEndpoints
                 : Results.BadRequest(new AdminMessageResponse("El producto o sus componentes no son válidos."));
         });
 
+        app.MapPost("/api/admin/store/catalog/discover", async (
+            DotaCatalogDiscoverRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration configuration,
+            DotaCatalogImporter importer,
+            CancellationToken cancellationToken) =>
+        {
+            var authorization = await AuthorizeAdminAsync(
+                http, sessions, db, configuration, cancellationToken);
+            if (!authorization.Authenticated)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!authorization.Authorized)
+            {
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            try
+            {
+                var source = importer.Read(request.DotaPath);
+                var items = source.Items.AsEnumerable();
+                if (!string.IsNullOrWhiteSpace(request.Search))
+                {
+                    var search = request.Search.Trim();
+                    items = items.Where(item =>
+                        item.DefIndex.ToString().Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        item.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        item.ItemName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        item.Slot.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        item.Prefab.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        item.HeroNames.Any(hero => hero.Contains(search, StringComparison.OrdinalIgnoreCase)));
+                }
+
+                var take = Math.Clamp(request.Take, 25, 1000);
+                var selected = items.Take(take).Select(ToDotaDefinitionResponse).ToArray();
+                return Results.Ok(new DotaCatalogDiscoverResponse(
+                    source.DotaPath,
+                    source.PakPath,
+                    source.SteamInfPath,
+                    source.ClientVersion,
+                    source.ParsedDefinitionCount,
+                    source.Items.Count,
+                    selected));
+            }
+            catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
+            {
+                return Results.BadRequest(new AdminMessageResponse(exception.Message));
+            }
+        });
+
+        app.MapPost("/api/admin/store/catalog/import", async (
+            DotaCatalogImportRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration configuration,
+            IEconomyStore economy,
+            DotaCatalogImporter importer,
+            CancellationToken cancellationToken) =>
+        {
+            var authorization = await AuthorizeAdminAsync(
+                http, sessions, db, configuration, cancellationToken);
+            if (!authorization.Authenticated)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!authorization.Authorized)
+            {
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            if (request.DefaultPriceCredits <= 0)
+            {
+                return Results.BadRequest(new AdminMessageResponse(
+                    "DefaultPriceCredits debe ser mayor que cero."));
+            }
+
+            try
+            {
+                var source = importer.Read(request.DotaPath);
+                var selectedIndexes = request.DefIndexes is { Count: > 0 }
+                    ? request.DefIndexes.ToHashSet()
+                    : null;
+                var definitions = selectedIndexes is null
+                    ? source.Items
+                    : source.Items.Where(item => selectedIndexes.Contains(item.DefIndex)).ToArray();
+                var existing = economy.GetCatalog(false);
+                var buildVersion = request.BuildVersion ?? source.ClientVersion;
+                var products = definitions.Select(definition =>
+                {
+                    var current = existing.FirstOrDefault(item =>
+                        item.ProductType == D2ST.Core.Economy.StoreProductType.Item &&
+                        (item.ProductId == definition.DefIndex || item.DefIndex == definition.DefIndex));
+                    var productId = current?.ProductId ?? definition.DefIndex;
+                    var price = current?.PriceCredits ?? request.DefaultPriceCredits;
+                    var active = current?.Active ?? request.Activate;
+                    var category = string.IsNullOrWhiteSpace(definition.Slot)
+                        ? definition.Prefab
+                        : definition.Slot;
+                    return new StoreCatalogItem(
+                        productId,
+                        definition.DefIndex,
+                        definition.Name,
+                        D2ST.Core.Economy.StoreProductType.Item,
+                        price,
+                        category,
+                        definition.Description,
+                        buildVersion,
+                        active,
+                        []);
+                }).ToArray();
+                var result = economy.ImportCatalog(products, preserveExisting: true);
+                var activationMessage = request.Activate
+                    ? "Los productos nuevos se activaron."
+                    : "Los productos nuevos quedaron desactivados hasta que el administrador los active.";
+                return Results.Ok(new DotaCatalogImportResponse(
+                    source.DotaPath,
+                    source.PakPath,
+                    source.SteamInfPath,
+                    source.ClientVersion,
+                    source.ParsedDefinitionCount,
+                    source.Items.Count,
+                    result.ImportedCount,
+                    result.UpdatedCount,
+                    result.SkippedCount,
+                    request.DefaultPriceCredits,
+                    request.Activate,
+                    $"Catálogo importado: {result.ImportedCount} nuevos, {result.UpdatedCount} actualizados, {result.SkippedCount} omitidos. {activationMessage}"));
+            }
+            catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
+            {
+                return Results.BadRequest(new AdminMessageResponse(exception.Message));
+            }
+        });
+
         return app;
     }
+
+    private static async Task<AdminAuthorization> AuthorizeAdminAsync(
+        HttpContext http,
+        ISessionStore sessions,
+        D2stDbContext db,
+        IConfiguration configuration,
+        CancellationToken cancellationToken)
+    {
+        var session = http.Authenticate(sessions);
+        if (session is null)
+        {
+            return new AdminAuthorization(false, false);
+        }
+
+        var account = await db.Accounts.AsNoTracking()
+            .SingleOrDefaultAsync(row => row.AccountId == session.Account.AccountId, cancellationToken);
+        var admins = configuration.GetSection("Admin:Usernames").Get<List<string>>() ?? [];
+        return new AdminAuthorization(
+            true,
+            account is not null && admins.Contains(account.Username, StringComparer.OrdinalIgnoreCase));
+    }
+
+    private static DotaCatalogDefinitionResponse ToDotaDefinitionResponse(DotaCatalogDefinition item) =>
+        new(
+            item.DefIndex,
+            item.Name,
+            item.ItemName,
+            item.Description,
+            item.Prefab,
+            item.Slot,
+            item.Quality,
+            item.Rarity,
+            item.ImageInventory,
+            item.HeroNames);
+
+    private sealed record AdminAuthorization(bool Authenticated, bool Authorized);
 
     private static IReadOnlyList<StoreCatalogItemResponse> ToCatalogResponse(
         IReadOnlyList<StoreCatalogItem> catalog,
