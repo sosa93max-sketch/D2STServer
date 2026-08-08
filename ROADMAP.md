@@ -72,6 +72,8 @@ publicados. El detalle y la evidencia se encuentran en
   `7606 -> 7607`.
 - Migración EF Core `20260808144219_InitialSchema` y puente compatible para
   bases antiguas creadas con el bootstrap SQL.
+- Las dependencias de diseño de EF Core/Roslyn no se distribuyen con el
+  servidor; las migraciones ya generadas y `Database.Migrate()` siguen activas.
 
 ### Perfil
 
@@ -471,6 +473,11 @@ Cuando el flujo real tenga cobertura suficiente, se puede añadir:
 No se añadirá un proyecto de tests automáticamente si no aporta valor al
 entorno actual; por ahora la verificación mínima sigue siendo build Release,
 smoke de arranque y cliente Windows real.
+
+La generación de nuevas migraciones es una tarea de desarrollo separada: se
+debe habilitar temporalmente `Microsoft.EntityFrameworkCore.Design` o usar un
+proyecto de tooling, generar y revisar la migración, y retirar después esa
+dependencia antes del despliegue. El servidor en ejecución no necesita Roslyn.
 
 ## 16. Ideas futuras separadas del alcance aprobado
 

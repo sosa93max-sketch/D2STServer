@@ -246,9 +246,12 @@ already-migrated databases:
 - The legacy bridge is deliberately kept separate from the normal path so a
   later migration can evolve the schema without re-running the historical SQL
   on every startup.
-- `Microsoft.EntityFrameworkCore.Design` is referenced as a private build
-  dependency in the persistence and API projects so future migrations can be
-  generated from the checked-in context.
+- The runtime projects do not carry the EF Core design-time/Roslyn dependency.
+  The checked-in migration classes and `Database.Migrate()` are sufficient for
+  normal startup. Future migration generation must temporarily enable
+  `Microsoft.EntityFrameworkCore.Design` (or use a separate tooling project)
+  and then keep the generated migration checked in without shipping the design
+  package in the server output.
 
 ### Evidence for Phase 6
 
@@ -262,6 +265,29 @@ already-migrated databases:
   `20260808144219_InitialSchema`.
 - The local conduct policy remains unchanged at score 10,000 as approved; this
   phase only changes schema management.
+
+### Runtime dependency cleanup — completed in this working tree
+
+`Microsoft.EntityFrameworkCore.Design` was removed from `D2ST.Api` and
+`D2ST.Persistence`. It was the only project-level path that brought
+`Microsoft.CodeAnalysis`/Roslyn into the server output; no application source
+used those APIs. The checked-in `InitialSchema` migration remains active, so
+new and existing databases continue to use `Database.Migrate()` at startup.
+
+This cleanup intentionally trades automatic in-repository `dotnet ef` commands
+for a smaller runtime dependency set. When a new migration is needed, enable
+the design package temporarily or run the tooling from a separate project,
+generate the migration, verify it, and remove the design dependency again
+before publishing the server.
+
+### Evidence for runtime dependency cleanup
+
+- `dotnet restore D2STServer.sln`: passed after removing both references.
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- Release output no longer contains `Microsoft.CodeAnalysis*.dll` files.
+- Fresh SQLite startup smoke: migrations applied and the API reached its
+  listening state without the design-time assemblies.
 
 ### Bot matches — completed in this working tree
 
@@ -388,6 +414,8 @@ is the planning reference for the work that follows the real-client gate.
 - The normal database path is migration-managed. The old SQL bootstrap remains
   only as a one-time compatibility bridge for databases created before
   `__EFMigrationsHistory` existed; it is not used for fresh databases.
+- EF Core design-time tooling is intentionally not part of the server projects;
+  future migration generation requires the temporary workflow described above.
 - The fallback server lookup for simultaneous local launches remains a known
   risk until the game-server/lobby association is made explicit for every
   launch.
