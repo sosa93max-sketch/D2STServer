@@ -54,6 +54,60 @@ namespace D2ST.Persistence.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("D2ST.Persistence.EconItemEntity", b =>
+                {
+                    b.Property<ulong>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AttributesJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("DefIndex")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("EquippedStatesJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("Flags")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Inventory")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Origin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("OriginalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Quality")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Style")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ItemId");
+
+                    b.HasIndex("AccountId", "DefIndex")
+                        .IsUnique();
+
+                    b.ToTable("EconItems");
+                });
+
             modelBuilder.Entity("D2ST.Persistence.FriendRequestEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -531,29 +585,6 @@ namespace D2ST.Persistence.Migrations
                     b.ToTable("ProfileCards");
                 });
 
-            modelBuilder.Entity("D2ST.Persistence.ShowcaseEntity", b =>
-                {
-                    b.Property<uint>("AccountId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<uint>("FormatVersion")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte[]>("Payload")
-                        .IsRequired()
-                        .HasColumnType("BLOB");
-
-                    b.Property<uint>("ShowcaseType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("AccountId", "ShowcaseType");
-
-                    b.ToTable("Showcases");
-                });
-
             modelBuilder.Entity("D2ST.Persistence.RemoteStorageFileEntity", b =>
                 {
                     b.Property<uint>("AccountId")
@@ -579,6 +610,133 @@ namespace D2ST.Persistence.Migrations
                     b.HasKey("AccountId", "FileName");
 
                     b.ToTable("RemoteStorageFiles");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.ShowcaseEntity", b =>
+                {
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("ShowcaseType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("FormatVersion")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Payload")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AccountId", "ShowcaseType");
+
+                    b.ToTable("Showcases");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.StoreCatalogComponentEntity", b =>
+                {
+                    b.Property<uint>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("ComponentProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ProductId", "ComponentProductId");
+
+                    b.ToTable("StoreCatalogComponents");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.StoreCatalogItemEntity", b =>
+                {
+                    b.Property<uint>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("BuildVersion")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("DefIndex")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("PriceCredits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProductType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ProductId");
+
+                    b.HasIndex("Active", "ProductType");
+
+                    b.ToTable("StoreCatalogItems");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.StorePurchaseTransactionEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("CompletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GrantsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ItemIdsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LinesJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("TotalCredits")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId", "Status");
+
+                    b.ToTable("StorePurchaseTransactions");
                 });
 
             modelBuilder.Entity("D2ST.Persistence.UserAchievementEntity", b =>
@@ -622,6 +780,61 @@ namespace D2ST.Persistence.Migrations
                     b.HasKey("AccountId", "Name");
 
                     b.ToTable("UserStats");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.WalletEntity", b =>
+                {
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("BalanceCredits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("ReservedCredits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AccountId");
+
+                    b.ToTable("Wallets");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.WalletTransactionEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("AmountCredits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("BalanceAfterCredits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Kind")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Reference")
+                        .IsUnique();
+
+                    b.HasIndex("AccountId", "CreatedAt");
+
+                    b.ToTable("WalletTransactions");
                 });
 
             modelBuilder.Entity("D2ST.Persistence.WorkshopItemEntity", b =>

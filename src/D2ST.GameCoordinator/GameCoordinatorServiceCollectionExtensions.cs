@@ -29,6 +29,7 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.TryAddSingleton<IGcMessageQueue>(provider => provider.GetRequiredService<GcMessageQueue>());
         services.AddSingleton<SoCacheStore>();
         services.AddSingleton<SoCacheService>();
+        services.TryAddSingleton<IEconomyStore, EmptyEconomyStore>();
         services.TryAddSingleton<IMatchStore, EmptyMatchStore>();
         services.TryAddSingleton<IProfileStore, EmptyProfileStore>();
         services.TryAddSingleton<IShowcaseStore, EmptyShowcaseStore>();
@@ -93,6 +94,7 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, UnlockCrateHandler>();
         services.AddSingleton<IGcMessageHandler, UnpackBundleHandler>();
         services.AddSingleton<IGcMessageHandler, StorePurchaseInitHandler>();
+        services.AddSingleton<IGcMessageHandler, StorePurchaseFinalizeHandler>();
         services.AddSingleton<IGcMessageHandler, StorePurchaseCancelHandler>();
         services.AddSingleton<IGcMessageHandler, RedeemItemHandler>();
         services.AddSingleton<IGcMessageHandler, PurchaseItemWithEventPointsHandler>();

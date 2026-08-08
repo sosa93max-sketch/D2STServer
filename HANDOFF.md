@@ -519,6 +519,57 @@ covered by the server-side GC path:
   refresh the mini-profile and confirm that conduct shows `10000/10000` and the
   showcase edit is accepted after the cache refresh.
 
+### Phase 12 — local economy implemented in this working tree
+
+The server now has a local, persistent wallet and store flow for the requested
+match reward and item purchases. This is intentionally independent from the
+official Steam wallet, Valve Market and Valve item ownership:
+
+- Every eligible non-leaver human winner recorded by `7004` receives exactly
+  `100` local credits. The immutable ledger reference
+  `match-win:{MatchId}:{AccountId}` makes retries idempotent and the wallet
+  mutation is committed in the same transaction as the match.
+- `Wallets` and `WalletTransactions` persist balance, reservations and the
+  purchase/reward audit trail. `GET /api/store/wallet` and
+  `GET /api/store/transactions` expose the authenticated account's state.
+- `StoreCatalogItems` and `StoreCatalogComponents` support priced items and
+  sets. An administrator can populate/update the local catalog through
+  `POST /api/admin/store/catalog`; no arbitrary client-supplied definition is
+  accepted at purchase time.
+- `POST /api/store/purchase` provides an account-scoped REST purchase path.
+  The GC path now handles store sales data, purchase init, finalize and cancel;
+  init reserves credits, finalize debits and grants the durable econ item, and
+  disconnect cleanup releases pending reservations.
+- `EconItems` persists the client-facing `CSOEconItem` projection, including
+  quantity, style, equipped states and attributes. `WelcomeBuilder` hydrates
+  the econ Shared Object cache from SQLite after reconnect or restart, and
+  purchase/equip updates are published as SO deltas.
+- A single catalog item definition is represented as one owned stack per
+  account; a set expands into its configured component definitions. Trading,
+  refunds, official market synchronization and real-money payments remain out
+  of scope.
+
+### Evidence for Phase 12
+
+- `dotnet restore D2STServer.sln`: passed.
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- A fresh SQLite database applied `InitialSchema`, `AddShowcases` and
+  `AddLocalEconomy`; an existing database restarted with no pending migration
+  changes.
+- The isolated SQLite smoke path recorded one winning player at `100` credits,
+  recorded no reward for the loser, returned no second reward on duplicate
+  `MatchId`, completed a `100`-credit purchase with quantity `1`, and rejected
+  the next purchase as `insufficient_funds`.
+- The authenticated API smoke returned the catalog, wallet ledger and durable
+  inventory after the purchase. The admin catalog endpoint returned HTTP 200
+  and the inventory endpoint returned the purchased item.
+- SQLite-specific `ulong` ordering was verified and fixed by sorting econ rows
+  after materialization. `git diff --check` remains the final gate.
+- Real Windows build-6783 validation of the store UI, balance rendering and
+  client purchase/finalize sequence remains pending; server protocol and API
+  paths are compile/startup/smoke verified only.
+
 ## Match close data flow
 
 ```text
@@ -529,6 +580,8 @@ local lobby
   -> game server sends GameMatchSignOut (7004)
   -> GameMatchSignOutHandler normalizes CMsgGameMatchSignOut
   -> MatchStore transaction writes match, players, overall and hero aggregates
+  -> same transaction credits 100 local credits to each eligible winning human
+     and writes an idempotent wallet ledger row
   -> RankStore applies the result once
   -> account Shared Object receives wins/losses/games/leavers
   -> lobby Shared Object becomes POSTGAME and clients receive 8081
@@ -553,21 +606,27 @@ per-hero projections. No profile-card item ownership or showcase moderation
 state is fabricated. `Showcases` stores one opaque protobuf payload per account
 and canonical profile/mini-profile type, so public reads do not depend on the
 editor's in-memory session.
+`Wallets` stores the current local-credit balance and reserved checkout amount;
+`WalletTransactions` is the immutable reward/purchase ledger with unique
+references for idempotency. `StoreCatalogItems` and
+`StoreCatalogComponents` define the administrator-managed local item/set
+catalog. `EconItems` is the durable per-account `CSOEconItem` projection used
+to rebuild the volatile econ Shared Object cache after reconnects.
 The per-match rows remain the source of truth for future match-history and
 hero-standings handlers. The current history readers query those per-match rows
 directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Validate with one real Windows client through web-account login, friend
-   request and conduct/feature-gate refresh, then continue with Dota bots
-   through create -> enable `FillWithBots` -> launch -> play -> `7004` ->
-   reconnect/profile/history.
-2. If the machine can run two client sessions, repeat with two accounts on the
-   same PC. Otherwise keep the two-human validation as a pending external test.
-3. Use the Windows capture to confirm the implemented `8034 -> 8035` response,
-   conduct refresh and every persisted showcase item variant; add only fields
-   confirmed by that traffic.
+1. Populate the local store catalog from item definitions confirmed by the
+   target build, then validate one real Windows client through catalog display,
+   balance, purchase, reconnect and inventory rendering.
+2. Validate web-account login, friend request and conduct/feature-gate refresh,
+   then continue with Dota bots through create -> enable `FillWithBots` ->
+   launch -> play -> `7004` -> reward -> purchase -> reconnect/profile/history.
+3. If the machine can run two client sessions, repeat the economy and match
+   validation with two accounts on the same PC. Otherwise keep the two-human
+   validation as a pending external test.
 4. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
@@ -618,9 +677,9 @@ is the planning reference for the work that follows the real-client gate.
   Dota once to confirm the foreground/UI path on the target machine.
 - Profile-card slots and profile/mini-profile showcase payloads are persisted
   and publicly returned. The `8034 -> 8035` statistics surface now reuses the
-  account-scoped profile projection, but item/trophy ownership, catalog
-  validation and full showcase moderation still require local source data or a
-  real client capture.
+  account-scoped profile projection. Store catalog and econ ownership are now
+  validated locally, but showcase item/trophy semantics still require local
+  source data or a real client capture.
 - Showcase edits are available to every client on its next public read. The
   targeted build exposes no dedicated unsolicited showcase-update message, so
   already-open profile windows are not pushed live by the server.
@@ -631,6 +690,17 @@ is the planning reference for the work that follows the real-client gate.
 - The normal database path is migration-managed. The old SQL bootstrap remains
   only as a one-time compatibility bridge for databases created before
   `__EFMigrationsHistory` existed; it is not used for fresh databases.
+- The local economy is not Steam Wallet or Valve Market. `StoreCatalogItems`
+  starts empty on a fresh installation and must be populated by an administrator
+  with definitions/prices appropriate for the target client build. The server
+  does not claim official Valve ownership or market values.
+- The match reward is currently a fixed local policy: `100` credits per clean
+  winning human row, once per persisted `MatchId`/account reference. No
+  refund, trade, gift, real-money payment or cross-server wallet sync exists.
+- The client-facing balance is exposed by the local REST store API and enforced
+  by both REST and GC purchase handlers. Whether the unmodified Windows client
+  renders that balance and completes the full purchase UI still requires a
+  build-6783 capture.
 - EF Core design-time tooling is intentionally not part of the server projects;
   future migration generation requires the temporary workflow described above.
 - The fallback server lookup for simultaneous local launches remains a known

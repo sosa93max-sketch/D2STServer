@@ -1,18 +1,18 @@
+using D2ST.Core.Accounts;
 using D2ST.GameCoordinator.SharedObjects;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Econ;
 
 /// <summary>
-/// The player's items, which live in the econ Shared Object cache rather than
-/// in a table of their own: the client already mirrors that cache, so writing
-/// an item through <see cref="SoCacheService"/> both stores it and publishes the
-/// delta that makes the armory redraw.
+/// The player's items are persisted in the API's local economy and projected
+/// into the econ Shared Object cache: the client already mirrors that cache, so
+/// writing an item through <see cref="SoCacheService"/> publishes the delta
+/// that makes the armory redraw.
 /// <para>
-/// There is no item catalogue, so an account starts empty and every request for
-/// an item it does not hold answers "you do not own that". Items enter through
-/// <see cref="Grant"/>, which is what the econ endpoint calls, and the ownership
-/// rules below apply the same way once a catalogue feeds that grant.
+/// The API store owns catalog validation, wallet mutations and durable item
+/// rows. This class keeps the GC assembly independent of EF while ensuring
+/// reconnects rebuild the volatile cache from those rows.
 /// </para>
 /// </summary>
 public sealed class EconInventory
@@ -21,24 +21,86 @@ public sealed class EconInventory
     private const uint StyleNone = 0;
     private const uint StyleDefaultSentinel = 255;
 
-    /// <summary>A granted item takes the shape Dota expects of a plain owned cosmetic.</summary>
-    private const uint DefaultQuality = 4;
-    private const uint DefaultOrigin = 2;
-    private const uint DefaultInventoryPosition = 1;
-
     private readonly SoCacheService _soCache;
+    private readonly IEconomyStore _economy;
 
-    public EconInventory(SoCacheService soCache)
+    public EconInventory(SoCacheService soCache, IEconomyStore economy)
     {
         _soCache = soCache;
+        _economy = economy;
     }
 
     public ulong CacheVersion(ulong steamId) => _soCache.VersionOf(SoCacheKey.Econ(steamId));
 
-    public IReadOnlyList<CSOEconItem> Items(ulong steamId) =>
-        _soCache.ObjectsOfType<CSOEconItem>(SoCacheKey.Econ(steamId), DotaSoCache.TypeEconItem)
+    public IReadOnlyList<CSOEconItem> Items(ulong steamId)
+    {
+        var cached = _soCache.ObjectsOfType<CSOEconItem>(SoCacheKey.Econ(steamId), DotaSoCache.TypeEconItem)
             .Select(entry => entry.Value)
             .ToList();
+        if (cached.Count != 0)
+        {
+            return cached;
+        }
+
+        EnsureCache(steamId, SteamAccount.AccountIdFromSteamId(steamId));
+        return _soCache.ObjectsOfType<CSOEconItem>(SoCacheKey.Econ(steamId), DotaSoCache.TypeEconItem)
+            .Select(entry => entry.Value)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Hydrates the volatile econ cache from the durable inventory on logon or
+    /// after a purchase. Empty inventories still declare their SO type.
+    /// </summary>
+    public void EnsureCache(ulong steamId, uint accountId)
+    {
+        var key = SoCacheKey.Econ(steamId);
+        var items = _economy.GetItems(accountId);
+        foreach (var item in items)
+        {
+            _soCache.SetIfChanged(key, KeyOf(item.Id), item);
+        }
+
+        if (items.Count == 0)
+        {
+            _soCache.DeclareEmptyType(key, DotaSoCache.TypeEconItem);
+        }
+    }
+
+    public void ApplyItems(ulong steamId, uint accountId, IEnumerable<CSOEconItem> items)
+    {
+        var key = SoCacheKey.Econ(steamId);
+        var any = false;
+        foreach (var item in items)
+        {
+            if (item.AccountId != 0 && item.AccountId != accountId)
+            {
+                continue;
+            }
+
+            any = true;
+            _soCache.Set(key, KeyOf(item.Id), item);
+        }
+
+        if (!any)
+        {
+            _soCache.DeclareEmptyType(key, DotaSoCache.TypeEconItem);
+        }
+    }
+
+    public StoreOperationResult Purchase(
+        uint accountId,
+        ulong steamId,
+        IReadOnlyList<StorePurchaseLine> lines)
+    {
+        var result = _economy.Purchase(accountId, lines);
+        if (result.Success)
+        {
+            ApplyItems(steamId, accountId, result.Items);
+        }
+
+        return result;
+    }
 
     /// <summary>
     /// Puts an item definition in the player's inventory. The item id is derived
@@ -48,31 +110,14 @@ public sealed class EconInventory
     /// </summary>
     public CSOEconItem Grant(ulong steamId, uint accountId, uint defIndex, uint quantity)
     {
-        var itemId = ItemId(accountId, defIndex);
-        if (!TryGetItem(steamId, itemId, out var item))
-        {
-            item = new CSOEconItem
-            {
-                Id = itemId,
-                OriginalId = itemId,
-                AccountId = accountId,
-                DefIndex = defIndex,
-                Level = 1,
-                Quality = DefaultQuality,
-                Origin = DefaultOrigin,
-                Inventory = DefaultInventoryPosition
-            };
-        }
-
-        item.Quantity = quantity == 0 ? 1 : quantity;
+        var item = _economy.GrantItem(accountId, defIndex, quantity);
         Write(steamId, item);
         return item;
     }
 
-    private static ulong ItemId(uint accountId, uint defIndex) => ((ulong)accountId << 32) | defIndex;
-
     public bool TryGetItem(ulong steamId, ulong itemId, out CSOEconItem item) =>
-        _soCache.TryGetObject(SoCacheKey.Econ(steamId), KeyOf(itemId), out item);
+        _soCache.TryGetObject(SoCacheKey.Econ(steamId), KeyOf(itemId), out item)
+        || TryHydrateItem(steamId, itemId, out item);
 
     /// <summary>
     /// Applies the client's equip requests and returns how many items actually
@@ -178,8 +223,27 @@ public sealed class EconInventory
         return changed;
     }
 
-    private void Write(ulong steamId, CSOEconItem item) =>
+    private void Write(ulong steamId, CSOEconItem item)
+    {
+        var accountId = SteamAccount.AccountIdFromSteamId(steamId);
+        _economy.SaveItem(accountId, item);
         _soCache.Set(SoCacheKey.Econ(steamId), KeyOf(item.Id), item);
+    }
+
+    private bool TryHydrateItem(ulong steamId, ulong itemId, out CSOEconItem item)
+    {
+        var accountId = SteamAccount.AccountIdFromSteamId(steamId);
+        var found = _economy.GetItems(accountId).FirstOrDefault(candidate => candidate.Id == itemId);
+        if (found is null)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = found;
+        _soCache.SetIfChanged(SoCacheKey.Econ(steamId), KeyOf(item.Id), item);
+        return true;
+    }
 
     private static SoObjectKey KeyOf(ulong itemId) => new(DotaSoCache.TypeEconItem, itemId);
 

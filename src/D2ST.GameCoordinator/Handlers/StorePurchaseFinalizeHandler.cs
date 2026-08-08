@@ -1,0 +1,49 @@
+using D2ST.Core.GameCoordinator;
+using D2ST.GameCoordinator.Econ;
+using D2ST.Protocol.Dota;
+
+namespace D2ST.GameCoordinator.Handlers;
+
+/// <summary>
+/// Commits the wallet debit and publishes the purchased econ items after the
+/// client's store checkout reaches its finalize step.
+/// </summary>
+public sealed class StorePurchaseFinalizeHandler : IGcMessageHandler
+{
+    private readonly IEconomyStore _economy;
+    private readonly EconInventory _inventory;
+
+    public StorePurchaseFinalizeHandler(IEconomyStore economy, EconInventory inventory)
+    {
+        _economy = economy;
+        _inventory = inventory;
+    }
+
+    public uint MessageType => GcMsg.StorePurchaseFinalize;
+
+    public IReadOnlyList<GcMessage> Handle(GcContext context, GcMessage request)
+    {
+        var finalize = context.Codec.Decode<CMsgGCStorePurchaseFinalize>(request.Body);
+        var result = _economy.FinalizePurchase(context.AccountId, finalize.TxnId);
+        if (result.Success)
+        {
+            _inventory.ApplyItems(context.SteamId, context.AccountId, result.Items);
+        }
+
+        var response = new CMsgGCStorePurchaseFinalizeResponse
+        {
+            Result = result.Success
+                ? (uint)EGCMsgResponse.kEGCMsgResponseOK
+                : (uint)EGCMsgResponse.kEGCMsgResponseDenied,
+            ItemIds = result.Success ? result.ItemIds.ToArray() : Array.Empty<ulong>()
+        };
+
+        return
+        [
+            new GcMessage(
+                GcMsg.StorePurchaseFinalizeResponse,
+                context.Codec.Encode(response),
+                TargetJobId: request.SourceJobId)
+        ];
+    }
+}

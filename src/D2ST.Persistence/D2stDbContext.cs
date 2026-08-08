@@ -43,6 +43,18 @@ public sealed class D2stDbContext : DbContext
 
     public DbSet<ShowcaseEntity> Showcases => Set<ShowcaseEntity>();
 
+    public DbSet<WalletEntity> Wallets => Set<WalletEntity>();
+
+    public DbSet<WalletTransactionEntity> WalletTransactions => Set<WalletTransactionEntity>();
+
+    public DbSet<StoreCatalogItemEntity> StoreCatalogItems => Set<StoreCatalogItemEntity>();
+
+    public DbSet<StoreCatalogComponentEntity> StoreCatalogComponents => Set<StoreCatalogComponentEntity>();
+
+    public DbSet<EconItemEntity> EconItems => Set<EconItemEntity>();
+
+    public DbSet<StorePurchaseTransactionEntity> StorePurchaseTransactions => Set<StorePurchaseTransactionEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountEntity>()
@@ -115,5 +127,43 @@ public sealed class D2stDbContext : DbContext
 
         modelBuilder.Entity<ShowcaseEntity>()
             .HasKey(showcase => new { showcase.AccountId, showcase.ShowcaseType });
+
+        modelBuilder.Entity<WalletEntity>()
+            .HasKey(wallet => wallet.AccountId);
+
+        modelBuilder.Entity<WalletEntity>()
+            .Property(wallet => wallet.AccountId)
+            .ValueGeneratedNever();
+
+        modelBuilder.Entity<WalletTransactionEntity>()
+            .HasIndex(transaction => transaction.Reference)
+            .IsUnique();
+
+        modelBuilder.Entity<WalletTransactionEntity>()
+            .HasIndex(transaction => new { transaction.AccountId, transaction.CreatedAt });
+
+        modelBuilder.Entity<StoreCatalogItemEntity>()
+            .HasIndex(item => new { item.Active, item.ProductType });
+
+        modelBuilder.Entity<StoreCatalogItemEntity>()
+            .Property(item => item.ProductId)
+            .ValueGeneratedNever();
+
+        modelBuilder.Entity<StoreCatalogComponentEntity>()
+            .HasKey(component => new { component.ProductId, component.ComponentProductId });
+
+        modelBuilder.Entity<EconItemEntity>()
+            .HasKey(item => item.ItemId);
+
+        modelBuilder.Entity<EconItemEntity>()
+            .Property(item => item.ItemId)
+            .ValueGeneratedNever();
+
+        modelBuilder.Entity<EconItemEntity>()
+            .HasIndex(item => new { item.AccountId, item.DefIndex })
+            .IsUnique();
+
+        modelBuilder.Entity<StorePurchaseTransactionEntity>()
+            .HasIndex(transaction => new { transaction.AccountId, transaction.Status });
     }
 }

@@ -209,9 +209,10 @@ Extender `ProfileCards` y la proyección existente para:
 Los campos de badge, trofeos, leaderboard, MVP o temporada requieren primero
 una fuente persistente; no deben rellenarse con valores de conveniencia.
 
-## 6. Fase 8 — showcase y economía de perfil
+## 6. Fase 8 — showcase, economía local y ownership
 
-**Estado: base de showcase implementada; catálogo/ownership pendiente.**
+**Estado: showcase y economía local implementados; catálogo real del build y
+validación del cliente pendientes.**
 
 Los handlers `8886 -> 8887` y `8888 -> 8889` ya persisten y sirven por cuenta
 los showcases de perfil y mini perfil. El editor solo puede escribir para la
@@ -219,7 +220,19 @@ cuenta autenticada; cualquier cliente puede leer el `AccountId` solicitado.
 Los payloads protobuf, posiciones, escala, fondo y versión de formato se
 conservan en `Showcases` y sobreviven a reconexiones, reinicios y migraciones.
 
-La ampliación pendiente requiere captura del cliente y catálogo local:
+El servidor ya dispone de un catálogo/ownership local separado del ownership
+oficial de Valve. `Wallets`, `WalletTransactions`, `StoreCatalogItems`,
+`StoreCatalogComponents` y `EconItems` persisten saldo, compras, sets e
+inventario. Cada victoria limpia de un humano acredita `100` créditos locales
+de forma idempotente; el checkout reserva, debita y entrega los componentes
+del producto dentro de transacciones SQLite. La consulta REST está disponible
+en `/api/store/catalog`, `/api/store/wallet`, `/api/store/transactions` y
+`/api/store/inventory`; el catálogo se administra mediante
+`POST /api/admin/store/catalog`. La ruta GC cubre ventas, init, finalize,
+cancelación y limpieza de transacciones pendientes.
+
+La ampliación aún pendiente requiere captura del cliente y catálogo local del
+build objetivo:
 
 - héroes mostrados;
 - ítems y cosméticos seleccionados;
@@ -230,11 +243,11 @@ La ampliación pendiente requiere captura del cliente y catálogo local:
 - posición, escala y orden de cada elemento;
 - configuración de la tarjeta mini o vista pública.
 
-La implementación actual conserva el payload para permitir que el cliente
-local lo dibuje, pero todavía no comprueba que cada ítem exista en el catálogo
-ni que la cuenta tenga una propiedad local válida. Antes de habilitar una
-economía más amplia se debe añadir esa validación; no se debe enviar ownership
-de la economía oficial de Valve si el servidor no posee ese dato.
+La implementación de showcase conserva el payload para permitir que el cliente
+local lo dibuje. Su validación semántica de ítems/trofeos depende del catálogo
+del build y de una captura real; la economía local sí valida catálogo y
+ownership en su propio flujo. No se debe enviar ownership de la economía
+oficial de Valve si el servidor no posee ese dato.
 
 Esta fase puede requerir entidades separadas para layout, elementos y
 propiedad. Debe incluir validación de tamaño de JSON, límites por cuenta y
@@ -494,7 +507,8 @@ activo y requieren una decisión posterior:
 - conducta dinámica con penalización por abandonos;
 - reports, commends, moderación y low priority;
 - temporadas, leaderboard y rangos oficiales;
-- economía, mercado, trades o propiedad sincronizada con Valve;
+- economía, mercado, trades o propiedad sincronizada con Valve (la economía
+  local descrita en la Fase 8 no incluye esas funciones);
 - matchmaking oficial o conexión a servicios externos de Valve;
 - ranked oficial, anti-cheat o validación competitiva;
 - cloud profile y sincronización fuera del servidor local;

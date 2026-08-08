@@ -1,22 +1,32 @@
 using D2ST.Core.GameCoordinator;
+using D2ST.GameCoordinator.Econ;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
-/// Cancels a checkout. No transaction is ever open, so cancelling always
-/// succeeds and clears the client's pending purchase state.
+/// Cancels a pending checkout and releases its reserved local credits.
 /// </summary>
 public sealed class StorePurchaseCancelHandler : IGcMessageHandler
 {
+    private readonly IEconomyStore _economy;
+
+    public StorePurchaseCancelHandler(IEconomyStore economy)
+    {
+        _economy = economy;
+    }
+
     public uint MessageType => GcMsg.StorePurchaseCancel;
 
     public IReadOnlyList<GcMessage> Handle(GcContext context, GcMessage request)
     {
-        _ = context.Codec.Decode<CMsgGCStorePurchaseCancel>(request.Body);
+        var cancel = context.Codec.Decode<CMsgGCStorePurchaseCancel>(request.Body);
+        var result = _economy.CancelPurchase(context.AccountId, cancel.TxnId);
         var response = new CMsgGCStorePurchaseCancelResponse
         {
-            Result = (uint)EGCMsgResponse.kEGCMsgResponseOK
+            Result = result.Success
+                ? (uint)EGCMsgResponse.kEGCMsgResponseOK
+                : (uint)EGCMsgResponse.kEGCMsgResponseDenied
         };
 
         return

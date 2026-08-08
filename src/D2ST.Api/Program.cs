@@ -1,4 +1,5 @@
 using D2ST.Api;
+using D2ST.Api.Economy;
 using D2ST.Api.Endpoints;
 using D2ST.Api.Logging;
 using D2ST.Api.Matches;
@@ -6,6 +7,7 @@ using D2ST.Api.Profiles;
 using D2ST.Api.Ranks;
 using D2ST.Core.Profiles;
 using D2ST.GameCoordinator;
+using D2ST.GameCoordinator.Econ;
 using D2ST.GameCoordinator.Matches;
 using D2ST.GameCoordinator.Messaging;
 using D2ST.GameCoordinator.Players;
@@ -29,6 +31,7 @@ builder.Services.AddSingleton<IRankStore, RankStore>();
 builder.Services.AddSingleton<IMatchStore, MatchStore>();
 builder.Services.AddSingleton<IProfileStore, ProfileCardStore>();
 builder.Services.AddSingleton<IShowcaseStore, ShowcaseStore>();
+builder.Services.AddSingleton<IEconomyStore, EconomyStore>();
 builder.Services.AddGameCoordinator(builder.Configuration, builder.Environment.ContentRootPath);
 
 // The shim serializes/deserializes with PascalCase member names, so keep the
@@ -237,6 +240,7 @@ app.MapAuthTicketEndpoints();
 app.MapGameServerEndpoints();
 app.MapStorageEndpoints();
 app.MapStatsEndpoints();
+app.MapStoreEndpoints();
 app.MapLeaderboardEndpoints();
 app.MapWorkshopEndpoints();
 app.MapEventEndpoints();

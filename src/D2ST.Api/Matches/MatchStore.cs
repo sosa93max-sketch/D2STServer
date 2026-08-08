@@ -1,4 +1,5 @@
 using System.Text.Json;
+using D2ST.Core.Economy;
 using D2ST.Core.Matches;
 using D2ST.GameCoordinator.Matches;
 using D2ST.Persistence;
@@ -122,6 +123,7 @@ public sealed class MatchStore : IMatchStore
 
                 ApplyProfileStats(db, match, player);
                 ApplyHeroStats(db, match, player);
+                ApplyWinReward(db, match.MatchId, player);
             }
 
             db.Matches.Add(matchEntity);
@@ -450,6 +452,42 @@ public sealed class MatchStore : IMatchStore
         {
             entity.LastMatchAt = match.EndedAt;
         }
+    }
+
+    private static void ApplyWinReward(D2stDbContext db, ulong matchId, MatchPlayerRecord player)
+    {
+        // A leaver can still appear on the winning side in a malformed or
+        // partial sign-out. Do not award that row; the reward is for a clean
+        // human victory and is deliberately tied to the same 7004 transaction.
+        if (!player.Won || player.LeaverStatus != 0)
+        {
+            return;
+        }
+
+        var reference = $"match-win:{matchId}:{player.AccountId}";
+        if (db.WalletTransactions.Any(transaction => transaction.Reference == reference))
+        {
+            return;
+        }
+
+        var wallet = db.Wallets.SingleOrDefault(row => row.AccountId == player.AccountId);
+        if (wallet is null)
+        {
+            wallet = new WalletEntity { AccountId = player.AccountId };
+            db.Wallets.Add(wallet);
+        }
+
+        wallet.BalanceCredits = checked(wallet.BalanceCredits + EconomyRules.MatchWinRewardCredits);
+        wallet.UpdatedAt = DateTimeOffset.UtcNow;
+        db.WalletTransactions.Add(new WalletTransactionEntity
+        {
+            AccountId = player.AccountId,
+            Kind = EconomyTransactionKind.MatchWinReward,
+            AmountCredits = EconomyRules.MatchWinRewardCredits,
+            BalanceAfterCredits = wallet.BalanceCredits,
+            Reference = reference,
+            CreatedAt = DateTimeOffset.UtcNow
+        });
     }
 
     private static MatchMinimalPlayer ToMinimalPlayer(MatchPlayerEntity player) => new()

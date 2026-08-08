@@ -1,20 +1,25 @@
 using D2ST.Core.GameCoordinator;
+using D2ST.GameCoordinator.Econ;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
-/// Answers the store sale query. The client sends the version of the sales data
-/// it already cached; echoing that version back means "nothing new", and the
-/// expiration tells it when to ask again.
+/// Answers the store sale query from the active local catalog. Prices are
+/// expressed in the server's virtual credits and refreshed daily by the client.
 /// </summary>
 public sealed class StoreSalesDataHandler : IGcMessageHandler
 {
     private static readonly TimeSpan Validity = TimeSpan.FromDays(1);
 
     private readonly TimeProvider _timeProvider;
+    private readonly IEconomyStore _economy;
 
-    public StoreSalesDataHandler(TimeProvider timeProvider) => _timeProvider = timeProvider;
+    public StoreSalesDataHandler(TimeProvider timeProvider, IEconomyStore economy)
+    {
+        _timeProvider = timeProvider;
+        _economy = economy;
+    }
 
     public uint MessageType => GcMsg.RequestStoreSalesData;
 
@@ -23,9 +28,24 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
         var requested = context.Codec.Decode<CMsgGCRequestStoreSalesData>(request.Body);
         var response = new CMsgGCRequestStoreSalesDataResponse
         {
-            Version = requested.Version,
+            Version = 1,
             ExpirationTime = (uint)_timeProvider.GetUtcNow().Add(Validity).ToUnixTimeSeconds()
         };
+
+        foreach (var item in _economy.GetCatalog())
+        {
+            var itemDef = item.DefIndex != 0 ? item.DefIndex : item.ProductId;
+            if (itemDef == 0 || item.PriceCredits < 0 || item.PriceCredits > uint.MaxValue)
+            {
+                continue;
+            }
+
+            response.SalePrices.Add(new CMsgGCRequestStoreSalesDataResponse.Price
+            {
+                ItemDef = itemDef,
+                price = (uint)item.PriceCredits
+            });
+        }
 
         return
         [

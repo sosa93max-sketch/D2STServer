@@ -1,4 +1,5 @@
 using D2ST.GameCoordinator.SharedObjects;
+using D2ST.GameCoordinator.Econ;
 using D2ST.GameCoordinator.Matches;
 using D2ST.GameCoordinator.Profiles;
 using D2ST.Protocol.Dota;
@@ -23,15 +24,18 @@ public sealed class WelcomeBuilder
     private readonly SoCacheService _soCache;
     private readonly IReadOnlyList<IGcWelcomeContributor> _contributors;
     private readonly IMatchStore _matches;
+    private readonly EconInventory _inventory;
 
     public WelcomeBuilder(
         SoCacheService soCache,
         IEnumerable<IGcWelcomeContributor> contributors,
-        IMatchStore matches)
+        IMatchStore matches,
+        EconInventory inventory)
     {
         _soCache = soCache;
         _contributors = contributors.ToList();
         _matches = matches;
+        _inventory = inventory;
     }
 
     public CMsgClientWelcome Build(GcContext context)
@@ -96,8 +100,7 @@ public sealed class WelcomeBuilder
             new SoObjectKey(DotaSoCache.TypeEconGameAccountClient, context.AccountId),
             () => new CSOEconGameAccountClient { EligibleForOnlinePlay = true });
 
-        // Empty inventory bucket: the client still expects the type to exist.
-        _soCache.DeclareEmptyType(econ, DotaSoCache.TypeEconItem);
+        _inventory.EnsureCache(context.SteamId, context.AccountId);
     }
 
     private CSODOTAGameAccountClient AccountSnapshot(uint accountId)

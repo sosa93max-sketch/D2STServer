@@ -1,3 +1,6 @@
+using D2ST.Core.Economy;
+using D2ST.GameCoordinator.Econ;
+
 namespace D2ST.Api.Contracts;
 
 // Wire shapes below mirror the DTOs the injected Steamworks shim
@@ -147,8 +150,8 @@ public sealed record GcPollRequest(uint AppId, ulong SteamId, bool GameServer);
 public sealed record GcExchangeResponse(bool Handled, IReadOnlyList<GcMessageDto> Messages);
 
 /// <summary>
-/// Puts an item definition in an account's inventory. There is no drop system or
-/// store behind the GC, so this is how a player comes to own anything.
+/// Administrative/test grant for putting an item definition in an account's
+/// inventory. Normal ownership should come from a purchase or match flow.
 /// </summary>
 public sealed record GcGrantItemRequest(ulong SteamId, uint DefIndex, uint Quantity);
 
@@ -157,6 +160,56 @@ public sealed record GcGrantItemResponse(ulong ItemId, uint DefIndex, uint Quant
 public sealed record GcInventoryItem(ulong ItemId, uint DefIndex, uint Quantity, uint Style, uint Inventory);
 
 public sealed record GcInventoryResponse(IReadOnlyList<GcInventoryItem> Items, ulong CacheVersion);
+
+public sealed record StorePurchaseLineRequest(uint ProductId, uint Quantity);
+
+public sealed record StorePurchaseRequest(
+    IReadOnlyList<StorePurchaseLineRequest>? Lines,
+    uint ProductId = 0,
+    uint Quantity = 0);
+
+public sealed record StoreCatalogComponentRequest(uint ProductId, uint Quantity);
+
+public sealed record StoreCatalogUpsertRequest(
+    uint ProductId,
+    uint DefIndex,
+    string Name,
+    StoreProductType ProductType,
+    long PriceCredits,
+    string? Category,
+    string? Description,
+    uint BuildVersion,
+    bool Active,
+    IReadOnlyList<StoreCatalogComponentRequest>? Components);
+
+public sealed record StoreCatalogItemResponse(
+    uint ProductId,
+    uint DefIndex,
+    string Name,
+    StoreProductType ProductType,
+    long PriceCredits,
+    string Category,
+    string Description,
+    uint BuildVersion,
+    bool Active,
+    IReadOnlyList<StoreCatalogComponent> Components,
+    uint OwnedQuantity);
+
+public sealed record StoreWalletResponse(
+    uint AccountId,
+    long BalanceCredits,
+    long ReservedCredits,
+    long AvailableCredits,
+    DateTimeOffset? UpdatedAt);
+
+public sealed record StorePurchaseResponse(
+    bool Success,
+    string Code,
+    string Message,
+    ulong TransactionId,
+    IReadOnlyList<ulong> ItemIds,
+    StoreWalletResponse Wallet,
+    IReadOnlyList<GcInventoryItem> Items);
 
 /// <summary>
 /// A party as the GC holds it, for inspecting the Shared Object without a Dota

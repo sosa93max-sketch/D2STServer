@@ -202,6 +202,8 @@ public static class GcMsg
     public const uint UnpackBundleResponse = (uint)EGCItemMsg.kEMsgClientToGCUnpackBundleResponse;
     public const uint StorePurchaseInit = (uint)EGCItemMsg.kEMsgGCStorePurchaseInit;
     public const uint StorePurchaseInitResponse = (uint)EGCItemMsg.kEMsgGCStorePurchaseInitResponse;
+    public const uint StorePurchaseFinalize = (uint)EGCItemMsg.kEMsgGCStorePurchaseFinalize;
+    public const uint StorePurchaseFinalizeResponse = (uint)EGCItemMsg.kEMsgGCStorePurchaseFinalizeResponse;
     public const uint StorePurchaseCancel = (uint)EGCItemMsg.kEMsgGCStorePurchaseCancel;
     public const uint StorePurchaseCancelResponse = (uint)EGCItemMsg.kEMsgGCStorePurchaseCancelResponse;
 
