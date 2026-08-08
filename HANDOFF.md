@@ -487,6 +487,38 @@ generated `subscriptions.json` were symptoms, not a malformed server payload.
   Windows DLL compilation and real Dota foreground/UI validation remain
   pending.
 
+### Phase 11 — completed in this working tree
+
+The mini-profile conduct gate and lightweight profile-card request are now
+covered by the server-side GC path:
+
+- Client GC exchanges use the authenticated session account when
+  `GameServer=false`. Only game-server exchanges may select the Steam id sent
+  in the request, which preserves `UseActiveWebUser` instead of replacing it
+  with the shim's machine/fallback id.
+- The `7451` player-resource response publishes raw `comm_score` and
+  `behavior_score` as `10000`. The optional `comm_level` and `behavior_level`
+  tier fields are left unset because they are small tier enums, not raw scores.
+- `8034 -> 8035` is implemented and returns the same account-scoped profile-card
+  projection as the existing `7538 -> 7539` path, so the mini-profile stats
+  request no longer falls through as unhandled.
+
+### Evidence for Phase 11
+
+- `dotnet restore D2STServer.sln`: passed.
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- A release API against temporary SQLite returned `7451` for account `1`; the
+  decoded result contained `comm_score=10000` and `behavior_score=10000`.
+- The same authenticated session sent `8034` with a different fallback Steam id
+  and `GameServer=false`; the server returned `8035` with `account_id=1`.
+  `8095 -> 8096` likewise returned `account_id=1` and raw behavior score
+  `10000`, confirming the session identity fix.
+- `git diff --check`: passed.
+- Real Windows build-6783 validation remains pending: reconnect the client,
+  refresh the mini-profile and confirm that conduct shows `10000/10000` and the
+  showcase edit is accepted after the cache refresh.
+
 ## Match close data flow
 
 ```text
@@ -533,10 +565,9 @@ directly, so they do not reconstruct history from lossy profile counters.
    reconnect/profile/history.
 2. If the machine can run two client sessions, repeat with two accounts on the
    same PC. Otherwise keep the two-human validation as a pending external test.
-3. Use the Windows capture to decide whether the build also needs the
-   unimplemented `8034 -> 8035` profile-card statistics request and to confirm
-   the client renders every persisted showcase item variant; implement only
-   fields confirmed by that traffic.
+3. Use the Windows capture to confirm the implemented `8034 -> 8035` response,
+   conduct refresh and every persisted showcase item variant; add only fields
+   confirmed by that traffic.
 4. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
@@ -586,9 +617,10 @@ is the planning reference for the work that follows the real-client gate.
   still requires rebuilding/replacing the Windows `steam_api` DLL and running
   Dota once to confirm the foreground/UI path on the target machine.
 - Profile-card slots and profile/mini-profile showcase payloads are persisted
-  and publicly returned. Item/trophy ownership, catalog validation, showcase
-  moderation and the separate `8034 -> 8035` statistics surface still require
-  local source data or a real client capture.
+  and publicly returned. The `8034 -> 8035` statistics surface now reuses the
+  account-scoped profile projection, but item/trophy ownership, catalog
+  validation and full showcase moderation still require local source data or a
+  real client capture.
 - Showcase edits are available to every client on its next public read. The
   targeted build exposes no dedicated unsolicited showcase-update message, so
   already-open profile windows are not pushed live by the server.
@@ -624,7 +656,7 @@ is the planning reference for the work that follows the real-client gate.
 
 ## Current handoff
 
-Phases 1–10 and the server-side bot-match support are implemented and verified
+Phases 1–11 and the server-side bot-match support are implemented and verified
 at compile/startup and targeted API/GC-smoke level, with the schema managed by
 EF Core and legacy databases preserved through the transition bridge. The next
 session should validate one client against the active web account flow, friend

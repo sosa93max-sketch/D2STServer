@@ -37,7 +37,7 @@ public static class GameCoordinatorEndpoints
                 return Results.Ok(EmptyExchange);
             }
 
-            var context = ContextFor(session, request.SteamId, codec);
+            var context = ContextFor(session, request.SteamId, request.GameServer, codec);
             var message = new GcMessage(
                 request.MessageType,
                 DecodeBody(request.BodyBase64),
@@ -68,7 +68,7 @@ public static class GameCoordinatorEndpoints
                 return Results.Ok(EmptyExchange);
             }
 
-            var responses = gc.Poll(AccountIdFor(session, request.SteamId));
+            var responses = gc.Poll(AccountIdFor(session, request.SteamId, request.GameServer));
             return Results.Ok(new GcExchangeResponse(true, responses.Select(ToDto).ToList()));
         });
 
@@ -206,19 +206,30 @@ public static class GameCoordinatorEndpoints
         return app;
     }
 
-    private static GcContext ContextFor(SteamSession session, ulong steamId, IGcProtoCodec codec) => new()
+    private static GcContext ContextFor(
+        SteamSession session,
+        ulong steamId,
+        bool gameServer,
+        IGcProtoCodec codec) => new()
     {
-        AccountId = AccountIdFor(session, steamId),
-        SteamId = steamId != 0 ? steamId : session.Account.SteamId,
+        AccountId = AccountIdFor(session, steamId, gameServer),
+        SteamId = SteamIdFor(session, steamId, gameServer),
         ClientVersion = session.ClientVersion,
         PersonaName = session.PersonaName ?? string.Empty,
         Codec = codec
     };
 
     // A game server logs on under its own Steam id while reusing the client's
-    // session, so trust the id on the request when it carries one.
-    private static uint AccountIdFor(SteamSession session, ulong steamId) =>
-        steamId != 0 ? SteamAccount.AccountIdFromSteamId(steamId) : session.Account.AccountId;
+    // session. Client GC calls, however, must use the authenticated session:
+    // the shim can carry a machine/fallback Steam id even when the session was
+    // mapped to the active web user.
+    private static uint AccountIdFor(SteamSession session, ulong steamId, bool gameServer) =>
+        gameServer && steamId != 0
+            ? SteamAccount.AccountIdFromSteamId(steamId)
+            : session.Account.AccountId;
+
+    private static ulong SteamIdFor(SteamSession session, ulong steamId, bool gameServer) =>
+        gameServer && steamId != 0 ? steamId : session.Account.SteamId;
 
     private static bool IsDota(uint appId) => appId is 0 or DotaApp.AppId;
 

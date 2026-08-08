@@ -97,6 +97,8 @@ public static class GcMsg
 
     public const uint ClientToGCGetProfileCard = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCard;
     public const uint ClientToGCGetProfileCardResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCardResponse;
+    public const uint ClientToGCGetProfileCardStats = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCardStats;
+    public const uint ClientToGCGetProfileCardStatsResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCardStatsResponse;
     public const uint ClientToGCSetProfileCardSlots = (uint)EDOTAGCMsg.kEMsgClientToGCSetProfileCardSlots;
     public const uint GCToClientProfileCardUpdated = (uint)EDOTAGCMsg.kEMsgGCToClientProfileCardUpdated;
 

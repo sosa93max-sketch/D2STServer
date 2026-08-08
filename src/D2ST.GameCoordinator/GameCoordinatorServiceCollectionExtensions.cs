@@ -45,6 +45,7 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, PingHandler>();
         services.AddSingleton<IGcMessageHandler, SoCacheSubscriptionRefreshHandler>();
         services.AddSingleton<IGcMessageHandler, GetProfileCardHandler>();
+        services.AddSingleton<IGcMessageHandler, GetProfileCardStatsHandler>();
         services.AddSingleton<IGcMessageHandler, SetProfileCardSlotsHandler>();
         services.AddSingleton<IGcMessageHandler, LatestConductScorecardHandler>();
         services.AddSingleton<IGcMessageHandler, MatchmakingStatsHandler>();
