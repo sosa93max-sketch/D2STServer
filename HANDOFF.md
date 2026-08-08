@@ -78,8 +78,9 @@ Implemented:
   spectators or the player pool.
 - A persistence fallback keeps the reusable GameCoordinator assembly usable
   without the API database; D2ST.Api registers the SQLite implementation.
-- Existing databases receive the four new tables through the current bootstrap
-  until the planned EF migration stage replaces manual schema evolution.
+- Existing databases received the four new tables through the old bootstrap;
+  the migration transition in Phase 6 now preserves those rows and records the
+  initial EF baseline.
 
 ### Evidence for Phase 1
 
@@ -226,6 +227,42 @@ payload:
   run to confirm the exact build-6783 UI response; the local policy is
   intentionally documented as local, not as a real Valve conduct score.
 
+### Phase 6 — completed in this working tree
+
+The database schema is now migration-managed for new installations and
+already-migrated databases:
+
+- Added the EF Core `InitialSchema` migration
+  `20260808144219_InitialSchema` and its model snapshot. It covers the account,
+  social, rank, match, profile aggregate, hero aggregate, workshop, storage
+  and `ProfileCards` tables currently represented by `D2stDbContext`.
+- Normal startup now calls `Database.Migrate()`. A fresh SQLite file is created
+  entirely through EF migrations and receives `__EFMigrationsHistory`.
+- A database from the pre-migrations SQL bootstrap is detected by its existing
+  `Accounts` table and missing migration history. The old idempotent table
+  repair runs only on that first transition, adds known legacy columns such as
+  `Avatar` and `IsCalibrated`, creates any missing current tables, preserves all
+  rows and stamps the initial migration as applied.
+- The legacy bridge is deliberately kept separate from the normal path so a
+  later migration can evolve the schema without re-running the historical SQL
+  on every startup.
+- `Microsoft.EntityFrameworkCore.Design` is referenced as a private build
+  dependency in the persistence and API projects so future migrations can be
+  generated from the checked-in context.
+
+### Evidence for Phase 6
+
+- `dotnet restore D2STServer.sln`: passed.
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- Fresh SQLite smoke: `Database.Migrate()` reached the listening state and
+  created the migration-managed schema.
+- Legacy SQLite smoke: a pre-migrations `Accounts` row survived, `Avatar` was
+  added, all required match/profile tables existed and history contained only
+  `20260808144219_InitialSchema`.
+- The local conduct policy remains unchanged at score 10,000 as approved; this
+  phase only changes schema management.
+
 ## Match close data flow
 
 ```text
@@ -264,14 +301,12 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Add EF migrations and replace the startup SQL bootstrap now that the local
-   match/profile schema has stabilized.
-2. Validate with two consecutive accounts and two real Windows clients through
+1. Validate with two consecutive accounts and two real Windows clients through
    create -> join -> launch -> play -> 7004 -> reconnect/profile/history.
-3. Use the Windows capture to decide whether the build also needs the
+2. Use the Windows capture to decide whether the build also needs the
    unimplemented `8034 -> 8035` profile-card statistics request or durable
    showcase data; implement only fields confirmed by that traffic.
-4. Only then widen the scope to spectators, invites, matchmaking and other GC
+3. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
 ## Important limitations
@@ -305,6 +340,9 @@ directly, so they do not reconstruct history from lossy profile counters.
   showcase persistence and the separate `8034 -> 8035` statistics surface are
   not implemented until a real client capture establishes their required
   fields.
+- The normal database path is migration-managed. The old SQL bootstrap remains
+  only as a one-time compatibility bridge for databases created before
+  `__EFMigrationsHistory` existed; it is not used for fresh databases.
 - The fallback server lookup for simultaneous local launches remains a known
   risk until the game-server/lobby association is made explicit for every
   launch.

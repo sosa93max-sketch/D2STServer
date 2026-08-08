@@ -40,24 +40,32 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 var app = builder.Build();
 
-// Scaffold-stage schema bootstrap. Replace with EF Core migrations before any
-// data needs to survive a schema change.
+// New databases and already-migrated installations use EF Core migrations.
+// Databases created by the pre-migrations bootstrap take the one-time legacy
+// path below, keep their rows and are then stamped at the initial migration.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
-    db.Database.EnsureCreated();
 
-    // Avatar was present in the model from the first release, but EnsureCreated
-    // does not evolve an already existing SQLite database. Keep installations
-    // created by an older build readable before UserDirectory queries Accounts.Avatar.
+    if (!D2stDatabaseMigrator.NeedsLegacyBootstrap(db))
+    {
+        db.Database.Migrate();
+    }
+    else
+    {
+
+    // Avatar was present in the model from the first release, but the legacy
+    // bootstrap did not evolve an already existing SQLite database. Keep
+    // installations created by an older build readable before UserDirectory
+    // queries Accounts.Avatar.
     if (!HasColumn(db, "Accounts", "Avatar"))
     {
         db.Database.ExecuteSqlRaw(
             "ALTER TABLE \"Accounts\" ADD COLUMN \"Avatar\" BLOB NULL;");
     }
 
-    // EnsureCreated() only creates tables on a brand-new database, so tables
-    // added later are created by hand here until stage 5 introduces migrations.
+    // This block is retained only for a database created before migrations
+    // existed. It creates missing tables without replacing existing rows.
     db.Database.ExecuteSqlRaw(
         """
         CREATE TABLE IF NOT EXISTS "PlayerRanks" (
@@ -83,9 +91,9 @@ using (var scope = app.Services.CreateScope())
     db.Database.ExecuteSqlRaw(
         "UPDATE \"PlayerRanks\" SET \"IsCalibrated\" = 1 WHERE \"Mmr\" > 0 AND \"IsCalibrated\" = 0;");
 
-    // Local match history is the source for the profile projection. Keep the
-    // bootstrap compatible with the pre-migrations database used by existing
-    // installations; a future migrations stage can replace this block.
+    // Local match history is the source for the profile projection. This is the
+    // one-time compatibility path for the pre-migrations database; new and
+    // already-migrated installations use the EF migration above.
     db.Database.ExecuteSqlRaw(
         """
         CREATE TABLE IF NOT EXISTS "Matches" (
@@ -209,6 +217,9 @@ using (var scope = app.Services.CreateScope())
             "UpdatedAt" TEXT NOT NULL
         );
         """);
+
+        D2stDatabaseMigrator.MarkLegacyBaseline(db);
+    }
 }
 
 app.MapAuthEndpoints();
