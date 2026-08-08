@@ -312,6 +312,57 @@ public sealed class MatchStore : IMatchStore
             };
     }
 
+    public IReadOnlyList<HeroStatsRecord> GetHeroStandings(uint accountId)
+    {
+        if (accountId == 0)
+        {
+            return [];
+        }
+
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        var rows = db.PlayerHeroStats.AsNoTracking()
+            .Where(stats => stats.AccountId == accountId && stats.HeroId > 0)
+            .ToList();
+
+        return rows
+            .Select(ToHeroStats)
+            .OrderByDescending(stats => stats.Wins)
+            .ThenByDescending(stats => stats.Games)
+            .ThenBy(stats => stats.HeroId)
+            .ToArray();
+    }
+
+    public IReadOnlyList<HeroStatsRecord> GetHeroStats(uint accountId)
+    {
+        if (accountId == 0)
+        {
+            return [];
+        }
+
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        return db.PlayerHeroStats.AsNoTracking()
+            .Where(stats => stats.AccountId == accountId && stats.HeroId > 0)
+            .ToList()
+            .Select(ToHeroStats)
+            .OrderBy(stats => stats.Games)
+            .ThenBy(stats => stats.HeroId)
+            .ToArray();
+    }
+
+    public IReadOnlyList<int> GetHeroOrder()
+    {
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        return db.PlayerHeroStats.AsNoTracking()
+            .Where(stats => stats.HeroId > 0)
+            .Select(stats => stats.HeroId)
+            .Distinct()
+            .OrderBy(heroId => heroId)
+            .ToArray();
+    }
+
     private static void ApplyProfileStats(D2stDbContext db, MatchRecord match, MatchPlayerRecord player)
     {
         var entity = db.PlayerProfileStats
@@ -412,6 +463,50 @@ public sealed class MatchStore : IMatchStore
         PlayerSlot = player.Team == 1 ? 128u : 0u,
         Items = DeserializeItems(player.ItemsJson)
     };
+
+    private static HeroStatsRecord ToHeroStats(PlayerHeroStatsEntity stats) => new()
+    {
+        HeroId = stats.HeroId,
+        Games = stats.Games,
+        Wins = stats.Wins,
+        Losses = stats.Losses,
+        TotalKills = stats.TotalKills,
+        TotalDeaths = stats.TotalDeaths,
+        TotalAssists = stats.TotalAssists,
+        TotalLastHits = stats.TotalLastHits,
+        TotalDenies = stats.TotalDenies,
+        TotalHeroDamage = stats.TotalHeroDamage,
+        TotalTowerDamage = stats.TotalTowerDamage,
+        TotalHeroHealing = stats.TotalHeroHealing,
+        TotalGoldSpent = stats.TotalGoldSpent,
+        TotalGoldPerMin = stats.TotalGoldPerMin,
+        TotalXpPerMinute = stats.TotalXpPerMinute,
+        LastMatchAt = stats.LastMatchAt
+    };
+
+    private static HeroStatsRecord ToHeroStats(
+        IGrouping<int, PlayerHeroStatsEntity> group)
+    {
+        return new HeroStatsRecord
+        {
+            HeroId = group.Key,
+            Games = group.Sum(stats => stats.Games),
+            Wins = group.Sum(stats => stats.Wins),
+            Losses = group.Sum(stats => stats.Losses),
+            TotalKills = group.Sum(stats => stats.TotalKills),
+            TotalDeaths = group.Sum(stats => stats.TotalDeaths),
+            TotalAssists = group.Sum(stats => stats.TotalAssists),
+            TotalLastHits = group.Sum(stats => stats.TotalLastHits),
+            TotalDenies = group.Sum(stats => stats.TotalDenies),
+            TotalHeroDamage = group.Sum(stats => stats.TotalHeroDamage),
+            TotalTowerDamage = group.Sum(stats => stats.TotalTowerDamage),
+            TotalHeroHealing = group.Sum(stats => stats.TotalHeroHealing),
+            TotalGoldSpent = group.Sum(stats => stats.TotalGoldSpent),
+            TotalGoldPerMin = group.Sum(stats => stats.TotalGoldPerMin),
+            TotalXpPerMinute = group.Sum(stats => stats.TotalXpPerMinute),
+            LastMatchAt = group.Max(stats => stats.LastMatchAt)
+        };
+    }
 
     private static IReadOnlyList<int> DeserializeItems(string json)
     {

@@ -126,6 +126,36 @@ are implemented.
   read-capable `IMatchStore` and the schema bootstrap completed.
 - `git diff --check`: passed.
 
+### Phase 3 — completed in this working tree
+
+The three existing hero-data contracts now read the aggregates created when a
+local-lobby match closes:
+
+- `7274 -> 7275` returns one row per hero known for the connected account. It
+  includes wins, losses and averages for kills, deaths, assists, GPM, XPM, last
+  hits and denies.
+- `7521 -> 7522` resolves the requested account (or the connected account),
+  reports the least-played recorded hero as the current progression hero, its
+  games and the number of heroes already played by that account.
+- `7606 -> 7607` returns a deterministic ascending list of positive hero ids
+  that exist in persisted `PlayerHeroStats` rows.
+- The new reads stay behind `IMatchStore`; the generated protobuf files and the
+  database schema were not modified.
+
+The response deliberately leaves win streaks, best-match peaks and challenge
+lap timing unset because those values are not currently persisted. This keeps
+the client response grounded in real local-lobby data instead of deriving
+unsupported claims.
+
+### Evidence for Phase 3
+
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings and
+  0 errors after the hero read-side changes.
+- API startup against a new temporary SQLite database: passed; all four
+  persistence tables and the compatibility bootstrap completed, and the API
+  reached its listening state without an exception.
+- `git diff --check`: passed.
+
 ## Match close data flow
 
 ```text
@@ -159,16 +189,14 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Implement hero standings/progress responses (`7274/7275`, `7521/7522` and
-   `7606/7607`) from `PlayerHeroStats`.
-2. Expand the live `7034` path for kill totals, first blood, team score and
+1. Expand the live `7034` path for kill totals, first blood, team score and
    building state where the current client build requests them.
-3. Expose richer profile-card/recent-match projections from the persisted rows.
-4. Add EF migrations and replace the startup SQL bootstrap after the schema has
+2. Expose richer profile-card/recent-match projections from the persisted rows.
+3. Add EF migrations and replace the startup SQL bootstrap after the schema has
    stabilized.
-5. Validate with two consecutive accounts and two real Windows clients through
+4. Validate with two consecutive accounts and two real Windows clients through
    create -> join -> launch -> play -> 7004 -> reconnect/profile/history.
-6. Only then widen the scope to spectators, invites, matchmaking and other GC
+5. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
 ## Important limitations
@@ -185,6 +213,11 @@ directly, so they do not reconstruct history from lossy profile counters.
 - The history endpoint honors an explicit `include_practice_matches=false`, so a
   client request that excludes practice games will intentionally receive no
   local-lobby rows until another match category exists.
+- Hero standings and order contain only hero ids already recorded for the
+  account/installation; they are not a complete public Dota hero catalog until
+  one is imported from the targeted client build.
+- Hero best values, streaks and all-hero challenge timing remain unset because
+  the current match-close projection stores totals, not those event histories.
 - The fallback server lookup for simultaneous local launches remains a known
   risk until the game-server/lobby association is made explicit for every
   launch.
@@ -203,8 +236,8 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Current handoff
 
-Phases 1 and 2 are implemented and verified at compile/startup level. The next
-session should expose `PlayerHeroStats` through the existing hero standings and
-progress contracts, then improve the live `7034` data path. Before calling the
-vertical complete, reproduce it with two actual Dota 2 clients and preserve the
-capture/replay evidence in the repository diagnostics output.
+Phases 1, 2 and 3 are implemented and verified at compile/startup level. The
+next session should improve the live `7034` data path, then expose richer
+profile-card data. Before calling the vertical complete, reproduce it with two
+actual Dota 2 clients and preserve the capture/replay evidence in the
+repository diagnostics output.

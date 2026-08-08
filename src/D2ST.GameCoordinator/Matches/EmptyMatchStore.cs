@@ -25,4 +25,10 @@ internal sealed class EmptyMatchStore : IMatchStore
 
     public PlayerProfileStats GetProfileStats(uint accountId) =>
         PlayerProfileStats.Empty(accountId);
+
+    public IReadOnlyList<HeroStatsRecord> GetHeroStandings(uint accountId) => [];
+
+    public IReadOnlyList<HeroStatsRecord> GetHeroStats(uint accountId) => [];
+
+    public IReadOnlyList<int> GetHeroOrder() => [];
 }

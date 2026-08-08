@@ -33,6 +33,18 @@ public interface IMatchStore
 
     /// <summary>Reads the current profile projection for the account.</summary>
     PlayerProfileStats GetProfileStats(uint accountId);
+
+    /// <summary>Reads hero aggregates for the connected account.</summary>
+    IReadOnlyList<HeroStatsRecord> GetHeroStandings(uint accountId);
+
+    /// <summary>Reads the hero aggregates recorded for one account.</summary>
+    IReadOnlyList<HeroStatsRecord> GetHeroStats(uint accountId);
+
+    /// <summary>
+    /// Returns the deterministic order of hero ids known by persisted match
+    /// data. A static catalog is intentionally not fabricated here.
+    /// </summary>
+    IReadOnlyList<int> GetHeroOrder();
 }
 
 public sealed record MatchRecordResult(bool Created);

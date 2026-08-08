@@ -175,6 +175,44 @@ public sealed record PlayerProfileStats
     public static PlayerProfileStats Empty(uint accountId) => new() { AccountId = accountId };
 }
 
+/// <summary>
+/// Aggregate counters for one hero for a single account.
+/// </summary>
+public sealed record HeroStatsRecord
+{
+    public required int HeroId { get; init; }
+
+    public int Games { get; init; }
+
+    public int Wins { get; init; }
+
+    public int Losses { get; init; }
+
+    public long TotalKills { get; init; }
+
+    public long TotalDeaths { get; init; }
+
+    public long TotalAssists { get; init; }
+
+    public long TotalLastHits { get; init; }
+
+    public long TotalDenies { get; init; }
+
+    public long TotalHeroDamage { get; init; }
+
+    public long TotalTowerDamage { get; init; }
+
+    public long TotalHeroHealing { get; init; }
+
+    public long TotalGoldSpent { get; init; }
+
+    public long TotalGoldPerMin { get; init; }
+
+    public long TotalXpPerMinute { get; init; }
+
+    public DateTimeOffset? LastMatchAt { get; init; }
+}
+
 /// <summary>One row returned by the player's match-history request.</summary>
 public sealed record PlayerMatchHistoryEntry
 {
