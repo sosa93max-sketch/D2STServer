@@ -54,6 +54,39 @@ public sealed class SoCacheService
     }
 
     /// <summary>
+    /// Reconciles an object with the current server projection and publishes an
+    /// update only when its wire value changed. This is used for account state
+    /// on every logon: a cache may have been created by an older server build
+    /// with omitted conduct fields, and SeedIfAbsent would keep that stale
+    /// object forever across reconnects.
+    /// </summary>
+    public bool SetIfChanged<T>(SoCacheKey key, SoObjectKey objectKey, T value)
+    {
+        var body = _codec.Encode(value);
+        var result = _store.Mutate(key, cache =>
+        {
+            if (cache.TryGet(objectKey, out var current) && current.AsSpan().SequenceEqual(body))
+            {
+                return new SetResult(false, false, cache.Version, cache.Subscribers.ToArray());
+            }
+
+            var created = cache.Set(objectKey, body);
+            return new SetResult(true, created, cache.Version, cache.Subscribers.ToArray());
+        });
+
+        if (!result.Changed)
+        {
+            return false;
+        }
+
+        Publish(
+            result.Subscribers,
+            result.Created ? GcMsg.SoCreate : GcMsg.SoUpdate,
+            SingleObject(key, objectKey.TypeId, body, result.Version));
+        return true;
+    }
+
+    /// <summary>
     /// Writes an object only if the cache does not have it yet, without
     /// publishing anything. This is how a cache is seeded before anyone is
     /// subscribed to it (logon): re-seeding on a reconnect must not look like an
@@ -219,6 +252,12 @@ public sealed class SoCacheService
     }
 
     private sealed record DestroyResult(bool Found, byte[] Body, ulong Version, IReadOnlyCollection<uint> Subscribers);
+
+    private sealed record SetResult(
+        bool Changed,
+        bool Created,
+        ulong Version,
+        IReadOnlyCollection<uint> Subscribers);
 
     private static CMsgSOSingleObject SingleObject(SoCacheKey key, int typeId, byte[] body, ulong version) =>
         new()

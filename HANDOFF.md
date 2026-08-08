@@ -359,6 +359,53 @@ communication values wherever the client can use them to gate features:
   until that run, the server-side response is verified but client rendering and
   feature unlocks are not claimed as complete.
 
+### Phase 8 — completed in this working tree
+
+This phase addresses two reports from the client: adding a friend opens the
+custom profile UI without an apparent request, and accounts created through the
+admin web surface still appear with red conduct.
+
+Friend requests use the REST path, not a GC mutation: `POST /api/friends/request`
+resolves the target and `FriendService` persists the pending relationship for
+both accounts. A two-account API smoke check returned HTTP 200 and showed the
+pending initiator/recipient relationships through `GET /api/friends`. The
+English profile panel is a client-side overlay deliberately opened by the
+client after it queues the request; it is not the server's confirmation screen.
+
+The server now honors the client's `UseActiveWebUser` option. A successful
+password/web login is marked with its source IP, and a shim handshake from the
+same IP can bind to that active web account instead of creating or selecting
+the machine's fallback identity. Web sessions are excluded from game presence
+and client-session removal. If no active web session exists, the previous
+fallback identity behavior is retained for compatibility.
+
+The account Shared Object is reconciled on every GC welcome instead of being
+seeded only once. This replaces stale in-memory snapshots created by an older
+build with the current account projection. The account projection continues to
+use behavior and communication scores of `10_000`; the `7450 -> 7451` response
+continues to provide both direct player-resource scores and the maximum feature
+levels.
+
+### Evidence for Phase 8
+
+- `dotnet restore D2STServer.sln`: passed.
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- `git diff --check`: passed.
+- Against a release API using temporary SQLite, an admin-created account was
+  logged in through the web endpoint, then a shim request with
+  `UseActiveWebUser=true` from the same IP resolved to that account rather than
+  its fallback id.
+- The same mapped account sent a friend request successfully and the pending
+  relationship was visible to both sides.
+- A decoded GC welcome for the admin-created account reported behavior
+  `10000`, sequence `1`, `old=false` and `low_priority_until=0`.
+- Real Windows-client validation remains pending. The inspected external
+  `steam_api` client currently calls `EnsureSession()` non-blocking before the
+  friend POST; on a brand-new client session, the first click can therefore
+  receive `401` before the token exists while the overlay still opens. That
+  client-side race is outside this repository and was not changed here.
+
 ## Match close data flow
 
 ```text
@@ -397,8 +444,10 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Validate with one real Windows client and Dota bots through create -> enable
-   `FillWithBots` -> launch -> play -> `7004` -> reconnect/profile/history.
+1. Validate with one real Windows client through web-account login, friend
+   request and conduct/feature-gate refresh, then continue with Dota bots
+   through create -> enable `FillWithBots` -> launch -> play -> `7004` ->
+   reconnect/profile/history.
 2. If the machine can run two client sessions, repeat with two accounts on the
    same PC. Otherwise keep the two-human validation as a pending external test.
 3. Use the Windows capture to decide whether the build also needs the
@@ -440,6 +489,14 @@ is the planning reference for the work that follows the real-client gate.
   commend, moderation or low-priority enforcement pipeline yet; local
   match/abandon counts are real, while the 10,000 good behavior and
   communication scores are deliberately server-owned.
+- `UseActiveWebUser` requires a recent password-authenticated web session from
+  the same source IP. Without it, the shim keeps using its configured fallback
+  identity; the admin-created account must therefore be selected through that
+  web session or by configuring the client fallback id to the account id.
+- The server friend endpoint persists valid authenticated requests. The
+  external client's immediate first-use session race can still make the first
+  click appear ineffective, and the custom profile overlay's English strings
+  are owned by that client rather than this server.
 - Profile-card slots are persisted and returned, but item/trophy ownership,
   showcase persistence and the separate `8034 -> 8035` statistics surface are
   not implemented until a real client capture establishes their required
@@ -476,11 +533,11 @@ is the planning reference for the work that follows the real-client gate.
 
 ## Current handoff
 
-Phases 1–7 and the server-side bot-match support are implemented and verified
-at compile/startup level, with the schema managed by EF Core and legacy
-databases preserved through the transition bridge. The next session should
-validate one client against Dota bots and the conduct feature gates, then use a
-second client on the same PC only if the hardware permits. Preserve
-capture/replay evidence before expanding the vertical. See [ROADMAP.md](ROADMAP.md)
-for the complete plan; do not treat client compatibility as complete until it
-is recorded here.
+Phases 1–8 and the server-side bot-match support are implemented and verified
+at compile/startup and targeted API/GC-smoke level, with the schema managed by
+EF Core and legacy databases preserved through the transition bridge. The next
+session should validate one client against the active web account flow, friend
+requests and conduct feature gates, then use a second client on the same PC
+only if the hardware permits. Preserve capture/replay evidence before
+expanding the vertical. See [ROADMAP.md](ROADMAP.md) for the complete plan; do
+not treat client compatibility as complete until it is recorded here.

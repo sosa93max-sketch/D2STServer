@@ -50,10 +50,27 @@ public sealed class SteamAuthService : ISteamAuthService
         ShimLogon logon,
         CancellationToken cancellationToken = default)
     {
-        var resolvedAccountId = logon.AccountId != 0
-            ? logon.AccountId
-            : logon.SteamId != 0
-                ? SteamAccount.AccountIdFromSteamId(logon.SteamId)
+        var activeWebSession = logon.UseActiveWebUser
+            ? _sessions.FindActiveWebSession(logon.RemoteIp)
+            : null;
+
+        // The shim sends its machine-level fallback id on every handshake.
+        // When the operator enabled UseActiveWebUser, that id is only a
+        // fallback: the password-authenticated web session on the same
+        // machine is the account the client should actually use.
+        var effectiveLogon = activeWebSession is null
+            ? logon
+            : logon with
+            {
+                AccountId = activeWebSession.Account.AccountId,
+                SteamId = activeWebSession.Account.SteamId,
+                PersonaName = activeWebSession.PersonaName ?? logon.PersonaName
+            };
+
+        var resolvedAccountId = effectiveLogon.AccountId != 0
+            ? effectiveLogon.AccountId
+            : effectiveLogon.SteamId != 0
+                ? SteamAccount.AccountIdFromSteamId(effectiveLogon.SteamId)
                 : 0;
 
         var account = resolvedAccountId != 0
@@ -61,20 +78,20 @@ public sealed class SteamAuthService : ISteamAuthService
             : null;
 
         account ??= await RegisterAsync(
-            await AvailableUsernameAsync(resolvedAccountId, logon.PersonaName, cancellationToken),
+            await AvailableUsernameAsync(resolvedAccountId, effectiveLogon.PersonaName, cancellationToken),
             RandomPassword(),
             cancellationToken,
             resolvedAccountId);
 
         // The persona is chosen on the game machine, so logon is the moment the
         // server learns the name other players will see.
-        if (!string.IsNullOrWhiteSpace(logon.PersonaName) && account.PersonaName != logon.PersonaName)
+        if (!string.IsNullOrWhiteSpace(effectiveLogon.PersonaName) && account.PersonaName != effectiveLogon.PersonaName)
         {
-            account.PersonaName = logon.PersonaName;
+            account.PersonaName = effectiveLogon.PersonaName;
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        return IssueSession(account, logon);
+        return IssueSession(account, effectiveLogon);
     }
 
     private SteamSession IssueSession(AccountEntity account, ShimLogon logon)

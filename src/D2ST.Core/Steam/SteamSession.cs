@@ -35,6 +35,17 @@ public sealed class SteamSession
     public string ProcessRole { get; init; } = ProcessRoles.Client;
 
     /// <summary>
+    /// True for a password-authenticated web/admin session. When the shim is
+    /// configured to use the active web user, the server can bind its
+    /// passwordless game session to this account instead of creating a second
+    /// fallback identity.
+    /// </summary>
+    public bool IsWebSession { get; set; }
+
+    /// <summary>Network address from which this session was authenticated.</summary>
+    public string RemoteIp { get; set; } = string.Empty;
+
+    /// <summary>
     /// Last time the session was used. Presence is derived from it, so every
     /// authenticated request refreshes it.
     /// </summary>

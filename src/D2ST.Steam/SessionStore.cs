@@ -43,6 +43,23 @@ public sealed class SessionStore : ISessionStore
         return session;
     }
 
+    public SteamSession? FindActiveWebSession(string? remoteIp)
+    {
+        if (string.IsNullOrWhiteSpace(remoteIp))
+        {
+            return null;
+        }
+
+        var since = _time.GetUtcNow() - _options.Value.SessionTimeout;
+        return _sessions.Values
+            .Where(session =>
+                session.IsWebSession &&
+                session.LastSeenAt >= since &&
+                string.Equals(session.RemoteIp, remoteIp, StringComparison.Ordinal))
+            .OrderByDescending(session => session.LastSeenAt)
+            .FirstOrDefault();
+    }
+
     public bool Remove(string? token) =>
         !string.IsNullOrWhiteSpace(token) && _sessions.TryRemove(token, out _);
 
@@ -58,7 +75,10 @@ public sealed class SessionStore : ISessionStore
     {
         var since = _time.GetUtcNow() - _options.Value.PresenceTimeout;
         return _sessions.Values
-            .Where(session => session.ProcessRole == ProcessRoles.Client && session.LastSeenAt >= since)
+            .Where(session =>
+                !session.IsWebSession &&
+                session.ProcessRole == ProcessRoles.Client &&
+                session.LastSeenAt >= since)
             .Select(session => session.Account.AccountId)
             .ToHashSet();
     }
@@ -69,6 +89,7 @@ public sealed class SessionStore : ISessionStore
         foreach (var pair in _sessions)
         {
             if (pair.Value.Account.AccountId == accountId &&
+                !pair.Value.IsWebSession &&
                 pair.Value.ProcessRole == ProcessRoles.Client &&
                 _sessions.TryRemove(pair))
             {
@@ -95,6 +116,7 @@ public sealed class SessionStore : ISessionStore
 
     private static bool IsLiveClient(SteamSession session, uint accountId, DateTimeOffset since) =>
         session.Account.AccountId == accountId &&
+        !session.IsWebSession &&
         session.ProcessRole == ProcessRoles.Client &&
         session.LastSeenAt >= since;
 }

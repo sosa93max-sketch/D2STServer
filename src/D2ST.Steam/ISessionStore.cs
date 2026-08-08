@@ -14,6 +14,12 @@ public interface ISessionStore
 
     SteamSession? Find(string? token);
 
+    /// <summary>
+    /// Finds the most recently used password/web session from an address. The
+    /// shim uses this only when its UseActiveWebUser option is enabled.
+    /// </summary>
+    SteamSession? FindActiveWebSession(string? remoteIp);
+
     bool Remove(string? token);
 
     /// <summary>Marks the session as just used, keeping presence alive.</summary>

@@ -11,4 +11,6 @@ public sealed record ShimLogon(
     string? PersonaName,
     uint AppId,
     string? ClientInstanceId,
-    string? ProcessRole);
+    string? ProcessRole,
+    bool UseActiveWebUser = false,
+    string? RemoteIp = null);

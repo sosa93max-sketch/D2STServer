@@ -54,10 +54,10 @@ public sealed class WelcomeBuilder
     }
 
     /// <summary>
-    /// Seeds the account's caches if this is its first logon and subscribes it to
-    /// them, returning the subscription messages in welcome order. A later
-    /// subscription refresh replays the same caches from the store, so the two
-    /// paths cannot drift.
+    /// Reconciles the account's caches with the current projections and
+    /// subscribes it to them, returning the subscription messages in welcome
+    /// order. A later subscription refresh replays the same caches from the
+    /// store, so the two paths cannot drift.
     /// </summary>
     public IReadOnlyList<CMsgSOCacheSubscribed> Subscribe(GcContext context)
     {
@@ -77,10 +77,10 @@ public sealed class WelcomeBuilder
         var game = SoCacheKey.Game(context.SteamId);
         var econ = SoCacheKey.Econ(context.SteamId);
 
-        _soCache.SeedIfAbsent(
+        _soCache.SetIfChanged(
             game,
             new SoObjectKey(DotaSoCache.TypeDotaGameAccountClient, context.AccountId),
-            () => AccountSnapshot(context.AccountId));
+            AccountSnapshot(context.AccountId));
 
         // Dota Plus shipped in 2018; older builds have no 2012 cache bucket.
         if (context.Profile.IncludeDotaPlus)
