@@ -33,11 +33,81 @@ public sealed class DotaPlusProjection
     public bool Refresh(uint accountId)
     {
         var steamId = SteamAccount.SteamIdFromAccountId(accountId);
-        return _soCache.SetIfChanged(
+        var changed = _soCache.SetIfChanged(
             SoCacheKey.Game(steamId),
             new SoObjectKey(DotaSoCache.TypeDotaGameAccountPlus, accountId),
             Build(accountId));
+        return RefreshChallenges(accountId) || changed;
     }
+
+    /// <summary>
+    /// Reconciles the persisted challenge rows with the account game cache.
+    /// Rerolls deliberately change the SO key (sequence id), so the old
+    /// challenge is destroyed before the replacement is published.
+    /// </summary>
+    public bool RefreshChallenges(uint accountId)
+    {
+        var snapshot = _store.EnsureChallenges(accountId);
+        var key = SoCacheKey.Game(SteamAccount.SteamIdFromAccountId(accountId));
+        var existing = _soCache.ObjectsOfType<CSODOTAPlayerChallenge>(
+            key,
+            DotaSoCache.TypeDotaPlayerChallenge);
+        var currentKeys = snapshot.Active
+            ? snapshot.Challenges
+                .Select(challenge => new SoObjectKey(
+                    DotaSoCache.TypeDotaPlayerChallenge,
+                    challenge.SequenceId))
+                .ToHashSet()
+            : new HashSet<SoObjectKey>();
+        var changed = false;
+
+        foreach (var item in existing)
+        {
+            if (!currentKeys.Contains(item.Key))
+            {
+                changed |= _soCache.Destroy(key, item.Key);
+            }
+        }
+
+        if (!snapshot.Active)
+        {
+            return changed;
+        }
+
+        foreach (var challenge in snapshot.Challenges)
+        {
+            changed |= _soCache.SetIfChanged(
+                key,
+                new SoObjectKey(
+                    DotaSoCache.TypeDotaPlayerChallenge,
+                    challenge.SequenceId),
+                ToProtocol(challenge));
+        }
+
+        return changed;
+    }
+
+    private static CSODOTAPlayerChallenge ToProtocol(DotaPlusChallenge challenge) =>
+        new()
+        {
+            AccountId = challenge.AccountId,
+            EventId = challenge.EventId,
+            SlotId = challenge.SlotId,
+            IntParam0 = challenge.IntParam0,
+            IntParam1 = challenge.IntParam1,
+            CreatedTime = ToUInt32(challenge.CreatedAt.ToUnixTimeSeconds()),
+            Completed = challenge.Completed,
+            SequenceId = challenge.SequenceId,
+            ChallengeTier = challenge.ChallengeTier,
+            Flags = challenge.Flags,
+            Attempts = challenge.Attempts,
+            CompleteLimit = challenge.CompleteLimit,
+            QuestRank = challenge.QuestRank,
+            MaxQuestRank = challenge.MaxQuestRank,
+            InstanceId = challenge.InstanceId,
+            HeroId = challenge.HeroId,
+            TemplateId = challenge.TemplateId
+        };
 
     private static CSODOTAGameAccountPlus Build(DotaPlusState state, DateTimeOffset now)
     {

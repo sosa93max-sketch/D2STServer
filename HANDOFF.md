@@ -858,6 +858,48 @@ Next step: implement the Phase 2 Dota Plus state (shards, challenge SO objects,
 match-progress updates and relic transactions) behind the same account-scoped
 store, then publish that phase separately.
 
+## Phase 16 — local Dota Plus progress (Phase 2)
+
+The second slice makes the local entitlement useful during LAN play. All state
+below is owned by the server database and is scoped to the local account.
+
+Implemented:
+
+- `DotaPlusAccounts.Shards` is the current shard balance. Every award, admin
+  adjustment and relic charge is appended to `DotaPlusShardTransactions` with
+  amount, balance-after, actor, reason, timestamp and a unique reference.
+- `DotaPlusChallenges` persists three account challenges with progress,
+  sequence, target/reward parameters, rank, attempts and last-match reference.
+  The GC projects them as SO type 2010 and reconciles create/update/destroy
+  deltas when the account logs in, is rerolled or finishes a match.
+- Closing a local match through 7004 awards a fixed local shard policy and
+  advances play/win/kills challenges once per match/account. The dedicated
+  7587 challenge report is also accepted and shares the same idempotency guard.
+- Client messages 7584/7586 now reroll a persisted challenge, 8258/8259 buys
+  a common or rare local hero relic, and 8276/8277 refreshes the challenge
+  projection. Relic ownership is retained in `DotaPlusRelics`; the response
+  returns a deterministic local kill-eater type.
+- `GET /api/dota-plus` now returns subscription, shards and challenge progress.
+  The admin Users inspector shows/adjusts shards, and account deletion removes
+  all Phase 2 rows. Event id 19 also reports the local shard total through the
+  legacy event-points envelope used by older clients.
+- The GC now wires the challenge/relic handlers and match-progress projection
+  through the same empty-adapter boundary used by the API host.
+
+Evidence and limits:
+
+- `git diff --check`, source-reference assertions, admin JavaScript syntax and
+  duplicate-DOM-id checks pass.
+- The current environment still has no `dotnet` executable, so the Release
+  build, EF migration/startup smoke and Windows client capture remain pending.
+- Challenge template ids and kill-eater ids are deliberately local and
+  deterministic. The server state and protocol transactions are functional,
+  while the exact labels/item visuals of a particular Dota client build must
+  be confirmed against that build's local schema before treating the visual
+  relic catalog as complete.
+- Phase 3 will connect Dota Plus activation/rewards to the existing local
+  catalog and wallet, then run the final LAN smoke path.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -875,11 +917,11 @@ store, then publish that phase separately.
 
 ## Current handoff
 
-Phases 1–15 and the server-side bot-match support are implemented and verified
+Phases 1–16 and the server-side bot-match support are implemented and verified
 at compile/startup and targeted API/GC-smoke level, with the schema managed by
 EF Core and legacy databases preserved through the transition bridge. The next
-session should first validate the new local Dota Plus entitlement against a
-real build-6783 client, then continue with shards/challenges/relics. Preserve
+session should first validate the local Dota Plus progress projection against a
+real build-6783 client, then connect the local catalog/wallet rewards. Preserve
 capture/replay evidence, rebuild the published client shim and verify that Dota
 returns to the foreground before claiming client compatibility. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client

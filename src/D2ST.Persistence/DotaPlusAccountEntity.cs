@@ -18,5 +18,7 @@ public sealed class DotaPlusAccountEntity
 
     public ulong SteamAgreementId { get; set; }
 
+    public long Shards { get; set; }
+
     public DateTimeOffset UpdatedAt { get; set; }
 }

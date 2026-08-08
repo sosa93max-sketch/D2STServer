@@ -59,6 +59,12 @@ public sealed class D2stDbContext : DbContext
 
     public DbSet<DotaPlusTransactionEntity> DotaPlusTransactions => Set<DotaPlusTransactionEntity>();
 
+    public DbSet<DotaPlusChallengeEntity> DotaPlusChallenges => Set<DotaPlusChallengeEntity>();
+
+    public DbSet<DotaPlusShardTransactionEntity> DotaPlusShardTransactions => Set<DotaPlusShardTransactionEntity>();
+
+    public DbSet<DotaPlusRelicEntity> DotaPlusRelics => Set<DotaPlusRelicEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountEntity>()
@@ -175,5 +181,18 @@ public sealed class D2stDbContext : DbContext
 
         modelBuilder.Entity<DotaPlusTransactionEntity>()
             .HasIndex(transaction => new { transaction.AccountId, transaction.CreatedAt });
+
+        modelBuilder.Entity<DotaPlusChallengeEntity>()
+            .HasKey(challenge => new { challenge.AccountId, challenge.SlotId });
+
+        modelBuilder.Entity<DotaPlusShardTransactionEntity>()
+            .HasIndex(transaction => transaction.Reference)
+            .IsUnique();
+
+        modelBuilder.Entity<DotaPlusShardTransactionEntity>()
+            .HasIndex(transaction => new { transaction.AccountId, transaction.CreatedAt });
+
+        modelBuilder.Entity<DotaPlusRelicEntity>()
+            .HasIndex(relic => new { relic.AccountId, relic.HeroId, relic.RelicRarity });
     }
 }

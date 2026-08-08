@@ -2,6 +2,7 @@ using D2ST.Core.Accounts;
 using D2ST.Core.GameCoordinator;
 using D2ST.Core.Matches;
 using D2ST.GameCoordinator.Ranks;
+using D2ST.GameCoordinator.DotaPlus;
 using D2ST.GameCoordinator.Lobbies;
 using D2ST.GameCoordinator.Messaging;
 using D2ST.GameCoordinator.Matches;
@@ -22,6 +23,8 @@ public sealed class GameMatchSignOutHandler : IGcMessageHandler
     private readonly LobbyService _lobbies;
     private readonly IRankStore _ranks;
     private readonly IMatchStore _matches;
+    private readonly IDotaPlusStore _plus;
+    private readonly DotaPlusProjection _dotaPlus;
     private readonly SoCacheService _soCache;
     private readonly IGcMessageQueue _queue;
 
@@ -29,12 +32,16 @@ public sealed class GameMatchSignOutHandler : IGcMessageHandler
         LobbyService lobbies,
         IRankStore ranks,
         IMatchStore matches,
+        IDotaPlusStore plus,
+        DotaPlusProjection dotaPlus,
         SoCacheService soCache,
         IGcMessageQueue queue)
     {
         _lobbies = lobbies;
         _ranks = ranks;
         _matches = matches;
+        _plus = plus;
+        _dotaPlus = dotaPlus;
         _soCache = soCache;
         _queue = queue;
     }
@@ -65,6 +72,7 @@ public sealed class GameMatchSignOutHandler : IGcMessageHandler
                 _ranks.ApplyMatchResult(results);
             }
             UpdateAccountCaches(match.Players);
+            UpdateDotaPlus(match);
 
             if (lobby is not null)
             {
@@ -230,6 +238,27 @@ public sealed class GameMatchSignOutHandler : IGcMessageHandler
             account.LeaverCount = NonNegative(stats.LeaverCount);
             LocalConductState.ApplyTo(account);
             _soCache.Set(key, objectKey, account);
+        }
+    }
+
+    private void UpdateDotaPlus(MatchRecord match)
+    {
+        foreach (var player in match.Players
+                     .Where(player => player.AccountId != 0)
+                     .GroupBy(player => player.AccountId)
+                     .Select(group => group.First()))
+        {
+            var progress = _plus.ApplyMatchProgress(
+                player.AccountId,
+                match.MatchId,
+                player.HeroId,
+                player.Won,
+                player.Kills,
+                match.DurationSeconds);
+            if (progress.Success)
+            {
+                _dotaPlus.RefreshChallenges(player.AccountId);
+            }
         }
     }
 

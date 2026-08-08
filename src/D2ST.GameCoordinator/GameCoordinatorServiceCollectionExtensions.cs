@@ -58,6 +58,10 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, MyTeamInfoHandler>();
         services.AddSingleton<IGcMessageHandler, EmoticonDataHandler>();
         services.AddSingleton<IGcMessageHandler, EventPointsHandler>();
+        services.AddSingleton<IGcMessageHandler, DotaPlusRerollPlayerChallengeHandler>();
+        services.AddSingleton<IGcMessageHandler, DotaPlusRelicPurchaseHandler>();
+        services.AddSingleton<IGcMessageHandler, DotaPlusWeeklyChallengeResultHandler>();
+        services.AddSingleton<IGcMessageHandler, DotaPlusChallengeSignOutHandler>();
         services.AddSingleton<IGcMessageHandler, RankRequestHandler>();
         services.AddSingleton<IGcMessageHandler, GetCurrentPrivateCoachingSessionHandler>();
         services.AddSingleton<IGcMessageHandler, NotificationsRequestHandler>();

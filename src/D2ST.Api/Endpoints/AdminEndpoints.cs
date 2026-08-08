@@ -66,13 +66,15 @@ public static class AdminEndpoints
                 .Where(wallet => accountIds.Contains(wallet.AccountId))
                 .ToDictionaryAsync(wallet => wallet.AccountId, ct);
             var plusStates = plus.GetMany(accountIds);
+            var plusSnapshots = plus.GetManySnapshots(accountIds);
             return Results.Ok(accounts.Select(account =>
                 ToResponse(
                     ranks,
                     account,
                     online.Contains(account.AccountId),
                     wallets.GetValueOrDefault(account.AccountId),
-                    plusStates.GetValueOrDefault(account.AccountId))).ToList());
+                    plusStates.GetValueOrDefault(account.AccountId),
+                    plusSnapshots.GetValueOrDefault(account.AccountId))).ToList());
         });
 
         app.MapGet("/api/admin/users/page", async (
@@ -156,13 +158,15 @@ public static class AdminEndpoints
                 .Where(wallet => accountIds.Contains(wallet.AccountId))
                 .ToDictionaryAsync(wallet => wallet.AccountId, ct);
             var plusStates = plus.GetMany(accountIds);
+            var plusSnapshots = plus.GetManySnapshots(accountIds);
             var items = accounts.Select(account =>
                 ToResponse(
                     ranks,
                     account,
                     online.Contains(account.AccountId),
                     wallets.GetValueOrDefault(account.AccountId),
-                    plusStates.GetValueOrDefault(account.AccountId))).ToArray();
+                    plusStates.GetValueOrDefault(account.AccountId),
+                    plusSnapshots.GetValueOrDefault(account.AccountId))).ToArray();
 
             return Results.Ok(new AdminUsersPageResponse(
                 items,
@@ -252,11 +256,12 @@ public static class AdminEndpoints
                 extend: true,
                 context.Session.Account.AccountId,
                 request.Reason);
+            var snapshot = plus.GetSnapshot((uint)accountId);
             var response = new AdminDotaPlusUpdateResponse(
                 result.Success,
                 result.Code,
                 result.Message,
-                DotaPlusEndpoints.ToResponse(result.State));
+                DotaPlusEndpoints.ToResponse(result.State, snapshot));
             if (!result.Success)
             {
                 return Json(response, result.Code == "account_not_found" ? 404 : 400);
@@ -264,6 +269,51 @@ public static class AdminEndpoints
 
             projection.Refresh((uint)accountId);
             lobbies.RefreshDotaPlus((uint)accountId);
+            return Results.Ok(response);
+        });
+
+        app.MapPut("/api/admin/users/{accountId:long}/dota-plus/shards", async (
+            long accountId,
+            AdminDotaPlusShardUpdateRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration config,
+            IDotaPlusStore plus,
+            CancellationToken ct) =>
+        {
+            var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
+            if (context is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.IsAdmin)
+            {
+                return Forbidden();
+            }
+
+            if (accountId <= 0 || accountId > uint.MaxValue)
+            {
+                return Json(new AdminMessageResponse("Usuario no encontrado."), 404);
+            }
+
+            var result = plus.AdjustShards(
+                (uint)accountId,
+                request.Delta,
+                context.Session.Account.AccountId,
+                request.Reason);
+            var state = plus.Get((uint)accountId);
+            var response = new AdminDotaPlusShardUpdateResponse(
+                result.Success,
+                result.Code,
+                result.Message,
+                DotaPlusEndpoints.ToResponse(state, result.Snapshot));
+            if (!result.Success)
+            {
+                return Json(response, result.Code == "account_not_found" ? 404 : 400);
+            }
+
             return Results.Ok(response);
         });
 
@@ -474,6 +524,12 @@ public static class AdminEndpoints
             db.Wallets.RemoveRange(db.Wallets.Where(wallet => wallet.AccountId == id));
             db.DotaPlusTransactions.RemoveRange(
                 db.DotaPlusTransactions.Where(transaction => transaction.AccountId == id));
+            db.DotaPlusChallenges.RemoveRange(
+                db.DotaPlusChallenges.Where(challenge => challenge.AccountId == id));
+            db.DotaPlusShardTransactions.RemoveRange(
+                db.DotaPlusShardTransactions.Where(transaction => transaction.AccountId == id));
+            db.DotaPlusRelics.RemoveRange(
+                db.DotaPlusRelics.Where(relic => relic.AccountId == id));
             db.DotaPlusAccounts.RemoveRange(
                 db.DotaPlusAccounts.Where(subscription => subscription.AccountId == id));
             db.Accounts.Remove(account);
@@ -518,7 +574,8 @@ public static class AdminEndpoints
         AccountEntity account,
         bool online,
         WalletEntity? wallet = null,
-        DotaPlusState? plus = null)
+        DotaPlusState? plus = null,
+        DotaPlusSnapshot? plusSnapshot = null)
     {
         var rank = ranks.GetOrCreate(account.AccountId);
         var info = RankMath.RankFor(rank.Mmr);
@@ -542,7 +599,8 @@ public static class AdminEndpoints
             wallet is null ? 0 : Math.Max(0, wallet.BalanceCredits - wallet.ReservedCredits),
             plus?.IsActiveAt(now) ?? false,
             plus?.ExpiresAt,
-            plus?.DaysRemainingAt(now) ?? 0);
+            plus?.DaysRemainingAt(now) ?? 0,
+            plusSnapshot?.Shards ?? 0);
     }
 
     private static bool TryDecodeAvatar(string? contentBase64, out byte[] content)

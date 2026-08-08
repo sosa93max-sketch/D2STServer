@@ -235,7 +235,7 @@
   .inspector-submit { width: 100%; padding: 8px 10px; font-size: 11px; }
   .inspector-action-row { display: flex; gap: 6px; }
   .inspector-action-row > * { flex: 1; min-width: 0; }
-  .inspector-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 9px; }
+  .inspector-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 6px; margin-bottom: 9px; }
   .inspector-metric { min-width: 0; padding: 8px 7px; border: 1px solid var(--border); border-radius: 8px; background: rgba(23, 34, 49, .65); }
   .inspector-metric span { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .35px; }
   .inspector-metric strong { display: block; color: #dbe9ff; font-size: 12px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -423,6 +423,7 @@
                   <div class="inspector-metric"><span>Estado</span><strong id="inspectorPlusState">Inactivo</strong></div>
                   <div class="inspector-metric"><span>Restan</span><strong id="inspectorPlusDays">0 días</strong></div>
                   <div class="inspector-metric"><span>Vence</span><strong id="inspectorPlusExpires">—</strong></div>
+                  <div class="inspector-metric"><span>Shards</span><strong id="inspectorPlusShards">0</strong></div>
                 </div>
                 <div class="inspector-grid">
                   <div class="inspector-field"><label for="plusDays">Días a añadir</label><input id="plusDays" type="number" min="1" max="3650" placeholder="30"></div>
@@ -431,6 +432,14 @@
                 <div class="inspector-action-row">
                   <button id="plusActivateBtn" class="inspector-submit accent">＋ Activar / ampliar</button>
                   <button id="plusRevokeBtn" class="inspector-submit danger">Revocar</button>
+                </div>
+                <div class="inspector-grid" style="margin-top: 8px;">
+                  <div class="inspector-field"><label for="plusShardsDelta">Ajuste de shards</label><input id="plusShardsDelta" type="number" min="1" max="1000000000" placeholder="800"></div>
+                  <div class="inspector-field"><label for="plusShardsReason">Motivo</label><input id="plusShardsReason" maxlength="256" placeholder="Recompensa local"></div>
+                </div>
+                <div class="inspector-action-row">
+                  <button id="plusShardsAddBtn" class="inspector-submit">＋ Añadir shards</button>
+                  <button id="plusShardsRemoveBtn" class="inspector-submit danger">− Retirar shards</button>
                 </div>
               </section>
 
@@ -757,6 +766,7 @@ function renderInspector(user) {
   $('inspectorPlusExpires').textContent = user.DotaPlusExpiresAt
     ? new Date(user.DotaPlusExpiresAt).toLocaleDateString()
     : '—';
+  $('inspectorPlusShards').textContent = formatNumber(user.DotaPlusShards || 0);
   $('inspectorMmr').textContent = (user.Mmr || 0) + ' MMR';
   $('inspectorRank').textContent = user.IsCalibrated
     ? medalName(user.RankTier) + ' ' + (user.RankStar || '')
@@ -765,6 +775,8 @@ function renderInspector(user) {
   $('walletReason').value = '';
   $('plusDays').value = '';
   $('plusReason').value = '';
+  $('plusShardsDelta').value = '';
+  $('plusShardsReason').value = '';
   $('mmrDelta').value = '';
   clearMessage($('inspectorMsg'));
 }
@@ -775,6 +787,7 @@ function focusInspectorField(focus) {
     walletAdd: 'walletDelta',
     walletRemove: 'walletDelta',
     plus: 'plusDays',
+    plusShards: 'plusShardsDelta',
     mmr: 'mmrDelta',
     mmrAdd: 'mmrDelta',
     mmrRemove: 'mmrDelta',
@@ -925,8 +938,8 @@ function renderUsers(body) {
     const plusMeta = document.createElement('span');
     plusMeta.className = 'meta';
     plusMeta.textContent = user.DotaPlusActive
-      ? formatNumber(user.DotaPlusDaysRemaining || 0) + ' días'
-      : 'Sin acceso';
+      ? formatNumber(user.DotaPlusDaysRemaining || 0) + ' días · ' + formatNumber(user.DotaPlusShards || 0) + ' shards'
+      : formatNumber(user.DotaPlusShards || 0) + ' shards';
     plus.appendChild(plusValue);
     plus.appendChild(plusMeta);
     row.appendChild(plus);
@@ -1284,6 +1297,11 @@ function adjustDotaPlus(user, enabled) {
   }
 }
 
+function adjustDotaPlusShards(user, sign) {
+  openUserInspector(user, 'plusShards');
+  $('plusShardsReason').value = sign > 0 ? 'Recompensa local' : 'Corrección';
+}
+
 async function submitDotaPlus(enabled) {
   const user = selectedUser;
   if (!user) return;
@@ -1317,6 +1335,34 @@ async function submitDotaPlus(enabled) {
   await loadUsers(usersState.page);
   if (selectedUser && selectedUser.AccountId === accountId) {
     show($('inspectorMsg'), result.body.Message || 'Dota Plus actualizado.', 'ok');
+  }
+}
+
+async function submitDotaPlusShards(sign) {
+  const user = selectedUser;
+  if (!user) return;
+  const value = Number($('plusShardsDelta').value);
+  if (!Number.isSafeInteger(value) || value <= 0 || value > 1000000000) {
+    show($('inspectorMsg'), 'La cantidad debe ser un entero entre 1 y 1.000.000.000.');
+    return;
+  }
+  const reason = $('plusShardsReason').value.trim() || (sign > 0 ? 'Recompensa local' : 'Corrección');
+  const accountId = user.AccountId;
+  $('plusShardsAddBtn').disabled = true;
+  $('plusShardsRemoveBtn').disabled = true;
+  const result = await api('/api/admin/users/' + accountId + '/dota-plus/shards', {
+    method: 'PUT',
+    body: JSON.stringify({ Delta: sign * value, Reason: reason })
+  });
+  $('plusShardsAddBtn').disabled = false;
+  $('plusShardsRemoveBtn').disabled = false;
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  await loadUsers(usersState.page);
+  if (selectedUser && selectedUser.AccountId === accountId) {
+    show($('inspectorMsg'), result.body.Message || 'Shards actualizados.', 'ok');
   }
 }
 
@@ -1513,6 +1559,8 @@ $('walletAddBtn').addEventListener('click', () => submitWallet(1));
 $('walletRemoveBtn').addEventListener('click', () => submitWallet(-1));
 $('plusActivateBtn').addEventListener('click', () => submitDotaPlus(true));
 $('plusRevokeBtn').addEventListener('click', () => submitDotaPlus(false));
+$('plusShardsAddBtn').addEventListener('click', () => submitDotaPlusShards(1));
+$('plusShardsRemoveBtn').addEventListener('click', () => submitDotaPlusShards(-1));
 $('mmrAddBtn').addEventListener('click', () => submitMmr(1));
 $('mmrRemoveBtn').addEventListener('click', () => submitMmr(-1));
 $('resetMmrBtn').addEventListener('click', () => { if (selectedUser) resetMmr(selectedUser); });

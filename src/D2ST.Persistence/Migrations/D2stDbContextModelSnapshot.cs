@@ -71,6 +71,9 @@ namespace D2ST.Persistence.Migrations
                     b.Property<ulong>("SteamAgreementId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long>("Shards")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTimeOffset?>("StartedAt")
                         .HasColumnType("TEXT");
 
@@ -118,6 +121,141 @@ namespace D2ST.Persistence.Migrations
                     b.HasIndex("AccountId", "CreatedAt");
 
                     b.ToTable("DotaPlusTransactions");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.DotaPlusChallengeEntity", b =>
+                {
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("SlotId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("EventId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("IntParam0")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("IntParam1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("Completed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("SequenceId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("ChallengeTier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Flags")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Attempts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("CompleteLimit")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("QuestRank")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("MaxQuestRank")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("InstanceId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HeroId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("TemplateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LastMatchReference")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AccountId", "SlotId");
+
+                    b.ToTable("DotaPlusChallenges");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.DotaPlusShardTransactionEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("ChangedByAccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("BalanceAfter")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasMaxLength(96)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId", "CreatedAt");
+
+                    b.HasIndex("Reference")
+                        .IsUnique();
+
+                    b.ToTable("DotaPlusShardTransactions");
+                });
+
+            modelBuilder.Entity("D2ST.Persistence.DotaPlusRelicEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HeroId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RelicRarity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("KillEaterType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId", "HeroId", "RelicRarity");
+
+                    b.ToTable("DotaPlusRelics");
                 });
 
             modelBuilder.Entity("D2ST.Persistence.EconItemEntity", b =>

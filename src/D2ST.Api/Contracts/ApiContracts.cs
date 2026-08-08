@@ -45,7 +45,8 @@ public sealed record AdminUserResponse(
     long AvailableCredits,
     bool DotaPlusActive,
     DateTimeOffset? DotaPlusExpiresAt,
-    int DotaPlusDaysRemaining);
+    int DotaPlusDaysRemaining,
+    long DotaPlusShards);
 
 public sealed record AdminUsersPageResponse(
     IReadOnlyList<AdminUserResponse> Items,
@@ -270,13 +271,28 @@ public sealed record AdminWalletAdjustResponse(
     string Message,
     StoreWalletResponse Wallet);
 
+public sealed record DotaPlusChallengeResponse(
+    uint AccountId,
+    uint SlotId,
+    uint SequenceId,
+    uint TemplateId,
+    uint Progress,
+    uint Target,
+    uint RewardShards,
+    int HeroId,
+    uint QuestRank,
+    uint MaxQuestRank,
+    DateTimeOffset CreatedAt);
+
 public sealed record DotaPlusResponse(
     uint AccountId,
     bool Active,
     DateTimeOffset? StartedAt,
     DateTimeOffset? ExpiresAt,
     int DaysRemaining,
-    uint PlusStatus);
+    uint PlusStatus,
+    long Shards,
+    IReadOnlyList<DotaPlusChallengeResponse> Challenges);
 
 public sealed record AdminDotaPlusUpdateRequest(
     bool Enabled,
@@ -284,6 +300,14 @@ public sealed record AdminDotaPlusUpdateRequest(
     string? Reason);
 
 public sealed record AdminDotaPlusUpdateResponse(
+    bool Success,
+    string Code,
+    string Message,
+    DotaPlusResponse DotaPlus);
+
+public sealed record AdminDotaPlusShardUpdateRequest(long Delta, string? Reason);
+
+public sealed record AdminDotaPlusShardUpdateResponse(
     bool Success,
     string Code,
     string Message,

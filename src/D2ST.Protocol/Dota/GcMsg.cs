@@ -113,6 +113,10 @@ public static class GcMsg
     public const uint GetEventPoints = (uint)EDOTAGCMsg.kEMsgDOTAGetEventPoints;
     public const uint GetEventPointsResponse = (uint)EDOTAGCMsg.kEMsgDOTAGetEventPointsResponse;
 
+    public const uint ClientToGCRerollPlayerChallenge = (uint)EDOTAGCMsg.kEMsgClientToGCRerollPlayerChallenge;
+    public const uint GCRerollPlayerChallengeResponse = (uint)EDOTAGCMsg.kEMsgGCRerollPlayerChallengeResponse;
+    public const uint SignOutUpdatePlayerChallenge = (uint)EDOTAGCMsg.kEMsgSignOutUpdatePlayerChallenge;
+
     // Messages the build-6783 client asks for at logon and in the menus; all of
     // them answer "nothing here" until the server implements the feature.
     public const uint ClientToGCRankRequest = (uint)EDOTAGCMsg.kEMsgClientToGCRankRequest;
@@ -211,4 +215,8 @@ public static class GcMsg
     public const uint RedeemItemResponse = (uint)EDOTAGCMsg.kEMsgDOTARedeemItemResponse;
     public const uint PurchaseItemWithEventPoints = (uint)EDOTAGCMsg.kEMsgPurchaseItemWithEventPoints;
     public const uint PurchaseItemWithEventPointsResponse = (uint)EDOTAGCMsg.kEMsgPurchaseItemWithEventPointsResponse;
+    public const uint PurchaseHeroRandomRelic = (uint)EDOTAGCMsg.kEMsgPurchaseHeroRandomRelic;
+    public const uint PurchaseHeroRandomRelicResponse = (uint)EDOTAGCMsg.kEMsgPurchaseHeroRandomRelicResponse;
+    public const uint ClientToGCRequestPlusWeeklyChallengeResult = (uint)EDOTAGCMsg.kEMsgClientToGCRequestPlusWeeklyChallengeResult;
+    public const uint ClientToGCRequestPlusWeeklyChallengeResultResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRequestPlusWeeklyChallengeResultResponse;
 }

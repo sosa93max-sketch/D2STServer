@@ -93,10 +93,12 @@ public sealed class WelcomeBuilder
         // Dota Plus shipped in 2018; older builds have no 2012 cache bucket.
         if (context.Profile.IncludeDotaPlus)
         {
+            _soCache.DeclareEmptyType(game, DotaSoCache.TypeDotaPlayerChallenge);
             _soCache.SetIfChanged(
                 game,
                 new SoObjectKey(DotaSoCache.TypeDotaGameAccountPlus, context.AccountId),
                 _dotaPlus.Build(context.AccountId));
+            _dotaPlus.RefreshChallenges(context.AccountId);
         }
 
         _soCache.SeedIfAbsent(
