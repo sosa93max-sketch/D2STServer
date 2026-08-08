@@ -309,6 +309,11 @@ directly, so they do not reconstruct history from lossy profile counters.
 3. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
+The complete capability inventory, dependencies, priorities, validation gates
+and future/out-of-scope decisions are maintained in
+[ROADMAP.md](ROADMAP.md). This handoff remains the execution log; the roadmap
+is the planning reference for the work that follows the real-client gate.
+
 ## Important limitations
 
 - Lobby objects and the server-to-lobby index are still in memory; completed
@@ -361,8 +366,10 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Current handoff
 
-Phases 1, 2, 3 and 4 are implemented and verified at compile/startup level. The
-next session should expose richer profile-card data, then stabilize the schema
-and validate the complete flow with two actual Windows clients. Preserve the
-capture/replay evidence in the repository diagnostics output before calling the
-vertical complete.
+Phases 1–6 are implemented and verified at compile/startup level, with the
+schema now managed by EF Core and legacy databases preserved through the
+transition bridge. The next session should validate the complete flow with two
+actual Windows clients and preserve capture/replay evidence before expanding
+the vertical. See [ROADMAP.md](ROADMAP.md) for the complete implementation
+plan; do not treat a future phase as implemented until its evidence is recorded
+here.
