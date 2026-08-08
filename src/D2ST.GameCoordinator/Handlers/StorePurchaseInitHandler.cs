@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
-/// Starts a store checkout. The API-backed economy reserves the local credits
+/// Starts a store checkout. The API-backed economy reserves the local dollars
 /// and returns a transaction id; finalization performs the durable grant.
 /// </summary>
 public sealed class StorePurchaseInitHandler : IGcMessageHandler
@@ -51,14 +51,14 @@ public sealed class StorePurchaseInitHandler : IGcMessageHandler
             // active catalog price. This log only makes a stale sale cache
             // visible while keeping the server authoritative.
             if (line.CostInLocalCurrency != 0 &&
-                line.CostInLocalCurrency != LocalEconomyCurrency.ToWireAmount(product.PriceCredits))
+                line.CostInLocalCurrency != LocalEconomyCurrency.ToWireAmount(product.PriceDollars))
             {
                 _logger.LogDebug(
                     "Precio de cliente desactualizado: cuenta {AccountId}, producto {ProductId}, cliente {ClientPrice}, catálogo {CatalogPrice}",
                     context.AccountId,
                     product.ProductId,
                     line.CostInLocalCurrency,
-                    product.PriceCredits);
+                    product.PriceDollars);
             }
 
             lines.Add(new StorePurchaseLine(product.ProductId, quantity));
@@ -76,13 +76,13 @@ public sealed class StorePurchaseInitHandler : IGcMessageHandler
         };
 
         _logger.LogInformation(
-            "Compra local init: cuenta {AccountId}, líneas {LineCount}, resultado {ResultCode}, transacción {TransactionId}, saldo {BalanceCredits}, disponible {AvailableCredits}",
+            "Compra local init: cuenta {AccountId}, líneas {LineCount}, resultado {ResultCode}, transacción {TransactionId}, saldo {BalanceDollars}, disponible {AvailableDollars}",
             context.AccountId,
             lines.Count,
             result.Code,
             result.TransactionId,
-            result.Wallet.BalanceCredits,
-            result.Wallet.AvailableCredits);
+            result.Wallet.BalanceDollars,
+            result.Wallet.AvailableDollars);
 
         return
         [

@@ -341,7 +341,7 @@
         <div class="stat user-stat"><span class="stat-label">Usuarios registrados</span><strong id="userTotal" class="stat-value user-stat-value">—</strong></div>
         <div class="stat user-stat"><span class="stat-label">Conectados ahora</span><strong id="userOnline" class="stat-value user-stat-value">—</strong></div>
         <div class="stat user-stat"><span class="stat-label">En esta vista</span><strong id="userViewCount" class="stat-value user-stat-value">—</strong></div>
-        <div class="stat user-stat"><span class="stat-label">Saldo en vista</span><strong id="userWalletTotal" class="stat-value user-stat-value">—</strong><small>créditos totales visibles</small></div>
+        <div class="stat user-stat"><span class="stat-label">Saldo en vista</span><strong id="userWalletTotal" class="stat-value user-stat-value">—</strong><small>dólares totales visibles</small></div>
       </div>
 
       <div class="card users-toolbar-card">
@@ -401,14 +401,14 @@
               </section>
 
               <section class="inspector-block">
-                <div class="inspector-block-head"><h4>Economía</h4><span>Saldo administrable</span></div>
+                <div class="inspector-block-head"><h4>Economía en USD</h4><span>Saldo administrable</span></div>
                 <div class="inspector-metrics">
                   <div class="inspector-metric"><span>Saldo</span><strong id="inspectorBalance">0</strong></div>
                   <div class="inspector-metric"><span>Disponible</span><strong id="inspectorAvailable">0</strong></div>
                   <div class="inspector-metric"><span>Reservado</span><strong id="inspectorReserved">0</strong></div>
                 </div>
                 <div class="inspector-grid">
-                  <div class="inspector-field"><label for="walletDelta">Cantidad</label><input id="walletDelta" type="number" min="1" max="1000000000" placeholder="100"></div>
+                  <div class="inspector-field"><label for="walletDelta">Dólares</label><input id="walletDelta" type="number" min="1" max="1000000000" step="1" placeholder="1"></div>
                   <div class="inspector-field"><label for="walletReason">Motivo</label><input id="walletReason" maxlength="80" placeholder="Bonificación"></div>
                 </div>
                 <div class="inspector-action-row">
@@ -498,7 +498,7 @@
           <button id="discoverBtn" class="accent">Detectar</button>
         </div>
         <div class="row" style="margin-top: 10px;">
-          <input id="defaultPrice" type="number" min="1" value="100" placeholder="Precio base">
+          <input id="defaultPrice" type="number" min="1" value="1" step="1" placeholder="Precio base en USD">
           <label class="check"><input id="activateImported" type="checkbox"> Activar productos nuevos</label>
           <button id="importBtn">Importar catálogo completo</button>
         </div>
@@ -518,7 +518,7 @@
           <input id="catalogDefIndex" class="span-2" type="number" min="0" placeholder="DefIndex">
           <input id="catalogName" class="span-4" placeholder="Nombre">
           <select id="catalogType" class="span-2"><option value="0">Item</option><option value="1">Set</option><option value="2">Dota Plus</option></select>
-          <input id="catalogPrice" class="span-2" type="number" min="1" placeholder="Precio">
+          <input id="catalogPrice" class="span-2" type="number" min="1" step="1" placeholder="Precio USD">
           <input id="catalogDotaPlusDays" class="span-2" type="number" min="1" max="3650" placeholder="Días Plus">
           <input id="catalogCategory" class="span-3" placeholder="Categoría">
           <input id="catalogBuildVersion" class="span-2" type="number" min="0" placeholder="BuildVersion">
@@ -595,8 +595,15 @@ function formatNumber(value) {
   return new Intl.NumberFormat('es-ES').format(Number(value) || 0);
 }
 
-function formatCredits(value) {
-  return formatNumber(value) + ' créditos';
+const usdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+function formatDollars(value) {
+  return usdFormatter.format(Number(value) || 0);
 }
 
 function tr(value, cls) {
@@ -757,9 +764,9 @@ function renderInspector(user) {
   $('inspectorStatus').style.color = user.Online ? 'var(--green)' : 'var(--muted)';
   $('inspectorPersona').value = user.PersonaName || '';
   $('inspectorPassword').value = '';
-  $('inspectorBalance').textContent = formatCredits(user.BalanceCredits);
-  $('inspectorAvailable').textContent = formatCredits(user.AvailableCredits);
-  $('inspectorReserved').textContent = formatCredits(user.ReservedCredits);
+  $('inspectorBalance').textContent = formatDollars(user.BalanceDollars);
+  $('inspectorAvailable').textContent = formatDollars(user.AvailableDollars);
+  $('inspectorReserved').textContent = formatDollars(user.ReservedDollars);
   $('inspectorPlusStatus').textContent = user.DotaPlusActive ? 'Activo' : 'Inactivo';
   $('inspectorPlusStatus').style.color = user.DotaPlusActive ? '#d8c6ff' : 'var(--muted)';
   $('inspectorPlusState').textContent = user.DotaPlusActive ? 'Activo' : 'Inactivo';
@@ -852,11 +859,11 @@ function renderUsers(body) {
   const users = body.Items || [];
   const total = body.TotalCount || 0;
   const online = body.OnlineCount || 0;
-  const visibleBalance = users.reduce((sum, user) => sum + (Number(user.BalanceCredits) || 0), 0);
+  const visibleBalance = users.reduce((sum, user) => sum + (Number(user.BalanceDollars) || 0), 0);
   $('userTotal').textContent = formatNumber(total);
   $('userOnline').textContent = formatNumber(online);
   $('userViewCount').textContent = formatNumber(users.length);
-  $('userWalletTotal').textContent = formatNumber(visibleBalance);
+  $('userWalletTotal').textContent = formatDollars(visibleBalance);
   $('counts').textContent = formatNumber(total) + ' usuarios · ' + formatNumber(online) + ' en línea · ' + formatNumber(users.length) + ' mostrados';
   $('usersSyncState').textContent = 'Sincronizado ahora';
   $('usersLoadState').textContent = 'Sincronizado';
@@ -924,10 +931,10 @@ function renderUsers(body) {
     const balance = document.createElement('td');
     balance.className = 'user-wallet';
     const balanceValue = document.createElement('strong');
-    balanceValue.textContent = formatCredits(user.BalanceCredits);
+    balanceValue.textContent = formatDollars(user.BalanceDollars);
     const available = document.createElement('span');
     available.className = 'meta';
-    available.textContent = 'Disp. ' + formatNumber(user.AvailableCredits || 0) + ' · Res. ' + formatNumber(user.ReservedCredits || 0);
+    available.textContent = 'Disp. ' + formatDollars(user.AvailableDollars || 0) + ' · Res. ' + formatDollars(user.ReservedDollars || 0);
     balance.appendChild(balanceValue);
     balance.appendChild(available);
     row.appendChild(balance);
@@ -1069,7 +1076,7 @@ function renderCatalog(body) {
     product.appendChild(detail);
     row.appendChild(product);
 
-    row.appendChild(tr(formatCredits(item.PriceCredits)));
+    row.appendChild(tr(formatDollars(item.PriceDollars)));
     row.appendChild(tr(catalogTypeLabel(item)));
     row.appendChild(tr(item.BuildVersion || '—'));
 
@@ -1177,7 +1184,7 @@ async function importCatalog() {
     method: 'POST',
     body: JSON.stringify({
       DotaPath: path,
-      DefaultPriceCredits: price,
+      DefaultPriceDollars: price,
       Activate: $('activateImported').checked
     })
   });
@@ -1230,7 +1237,7 @@ function editCatalog(item) {
   $('catalogDefIndex').value = item.DefIndex || 0;
   $('catalogName').value = item.Name || '';
   $('catalogType').value = String(item.ProductType || 0);
-  $('catalogPrice').value = item.PriceCredits;
+  $('catalogPrice').value = item.PriceDollars;
   $('catalogDotaPlusDays').value = item.DotaPlusDays || '';
   $('catalogCategory').value = item.Category || '';
   $('catalogBuildVersion').value = item.BuildVersion || 0;
@@ -1271,7 +1278,7 @@ async function saveCatalog() {
       DefIndex: Number.isFinite(defIndex) ? defIndex : 0,
       Name: name,
       ProductType: productType,
-      PriceCredits: price,
+      PriceDollars: price,
       Category: $('catalogCategory').value.trim(),
       Description: $('catalogDescription').value.trim(),
       BuildVersion: Number.isFinite(buildVersion) ? buildVersion : 0,
@@ -1295,7 +1302,7 @@ async function toggleCatalog(item) {
       DefIndex: item.DefIndex || 0,
       Name: item.Name,
       ProductType: Number(item.ProductType),
-      PriceCredits: item.PriceCredits,
+      PriceDollars: item.PriceDollars,
       Category: item.Category || '',
       Description: item.Description || '',
       BuildVersion: item.BuildVersion || 0,
@@ -1404,7 +1411,7 @@ async function submitWallet(sign) {
   $('walletRemoveBtn').disabled = true;
   const result = await api('/api/admin/users/' + accountId + '/wallet/adjust', {
     method: 'POST',
-    body: JSON.stringify({ Delta: sign * value, Reason: reason })
+    body: JSON.stringify({ DeltaDollars: sign * value, Reason: reason })
   });
   $('walletAddBtn').disabled = false;
   $('walletRemoveBtn').disabled = false;
@@ -1412,7 +1419,7 @@ async function submitWallet(sign) {
     show($('inspectorMsg'), messageOf(result));
     return;
   }
-  const message = result.body.Message + ' Nuevo saldo: ' + formatCredits(result.body.Wallet.BalanceCredits);
+  const message = result.body.Message + ' Nuevo saldo: ' + formatDollars(result.body.Wallet.BalanceDollars);
   await loadUsers(usersState.page);
   if (selectedUser && selectedUser.AccountId === accountId) show($('inspectorMsg'), message, 'ok');
 }

@@ -101,7 +101,7 @@ public sealed class EconomyStore : IEconomyStore
                     current);
             }
 
-            if (delta > 0 && wallet.BalanceCredits > long.MaxValue - delta)
+            if (delta > 0 && wallet.BalanceDollars > long.MaxValue - delta)
             {
                 return WalletAdjustmentResult.Failed(
                     "wallet_limit",
@@ -111,25 +111,25 @@ public sealed class EconomyStore : IEconomyStore
 
             if (delta < 0)
             {
-                var available = Math.Max(0, wallet.BalanceCredits - wallet.ReservedCredits);
+                var available = Math.Max(0, wallet.BalanceDollars - wallet.ReservedDollars);
                 var debit = -delta;
                 if (debit > available)
                 {
                     return WalletAdjustmentResult.Failed(
                         "insufficient_available",
-                        $"No se pueden restar {debit} créditos: hay {available} disponibles.",
+                        $"No se pueden restar {debit} dólares: hay {available} disponibles.",
                         current);
                 }
             }
 
-            wallet.BalanceCredits = checked(wallet.BalanceCredits + delta);
+            wallet.BalanceDollars = checked(wallet.BalanceDollars + delta);
             wallet.UpdatedAt = DateTimeOffset.UtcNow;
             db.WalletTransactions.Add(new WalletTransactionEntity
             {
                 AccountId = accountId,
                 Kind = EconomyTransactionKind.AdminAdjustment,
-                AmountCredits = delta,
-                BalanceAfterCredits = wallet.BalanceCredits,
+                AmountDollars = delta,
+                BalanceAfterDollars = wallet.BalanceDollars,
                 Reference = reference,
                 CreatedAt = wallet.UpdatedAt
             });
@@ -220,8 +220,8 @@ public sealed class EconomyStore : IEconomyStore
             .Select(row => new WalletTransactionSummary(
                 row.Id,
                 row.Kind,
-                row.AmountCredits,
-                row.BalanceAfterCredits,
+                row.AmountDollars,
+                row.BalanceAfterDollars,
                 row.Reference,
                 row.CreatedAt))
             .ToArray();
@@ -403,7 +403,7 @@ public sealed class EconomyStore : IEconomyStore
 
             foreach (var purchase in pending)
             {
-                wallet.ReservedCredits = Math.Max(0, wallet.ReservedCredits - purchase.TotalCredits);
+                wallet.ReservedDollars = Math.Max(0, wallet.ReservedDollars - purchase.TotalDollars);
                 purchase.Status = StorePurchaseStatus.Cancelled;
                 purchase.CompletedAt = DateTimeOffset.UtcNow;
             }
@@ -482,7 +482,7 @@ public sealed class EconomyStore : IEconomyStore
                         item = item with
                         {
                             ProductId = entity.ProductId,
-                            PriceCredits = entity.PriceCredits,
+                            PriceDollars = entity.PriceDollars,
                             Active = entity.Active
                         };
                     }
@@ -506,7 +506,8 @@ public sealed class EconomyStore : IEconomyStore
         normalized = source;
         var components = source.Components ?? [];
         if (source.ProductId == 0 || string.IsNullOrWhiteSpace(source.Name)
-            || source.PriceCredits <= 0
+            || source.PriceDollars <= 0
+            || source.PriceDollars > LocalEconomyCurrency.MaxWireDollars
             || source.ProductType is not (StoreProductType.Item or StoreProductType.Set or StoreProductType.DotaPlusSubscription)
             || components.Any(component => component.ProductId == 0 || component.Quantity == 0))
         {
@@ -563,7 +564,7 @@ public sealed class EconomyStore : IEconomyStore
     {
         entity.DefIndex = item.ProductType == StoreProductType.Item ? item.DefIndex : 0;
         entity.ProductType = item.ProductType;
-        entity.PriceCredits = item.PriceCredits;
+        entity.PriceDollars = item.PriceDollars;
         entity.Name = item.Name;
         entity.Category = item.Category;
         entity.Description = item.Description;
@@ -614,12 +615,12 @@ public sealed class EconomyStore : IEconomyStore
                 return StoreOperationResult.Failed("product_unavailable", $"El producto {line.ProductId} no está disponible.");
             }
 
-            if (product.PriceCredits <= 0 || line.Quantity > long.MaxValue / product.PriceCredits)
+            if (product.PriceDollars <= 0 || line.Quantity > long.MaxValue / product.PriceDollars)
             {
                 return StoreOperationResult.Failed("invalid_price", "El precio del producto no es válido.");
             }
 
-            var lineTotal = product.PriceCredits * line.Quantity;
+            var lineTotal = product.PriceDollars * line.Quantity;
             if (total > long.MaxValue - lineTotal)
             {
                 return StoreOperationResult.Failed("invalid_price", "El importe de la compra es demasiado grande.");
@@ -689,24 +690,24 @@ public sealed class EconomyStore : IEconomyStore
         }
 
         var wallet = GetOrCreateWallet(db, accountId);
-        if (wallet.BalanceCredits < total
-            || wallet.ReservedCredits < 0
-            || wallet.ReservedCredits > wallet.BalanceCredits - total)
+        if (wallet.BalanceDollars < total
+            || wallet.ReservedDollars < 0
+            || wallet.ReservedDollars > wallet.BalanceDollars - total)
         {
             return StoreOperationResult.Failed("insufficient_funds", "Saldo insuficiente.", ToWallet(wallet));
         }
 
-        if (wallet.ReservedCredits > long.MaxValue - total)
+        if (wallet.ReservedDollars > long.MaxValue - total)
         {
             return StoreOperationResult.Failed("wallet_limit", "El saldo reservado excede el límite permitido.", ToWallet(wallet));
         }
 
-        wallet.ReservedCredits = checked(wallet.ReservedCredits + total);
+        wallet.ReservedDollars = checked(wallet.ReservedDollars + total);
         wallet.UpdatedAt = DateTimeOffset.UtcNow;
         var purchase = new StorePurchaseTransactionEntity
         {
             AccountId = accountId,
-            TotalCredits = total,
+            TotalDollars = total,
             DotaPlusDays = dotaPlusDays,
             Status = StorePurchaseStatus.Pending,
             LinesJson = JsonSerializer.Serialize(normalized),
@@ -755,9 +756,9 @@ public sealed class EconomyStore : IEconomyStore
             return new StoreOperationResult(true, "ok", "Compra completada.", (ulong)purchase.Id, existingItemIds, existing, ToWallet(wallet));
         }
 
-        if (wallet.ReservedCredits < purchase.TotalCredits || wallet.BalanceCredits < purchase.TotalCredits)
+        if (wallet.ReservedDollars < purchase.TotalDollars || wallet.BalanceDollars < purchase.TotalDollars)
         {
-            wallet.ReservedCredits = Math.Max(0, wallet.ReservedCredits - purchase.TotalCredits);
+            wallet.ReservedDollars = Math.Max(0, wallet.ReservedDollars - purchase.TotalDollars);
             purchase.Status = StorePurchaseStatus.Cancelled;
             purchase.CompletedAt = DateTimeOffset.UtcNow;
             db.SaveChanges();
@@ -828,15 +829,15 @@ public sealed class EconomyStore : IEconomyStore
             });
         }
 
-        wallet.BalanceCredits -= purchase.TotalCredits;
-        wallet.ReservedCredits -= purchase.TotalCredits;
+        wallet.BalanceDollars -= purchase.TotalDollars;
+        wallet.ReservedDollars -= purchase.TotalDollars;
         wallet.UpdatedAt = now;
         db.WalletTransactions.Add(new WalletTransactionEntity
         {
             AccountId = accountId,
             Kind = EconomyTransactionKind.StorePurchase,
-            AmountCredits = -purchase.TotalCredits,
-            BalanceAfterCredits = wallet.BalanceCredits,
+            AmountDollars = -purchase.TotalDollars,
+            BalanceAfterDollars = wallet.BalanceDollars,
             Reference = $"store-purchase:{purchase.Id}",
             CreatedAt = now
         });
@@ -868,7 +869,7 @@ public sealed class EconomyStore : IEconomyStore
 
         if (purchase.Status == StorePurchaseStatus.Pending)
         {
-            wallet.ReservedCredits = Math.Max(0, wallet.ReservedCredits - purchase.TotalCredits);
+            wallet.ReservedDollars = Math.Max(0, wallet.ReservedDollars - purchase.TotalDollars);
             wallet.UpdatedAt = DateTimeOffset.UtcNow;
             purchase.Status = StorePurchaseStatus.Cancelled;
             purchase.CompletedAt = DateTimeOffset.UtcNow;
@@ -1088,7 +1089,7 @@ public sealed class EconomyStore : IEconomyStore
             item.DefIndex,
             item.Name,
             item.ProductType,
-            item.PriceCredits,
+            item.PriceDollars,
             item.Category,
             item.Description,
             item.BuildVersion,
@@ -1100,7 +1101,7 @@ public sealed class EconomyStore : IEconomyStore
                 .ToArray());
 
     private static WalletSnapshot ToWallet(WalletEntity wallet) =>
-        new(wallet.AccountId, wallet.BalanceCredits, wallet.ReservedCredits, wallet.UpdatedAt);
+        new(wallet.AccountId, wallet.BalanceDollars, wallet.ReservedDollars, wallet.UpdatedAt);
 
     private static T? Deserialize<T>(string json)
     {

@@ -40,9 +40,9 @@ public sealed record AdminUserResponse(
     int RankValue,
     int RankProgress,
     bool IsCalibrated,
-    long BalanceCredits,
-    long ReservedCredits,
-    long AvailableCredits,
+    long BalanceDollars,
+    long ReservedDollars,
+    long AvailableDollars,
     bool DotaPlusActive,
     DateTimeOffset? DotaPlusExpiresAt,
     int DotaPlusDaysRemaining,
@@ -65,7 +65,7 @@ public sealed record AdminSetAvatarRequest(string ContentBase64);
 
 public sealed record AdminAdjustMmrRequest(int Delta);
 
-public sealed record AdminWalletAdjustRequest(long Delta, string? Reason);
+public sealed record AdminWalletAdjustRequest(long DeltaDollars, string? Reason);
 
 public sealed record AdminMessageResponse(string Message);
 
@@ -191,7 +191,7 @@ public sealed record StoreCatalogUpsertRequest(
     uint DefIndex,
     string Name,
     StoreProductType ProductType,
-    long PriceCredits,
+    long PriceDollars,
     string? Category,
     string? Description,
     uint BuildVersion,
@@ -204,7 +204,7 @@ public sealed record StoreCatalogItemResponse(
     uint DefIndex,
     string Name,
     StoreProductType ProductType,
-    long PriceCredits,
+    long PriceDollars,
     string Category,
     string Description,
     uint BuildVersion,
@@ -220,7 +220,7 @@ public sealed record DotaCatalogDiscoverRequest(
 
 public sealed record DotaCatalogImportRequest(
     string DotaPath,
-    long DefaultPriceCredits = 100,
+    long DefaultPriceDollars = 1,
     bool Activate = false,
     uint? BuildVersion = null,
     IReadOnlyList<uint>? DefIndexes = null);
@@ -256,15 +256,15 @@ public sealed record DotaCatalogImportResponse(
     int ImportedCount,
     int UpdatedCount,
     int SkippedCount,
-    long DefaultPriceCredits,
+    long DefaultPriceDollars,
     bool Activate,
     string Message);
 
 public sealed record StoreWalletResponse(
     uint AccountId,
-    long BalanceCredits,
-    long ReservedCredits,
-    long AvailableCredits,
+    long BalanceDollars,
+    long ReservedDollars,
+    long AvailableDollars,
     DateTimeOffset? UpdatedAt);
 
 public sealed record AdminWalletAdjustResponse(

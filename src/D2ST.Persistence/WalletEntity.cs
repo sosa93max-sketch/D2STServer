@@ -5,9 +5,9 @@ public sealed class WalletEntity
 {
     public uint AccountId { get; set; }
 
-    public long BalanceCredits { get; set; }
+    public long BalanceDollars { get; set; }
 
-    public long ReservedCredits { get; set; }
+    public long ReservedDollars { get; set; }
 
     public DateTimeOffset UpdatedAt { get; set; }
 }

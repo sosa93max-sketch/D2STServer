@@ -6,7 +6,7 @@ namespace D2ST.Api.Economy;
 /// <summary>
 /// A sellable definition discovered in the local Dota client schema. The
 /// schema tells us what the client can render; it does not define the price in
-/// the server's local-credit economy.
+/// the server's local USD economy.
 /// </summary>
 public sealed record DotaCatalogDefinition(
     uint DefIndex,

@@ -189,7 +189,7 @@ public static class StoreEndpoints
             var session = http.Authenticate(sessions)!;
             var reason = CleanReason(request.Reason);
             var reference = $"admin-adjustment:{session.Account.AccountId}:{Guid.NewGuid():N}:{reason}";
-            var result = economy.AdjustWallet((uint)accountId, request.Delta, reference);
+            var result = economy.AdjustWallet((uint)accountId, request.DeltaDollars, reference);
             var response = new AdminWalletAdjustResponse(
                 result.Success,
                 result.Code,
@@ -265,7 +265,7 @@ public static class StoreEndpoints
                 request.DefIndex,
                 request.Name,
                 request.ProductType,
-                request.PriceCredits,
+                request.PriceDollars,
                 request.Category ?? string.Empty,
                 request.Description ?? string.Empty,
                 request.BuildVersion,
@@ -355,10 +355,11 @@ public static class StoreEndpoints
                 return Results.StatusCode(StatusCodes.Status403Forbidden);
             }
 
-            if (request.DefaultPriceCredits <= 0)
+            if (request.DefaultPriceDollars <= 0
+                || request.DefaultPriceDollars > LocalEconomyCurrency.MaxWireDollars)
             {
                 return Results.BadRequest(new AdminMessageResponse(
-                    "DefaultPriceCredits debe ser mayor que cero."));
+                    $"DefaultPriceDollars debe estar entre 1 y {LocalEconomyCurrency.MaxWireDollars}."));
             }
 
             try
@@ -378,7 +379,7 @@ public static class StoreEndpoints
                         item.ProductType == D2ST.Core.Economy.StoreProductType.Item &&
                         (item.ProductId == definition.DefIndex || item.DefIndex == definition.DefIndex));
                     var productId = current?.ProductId ?? definition.DefIndex;
-                    var price = current?.PriceCredits ?? request.DefaultPriceCredits;
+                    var price = current?.PriceDollars ?? request.DefaultPriceDollars;
                     var active = current?.Active ?? request.Activate;
                     var category = string.IsNullOrWhiteSpace(definition.Slot)
                         ? definition.Prefab
@@ -410,7 +411,7 @@ public static class StoreEndpoints
                     result.ImportedCount,
                     result.UpdatedCount,
                     result.SkippedCount,
-                    request.DefaultPriceCredits,
+                    request.DefaultPriceDollars,
                     request.Activate,
                     $"Catálogo importado: {result.ImportedCount} nuevos, {result.UpdatedCount} actualizados, {result.SkippedCount} omitidos. {activationMessage}"));
             }
@@ -487,7 +488,7 @@ public static class StoreEndpoints
             item.DefIndex,
             item.Name,
             item.ProductType,
-            item.PriceCredits,
+            item.PriceDollars,
             item.Category,
             item.Description,
             item.BuildVersion,
@@ -503,9 +504,9 @@ public static class StoreEndpoints
     private static StoreWalletResponse ToWalletResponse(WalletSnapshot wallet) =>
         new(
             wallet.AccountId,
-            wallet.BalanceCredits,
-            wallet.ReservedCredits,
-            wallet.AvailableCredits,
+            wallet.BalanceDollars,
+            wallet.ReservedDollars,
+            wallet.AvailableDollars,
             wallet.UpdatedAt);
 
     private static StorePurchaseResponse ToPurchaseResponse(StoreOperationResult result) =>

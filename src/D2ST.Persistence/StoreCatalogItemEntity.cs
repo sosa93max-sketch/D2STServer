@@ -14,7 +14,7 @@ public sealed class StoreCatalogItemEntity
 
     public StoreProductType ProductType { get; set; }
 
-    public long PriceCredits { get; set; }
+    public long PriceDollars { get; set; }
 
     [MaxLength(160)]
     public required string Name { get; set; }

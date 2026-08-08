@@ -6,8 +6,7 @@ namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
 /// Answers the store sale query from the active local catalog. Prices are
-/// expressed in the server's virtual credits/minor currency units and refreshed
-/// daily by the client.
+/// expressed in the server's local USD dollars and refreshed daily by the client.
 /// </summary>
 public sealed class StoreSalesDataHandler : IGcMessageHandler
 {
@@ -36,7 +35,7 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
         foreach (var item in _economy.GetCatalog())
         {
             var itemDef = item.DefIndex != 0 ? item.DefIndex : item.ProductId;
-            if (itemDef == 0 || item.PriceCredits < 0 || item.PriceCredits > uint.MaxValue)
+            if (itemDef == 0 || item.PriceDollars < 0 || item.PriceDollars > LocalEconomyCurrency.MaxWireDollars)
             {
                 continue;
             }
@@ -44,7 +43,7 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
             response.SalePrices.Add(new CMsgGCRequestStoreSalesDataResponse.Price
             {
                 ItemDef = itemDef,
-                price = LocalEconomyCurrency.ToWireAmount(item.PriceCredits)
+                price = LocalEconomyCurrency.ToWireAmount(item.PriceDollars)
             });
         }
 

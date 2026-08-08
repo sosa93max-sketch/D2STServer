@@ -890,7 +890,7 @@ namespace D2ST.Persistence.Migrations
                         .HasMaxLength(160)
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("PriceCredits")
+                    b.Property<long>("PriceDollars")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ProductType")
@@ -939,7 +939,7 @@ namespace D2ST.Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("TotalCredits")
+                    b.Property<long>("TotalDollars")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -997,10 +997,10 @@ namespace D2ST.Persistence.Migrations
                     b.Property<uint>("AccountId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("BalanceCredits")
+                    b.Property<long>("BalanceDollars")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("ReservedCredits")
+                    b.Property<long>("ReservedDollars")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
@@ -1020,10 +1020,10 @@ namespace D2ST.Persistence.Migrations
                     b.Property<uint>("AccountId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("AmountCredits")
+                    b.Property<long>("AmountDollars")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("BalanceAfterCredits")
+                    b.Property<long>("BalanceAfterDollars")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("CreatedAt")

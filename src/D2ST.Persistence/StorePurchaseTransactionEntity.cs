@@ -21,7 +21,7 @@ public sealed class StorePurchaseTransactionEntity
 
     public uint AccountId { get; set; }
 
-    public long TotalCredits { get; set; }
+    public long TotalDollars { get; set; }
 
     /// <summary>Local Dota Plus days granted at finalization; zero for item/set purchases.</summary>
     public int DotaPlusDays { get; set; }

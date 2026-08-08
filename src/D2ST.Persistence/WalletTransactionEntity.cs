@@ -16,9 +16,9 @@ public sealed class WalletTransactionEntity
 
     public EconomyTransactionKind Kind { get; set; }
 
-    public long AmountCredits { get; set; }
+    public long AmountDollars { get; set; }
 
-    public long BalanceAfterCredits { get; set; }
+    public long BalanceAfterDollars { get; set; }
 
     [MaxLength(160)]
     public required string Reference { get; set; }

@@ -477,14 +477,14 @@ public sealed class MatchStore : IMatchStore
             db.Wallets.Add(wallet);
         }
 
-        wallet.BalanceCredits = checked(wallet.BalanceCredits + EconomyRules.MatchWinRewardCredits);
+        wallet.BalanceDollars = checked(wallet.BalanceDollars + EconomyRules.MatchWinRewardDollars);
         wallet.UpdatedAt = DateTimeOffset.UtcNow;
         db.WalletTransactions.Add(new WalletTransactionEntity
         {
             AccountId = player.AccountId,
             Kind = EconomyTransactionKind.MatchWinReward,
-            AmountCredits = EconomyRules.MatchWinRewardCredits,
-            BalanceAfterCredits = wallet.BalanceCredits,
+            AmountDollars = EconomyRules.MatchWinRewardDollars,
+            BalanceAfterDollars = wallet.BalanceDollars,
             Reference = reference,
             CreatedAt = DateTimeOffset.UtcNow
         });

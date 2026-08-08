@@ -55,11 +55,11 @@ public sealed class WelcomeBuilder
             Version = (uint)context.ClientVersion,
             GcSocacheFileVersion = socacheFileVersion,
             // The stock client reads these fields to populate its native store
-            // balance. They intentionally use the same minor-unit value as
-            // StoreSalesDataHandler and the local wallet (100 => $1.00).
+            // balance. They use USD minor units at the protocol boundary
+            // (one local dollar becomes 100 wire units).
             TxnCountryCode = LocalEconomyCurrency.CountryCode,
             Currency = LocalEconomyCurrency.Code,
-            Balance = LocalEconomyCurrency.ToWireAmount(wallet.AvailableCredits),
+            Balance = LocalEconomyCurrency.ToWireAmount(wallet.AvailableDollars),
             GameData = context.Codec.Encode(new CMsgDOTAWelcome
             {
                 GcSocacheFileVersion = socacheFileVersion,

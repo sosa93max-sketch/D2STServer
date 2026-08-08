@@ -5,25 +5,28 @@ namespace D2ST.GameCoordinator.Econ;
 
 /// <summary>
 /// Wire-format settings shared by the native Dota store welcome and sales
-/// responses. The local economy uses the same minor-unit amount for wallet
-/// balances and catalog prices, so the client can compare both values without
-/// a conversion. With the USD-compatible formatter used by the target build,
-/// 100 local credits are rendered as $1.00.
+/// responses. The local economy stores whole USD dollars internally and turns
+/// them into the protocol's USD minor units only at the native-client boundary.
+/// Therefore one local dollar is sent as 100 wire units and renders as $1.00.
 /// </summary>
 public static class LocalEconomyCurrency
 {
     // ECurrencyCode::USD in the Steam/Dota protocol.
     public const uint Code = 1;
     public const string CountryCode = "US";
+    public const long MinorUnitsPerDollar = 100;
+    public const long MaxWireDollars = uint.MaxValue / MinorUnitsPerDollar;
 
-    public static uint ToWireAmount(long credits)
+    public static uint ToWireAmount(long dollars)
     {
-        if (credits <= 0)
+        if (dollars <= 0)
         {
             return 0;
         }
 
-        return credits >= uint.MaxValue ? uint.MaxValue : (uint)credits;
+        return dollars > MaxWireDollars
+            ? uint.MaxValue
+            : (uint)(dollars * MinorUnitsPerDollar);
     }
 }
 
@@ -34,7 +37,7 @@ public sealed record StoreCatalogItem(
     uint DefIndex,
     string Name,
     StoreProductType ProductType,
-    long PriceCredits,
+    long PriceDollars,
     string Category,
     string Description,
     uint BuildVersion,
@@ -44,11 +47,11 @@ public sealed record StoreCatalogItem(
 
 public sealed record WalletSnapshot(
     uint AccountId,
-    long BalanceCredits,
-    long ReservedCredits,
+    long BalanceDollars,
+    long ReservedDollars,
     DateTimeOffset? UpdatedAt)
 {
-    public long AvailableCredits => Math.Max(0, BalanceCredits - ReservedCredits);
+    public long AvailableDollars => Math.Max(0, BalanceDollars - ReservedDollars);
 
     public static WalletSnapshot Empty(uint accountId) => new(accountId, 0, 0, null);
 }
@@ -69,8 +72,8 @@ public sealed record WalletAdjustmentResult(
 public sealed record WalletTransactionSummary(
     long Id,
     EconomyTransactionKind Kind,
-    long AmountCredits,
-    long BalanceAfterCredits,
+    long AmountDollars,
+    long BalanceAfterDollars,
     string Reference,
     DateTimeOffset CreatedAt);
 

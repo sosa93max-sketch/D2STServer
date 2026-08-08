@@ -5,7 +5,7 @@ using D2ST.Protocol.Dota;
 namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
-/// Cancels a pending checkout and releases its reserved local credits.
+/// Cancels a pending checkout and releases its reserved local dollars.
 /// </summary>
 public sealed class StorePurchaseCancelHandler : IGcMessageHandler
 {

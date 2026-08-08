@@ -223,7 +223,7 @@ conservan en `Showcases` y sobreviven a reconexiones, reinicios y migraciones.
 El servidor ya dispone de un catálogo/ownership local separado del ownership
 oficial de Valve. `Wallets`, `WalletTransactions`, `StoreCatalogItems`,
 `StoreCatalogComponents` y `EconItems` persisten saldo, compras, sets e
-inventario. Cada victoria limpia de un humano acredita `100` créditos locales
+inventario. Cada victoria limpia de un humano acredita `1` dólar local
 de forma idempotente; el checkout reserva, debita y entrega los componentes
 del producto dentro de transacciones SQLite. La consulta REST está disponible
 en `/api/store/catalog`, `/api/store/wallet`, `/api/store/transactions` y
@@ -233,6 +233,14 @@ las definiciones cosméticas del `pak01_dir.vpk` del cliente y
 `/api/admin/store/catalog/import` las incorpora con precio base configurable,
 conservando precios y activación existentes. La ruta GC cubre ventas, init,
 finalize, cancelación y limpieza de transacciones pendientes.
+
+La unidad vigente de la economía local es el dólar ficticio 1:1: `1` en el
+saldo o precio representa `$1.00`. La migración
+`20260808230000_ConvertLocalCreditsToDollars` convierte los valores históricos
+que estaban expresados en unidades menores (`100` por `$1`) y renombra los
+campos de persistencia/API a `*Dollars`. En el protocolo nativo se mantienen
+las unidades menores de USD, por lo que el servidor traduce `$1` a `100` al
+publicar el saldo o el precio al cliente.
 
 La ampliación aún pendiente requiere captura del cliente y catálogo local del
 build objetivo:

@@ -990,6 +990,37 @@ Evidence and limits:
   the configured standard currency. A literal local-credit widget would
   require a client/overlay change and is outside the server protocol.
 
+## Phase 19 — local economy expressed in USD dollars 1:1
+
+The local wallet and catalog now use whole USD dollars as their server-side
+unit. This is still a fictitious local economy with no Valve billing, Steam
+Wallet charge or real-money settlement:
+
+- `1` in a wallet, ledger row, catalog price or purchase total means `$1.00`.
+  The fixed clean-match reward is now `$1` through
+  `EconomyRules.MatchWinRewardDollars`; new catalog imports default to `$1`.
+- The REST/admin contracts and the admin UI expose `BalanceDollars`,
+  `ReservedDollars`, `AvailableDollars`, `PriceDollars` and
+  `DefaultPriceDollars`. The admin wallet adjustment accepts `DeltaDollars`.
+- The native Dota protocol still receives USD minor units: the server sends
+  `$1` as `100` wire units so the stock client renders `$1.00`. Catalog prices
+  and the welcome balance use the same conversion.
+- Migration `20260808230000_ConvertLocalCreditsToDollars` renames the economy
+  columns and divides the previous minor-unit values by `100`, preserving the
+  existing fictitious USD value during upgrade. Pending reservations and
+  purchase totals are converted together with balances and ledger history.
+
+Evidence and limits:
+
+- Static source-reference audit, admin JavaScript syntax, migration SQL smoke
+  and `git diff --check` pass in this environment.
+- This environment has no `dotnet` executable, so the Release build, EF
+  migration/startup smoke and Windows build-6783 capture must be rerun on the
+  LAN server. Confirm that an old database applies the conversion migration,
+  then verify `$1`, `$100` and a purchase through the native client.
+- The economy remains local/fictitious; it does not synchronize with Valve's
+  official wallet, market, catalog or ownership.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -1007,9 +1038,9 @@ Evidence and limits:
 
 ## Current handoff
 
-Phases 1–18 and the server-side bot-match support are implemented, with the
+Phases 1–19 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
-transition bridge. Phase 18 has static validation only in this environment;
+transition bridge. Phase 19 has static validation only in this environment;
 the next session should run the Windows/.NET migration/startup smoke and
 validate native wallet rendering, Dota Plus catalog purchase, wallet debit,
 entitlement refresh and challenge/relic projection against a real build-6783

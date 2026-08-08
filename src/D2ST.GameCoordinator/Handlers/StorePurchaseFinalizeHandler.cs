@@ -37,12 +37,12 @@ public sealed class StorePurchaseFinalizeHandler : IGcMessageHandler
         var result = _economy.FinalizePurchase(context.AccountId, finalize.TxnId);
 
         _logger.LogInformation(
-            "Compra local finalize: cuenta {AccountId}, transacción {TransactionId}, resultado {ResultCode}, saldo {BalanceCredits}, disponible {AvailableCredits}",
+            "Compra local finalize: cuenta {AccountId}, transacción {TransactionId}, resultado {ResultCode}, saldo {BalanceDollars}, disponible {AvailableDollars}",
             context.AccountId,
             finalize.TxnId,
             result.Code,
-            result.Wallet.BalanceCredits,
-            result.Wallet.AvailableCredits);
+            result.Wallet.BalanceDollars,
+            result.Wallet.AvailableDollars);
 
         if (result.Success)
         {
