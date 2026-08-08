@@ -273,7 +273,14 @@ public static class StoreEndpoints
                 request.Active,
                 (request.Components ?? [])
                     .Select(component => new StoreCatalogComponent(component.ProductId, component.Quantity))
-                    .ToArray());
+                    .ToArray(),
+                request.MarketHashName ?? string.Empty,
+                request.MarketLowestPriceCents,
+                request.MarketMedianPriceCents,
+                request.MarketVolume,
+                request.MarketPriceSource ?? string.Empty,
+                request.MarketPriceStatus ?? "not_checked",
+                request.MarketPriceUpdatedAt);
             return economy.UpsertCatalogItem(item)
                 ? Results.Ok(ToCatalogResponse(economy.GetCatalog(false), []).FirstOrDefault(candidate => candidate.ProductId == item.ProductId))
                 : Results.BadRequest(new AdminMessageResponse("El producto o sus componentes no son válidos."));
@@ -387,7 +394,9 @@ public static class StoreEndpoints
                     return new StoreCatalogItem(
                         productId,
                         definition.DefIndex,
-                        definition.Name,
+                        string.IsNullOrWhiteSpace(definition.DisplayName)
+                            ? definition.Name
+                            : definition.DisplayName,
                         D2ST.Core.Economy.StoreProductType.Item,
                         price,
                         category,
@@ -416,6 +425,37 @@ public static class StoreEndpoints
                     $"Catálogo importado: {result.ImportedCount} nuevos, {result.UpdatedCount} actualizados, {result.SkippedCount} omitidos. {activationMessage}"));
             }
             catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
+            {
+                return Results.BadRequest(new AdminMessageResponse(exception.Message));
+            }
+        });
+
+        app.MapPost("/api/admin/store/catalog/market-prices", async (
+            MarketPriceSyncRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration configuration,
+            SteamMarketPriceSync marketPrices,
+            CancellationToken cancellationToken) =>
+        {
+            var authorization = await AuthorizeAdminAsync(
+                http, sessions, db, configuration, cancellationToken);
+            if (!authorization.Authenticated)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!authorization.Authorized)
+            {
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            try
+            {
+                return Results.Ok(await marketPrices.SyncAsync(request, cancellationToken));
+            }
+            catch (ArgumentOutOfRangeException exception)
             {
                 return Results.BadRequest(new AdminMessageResponse(exception.Message));
             }
@@ -463,6 +503,7 @@ public static class StoreEndpoints
         new(
             item.DefIndex,
             item.Name,
+            item.DisplayName,
             item.ItemName,
             item.Description,
             item.Prefab,
@@ -498,7 +539,14 @@ public static class StoreEndpoints
             item.ProductType == D2ST.Core.Economy.StoreProductType.Item
                 && quantities.TryGetValue(item.DefIndex, out var quantity)
                 ? quantity
-                : 0)).ToArray();
+                : 0,
+            item.MarketHashName,
+            item.MarketLowestPriceCents,
+            item.MarketMedianPriceCents,
+            item.MarketVolume,
+            item.MarketPriceSource,
+            item.MarketPriceStatus,
+            item.MarketPriceUpdatedAt)).ToArray();
     }
 
     private static StoreWalletResponse ToWalletResponse(WalletSnapshot wallet) =>

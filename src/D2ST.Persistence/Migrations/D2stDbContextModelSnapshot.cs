@@ -890,6 +890,33 @@ namespace D2ST.Persistence.Migrations
                         .HasMaxLength(160)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MarketHashName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("MarketLowestPriceCents")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("MarketMedianPriceCents")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MarketPriceSource")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MarketPriceStatus")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("MarketPriceUpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("MarketVolume")
+                        .HasColumnType("INTEGER");
+
                     b.Property<long>("PriceDollars")
                         .HasColumnType("INTEGER");
 

@@ -16,6 +16,30 @@ public sealed class StoreCatalogItemEntity
 
     public long PriceDollars { get; set; }
 
+    /// <summary>
+    /// Exact Steam Community Market name. It is nullable in practice because
+    /// many client definitions are not marketable.
+    /// </summary>
+    [MaxLength(300)]
+    public string MarketHashName { get; set; } = string.Empty;
+
+    /// <summary>Lowest USD market price in cents from the last sync.</summary>
+    public long? MarketLowestPriceCents { get; set; }
+
+    /// <summary>Median USD market price in cents from the last sync.</summary>
+    public long? MarketMedianPriceCents { get; set; }
+
+    /// <summary>Reported market volume from the last sync.</summary>
+    public long? MarketVolume { get; set; }
+
+    [MaxLength(32)]
+    public string MarketPriceSource { get; set; } = string.Empty;
+
+    [MaxLength(32)]
+    public string MarketPriceStatus { get; set; } = "not_checked";
+
+    public DateTimeOffset? MarketPriceUpdatedAt { get; set; }
+
     [MaxLength(160)]
     public required string Name { get; set; }
 

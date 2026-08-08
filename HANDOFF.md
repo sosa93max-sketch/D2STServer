@@ -1021,6 +1021,51 @@ Evidence and limits:
 - The economy remains local/fictitious; it does not synchronize with Valve's
   official wallet, market, catalog or ownership.
 
+## Phase 20 — Steam Market price synchronization for the local catalog
+
+The catalog can now use current Steam Community Market references without
+making the D2ST purchase path depend on Steam at runtime:
+
+- `DotaCatalogImporter` reads `resource/localization/items_english.txt` from
+  the same `pak01_dir.vpk` and exposes a display name alongside the internal
+  item key. A catalog re-import therefore gives the market resolver a useful
+  search name instead of only values such as `wearable_*`.
+- `StoreCatalogItems` now stores the exact `MarketHashName`, lowest and median
+  USD prices in cents, volume, source, status and last-check time. Migration
+  `20260808233000_AddMarketPricing` adds these fields without changing the
+  existing whole-dollar local economy.
+- `SteamMarketPriceSync` uses Dota 2's Steam Market endpoints (`appid=570`),
+  resolves a name only on an exact normalized match, applies either the
+  lowest or median value, rounds it to the existing whole-dollar local unit
+  with a minimum of `$1`, and keeps the exact cents for audit/display.
+- Administrators can call `POST /api/admin/store/catalog/market-prices` or
+  use “Actualizar precios Steam” in the catalog panel. The operation is
+  serialized, limited to 500 items per run, defaults to active products and
+  skips matched products younger than the configured 60-minute cache window.
+  An administrator can enter an exact `MarketHashName` manually for unusual
+  names, quality variants or items whose market listing is ambiguous.
+- Items without an exact market match, without current listings or without a
+  usable display name remain at their current local price and are reported;
+  they are never silently assigned a market value from `item_cost`, because
+  that field is gameplay gold.
+
+Evidence and limits:
+
+- The public Steam endpoint was verified with Dota 2 `Feast of Abscession`,
+  returning lowest price, median price and volume. The endpoint is
+  undocumented and rate-limited, so the server uses a delay, cache and batch
+  limit; it should never be called by the Dota client.
+- A temporary .NET 10.0.302 SDK was installed for this validation. `dotnet
+  build D2STServer.sln -c Release --no-restore` passed with 0 warnings and 0
+  errors, and a temporary SQLite startup smoke applied
+  `20260808233000_AddMarketPricing` successfully. The Windows build-6783
+  catalog/client capture remains pending: re-import the target catalog,
+  activate a small group of items, synchronize one batch, inspect the stored
+  status/price and then verify the native store/purchase flow.
+- The displayed local price remains a fictitious whole-dollar USD value. A
+  future exact-cent local economy would require changing wallet/catalog/
+  purchase totals and wire conversion together; this phase does not do that.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -1038,13 +1083,13 @@ Evidence and limits:
 
 ## Current handoff
 
-Phases 1–19 and the server-side bot-match support are implemented, with the
+Phases 1–20 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
-transition bridge. Phase 19 has static validation only in this environment;
-the next session should run the Windows/.NET migration/startup smoke and
-validate native wallet rendering, Dota Plus catalog purchase, wallet debit,
-entitlement refresh and challenge/relic projection against a real build-6783
-client on the LAN.
+transition bridge. The server build and temporary SQLite migration/startup
+smoke for Phase 20 pass; the next session should validate native wallet
+rendering, Dota Plus catalog purchase, wallet debit, entitlement refresh,
+challenge/relic projection and one Steam price synchronization batch against a
+real build-6783 client on the LAN.
 Preserve capture/replay evidence, rebuild the published client shim and verify
 that Dota returns to the foreground before claiming client compatibility. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client

@@ -502,8 +502,15 @@
           <label class="check"><input id="activateImported" type="checkbox"> Activar productos nuevos</label>
           <button id="importBtn">Importar catálogo completo</button>
         </div>
+        <div class="row" style="margin-top: 10px;">
+          <input id="marketMaxItems" type="number" min="1" max="500" value="100" step="1" placeholder="Artículos por lote">
+          <select id="marketPriceMode"><option value="lowest">Steam: precio mínimo</option><option value="median">Steam: precio medio</option></select>
+          <label class="check"><input id="marketIncludeInactive" type="checkbox"> Incluir inactivos</label>
+          <button id="syncMarketBtn" class="accent">Actualizar precios Steam</button>
+        </div>
         <div id="catalogSource" class="meta" style="margin-top: 12px;"></div>
         <div id="discoverMsg" class="msg"></div>
+        <div id="marketMsg" class="msg"></div>
       </div>
 
       <div class="card">
@@ -523,6 +530,7 @@
           <input id="catalogCategory" class="span-3" placeholder="Categoría">
           <input id="catalogBuildVersion" class="span-2" type="number" min="0" placeholder="BuildVersion">
           <input id="catalogDescription" class="span-7" placeholder="Descripción opcional">
+          <input id="catalogMarketHashName" class="span-8" placeholder="Market hash name Steam (opcional)">
           <input id="catalogComponents" class="span-8" placeholder="Componentes (1001:1,1002:1)">
           <label class="check span-2"><input id="catalogActive" type="checkbox"> Activo</label>
           <button id="saveCatalogBtn" class="accent span-2">Guardar</button>
@@ -557,6 +565,7 @@ let token = sessionStorage.getItem('d2st_admin_token') || '';
 let adminName = sessionStorage.getItem('d2st_admin_user') || '';
 let discoveredItems = [];
 let catalogItems = [];
+let editingCatalogItem = null;
 const usersState = { page: 1, pageSize: 25, search: '', status: 'all' };
 const catalogState = { page: 1, pageSize: 50, search: '', status: 'all', type: 'all' };
 let selectedUser = null;
@@ -1032,6 +1041,10 @@ function catalogComponentsLabel(item) {
     : '—';
 }
 
+function formatMarketCents(cents) {
+  return cents === null || cents === undefined ? '—' : '$' + (Number(cents) / 100).toFixed(2);
+}
+
 function renderCatalog(body) {
   catalogItems = body.Items || [];
   const total = body.TotalCount || 0;
@@ -1071,7 +1084,10 @@ function renderCatalog(body) {
       + ' · DefIndex ' + (item.DefIndex || '—')
       + (item.Category ? ' · ' + item.Category : '')
       + (Number(item.ProductType) === 2 ? ' · ' + formatNumber(item.DotaPlusDays || 0) + ' días' : '')
-      + (Number(item.ProductType) === 1 ? ' · ' + catalogComponentsLabel(item) : '');
+      + (Number(item.ProductType) === 1 ? ' · ' + catalogComponentsLabel(item) : '')
+      + (item.MarketPriceStatus && item.MarketPriceStatus !== 'not_checked'
+        ? ' · Steam ' + formatMarketCents(item.MarketLowestPriceCents) + ' (' + item.MarketPriceStatus + ')'
+        : '');
     product.appendChild(name);
     product.appendChild(detail);
     row.appendChild(product);
@@ -1134,7 +1150,7 @@ function renderDiscovery() {
 
   const table = document.createElement('table');
   const head = document.createElement('tr');
-  ['DefIndex', 'Nombre', 'Slot', 'Calidad', 'Héroes'].forEach((label) => {
+  ['DefIndex', 'Nombre visible', 'Clave interna', 'Slot', 'Calidad', 'Héroes'].forEach((label) => {
     const th = document.createElement('th');
     th.textContent = label;
     head.appendChild(th);
@@ -1143,7 +1159,8 @@ function renderDiscovery() {
   for (const item of discoveredItems) {
     const row = document.createElement('tr');
     row.appendChild(tr(item.DefIndex));
-    row.appendChild(tr(item.Name));
+    row.appendChild(tr(item.DisplayName || item.Name));
+    row.appendChild(tr(item.Name, 'meta'));
     row.appendChild(tr(item.Slot || '—'));
     row.appendChild(tr(item.Quality || item.Rarity || '—'));
     row.appendChild(tr((item.HeroNames || []).join(', ') || 'Global', 'meta'));
@@ -1207,6 +1224,7 @@ function parseComponents(value) {
 }
 
 function clearCatalogForm() {
+  editingCatalogItem = null;
   $('catalogProductId').value = '';
   $('catalogDefIndex').value = '';
   $('catalogName').value = '';
@@ -1216,6 +1234,7 @@ function clearCatalogForm() {
   $('catalogCategory').value = '';
   $('catalogBuildVersion').value = '';
   $('catalogDescription').value = '';
+  $('catalogMarketHashName').value = '';
   $('catalogComponents').value = '';
   $('catalogActive').checked = false;
   syncCatalogTypeFields();
@@ -1223,7 +1242,9 @@ function clearCatalogForm() {
 
 function syncCatalogTypeFields() {
   const isPlus = Number($('catalogType').value) === 2;
+  const isItem = Number($('catalogType').value) === 0;
   $('catalogDefIndex').disabled = isPlus;
+  $('catalogMarketHashName').disabled = !isItem;
   $('catalogComponents').disabled = isPlus;
   $('catalogDotaPlusDays').disabled = !isPlus;
   if (isPlus) {
@@ -1233,6 +1254,7 @@ function syncCatalogTypeFields() {
 }
 
 function editCatalog(item) {
+  editingCatalogItem = item;
   $('catalogProductId').value = item.ProductId;
   $('catalogDefIndex').value = item.DefIndex || 0;
   $('catalogName').value = item.Name || '';
@@ -1242,6 +1264,7 @@ function editCatalog(item) {
   $('catalogCategory').value = item.Category || '';
   $('catalogBuildVersion').value = item.BuildVersion || 0;
   $('catalogDescription').value = item.Description || '';
+  $('catalogMarketHashName').value = item.MarketHashName || '';
   $('catalogComponents').value = (item.Components || [])
     .map((component) => component.ProductId + ':' + component.Quantity).join(',');
   $('catalogActive').checked = !!item.Active;
@@ -1271,6 +1294,8 @@ async function saveCatalog() {
     return;
   }
   const buildVersion = parseInt($('catalogBuildVersion').value || '0', 10);
+  const market = editingCatalogItem || {};
+  const marketHashName = productType === 0 ? $('catalogMarketHashName').value.trim() : '';
   const result = await api('/api/admin/store/catalog', {
     method: 'POST',
     body: JSON.stringify({
@@ -1284,7 +1309,14 @@ async function saveCatalog() {
       BuildVersion: Number.isFinite(buildVersion) ? buildVersion : 0,
       DotaPlusDays: productType === 2 ? dotaPlusDays : 0,
       Active: $('catalogActive').checked,
-      Components: components
+      Components: components,
+      MarketHashName: marketHashName || null,
+      MarketLowestPriceCents: market.MarketLowestPriceCents ?? null,
+      MarketMedianPriceCents: market.MarketMedianPriceCents ?? null,
+      MarketVolume: market.MarketVolume ?? null,
+      MarketPriceSource: market.MarketPriceSource || null,
+      MarketPriceStatus: marketHashName ? (market.MarketPriceStatus || null) : 'not_checked',
+      MarketPriceUpdatedAt: market.MarketPriceUpdatedAt || null
     })
   });
   if (!result.ok) { show($('manualCatalogMsg'), messageOf(result)); return; }
@@ -1308,11 +1340,50 @@ async function toggleCatalog(item) {
       BuildVersion: item.BuildVersion || 0,
       DotaPlusDays: Number(item.DotaPlusDays) || 0,
       Active: !item.Active,
-      Components: item.Components || []
+      Components: item.Components || [],
+      MarketHashName: item.MarketHashName || null,
+      MarketLowestPriceCents: item.MarketLowestPriceCents ?? null,
+      MarketMedianPriceCents: item.MarketMedianPriceCents ?? null,
+      MarketVolume: item.MarketVolume ?? null,
+      MarketPriceSource: item.MarketPriceSource || null,
+      MarketPriceStatus: item.MarketPriceStatus || null,
+      MarketPriceUpdatedAt: item.MarketPriceUpdatedAt || null
     })
   });
   if (result.ok) await loadCatalog(catalogState.page);
   else alert(messageOf(result));
+}
+
+async function syncMarketPrices() {
+  const maxItems = parseInt($('marketMaxItems').value, 10);
+  if (!Number.isInteger(maxItems) || maxItems < 1 || maxItems > 500) {
+    show($('marketMsg'), 'El lote debe estar entre 1 y 500 artículos.');
+    return;
+  }
+
+  const result = await api('/api/admin/store/catalog/market-prices', {
+    method: 'POST',
+    body: JSON.stringify({
+      ActiveOnly: !$('marketIncludeInactive').checked,
+      MaxItems: maxItems,
+      MaxAgeMinutes: 60,
+      UseMedian: $('marketPriceMode').value === 'median',
+      DryRun: false
+    })
+  });
+  if (!result.ok) {
+    show($('marketMsg'), 'No se pudieron actualizar los precios: ' + messageOf(result));
+    return;
+  }
+
+  const body = result.body || {};
+  const message = 'Steam: ' + formatNumber(body.Matched || 0) + ' actualizados, '
+    + formatNumber(body.Cached || 0) + ' en caché, '
+    + formatNumber(body.NoMatch || 0) + ' sin coincidencia, '
+    + formatNumber(body.NoData || 0) + ' sin precio, '
+    + formatNumber(body.Failed || 0) + ' errores.';
+  show($('marketMsg'), message, (body.Matched || 0) > 0 ? 'ok' : '');
+  await loadCatalog(catalogState.page);
 }
 
 function adjustWallet(user, sign) {
@@ -1609,6 +1680,7 @@ $('clearUserFiltersBtn').addEventListener('click', () => {
 $('refreshCatalogBtn').addEventListener('click', () => loadCatalog(1));
 $('discoverBtn').addEventListener('click', discoverCatalog);
 $('importBtn').addEventListener('click', importCatalog);
+$('syncMarketBtn').addEventListener('click', syncMarketPrices);
 $('saveCatalogBtn').addEventListener('click', saveCatalog);
 $('clearCatalogBtn').addEventListener('click', clearCatalogForm);
 $('catalogType').addEventListener('change', syncCatalogTypeFields);

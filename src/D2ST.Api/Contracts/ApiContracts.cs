@@ -197,7 +197,14 @@ public sealed record StoreCatalogUpsertRequest(
     uint BuildVersion,
     int DotaPlusDays,
     bool Active,
-    IReadOnlyList<StoreCatalogComponentRequest>? Components);
+    IReadOnlyList<StoreCatalogComponentRequest>? Components,
+    string? MarketHashName = null,
+    long? MarketLowestPriceCents = null,
+    long? MarketMedianPriceCents = null,
+    long? MarketVolume = null,
+    string? MarketPriceSource = null,
+    string? MarketPriceStatus = null,
+    DateTimeOffset? MarketPriceUpdatedAt = null);
 
 public sealed record StoreCatalogItemResponse(
     uint ProductId,
@@ -211,7 +218,44 @@ public sealed record StoreCatalogItemResponse(
     int DotaPlusDays,
     bool Active,
     IReadOnlyList<StoreCatalogComponent> Components,
-    uint OwnedQuantity);
+    uint OwnedQuantity,
+    string MarketHashName,
+    long? MarketLowestPriceCents,
+    long? MarketMedianPriceCents,
+    long? MarketVolume,
+    string MarketPriceSource,
+    string MarketPriceStatus,
+    DateTimeOffset? MarketPriceUpdatedAt);
+
+public sealed record MarketPriceSyncRequest(
+    bool ActiveOnly = true,
+    int MaxItems = 100,
+    int MaxAgeMinutes = 60,
+    bool UseMedian = false,
+    bool DryRun = false);
+
+public sealed record MarketPriceSyncItemResponse(
+    uint ProductId,
+    uint DefIndex,
+    string Name,
+    string Status,
+    string MarketHashName,
+    long? LowestPriceCents,
+    long? MedianPriceCents,
+    long? Volume,
+    long? AppliedPriceDollars,
+    string? Error);
+
+public sealed record MarketPriceSyncResponse(
+    int Requested,
+    int Processed,
+    int Matched,
+    int Cached,
+    int NoMatch,
+    int NoData,
+    int Failed,
+    bool DryRun,
+    IReadOnlyList<MarketPriceSyncItemResponse> Items);
 
 public sealed record DotaCatalogDiscoverRequest(
     string DotaPath,
@@ -228,6 +272,7 @@ public sealed record DotaCatalogImportRequest(
 public sealed record DotaCatalogDefinitionResponse(
     uint DefIndex,
     string Name,
+    string DisplayName,
     string ItemName,
     string Description,
     string Prefab,

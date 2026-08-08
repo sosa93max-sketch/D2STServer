@@ -498,7 +498,21 @@ public sealed class EconomyStore : IEconomyStore
                         {
                             ProductId = entity.ProductId,
                             PriceDollars = entity.PriceDollars,
-                            Active = entity.Active
+                            Active = entity.Active,
+                            MarketHashName = string.IsNullOrWhiteSpace(item.MarketHashName)
+                                ? entity.MarketHashName
+                                : item.MarketHashName,
+                            MarketLowestPriceCents = item.MarketLowestPriceCents ?? entity.MarketLowestPriceCents,
+                            MarketMedianPriceCents = item.MarketMedianPriceCents ?? entity.MarketMedianPriceCents,
+                            MarketVolume = item.MarketVolume ?? entity.MarketVolume,
+                            MarketPriceSource = string.IsNullOrWhiteSpace(item.MarketPriceSource)
+                                ? entity.MarketPriceSource
+                                : item.MarketPriceSource,
+                            MarketPriceStatus = string.IsNullOrWhiteSpace(item.MarketPriceStatus)
+                                || item.MarketPriceStatus == "not_checked"
+                                ? entity.MarketPriceStatus
+                                : item.MarketPriceStatus,
+                            MarketPriceUpdatedAt = item.MarketPriceUpdatedAt ?? entity.MarketPriceUpdatedAt
                         };
                     }
 
@@ -523,6 +537,9 @@ public sealed class EconomyStore : IEconomyStore
         if (source.ProductId == 0 || string.IsNullOrWhiteSpace(source.Name)
             || source.PriceDollars <= 0
             || source.PriceDollars > LocalEconomyCurrency.MaxWireDollars
+            || source.MarketHashName.Length > 300
+            || source.MarketPriceSource.Length > 32
+            || source.MarketPriceStatus.Length > 32
             || source.ProductType is not (StoreProductType.Item or StoreProductType.Set or StoreProductType.DotaPlusSubscription)
             || components.Any(component => component.ProductId == 0 || component.Quantity == 0))
         {
@@ -560,6 +577,11 @@ public sealed class EconomyStore : IEconomyStore
                 Name = source.Name.Trim(),
                 Category = source.Category?.Trim() ?? string.Empty,
                 Description = source.Description?.Trim() ?? string.Empty,
+                MarketHashName = source.MarketHashName?.Trim() ?? string.Empty,
+                MarketPriceSource = source.MarketPriceSource?.Trim() ?? string.Empty,
+                MarketPriceStatus = string.IsNullOrWhiteSpace(source.MarketPriceStatus)
+                    ? "not_checked"
+                    : source.MarketPriceStatus.Trim(),
                 DotaPlusDays = isDotaPlus ? source.DotaPlusDays : 0,
                 Components = normalizedComponents
             };
@@ -580,6 +602,13 @@ public sealed class EconomyStore : IEconomyStore
         entity.DefIndex = item.ProductType == StoreProductType.Item ? item.DefIndex : 0;
         entity.ProductType = item.ProductType;
         entity.PriceDollars = item.PriceDollars;
+        entity.MarketHashName = item.MarketHashName;
+        entity.MarketLowestPriceCents = item.MarketLowestPriceCents;
+        entity.MarketMedianPriceCents = item.MarketMedianPriceCents;
+        entity.MarketVolume = item.MarketVolume;
+        entity.MarketPriceSource = item.MarketPriceSource;
+        entity.MarketPriceStatus = item.MarketPriceStatus;
+        entity.MarketPriceUpdatedAt = item.MarketPriceUpdatedAt;
         entity.Name = item.Name;
         entity.Category = item.Category;
         entity.Description = item.Description;
@@ -1113,7 +1142,14 @@ public sealed class EconomyStore : IEconomyStore
             components
                 .Where(component => component.ProductId == item.ProductId)
                 .Select(component => new StoreCatalogComponent(component.ComponentProductId, component.Quantity))
-                .ToArray());
+                .ToArray(),
+            item.MarketHashName,
+            item.MarketLowestPriceCents,
+            item.MarketMedianPriceCents,
+            item.MarketVolume,
+            item.MarketPriceSource,
+            item.MarketPriceStatus,
+            item.MarketPriceUpdatedAt);
 
     private static WalletSnapshot ToWallet(WalletEntity wallet) =>
         new(wallet.AccountId, wallet.BalanceDollars, wallet.ReservedDollars, wallet.UpdatedAt);

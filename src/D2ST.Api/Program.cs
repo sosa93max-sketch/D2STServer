@@ -27,6 +27,12 @@ builder.Logging.AddFileLogger(builder.Configuration);
 
 builder.Services.AddD2stPersistence(connectionString);
 builder.Services.AddSteamServices(builder.Configuration);
+builder.Services.AddHttpClient("SteamMarket", client =>
+{
+    client.BaseAddress = new Uri("https://steamcommunity.com/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("D2STServer/market-price-sync");
+});
 builder.Services.AddSingleton<IGcPlayerDirectory, SessionGcPlayerDirectory>();
 builder.Services.AddSingleton<IGcMessageQueue, EventStreamGcMessageQueue>();
 builder.Services.AddSingleton<IRankStore, RankStore>();
@@ -34,6 +40,7 @@ builder.Services.AddSingleton<IMatchStore, MatchStore>();
 builder.Services.AddSingleton<IProfileStore, ProfileCardStore>();
 builder.Services.AddSingleton<IShowcaseStore, ShowcaseStore>();
 builder.Services.AddSingleton<IEconomyStore, EconomyStore>();
+builder.Services.AddSingleton<SteamMarketPriceSync>();
 builder.Services.AddSingleton<IDotaPlusStore, DotaPlusStore>();
 builder.Services.AddSingleton<DotaCatalogImporter>();
 builder.Services.AddGameCoordinator(builder.Configuration, builder.Environment.ContentRootPath);

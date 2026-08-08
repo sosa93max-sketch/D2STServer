@@ -11,6 +11,7 @@ namespace D2ST.Api.Economy;
 public sealed record DotaCatalogDefinition(
     uint DefIndex,
     string Name,
+    string DisplayName,
     string ItemName,
     string Description,
     string Prefab,
@@ -37,6 +38,8 @@ public sealed class DotaCatalogImporter
 {
     private const uint VpkSignature = 0x55AA1234;
     private const int MaxSchemaBytes = 128 * 1024 * 1024;
+    private const string ItemsSchemaPath = "scripts/items/items_game.txt";
+    private const string EnglishItemsLocalizationPath = "resource/localization/items_english.txt";
 
     private static readonly HashSet<string> BlockedPrefabs = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -136,8 +139,9 @@ public sealed class DotaCatalogImporter
     public DotaCatalogSource Read(string requestedPath)
     {
         var (dotaPath, pakPath) = ResolvePaths(requestedPath);
-        var schema = VpkTextReader.ReadText(pakPath, "scripts/items/items_game.txt");
-        var parsed = ParseItems(schema);
+        var schema = VpkTextReader.ReadText(pakPath, ItemsSchemaPath);
+        var localization = ReadEnglishItemLocalization(pakPath);
+        var parsed = ParseItems(schema, localization);
         var version = ReadClientVersion(dotaPath);
 
         return new DotaCatalogSource(
@@ -242,7 +246,9 @@ public sealed class DotaCatalogImporter
         return (0, steamInfPath);
     }
 
-    private static (int ParsedDefinitionCount, IReadOnlyList<DotaCatalogDefinition> Items) ParseItems(string text)
+    private static (int ParsedDefinitionCount, IReadOnlyList<DotaCatalogDefinition> Items) ParseItems(
+        string text,
+        IReadOnlyDictionary<string, string> localization)
     {
         var root = ValveKeyValues.Parse(text);
         var itemsSection = root.Child("items")
@@ -261,7 +267,7 @@ public sealed class DotaCatalogImporter
             }
 
             parsedCount++;
-            var definition = ToDefinition(defIndex, entry);
+            var definition = ToDefinition(defIndex, entry, localization);
             if (IsSellableCandidate(definition))
             {
                 items.Add(definition);
@@ -271,10 +277,14 @@ public sealed class DotaCatalogImporter
         return (parsedCount, items.OrderBy(item => item.DefIndex).ToArray());
     }
 
-    private static DotaCatalogDefinition ToDefinition(uint defIndex, ValveKeyValueNode entry)
+    private static DotaCatalogDefinition ToDefinition(
+        uint defIndex,
+        ValveKeyValueNode entry,
+        IReadOnlyDictionary<string, string> localization)
     {
         var name = FirstNonEmpty(entry.ValueOf("name"), entry.ValueOf("item_name"), $"def_{defIndex}");
         var itemName = entry.ValueOf("item_name");
+        var displayName = ResolveDisplayName(name, itemName, localization);
         var description = entry.ValueOf("item_description");
         var prefab = Normalize(entry.ValueOf("prefab"));
         var slot = Normalize(FirstNonEmpty(entry.ValueOf("item_slot"), entry.ValueOf("loadout_slot")));
@@ -295,6 +305,7 @@ public sealed class DotaCatalogImporter
         return new DotaCatalogDefinition(
             defIndex,
             name,
+            displayName,
             itemName,
             description,
             prefab,
@@ -303,6 +314,51 @@ public sealed class DotaCatalogImporter
             entry.ValueOf("item_rarity"),
             entry.ValueOf("image_inventory"),
             heroes);
+    }
+
+    private static IReadOnlyDictionary<string, string> ReadEnglishItemLocalization(string pakPath)
+    {
+        try
+        {
+            var text = VpkTextReader.ReadText(pakPath, EnglishItemsLocalizationPath);
+            var tokens = ValveKeyValues.Parse(text).Descendant("Tokens");
+            if (tokens is null)
+            {
+                return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            return tokens.Children
+                .Where(child => child.Value is not null && !string.IsNullOrWhiteSpace(child.Key))
+                .GroupBy(child => child.Key.TrimStart('#'), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.First().Value!.Trim(),
+                    StringComparer.OrdinalIgnoreCase);
+        }
+        catch (Exception exception) when (exception is FileNotFoundException
+            or InvalidDataException
+            or IOException
+            or UnauthorizedAccessException)
+        {
+            // Some stripped client builds omit localization. The raw schema
+            // remains importable and the administrator can set a market name
+            // manually in that case.
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        }
+    }
+
+    private static string ResolveDisplayName(
+        string name,
+        string itemName,
+        IReadOnlyDictionary<string, string> localization)
+    {
+        var token = itemName.Trim().TrimStart('#');
+        if (token.Length > 0 && localization.TryGetValue(token, out var localized))
+        {
+            return localized;
+        }
+
+        return name.Trim();
     }
 
     private static bool IsSellableCandidate(DotaCatalogDefinition item)
@@ -394,7 +450,7 @@ public sealed class DotaCatalogImporter
 
                         if (entryLength > MaxSchemaBytes || entryLength > int.MaxValue - preload.Length)
                         {
-                            throw new InvalidDataException("items_game.txt es demasiado grande para importarlo.");
+                            throw new InvalidDataException($"{wantedPath} es demasiado grande para importarlo.");
                         }
 
                         var payload = new byte[preload.Length + (int)entryLength];

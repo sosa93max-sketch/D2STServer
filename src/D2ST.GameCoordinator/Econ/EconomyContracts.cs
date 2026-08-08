@@ -73,7 +73,14 @@ public sealed record StoreCatalogItem(
     uint BuildVersion,
     int DotaPlusDays,
     bool Active,
-    IReadOnlyList<StoreCatalogComponent> Components);
+    IReadOnlyList<StoreCatalogComponent> Components,
+    string MarketHashName = "",
+    long? MarketLowestPriceCents = null,
+    long? MarketMedianPriceCents = null,
+    long? MarketVolume = null,
+    string MarketPriceSource = "",
+    string MarketPriceStatus = "not_checked",
+    DateTimeOffset? MarketPriceUpdatedAt = null);
 
 public sealed record WalletSnapshot(
     uint AccountId,
