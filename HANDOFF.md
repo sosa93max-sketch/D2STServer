@@ -156,12 +156,43 @@ unsupported claims.
   reached its listening state without an exception.
 - `git diff --check`: passed.
 
+### Phase 4 — completed in this working tree
+
+The live `CMsgConnectedPlayers` path (`7034`) now carries the game server's
+transient scoreboard state through to the Dota clients:
+
+- `first_blood_happened=true` is sticky on `CSODOTALobby`, so the lobby Shared
+  Object retains first-blood state for clients that reconnect during the same
+  lobby.
+- Packets containing connected/disconnected players, game state, first blood,
+  `radiant_kills`, `dire_kills`, `radiant_lead`, building state or player draft
+  are forwarded unchanged to every lobby member except the game-server caller.
+- The original protobuf body is preserved, so the client receives the real
+  kill totals, Radiant lead and building bitmask with their original optional
+  field presence. Heartbeats without visible state are not broadcast.
+- No values are calculated or persisted from `7034`; `7004 GameMatchSignOut`
+  remains the authoritative source for final match statistics and history.
+
+This is the correct split for the current protocol: `CSODOTALobby` exposes a
+first-blood field, while kills, lead and building state are fields of the live
+`7034` message rather than lobby Shared Object fields.
+
+### Evidence for Phase 4
+
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings and
+  0 errors after the live `7034` changes.
+- API startup against a new temporary SQLite database: passed; dependency
+  injection resolved `IGcMessageQueue` for `ConnectedPlayersHandler`, the
+  compatibility bootstrap completed and the API reached its listening state.
+- `git diff --check`: passed.
+
 ## Match close data flow
 
 ```text
 local lobby
   -> listen server starts and reports 4506
-  -> ConnectedPlayers (7034) mirrors game state/hero/leaver information
+  -> ConnectedPlayers (7034) mirrors game state/hero/leaver and forwards live
+     first-blood/kills/lead/building updates to lobby clients
   -> game server sends GameMatchSignOut (7004)
   -> GameMatchSignOutHandler normalizes CMsgGameMatchSignOut
   -> MatchStore transaction writes match, players, overall and hero aggregates
@@ -189,14 +220,12 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Expand the live `7034` path for kill totals, first blood, team score and
-   building state where the current client build requests them.
-2. Expose richer profile-card/recent-match projections from the persisted rows.
-3. Add EF migrations and replace the startup SQL bootstrap after the schema has
+1. Expose richer profile-card/recent-match projections from the persisted rows.
+2. Add EF migrations and replace the startup SQL bootstrap after the schema has
    stabilized.
-4. Validate with two consecutive accounts and two real Windows clients through
+3. Validate with two consecutive accounts and two real Windows clients through
    create -> join -> launch -> play -> 7004 -> reconnect/profile/history.
-5. Only then widen the scope to spectators, invites, matchmaking and other GC
+4. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
 ## Important limitations
@@ -218,6 +247,9 @@ directly, so they do not reconstruct history from lossy profile counters.
   one is imported from the targeted client build.
 - Hero best values, streaks and all-hero challenge timing remain unset because
   the current match-close projection stores totals, not those event histories.
+- Live kills, Radiant lead and building state are delivered by `7034` while the
+  client is connected; the current lobby Shared Object schema has no fields for
+  those values, so a reconnect depends on the next visible `7034` update.
 - The fallback server lookup for simultaneous local launches remains a known
   risk until the game-server/lobby association is made explicit for every
   launch.
@@ -236,8 +268,8 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Current handoff
 
-Phases 1, 2 and 3 are implemented and verified at compile/startup level. The
-next session should improve the live `7034` data path, then expose richer
-profile-card data. Before calling the vertical complete, reproduce it with two
-actual Dota 2 clients and preserve the capture/replay evidence in the
-repository diagnostics output.
+Phases 1, 2, 3 and 4 are implemented and verified at compile/startup level. The
+next session should expose richer profile-card data, then stabilize the schema
+and validate the complete flow with two actual Windows clients. Preserve the
+capture/replay evidence in the repository diagnostics output before calling the
+vertical complete.

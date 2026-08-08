@@ -435,18 +435,19 @@ public sealed class LobbyService : IGcWelcomeContributor
     }
 
     /// <summary>
-    /// The game server reports who made it in. Hero picks and leaver states are
-    /// mirrored onto the lobby members so the client redraws the scoreboard;
-    /// only an actual change publishes a delta.
+    /// The game server reports who made it in and the live match state. Hero
+    /// picks, leaver states and first blood are mirrored onto the lobby object
+    /// so reconnecting clients retain that state; the complete 7034 packet is
+    /// forwarded by the handler for live kills, lead and building updates.
     /// </summary>
-    public void ConnectedPlayers(GcContext context, CMsgConnectedPlayers request)
+    public CSODOTALobby? ConnectedPlayers(GcContext context, CMsgConnectedPlayers request)
     {
         lock (_gate)
         {
             var lobby = LobbyForServer(context);
             if (lobby is null)
             {
-                return;
+                return null;
             }
 
             var changed = false;
@@ -495,10 +496,18 @@ public sealed class LobbyService : IGcWelcomeContributor
                 }
             }
 
+            if (request.FirstBloodHappened && !lobby.FirstBloodHappened)
+            {
+                lobby.FirstBloodHappened = true;
+                changed = true;
+            }
+
             if (changed)
             {
                 Write(lobby);
             }
+
+            return lobby;
         }
     }
 
