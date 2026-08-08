@@ -263,6 +263,40 @@ already-migrated databases:
 - The local conduct policy remains unchanged at score 10,000 as approved; this
   phase only changes schema management.
 
+### Bot matches — completed in this working tree
+
+The local practice-lobby flow can now be used with one human client and Dota's
+built-in bots:
+
+- `FillWithBots` no longer requires a second human member before launch. A
+  single host can enter `SERVERSETUP` when the lobby setting is enabled; the
+  Dota listen server remains responsible for creating the bots.
+- The bot difficulty sent through `CMsgPracticeLobbySetDetails` is retained on
+  the lobby. A per-side difficulty sent through `CMsgPracticeLobbySetTeamSlot`
+  is also retained for Radiant or Dire.
+- When `FillWithBots` is active, `7004` player rows are accepted only for
+  human members of that lobby. Bot rows cannot create fake accounts, profile
+  aggregates, hero aggregates or match-history identities.
+- The match's real duration, result, team scores and other match-level fields
+  remain persistable. The human player's real scoreboard remains available.
+- Bot matches update the human profile/statistics projection but deliberately do
+  not apply Elo, because the opponent set is not human. The local conduct
+  policy remains fixed at score 10,000.
+- No bot AI was added to D2STServer; this phase relies on the game client's
+  listen server to populate and control Dota bots.
+
+### Evidence for bot-match support
+
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- API startup against a temporary SQLite database: passed; migrations and DI
+  completed and the API reached its listening state.
+- `git diff --check`: passed before publication.
+- A real Windows client match against bots is still pending. Until that run,
+  the server-side launch and filtering behavior is verified, but it is not yet
+  confirmed that build 6783's listen server accepts the current bot lobby
+  projection and emits a complete `7004`.
+
 ## Match close data flow
 
 ```text
@@ -301,12 +335,14 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Validate with two consecutive accounts and two real Windows clients through
-   create -> join -> launch -> play -> 7004 -> reconnect/profile/history.
-2. Use the Windows capture to decide whether the build also needs the
+1. Validate with one real Windows client and Dota bots through create -> enable
+   `FillWithBots` -> launch -> play -> `7004` -> reconnect/profile/history.
+2. If the machine can run two client sessions, repeat with two accounts on the
+   same PC. Otherwise keep the two-human validation as a pending external test.
+3. Use the Windows capture to decide whether the build also needs the
    unimplemented `8034 -> 8035` profile-card statistics request or durable
    showcase data; implement only fields confirmed by that traffic.
-3. Only then widen the scope to spectators, invites, matchmaking and other GC
+4. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
 The complete capability inventory, dependencies, priorities, validation gates
@@ -345,6 +381,10 @@ is the planning reference for the work that follows the real-client gate.
   showcase persistence and the separate `8034 -> 8035` statistics surface are
   not implemented until a real client capture establishes their required
   fields.
+- A bot lobby can launch with one human when `FillWithBots` is enabled, but the
+  built-in Dota bot population and the exact `7004` payload still need real
+  build-6783 validation. Bot rows are intentionally excluded from
+  `MatchPlayers` and all account projections; bot matches do not change Elo.
 - The normal database path is migration-managed. The old SQL bootstrap remains
   only as a one-time compatibility bridge for databases created before
   `__EFMigrationsHistory` existed; it is not used for fresh databases.
@@ -366,10 +406,10 @@ is the planning reference for the work that follows the real-client gate.
 
 ## Current handoff
 
-Phases 1–6 are implemented and verified at compile/startup level, with the
-schema now managed by EF Core and legacy databases preserved through the
-transition bridge. The next session should validate the complete flow with two
-actual Windows clients and preserve capture/replay evidence before expanding
-the vertical. See [ROADMAP.md](ROADMAP.md) for the complete implementation
-plan; do not treat a future phase as implemented until its evidence is recorded
-here.
+Phases 1–6 and the server-side bot-match support are implemented and verified
+at compile/startup level, with the schema managed by EF Core and legacy
+databases preserved through the transition bridge. The next session should
+validate one client against Dota bots, then use a second client on the same PC
+only if the hardware permits. Preserve capture/replay evidence before
+expanding the vertical. See [ROADMAP.md](ROADMAP.md) for the complete plan; do
+not treat client compatibility as complete until it is recorded here.

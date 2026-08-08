@@ -300,6 +300,18 @@ public sealed class LobbyService : IGcWelcomeContributor
                 member.Slot = 0;
             }
 
+            if (request.ShouldSerializeBotDifficulty())
+            {
+                if (team == DotaGcTeam.DotaGcTeamGoodGuys)
+                {
+                    lobby.BotDifficultyRadiant = request.BotDifficulty;
+                }
+                else if (team == DotaGcTeam.DotaGcTeamBadGuys)
+                {
+                    lobby.BotDifficultyDire = request.BotDifficulty;
+                }
+            }
+
             Write(lobby);
             return true;
         }
@@ -323,9 +335,10 @@ public sealed class LobbyService : IGcWelcomeContributor
                 return false;
             }
 
-            // No bots yet: a match needs at least two human players, otherwise
-            // the launch would sit in SERVERSETUP forever waiting for a server.
-            if (lobby.AllMembers.Count < 2)
+            // A normal local lobby needs two human players. A lobby configured
+            // to fill with bots may be launched by its single human host; the
+            // Dota listen server is responsible for creating the bot players.
+            if (lobby.AllMembers.Count < 2 && !lobby.FillWithBots)
             {
                 return false;
             }
@@ -816,6 +829,11 @@ public sealed class LobbyService : IGcWelcomeContributor
         if (details.ShouldSerializeFillWithBots())
         {
             lobby.FillWithBots = details.FillWithBots;
+        }
+
+        if (details.ShouldSerializeBotDifficultyRadiant())
+        {
+            lobby.BotDifficultyRadiant = details.BotDifficultyRadiant;
         }
 
         if (details.ShouldSerializeAllowSpectating())

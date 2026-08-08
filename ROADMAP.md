@@ -37,8 +37,9 @@ Las reglas que deben respetarse en cada fase son:
 
 ## 2. Línea base ya implementada
 
-Las Fases 1–6 están implementadas y publicadas. El detalle y la evidencia se
-encuentran en [HANDOFF.md](HANDOFF.md).
+Las Fases 1–6 y el soporte de partidas contra bots están implementados y
+publicados. El detalle y la evidencia se encuentran en
+[HANDOFF.md](HANDOFF.md).
 
 ### Lobby y partida local
 
@@ -51,6 +52,13 @@ encuentran en [HANDOFF.md](HANDOFF.md).
   vivo cuando el listen server los reporta.
 - Cierre `7004` normalizado, transaccional e idempotente.
 - Lobby llevado a estado `POSTGAME` después de un cierre válido.
+- Lanzamiento con un solo humano cuando `fill_with_bots` está activo; Dota es
+  responsable de poblar la partida con sus bots nativos.
+- Dificultad de bots conservada desde los mensajes de configuración del lobby.
+- En partidas contra bots, `7004` solo incorpora participantes humanos del
+  lobby a cuentas, historial y agregados; los bots no reciben identidad local.
+- Las partidas contra bots actualizan estadísticas del humano, pero no aplican
+  Elo porque no existe un rival humano equivalente.
 
 ### Datos persistentes
 
@@ -73,6 +81,20 @@ encuentran en [HANDOFF.md](HANDOFF.md).
 - Estado de conducta local mediante `8095 -> 8096`, score `10.000` y
   estadísticas locales de partidas/abandonos.
 
+### Soporte inmediato de partidas contra bots
+
+Esta capacidad ya está creada en el servidor, pero necesita validación con el
+cliente build 6783:
+
+- `FillWithBots=true` permite que el host único lance el lobby.
+- La configuración de dificultad se conserva en `CSODOTALobby`.
+- El cierre `7004` se filtra por los miembros humanos conocidos del lobby
+  cuando la partida es contra bots.
+- El resultado y las estadísticas del único humano siguen siendo datos reales;
+  las filas de bots no se convierten en perfiles ficticios.
+- La población y la IA de los bots dependen del listen server de Dota, no de
+  D2STServer.
+
 ## 3. Criterio común de terminación
 
 Una fase futura se considera terminada solo si cumple todos estos puntos:
@@ -90,27 +112,32 @@ Una fase futura se considera terminada solo si cumple todos estos puntos:
 7. Se prueba el flujo normal y al menos un caso de reconexión o fallo relevante.
 8. `HANDOFF.md` registra cambios, evidencia, limitaciones y siguiente paso.
 
-## 4. Puerta inmediata: validación con clientes reales
+## 4. Puerta inmediata: validación real con una PC
 
 **Prioridad: P0. No es una fase de código; es la validación que desbloquea las
 siguientes decisiones.**
 
 ### Flujo a probar
 
-Usar dos cuentas consecutivas y dos clientes Windows del build objetivo:
+La primera validación puede hacerse con una sola cuenta, un cliente Windows y
+los bots nativos de Dota:
 
 1. Iniciar el servidor con una base nueva o una copia controlada de la base
    existente.
-2. Conectar ambos clientes y verificar login, cachés y perfiles.
-3. Crear el lobby con la primera cuenta.
-4. Unir la segunda cuenta, asignar equipos y seleccionar héroes.
-5. Lanzar la partida y comprobar el mensaje de conexión al listen server.
+2. Conectar un cliente y verificar login, cachés y perfil.
+3. Crear el lobby y activar `FillWithBots` y la dificultad deseada.
+4. Seleccionar héroe y lanzar con un único humano.
+5. Comprobar el mensaje de conexión al listen server y la creación de bots.
 6. Confirmar cambios de jugadores, kills, primera sangre, ventaja y edificios.
-7. Terminar la partida de forma normal y capturar el `7004` completo.
-8. Reconectar uno o ambos clientes.
-9. Consultar perfil, historial, resumen, compañeros y estadísticas por héroe.
+7. Terminar la partida y capturar el `7004` completo.
+8. Confirmar que el perfil humano recibe la partida, pero no los bots ni Elo.
+9. Reconectar, consultar perfil, historial, resumen y estadísticas por héroe.
 10. Editar la tarjeta de perfil, reiniciar el servidor y confirmar que el cambio
     continúa guardado.
+
+Si el hardware permite abrir dos sesiones del cliente, repetir después con dos
+cuentas en la misma PC. Si no, la validación de dos humanos queda pendiente,
+pero no bloquea la verificación del flujo contra bots.
 
 ### Evidencia requerida
 
@@ -467,7 +494,8 @@ del alcance.
 ## 17. Orden recomendado consolidado
 
 ```text
-P0  Validar dos clientes Windows y capturar tráfico real
+P0  Validar un cliente Windows contra bots y capturar tráfico real
+P0  Repetir con dos clientes en la misma PC si el hardware lo permite
 P0  Corregir incompatibilidades encontradas en lobby/perfil/historial
 P0  Persistir lobbies activos y asociar cada launch a un servidor único
 P0  Robustecer cierres, desconexiones, reconexiones y duplicados
@@ -481,6 +509,6 @@ P2  Añadir matchmaking local
 FUTURO  Conducta dinámica y servicios oficiales/externalizados
 ```
 
-La siguiente acción aprobada no debe saltar la primera línea: ejecutar la
-validación real, registrar sus resultados en `HANDOFF.md` y convertir cada
-incompatibilidad observada en una tarea concreta.
+La siguiente acción aprobada debe comenzar por la primera línea: ejecutar la
+partida real contra bots, registrar sus resultados en `HANDOFF.md` y convertir
+cada incompatibilidad observada en una tarea concreta.

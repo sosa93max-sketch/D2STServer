@@ -57,7 +57,13 @@ public sealed class GameMatchSignOutHandler : IGcMessageHandler
                 .Select(player => (player.AccountId, player.Won))
                 .ToList();
 
-            _ranks.ApplyMatchResult(results);
+            // Bot rows are intentionally removed before this point. A local
+            // bot match can update the human's profile/statistics, but it is
+            // not a human-versus-human Elo result.
+            if (lobby?.FillWithBots != true)
+            {
+                _ranks.ApplyMatchResult(results);
+            }
             UpdateAccountCaches(match.Players);
 
             if (lobby is not null)
@@ -85,10 +91,26 @@ public sealed class GameMatchSignOutHandler : IGcMessageHandler
         ulong matchId,
         DotaGcTeam winningTeam)
     {
+        // A bot match can report bot rows in 7004. They must not become fake
+        // accounts, receive Elo or inflate a human profile. In a local lobby
+        // every human participant is already a lobby member, so that set is a
+        // safer source of truth than guessing from a bot Steam id emitted by
+        // the game server.
+        var humanSteamIds = lobby?.FillWithBots == true
+            ? lobby.AllMembers
+                .Where(member => member.Id != 0 && member.Team is
+                    DotaGcTeam.DotaGcTeamGoodGuys or
+                    DotaGcTeam.DotaGcTeamBadGuys or
+                    DotaGcTeam.DotaGcTeamPlayerPool)
+                .Select(member => member.Id)
+                .ToHashSet()
+            : null;
+
         var players = signOut.Teams
             .SelectMany((team, index) => team.Players.Select(player =>
                 ToMatchPlayer(player, TeamForIndex(index), winningTeam)))
-            .Where(player => player.SteamId != 0 && IsPlayingTeam(player.Team))
+            .Where(player => player.SteamId != 0 && IsPlayingTeam(player.Team)
+                && (humanSteamIds is null || humanSteamIds.Contains(player.SteamId)))
             .GroupBy(player => player.AccountId)
             .Select(group => group.First())
             .ToList();
