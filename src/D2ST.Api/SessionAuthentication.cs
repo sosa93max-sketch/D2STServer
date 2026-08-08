@@ -1,4 +1,5 @@
 using D2ST.Core.Steam;
+using D2ST.Api.Store;
 using D2ST.Steam;
 using Microsoft.Net.Http.Headers;
 
@@ -20,12 +21,15 @@ public static class SessionAuthentication
     public static SteamSession? Authenticate(this HttpContext http, ISessionStore sessions)
     {
         var header = http.Request.Headers[HeaderNames.Authorization].ToString();
-        if (!header.StartsWith(Scheme, StringComparison.OrdinalIgnoreCase))
+        var token = header.StartsWith(Scheme, StringComparison.OrdinalIgnoreCase)
+            ? header[Scheme.Length..].Trim()
+            : http.Request.Cookies[StoreSessionCookie.Name];
+        if (string.IsNullOrWhiteSpace(token))
         {
             return null;
         }
 
-        var session = sessions.Find(header[Scheme.Length..].Trim());
+        var session = sessions.Find(token);
         if (session is not null)
         {
             sessions.Touch(session);

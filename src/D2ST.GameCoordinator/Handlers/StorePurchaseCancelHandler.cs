@@ -1,6 +1,7 @@
 using D2ST.Core.GameCoordinator;
 using D2ST.GameCoordinator.Econ;
 using D2ST.Protocol.Dota;
+using Microsoft.Extensions.Logging;
 
 namespace D2ST.GameCoordinator.Handlers;
 
@@ -10,10 +11,14 @@ namespace D2ST.GameCoordinator.Handlers;
 public sealed class StorePurchaseCancelHandler : IGcMessageHandler
 {
     private readonly IEconomyStore _economy;
+    private readonly ILogger<StorePurchaseCancelHandler> _logger;
 
-    public StorePurchaseCancelHandler(IEconomyStore economy)
+    public StorePurchaseCancelHandler(
+        IEconomyStore economy,
+        ILogger<StorePurchaseCancelHandler> logger)
     {
         _economy = economy;
+        _logger = logger;
     }
 
     public uint MessageType => GcMsg.StorePurchaseCancel;
@@ -28,6 +33,14 @@ public sealed class StorePurchaseCancelHandler : IGcMessageHandler
                 ? (uint)StorePurchaseWireResult.Success
                 : (uint)StorePurchaseWireResult.Failure
         };
+
+        _logger.LogInformation(
+            "Compra local cancel: cuenta {AccountId}, transacción {TransactionId}, resultado {ResultCode}, saldo {BalanceDollars}, disponible {AvailableDollars}",
+            context.AccountId,
+            cancel.TxnId,
+            result.Code,
+            result.Wallet.BalanceDollars,
+            result.Wallet.AvailableDollars);
 
         return
         [

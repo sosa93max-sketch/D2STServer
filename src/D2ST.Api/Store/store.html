@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08111f">
+  <title>D2MAX Store</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07101d;
+      --panel: rgba(15, 28, 48, .84);
+      --panel-strong: rgba(19, 35, 60, .96);
+      --line: rgba(133, 177, 230, .18);
+      --text: #f4f8ff;
+      --muted: #8fa6c2;
+      --blue: #6db5ff;
+      --cyan: #66e5e2;
+      --gold: #ffc86b;
+      --danger: #ff7e8b;
+      --shadow: 0 24px 90px rgba(0, 0, 0, .36);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font: 14px/1.5 "Segoe UI", Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(66, 144, 255, .20), transparent 34rem),
+        radial-gradient(circle at 92% 18%, rgba(81, 227, 218, .12), transparent 30rem),
+        linear-gradient(145deg, #07101d 0%, #0a1526 48%, #08111f 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .18;
+      background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 80%);
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .48; }
+
+    .shell { width: min(1240px, calc(100% - 36px)); margin: 0 auto; padding: 28px 0 54px; position: relative; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 28px; }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand-mark {
+      width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center;
+      color: #07101d; font-size: 20px; font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow: 0 0 36px rgba(102,229,226,.28);
+    }
+    .brand strong { display: block; letter-spacing: .16em; font-size: 15px; }
+    .brand small { color: var(--muted); display: block; margin-top: 1px; }
+    .account { display: flex; align-items: center; gap: 14px; }
+    .account-copy { text-align: right; }
+    .account-copy strong { display: block; }
+    .account-copy small { color: var(--muted); }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #091321; background: linear-gradient(135deg, var(--gold), #ff8c9b); }
+
+    .hero { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; margin-bottom: 22px; }
+    .hero-card, .wallet-card, .panel { border: 1px solid var(--line); background: var(--panel); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+    .hero-card { min-height: 225px; border-radius: 28px; padding: 34px; position: relative; overflow: hidden; }
+    .hero-card::after { content: ""; position: absolute; width: 340px; height: 340px; border-radius: 50%; right: -120px; top: -150px; border: 1px solid rgba(102,229,226,.34); box-shadow: 0 0 0 28px rgba(102,229,226,.04), 0 0 0 58px rgba(102,229,226,.025); }
+    .eyebrow { color: var(--cyan); letter-spacing: .18em; text-transform: uppercase; font-size: 11px; font-weight: 800; }
+    h1 { font-size: clamp(30px, 4vw, 52px); line-height: 1.05; letter-spacing: -.04em; margin: 13px 0 12px; max-width: 570px; }
+    .hero-card p { color: var(--muted); max-width: 530px; margin: 0; font-size: 15px; }
+    .wallet-card { border-radius: 28px; padding: 27px; display: flex; flex-direction: column; justify-content: space-between; }
+    .wallet-head { display: flex; justify-content: space-between; align-items: flex-start; }
+    .wallet-label { color: var(--muted); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; font-weight: 800; }
+    .wallet-value { font-size: 42px; letter-spacing: -.04em; margin: 12px 0 4px; font-weight: 800; }
+    .wallet-sub { color: var(--muted); }
+    .wallet-icon { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; color: #07101d; background: var(--gold); font-weight: 900; box-shadow: 0 0 30px rgba(255,200,107,.24); }
+
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 18px 0; }
+    .toolbar h2 { margin: 0; font-size: 20px; letter-spacing: -.02em; }
+    .tools { display: flex; gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
+    .search { min-width: 230px; color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px 13px; outline: none; background: rgba(4, 12, 24, .68); }
+    .search:focus { border-color: rgba(102,229,226,.75); box-shadow: 0 0 0 3px rgba(102,229,226,.10); }
+    .btn { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; color: var(--text); background: rgba(18, 35, 59, .8); transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(102,229,226,.55); background: rgba(25, 51, 80, .95); }
+    .btn-primary { border-color: transparent; color: #07101d; font-weight: 800; background: linear-gradient(135deg, var(--cyan), var(--blue)); }
+    .btn-danger { color: #ffdce0; }
+
+    .catalog { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+    .product { min-height: 250px; border: 1px solid var(--line); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; background: linear-gradient(150deg, rgba(22,43,72,.9), rgba(10,20,37,.88)); transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease; }
+    .product:hover { transform: translateY(-4px); border-color: rgba(109,181,255,.62); box-shadow: 0 18px 42px rgba(0,0,0,.25), 0 0 30px rgba(66,144,255,.10); }
+    .product::before { content: ""; position: absolute; width: 130px; height: 130px; border-radius: 50%; right: -50px; top: -50px; background: radial-gradient(circle, rgba(102,229,226,.18), transparent 68%); }
+    .product-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .sigil { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; color: #08111f; font-size: 18px; font-weight: 900; background: linear-gradient(145deg, #91d8ff, #7992ff); box-shadow: 0 0 28px rgba(109,181,255,.20); }
+    .badge { color: var(--cyan); border: 1px solid rgba(102,229,226,.25); background: rgba(102,229,226,.08); border-radius: 99px; padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .product h3 { margin: 17px 0 4px; font-size: 17px; }
+    .product p { color: var(--muted); margin: 0; min-height: 45px; }
+    .product-bottom { margin-top: auto; padding-top: 18px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+    .price { font-size: 22px; font-weight: 800; color: var(--gold); }
+    .owned { color: var(--muted); font-size: 11px; margin-top: 2px; }
+    .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 18px; padding: 38px; }
+
+    .lower { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .panel { border-radius: 22px; padding: 22px; }
+    .panel h2 { margin: 0 0 16px; font-size: 17px; }
+    .inventory-row, .transaction-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 11px 0; border-top: 1px solid rgba(133,177,230,.11); }
+    .inventory-row:first-child, .transaction-row:first-child { border-top: 0; padding-top: 0; }
+    .item-name { font-weight: 700; }
+    .item-meta { color: var(--muted); font-size: 12px; }
+    .status-ok { color: var(--cyan); }
+    .status-fail { color: var(--danger); }
+    .toast { position: fixed; right: 24px; bottom: 24px; max-width: 360px; border: 1px solid rgba(102,229,226,.35); border-radius: 14px; padding: 13px 16px; color: var(--text); background: rgba(11,28,45,.96); box-shadow: var(--shadow); transform: translateY(25px); opacity: 0; pointer-events: none; transition: .25s ease; z-index: 5; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .loading { opacity: .65; pointer-events: none; }
+    .error { color: var(--danger); margin: 12px 0; }
+    @media (max-width: 900px) { .hero, .lower { grid-template-columns: 1fr; } .catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 620px) { .shell { width: min(100% - 24px, 1240px); padding-top: 16px; } .topbar, .toolbar { align-items: flex-start; flex-direction: column; } .account { align-self: stretch; justify-content: flex-end; } .tools { width: 100%; justify-content: stretch; } .search { min-width: 0; flex: 1; } .catalog { grid-template-columns: 1fr; } .hero-card, .wallet-card { padding: 24px; } }
+  </style>
+</head>
+<body>
+  <main class="shell" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">D2</div>
+        <div><strong>D2MAX STORE</strong><small>Cosméticos y ventajas para tu cuenta</small></div>
+      </div>
+      <div class="account">
+        <div class="account-copy"><strong id="persona">Conectando…</strong><small id="username">Sesión segura</small></div>
+        <div class="avatar" id="avatar">?</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Tu inventario, siempre contigo</div>
+        <h1>Equipa una nueva forma de jugar.</h1>
+        <p>Compra con tu saldo local y recibe los artículos directamente en tu inventario de Dota. Los cambios se sincronizan al instante o en tu siguiente conexión.</p>
+      </div>
+      <div class="wallet-card">
+        <div class="wallet-head"><div><div class="wallet-label">Saldo disponible</div><div class="wallet-value" id="balance">—</div><div class="wallet-sub" id="reserved">Cargando saldo…</div></div><div class="wallet-icon">$</div></div>
+        <button class="btn" id="refresh">Actualizar tienda</button>
+      </div>
+    </section>
+
+    <div class="toolbar"><h2>Catálogo destacado</h2><div class="tools"><input class="search" id="search" type="search" placeholder="Buscar artículo…"><button class="btn btn-danger" id="logout">Cerrar tienda</button></div></div>
+    <div class="error" id="error" hidden></div>
+    <section class="catalog" id="catalog"></section>
+
+    <section class="lower">
+      <div class="panel"><h2>Inventario activado</h2><div id="inventory"><div class="item-meta">Cargando inventario…</div></div></div>
+      <div class="panel"><h2>Actividad reciente</h2><div id="transactions"><div class="item-meta">Cargando transacciones…</div></div></div>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script>
+    const state = { catalog: [], inventory: [], transactions: [], wallet: null, account: null };
+    const $ = (id) => document.getElementById(id);
+    const money = (value) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(value || 0));
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    const typeName = (type) => Number(type) === 2 ? 'Dota Plus' : Number(type) === 1 ? 'Set' : 'Cosmético';
+    const initials = (name) => (String(name || 'D2').trim().slice(0, 2) || 'D2').toUpperCase();
+
+    function showToast(message, error = false) {
+      const toast = $('toast'); toast.textContent = message; toast.classList.toggle('status-fail', error); toast.classList.add('show');
+      window.clearTimeout(showToast.timer); showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 3600);
+    }
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options });
+      if (response.status === 401) throw new Error('La sesión de la tienda ha expirado. Ábrela nuevamente desde el launcher.');
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.Message || body.message || body.Code || `Error HTTP ${response.status}`);
+      return body;
+    }
+
+    async function exchangeTicket() {
+      const params = new URLSearchParams(window.location.search);
+      const ticket = params.get('ticket');
+      if (!ticket) return;
+      state.account = await api('/api/store/handoff/exchange', { method: 'POST', body: JSON.stringify({ Code: ticket }) });
+      window.history.replaceState({}, document.title, '/store');
+    }
+
+    async function load() {
+      $('app').classList.add('loading'); $('error').hidden = true;
+      try {
+        await exchangeTicket();
+        const [account, catalog, wallet, inventory, transactions] = await Promise.all([
+          api('/api/store/session'), api('/api/store/catalog'), api('/api/store/wallet'), api('/api/store/inventory'), api('/api/store/transactions?limit=8')
+        ]);
+        state.account = account;
+        state.catalog = Array.isArray(catalog) ? catalog : (catalog.Items || []);
+        state.wallet = wallet; state.inventory = inventory.Items || []; state.transactions = Array.isArray(transactions) ? transactions : (transactions.Items || []);
+        render();
+      } catch (error) {
+        $('error').textContent = error.message || 'No se pudo cargar la tienda.'; $('error').hidden = false;
+        showToast(error.message || 'No se pudo cargar la tienda.', true);
+      } finally { $('app').classList.remove('loading'); }
+    }
+
+    function render() {
+      const persona = state.account?.PersonaName || state.account?.Username || 'Cuenta';
+      $('persona').textContent = persona; $('username').textContent = state.account?.Username ? `Cuenta ${state.account.Username}` : 'Sesión segura'; $('avatar').textContent = initials(persona);
+      const available = state.wallet?.AvailableDollars ?? 0;
+      const reserved = state.wallet?.ReservedDollars ?? 0;
+      $('balance').textContent = money(available); $('reserved').textContent = reserved ? `${money(reserved)} reservados en checkout` : 'Saldo listo para usar';
+      renderCatalog(); renderInventory(); renderTransactions();
+    }
+
+    function renderCatalog() {
+      const needle = $('search').value.trim().toLowerCase();
+      const items = state.catalog.filter((item) => !needle || [item.Name, item.Description, item.Category].join(' ').toLowerCase().includes(needle));
+      if (!items.length) { $('catalog').innerHTML = '<div class="empty">No hay artículos que coincidan con tu búsqueda.</div>'; return; }
+      $('catalog').innerHTML = items.map((item) => {
+        const name = escapeHtml(item.Name || `Producto ${item.ProductId}`); const description = escapeHtml(item.Description || 'Artículo local para tu inventario.');
+        const owned = Number(item.OwnedQuantity || 0); const price = money(item.PriceDollars); const type = escapeHtml(typeName(item.ProductType));
+        const canBuy = Number(item.PriceDollars) > 0 && Number(state.wallet?.AvailableDollars || 0) >= Number(item.PriceDollars);
+        return `<article class="product"><div class="product-top"><div class="sigil">${escapeHtml(initials(item.Name))}</div><span class="badge">${type}</span></div><h3>${name}</h3><p>${description}</p><div class="product-bottom"><div><div class="price">${price}</div><div class="owned">${owned ? `Activado ×${owned}` : 'Aún no activado'}</div></div><button class="btn btn-primary" data-buy="${item.ProductId}" ${canBuy ? '' : 'disabled'}>${owned ? 'Comprar otro' : 'Comprar'}</button></div></article>`;
+      }).join('');
+      document.querySelectorAll('[data-buy]').forEach((button) => button.addEventListener('click', () => buy(Number(button.dataset.buy))));
+    }
+
+    function renderInventory() {
+      if (!state.inventory.length) { $('inventory').innerHTML = '<div class="item-meta">Todavía no tienes artículos activados.</div>'; return; }
+      $('inventory').innerHTML = state.inventory.map((item) => `<div class="inventory-row"><div><div class="item-name">Definición ${item.DefIndex}</div><div class="item-meta">ID ${item.ItemId} · Cantidad ${item.Quantity}</div></div><span class="status-ok">ACTIVADO</span></div>`).join('');
+    }
+
+    function renderTransactions() {
+      if (!state.transactions.length) { $('transactions').innerHTML = '<div class="item-meta">Aún no hay compras.</div>'; return; }
+      $('transactions').innerHTML = state.transactions.slice(0, 8).map((row) => `<div class="transaction-row"><div><div class="item-name">${escapeHtml(row.Reference || 'Compra local')}</div><div class="item-meta">${row.CreatedAt ? new Date(row.CreatedAt).toLocaleString() : ''}</div></div><strong class="${Number(row.AmountDollars) < 0 ? '' : 'status-ok'}">${money(Math.abs(row.AmountDollars || 0))}</strong></div>`).join('');
+    }
+
+    async function buy(productId) {
+      try {
+        const result = await api('/api/store/purchase', { method: 'POST', body: JSON.stringify({ ProductId: productId, Quantity: 1 }) });
+        showToast('Compra completada. El artículo ya está activado en tu inventario.'); await load();
+      } catch (error) { showToast(error.message || 'La compra no pudo completarse.', true); }
+    }
+
+    $('search').addEventListener('input', renderCatalog);
+    $('refresh').addEventListener('click', load);
+    $('logout').addEventListener('click', async () => { await fetch('/api/store/logout', { method: 'POST', credentials: 'include' }); window.location.href = '/store'; });
+    load();
+  </script>
+</body>
+</html>

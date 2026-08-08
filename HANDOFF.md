@@ -1066,6 +1066,52 @@ Evidence and limits:
   future exact-cent local economy would require changing wallet/catalog/
   purchase totals and wire conversion together; this phase does not do that.
 
+## Phase 21 — same-account web store fallback
+
+The local economy now has a consumer-facing store that can be opened from the
+launcher without asking for a second password:
+
+- `/store` is a same-origin responsive page with catalog search, prices, local
+  balance, purchase history and activated inventory. It is intentionally
+  separate from the administrator UI at `/admin`.
+- `POST /api/store/handoff` creates a 90-second, single-use code bound to the
+  authenticated launcher session. `POST /api/store/handoff/exchange` consumes
+  it and sets an `HttpOnly`, `SameSite=Strict` cookie limited to `/api/store`.
+  The permanent launcher bearer token is never placed in a URL or returned to
+  browser JavaScript.
+- Store endpoints accept that cookie as well as the existing bearer token, so
+  the account scope still comes from the server session rather than request
+  body ids. Logout clears the browser cookie.
+- The store purchase path uses the existing atomic begin/finalize operation,
+  immediately persists `EconItems` and publishes the SO delta. A connected
+  client receives the new item; a disconnected client receives it after the
+  next welcome/reconnect. `/api/store/inventory/equip` also exposes the same
+  validated equip projection for trusted store tooling.
+- Native init/cancel and disconnect-cleanup handlers now log transaction ids,
+  results, balances and reservation cleanup. This makes the missing native
+  finalize step distinguishable from a catalog rejection in the next capture.
+
+Root cause confirmed from the supplied capture: the native client created local
+reservations for transactions 2–10, but no `StorePurchaseFinalize` reached the
+server; later cancellation/cleanup released those reservations. Separate
+attempts for definitions such as 19994–19999, 20002, 20051 and 32658 were
+rejected because the corresponding active local catalog entry was absent. The
+web checkout avoids the unavailable native/Steam payment step while using the
+same account, catalog, wallet and durable inventory projection.
+
+Evidence for this phase:
+
+- `dotnet restore D2STServer.sln` and `dotnet build D2STServer.sln -c Release
+  --no-restore` pass with 0 warnings and 0 errors using SDK 10.0.100.
+- A temporary SQLite end-to-end smoke created a user, issued a handoff,
+  exchanged it for the HttpOnly cookie, loaded `/store`, read the catalog and
+  wallet, completed a purchase and verified the durable inventory item. A
+  second exchange of the same code returned HTTP 401.
+- The store page JavaScript syntax check and `git diff --check` pass.
+- Native build-6783 rendering and the Windows Qt launcher build still require
+  the target Windows machine. The local economy remains virtual: no Steam
+  Wallet charge, real-money payment, refund or Valve ownership is implied.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -1083,12 +1129,12 @@ Evidence and limits:
 
 ## Current handoff
 
-Phases 1–20 and the server-side bot-match support are implemented, with the
+Phases 1–21 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
 transition bridge. The server build and temporary SQLite migration/startup
-smoke for Phase 20 pass; the next session should validate native wallet
-rendering, Dota Plus catalog purchase, wallet debit, entitlement refresh,
-challenge/relic projection and one Steam price synchronization batch against a
+smoke for Phase 21 pass; the next session should open the store from the
+Windows launcher, validate a real catalog purchase and reconnect/inventory
+rendering, then capture the newly logged native cancel/finalize sequence on a
 real build-6783 client on the LAN.
 Preserve capture/replay evidence, rebuild the published client shim and verify
 that Dota returns to the foreground before claiming client compatibility. See

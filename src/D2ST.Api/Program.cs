@@ -16,6 +16,7 @@ using D2ST.GameCoordinator.Ranks;
 using D2ST.Persistence;
 using D2ST.Steam;
 using D2ST.Api.DotaPlus;
+using D2ST.Api.Store;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,7 @@ builder.Services.AddSingleton<IEconomyStore, EconomyStore>();
 builder.Services.AddSingleton<SteamMarketPriceSync>();
 builder.Services.AddSingleton<IDotaPlusStore, DotaPlusStore>();
 builder.Services.AddSingleton<DotaCatalogImporter>();
+builder.Services.AddSingleton<StoreSessionHandoffService>();
 builder.Services.AddGameCoordinator(builder.Configuration, builder.Environment.ContentRootPath);
 
 // The shim serializes/deserializes with PascalCase member names, so keep the
