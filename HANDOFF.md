@@ -451,6 +451,42 @@ read rather than receiving a live broadcast.
 - Real Windows build-6783 rendering and editing remain pending; the server
   path is verified with protocol-level two-account smoke coverage.
 
+### Phase 10 — completed in the external client shim
+
+The Windows client regressed during startup after the Workshop cache was added:
+the Dota console stopped at `Creating SteamUGC`, Dota remained in the
+background and no UI appeared. The server's empty Workshop response and the
+generated `subscriptions.json` were symptoms, not a malformed server payload.
+
+- `SteamUGC` previously called `WorkshopManager.Initialize()` from its
+  constructor. That constructor runs while `SteamEmulator.Initialize()` is
+  still creating native interfaces, so it could synchronously inspect the
+  `%LocalAppData%\\D2Max\\Workshop` cache on Dota's fragile startup path.
+- The external `sosa93max-sketch/steam_api` repository now defers that call.
+  Workshop state still initializes through `WorkshopManager.EnsureIdentity()`
+  when a UGC operation actually needs it, while session snapshots continue to
+  be applied by `APIClient` in the background.
+- The valid empty snapshot
+  `{"SteamId":76561197960265730,"AppId":570,"Subscriptions":[]}` does not
+  need to be deleted. It records that the account has no server subscriptions.
+- Published client commit:
+  `0aee43c` (`Defer Workshop cache loading during SteamUGC startup`) on
+  `sosa93max-sketch/steam_api:main`.
+
+### Evidence for Phase 10
+
+- The startup path was reproduced from source: `SteamUGC` construction was the
+  last logged step before the missing `SteamUGC created` message.
+- The patch removes the synchronous Workshop initialization from that
+  constructor and leaves all existing lazy `EnsureIdentity()` call sites
+  intact.
+- `git diff --check`: passed in the client shim and the commit was pushed to
+  its `main` branch.
+- `dotnet restore steam_api.csproj`: passed. A full build was attempted but
+  this checkout does not include the required `DllExport.bat` bootstrap, so
+  Windows DLL compilation and real Dota foreground/UI validation remain
+  pending.
+
 ## Match close data flow
 
 ```text
@@ -545,6 +581,10 @@ is the planning reference for the work that follows the real-client gate.
   external client's immediate first-use session race can still make the first
   click appear ineffective, and the custom profile overlay's English strings
   are owned by that client rather than this server.
+- The external client now defers Workshop cache loading until after
+  `SteamUGC` interface construction. The published fix is source-verified but
+  still requires rebuilding/replacing the Windows `steam_api` DLL and running
+  Dota once to confirm the foreground/UI path on the target machine.
 - Profile-card slots and profile/mini-profile showcase payloads are persisted
   and publicly returned. Item/trophy ownership, catalog validation, showcase
   moderation and the separate `8034 -> 8035` statistics surface still require
@@ -584,12 +624,13 @@ is the planning reference for the work that follows the real-client gate.
 
 ## Current handoff
 
-Phases 1–9 and the server-side bot-match support are implemented and verified
+Phases 1–10 and the server-side bot-match support are implemented and verified
 at compile/startup and targeted API/GC-smoke level, with the schema managed by
 EF Core and legacy databases preserved through the transition bridge. The next
 session should validate one client against the active web account flow, friend
 requests, conduct gates and profile/mini-profile showcase editing, then use a
 second client on the same PC only if the hardware permits. Preserve
-capture/replay evidence before expanding the vertical. See
+capture/replay evidence, rebuild the published client shim and verify that Dota
+returns to the foreground before expanding the vertical. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client
 compatibility as complete until it is recorded here.
