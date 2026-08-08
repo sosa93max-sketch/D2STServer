@@ -1,8 +1,10 @@
 using D2ST.Api;
 using D2ST.Api.Endpoints;
 using D2ST.Api.Logging;
+using D2ST.Api.Matches;
 using D2ST.Api.Ranks;
 using D2ST.GameCoordinator;
+using D2ST.GameCoordinator.Matches;
 using D2ST.GameCoordinator.Messaging;
 using D2ST.GameCoordinator.Players;
 using D2ST.GameCoordinator.Ranks;
@@ -22,6 +24,7 @@ builder.Services.AddSteamServices(builder.Configuration);
 builder.Services.AddSingleton<IGcPlayerDirectory, SessionGcPlayerDirectory>();
 builder.Services.AddSingleton<IGcMessageQueue, EventStreamGcMessageQueue>();
 builder.Services.AddSingleton<IRankStore, RankStore>();
+builder.Services.AddSingleton<IMatchStore, MatchStore>();
 builder.Services.AddGameCoordinator(builder.Configuration, builder.Environment.ContentRootPath);
 
 // The shim serializes/deserializes with PascalCase member names, so keep the
@@ -76,6 +79,127 @@ using (var scope = app.Services.CreateScope())
 
     db.Database.ExecuteSqlRaw(
         "UPDATE \"PlayerRanks\" SET \"IsCalibrated\" = 1 WHERE \"Mmr\" > 0 AND \"IsCalibrated\" = 0;");
+
+    // Local match history is the source for the profile projection. Keep the
+    // bootstrap compatible with the pre-migrations database used by existing
+    // installations; a future migrations stage can replace this block.
+    db.Database.ExecuteSqlRaw(
+        """
+        CREATE TABLE IF NOT EXISTS "Matches" (
+            "MatchId" INTEGER NOT NULL CONSTRAINT "PK_Matches" PRIMARY KEY,
+            "LobbyId" INTEGER NOT NULL,
+            "GameMode" INTEGER NOT NULL,
+            "DurationSeconds" INTEGER NOT NULL,
+            "EndedAt" TEXT NOT NULL,
+            "GoodGuysWin" INTEGER NOT NULL,
+            "WinningTeam" INTEGER NOT NULL,
+            "FirstBloodTime" INTEGER NOT NULL,
+            "RadiantScore" INTEGER NOT NULL,
+            "DireScore" INTEGER NOT NULL,
+            "TowerStatusJson" TEXT NOT NULL,
+            "BarracksStatusJson" TEXT NOT NULL,
+            "TeamScoresJson" TEXT NOT NULL,
+            "Cluster" INTEGER NOT NULL,
+            "ServerAddress" TEXT NOT NULL,
+            "EventScore" INTEGER NOT NULL,
+            "AutomaticSurrender" INTEGER NOT NULL,
+            "ServerVersion" INTEGER NOT NULL,
+            "PreGameDuration" INTEGER NOT NULL,
+            "AverageNetworthDelta" INTEGER NOT NULL,
+            "MatchFlags" INTEGER NOT NULL,
+            "CreatedAt" TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS "IX_Matches_LobbyId" ON "Matches" ("LobbyId");
+        CREATE INDEX IF NOT EXISTS "IX_Matches_EndedAt" ON "Matches" ("EndedAt");
+
+        CREATE TABLE IF NOT EXISTS "MatchPlayers" (
+            "MatchId" INTEGER NOT NULL,
+            "AccountId" INTEGER NOT NULL,
+            "SteamId" INTEGER NOT NULL,
+            "Team" INTEGER NOT NULL,
+            "HeroId" INTEGER NOT NULL,
+            "Won" INTEGER NOT NULL,
+            "Gold" INTEGER NOT NULL,
+            "Kills" INTEGER NOT NULL,
+            "Deaths" INTEGER NOT NULL,
+            "Assists" INTEGER NOT NULL,
+            "LeaverStatus" INTEGER NOT NULL,
+            "LastHits" INTEGER NOT NULL,
+            "Denies" INTEGER NOT NULL,
+            "GoldPerMin" INTEGER NOT NULL,
+            "XpPerMinute" INTEGER NOT NULL,
+            "GoldSpent" INTEGER NOT NULL,
+            "Level" INTEGER NOT NULL,
+            "ScaledHeroDamage" INTEGER NOT NULL,
+            "ScaledTowerDamage" INTEGER NOT NULL,
+            "ScaledHeroHealing" INTEGER NOT NULL,
+            "TimeLastSeen" INTEGER NOT NULL,
+            "SupportAbilityValue" INTEGER NOT NULL,
+            "PartyId" INTEGER NOT NULL,
+            "ClaimedFarmGold" INTEGER NOT NULL,
+            "SupportGold" INTEGER NOT NULL,
+            "ClaimedDenies" INTEGER NOT NULL,
+            "ClaimedMisses" INTEGER NOT NULL,
+            "Misses" INTEGER NOT NULL,
+            "NetWorth" INTEGER NOT NULL,
+            "HeroDamage" INTEGER NOT NULL,
+            "TowerDamage" INTEGER NOT NULL,
+            "HeroHealing" INTEGER NOT NULL,
+            "MatchPlayerFlags" INTEGER NOT NULL,
+            "HeroPickOrder" INTEGER NOT NULL,
+            "HeroWasRandomed" INTEGER NOT NULL,
+            "Lane" INTEGER NOT NULL,
+            "ItemsJson" TEXT NOT NULL,
+            "ItemPurchaseTimesJson" TEXT NOT NULL,
+            CONSTRAINT "PK_MatchPlayers" PRIMARY KEY ("MatchId", "AccountId"),
+            CONSTRAINT "FK_MatchPlayers_Matches_MatchId" FOREIGN KEY ("MatchId")
+                REFERENCES "Matches" ("MatchId") ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS "IX_MatchPlayers_AccountId" ON "MatchPlayers" ("AccountId");
+
+        CREATE TABLE IF NOT EXISTS "PlayerProfileStats" (
+            "AccountId" INTEGER NOT NULL CONSTRAINT "PK_PlayerProfileStats" PRIMARY KEY,
+            "Games" INTEGER NOT NULL,
+            "Wins" INTEGER NOT NULL,
+            "Losses" INTEGER NOT NULL,
+            "TotalKills" INTEGER NOT NULL,
+            "TotalDeaths" INTEGER NOT NULL,
+            "TotalAssists" INTEGER NOT NULL,
+            "TotalLastHits" INTEGER NOT NULL,
+            "TotalDenies" INTEGER NOT NULL,
+            "TotalHeroDamage" INTEGER NOT NULL,
+            "TotalTowerDamage" INTEGER NOT NULL,
+            "TotalHeroHealing" INTEGER NOT NULL,
+            "TotalGoldSpent" INTEGER NOT NULL,
+            "TotalGoldPerMin" INTEGER NOT NULL,
+            "TotalXpPerMinute" INTEGER NOT NULL,
+            "TotalPlayTimeSeconds" INTEGER NOT NULL,
+            "LeaverCount" INTEGER NOT NULL,
+            "LastMatchAt" TEXT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS "PlayerHeroStats" (
+            "AccountId" INTEGER NOT NULL,
+            "HeroId" INTEGER NOT NULL,
+            "Games" INTEGER NOT NULL,
+            "Wins" INTEGER NOT NULL,
+            "Losses" INTEGER NOT NULL,
+            "TotalKills" INTEGER NOT NULL,
+            "TotalDeaths" INTEGER NOT NULL,
+            "TotalAssists" INTEGER NOT NULL,
+            "TotalLastHits" INTEGER NOT NULL,
+            "TotalDenies" INTEGER NOT NULL,
+            "TotalHeroDamage" INTEGER NOT NULL,
+            "TotalTowerDamage" INTEGER NOT NULL,
+            "TotalHeroHealing" INTEGER NOT NULL,
+            "TotalGoldSpent" INTEGER NOT NULL,
+            "TotalGoldPerMin" INTEGER NOT NULL,
+            "TotalXpPerMinute" INTEGER NOT NULL,
+            "LastMatchAt" TEXT NULL,
+            CONSTRAINT "PK_PlayerHeroStats" PRIMARY KEY ("AccountId", "HeroId")
+        );
+        CREATE INDEX IF NOT EXISTS "IX_PlayerHeroStats_AccountId" ON "PlayerHeroStats" ("AccountId");
+        """);
 }
 
 app.MapAuthEndpoints();

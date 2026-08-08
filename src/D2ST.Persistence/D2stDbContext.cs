@@ -31,6 +31,14 @@ public sealed class D2stDbContext : DbContext
 
     public DbSet<WorkshopSubscriptionEntity> WorkshopSubscriptions => Set<WorkshopSubscriptionEntity>();
 
+    public DbSet<MatchEntity> Matches => Set<MatchEntity>();
+
+    public DbSet<MatchPlayerEntity> MatchPlayers => Set<MatchPlayerEntity>();
+
+    public DbSet<PlayerProfileStatsEntity> PlayerProfileStats => Set<PlayerProfileStatsEntity>();
+
+    public DbSet<PlayerHeroStatsEntity> PlayerHeroStats => Set<PlayerHeroStatsEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountEntity>()
@@ -67,5 +75,35 @@ public sealed class D2stDbContext : DbContext
 
         modelBuilder.Entity<WorkshopSubscriptionEntity>()
             .HasKey(subscription => new { subscription.AccountId, subscription.PublishedFileId });
+
+        modelBuilder.Entity<MatchEntity>()
+            .HasKey(match => match.MatchId);
+
+        modelBuilder.Entity<MatchEntity>()
+            .HasIndex(match => match.LobbyId);
+
+        modelBuilder.Entity<MatchEntity>()
+            .HasIndex(match => match.EndedAt);
+
+        modelBuilder.Entity<MatchEntity>()
+            .HasMany(match => match.Players)
+            .WithOne(player => player.Match)
+            .HasForeignKey(player => player.MatchId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MatchPlayerEntity>()
+            .HasKey(player => new { player.MatchId, player.AccountId });
+
+        modelBuilder.Entity<MatchPlayerEntity>()
+            .HasIndex(player => player.AccountId);
+
+        modelBuilder.Entity<PlayerProfileStatsEntity>()
+            .HasKey(stats => stats.AccountId);
+
+        modelBuilder.Entity<PlayerHeroStatsEntity>()
+            .HasKey(stats => new { stats.AccountId, stats.HeroId });
+
+        modelBuilder.Entity<PlayerHeroStatsEntity>()
+            .HasIndex(stats => stats.AccountId);
     }
 }

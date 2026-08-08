@@ -72,6 +72,43 @@ public sealed class LobbyService : IGcWelcomeContributor
     }
 
     /// <summary>
+    /// Applies the authoritative result received from the game server to the
+    /// lobby Shared Object. Keeping this transition here ensures the main and
+    /// auxiliary lobby caches are updated together.
+    /// </summary>
+    public void CompleteMatch(
+        ulong serverSteamId,
+        ulong matchId,
+        DotaGcTeam winningTeam,
+        uint firstBloodTime)
+    {
+        lock (_gate)
+        {
+            var lobby = LobbyOfServer(serverSteamId);
+            if (lobby is null)
+            {
+                return;
+            }
+
+            if (matchId != 0)
+            {
+                lobby.MatchId = matchId;
+            }
+
+            lobby.state = CSODOTALobby.State.Postgame;
+            lobby.GameState = DOTAGameState.DotaGamerulesStatePostGame;
+            lobby.FirstBloodHappened = firstBloodTime != 0;
+            lobby.MatchOutcome = winningTeam switch
+            {
+                DotaGcTeam.DotaGcTeamGoodGuys => EMatchOutcome.kEMatchOutcomeRadVictory,
+                DotaGcTeam.DotaGcTeamBadGuys => EMatchOutcome.kEMatchOutcomeDireVictory,
+                _ => EMatchOutcome.kEMatchOutcomeNoTeamWinner
+            };
+            Write(lobby);
+        }
+    }
+
+    /// <summary>
     /// Hosts a new lobby. A player can only be in one, so an existing lobby is
     /// left first — the client sends a create straight from a lobby it is
     /// already sitting in when the host changes game mode from the menu.

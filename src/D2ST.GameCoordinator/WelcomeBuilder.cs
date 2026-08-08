@@ -1,4 +1,5 @@
 using D2ST.GameCoordinator.SharedObjects;
+using D2ST.GameCoordinator.Matches;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator;
@@ -20,11 +21,16 @@ public sealed class WelcomeBuilder
 {
     private readonly SoCacheService _soCache;
     private readonly IReadOnlyList<IGcWelcomeContributor> _contributors;
+    private readonly IMatchStore _matches;
 
-    public WelcomeBuilder(SoCacheService soCache, IEnumerable<IGcWelcomeContributor> contributors)
+    public WelcomeBuilder(
+        SoCacheService soCache,
+        IEnumerable<IGcWelcomeContributor> contributors,
+        IMatchStore matches)
     {
         _soCache = soCache;
         _contributors = contributors.ToList();
+        _matches = matches;
     }
 
     public CMsgClientWelcome Build(GcContext context)
@@ -73,7 +79,7 @@ public sealed class WelcomeBuilder
         _soCache.SeedIfAbsent(
             game,
             new SoObjectKey(DotaSoCache.TypeDotaGameAccountClient, context.AccountId),
-            () => new CSODOTAGameAccountClient { AccountId = context.AccountId });
+            () => AccountSnapshot(context.AccountId));
 
         // Dota Plus shipped in 2018; older builds have no 2012 cache bucket.
         if (context.Profile.IncludeDotaPlus)
@@ -92,4 +98,19 @@ public sealed class WelcomeBuilder
         // Empty inventory bucket: the client still expects the type to exist.
         _soCache.DeclareEmptyType(econ, DotaSoCache.TypeEconItem);
     }
+
+    private CSODOTAGameAccountClient AccountSnapshot(uint accountId)
+    {
+        var stats = _matches.GetProfileStats(accountId);
+        return new CSODOTAGameAccountClient
+        {
+            AccountId = accountId,
+            Wins = NonNegative(stats.Wins),
+            Losses = NonNegative(stats.Losses),
+            CasualGamesPlayed = NonNegative(stats.Games),
+            LeaverCount = NonNegative(stats.LeaverCount)
+        };
+    }
+
+    private static uint NonNegative(int value) => (uint)Math.Max(0, value);
 }

@@ -4,6 +4,7 @@ using D2ST.GameCoordinator.Econ;
 using D2ST.GameCoordinator.Handlers;
 using D2ST.GameCoordinator.Lobbies;
 using D2ST.GameCoordinator.Messaging;
+using D2ST.GameCoordinator.Matches;
 using D2ST.GameCoordinator.Parties;
 using D2ST.GameCoordinator.Players;
 using D2ST.GameCoordinator.SharedObjects;
@@ -26,6 +27,7 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.TryAddSingleton<IGcMessageQueue>(provider => provider.GetRequiredService<GcMessageQueue>());
         services.AddSingleton<SoCacheStore>();
         services.AddSingleton<SoCacheService>();
+        services.TryAddSingleton<IMatchStore, EmptyMatchStore>();
         services.AddSingleton<WelcomeBuilder>();
         services.AddSingleton<EconInventory>();
         services.AddSingleton<PartyService>();
