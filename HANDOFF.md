@@ -53,14 +53,18 @@ how to build/run/test, and exactly what remains.
 Build a fresh, well-designed **Dota 2-only** private backend: an emulated Steam
 service + **Game Coordinator (GC)** for AppID 570. It is meant to be used with:
 
-- **D2MaxLauncher** — WPF launcher (`gerardopromax1-del/D2MaxLauncher`).
-- A **Steamworks client shim** (`manuelalmaguersosa2-creator/steam_api`) that replaces the
+- **D2MaxLauncher / new_launcher** — launchers (`sosa93max-sketch/new_launcher`,
+  Qt/C++; `sosa93max-sketch/D2Launcher`, WPF).
+- A **Steamworks client shim** (`sosa93max-sketch/steam_api`) that replaces the
   `steam_api64.dll` `dota2.exe` loads and translates Steam API calls into HTTP
   calls against this server. Installation and configuration in §4.
 
-It is a ground-up redesign inspired by the older `soulhuntermax/SKY_server`
-(kept only as a reference), intentionally **Dota-only**, cleaner, and with GC
-logic in **C#** (no TypeScript scripting VM).
+Everything in this deployment descends from a single original source:
+`Hackerprod/-SKYNET-Steam-Emulator` (MIT). Its `steam_api/` is the shim we
+forked; its `SKYNET server/` is what this server redesigns — intentionally
+**Dota-only**, cleaner, and with GC logic in **C#** instead of the TypeScript
+scripting VM; and its WPF `SKYNET Steam Client/` is what the launchers rewrite.
+No other upstream repo is tracked as a source.
 
 **Immediate priority:** full support for the **current Dota 2 build the user
 plays** (ClientVersion 6783, May 2026), while keeping the design ready for more
@@ -323,13 +327,13 @@ Design rules being followed:
     server lobby (2015) and the server static lobby (2016, per-member flags).
     Without them the client rejects the subscription and creating a lobby
     fails; `LobbyService.Write` now writes all five on every change (mirrors
-    SKY_server). Verified: the pushed subscription lists
+    the SKYNET server). Verified: the pushed subscription lists
     `[2004, 2013, 2014, 2015, 2016]` and verify-lobby.py stays 45/45.
 25. **Lobby member indices** — the modern client reads `member_indices` to know
     who is in the room; without them the lobby rendered empty even though
     `all_members` was set. `LobbyService.Write` now sets `member_indices`
     (`[0..n-1]`), `lobby_creation_time` (from the id's high bits) and the
-    `extra_messages` marker (8821 / `[8,0]`), mirroring SKY_server. Also added
+    `extra_messages` marker (8821 / `[8,0]`), mirroring the SKYNET server. Also added
     the Watch-tab queries (8009→8010, 8036→8061, 8037→8062) answering empty.
 26. **Generic-result replies for lobby writes** — the modern client's create,
     set-details and set-team-slot jobs wait for `7055` carrying a
@@ -337,7 +341,7 @@ Design rules being followed:
     two setters previously got no reply at all, so the client showed "lobby
     not created" / "cannot change slot" errors even though the state changed.
     All three now answer 7055 with eresult (1 ok / 0 refused), matching
-    SKY_server; leave and kick correctly stay unanswered.
+    the SKYNET server; leave and kick correctly stay unanswered.
 27. **Solo launch refused + cancel works** — launching a practice lobby with
     fewer than two human players is refused (eresult 0, stays in UI) because
     bots are not implemented yet, so it no longer sits in SERVERSETUP waiting
@@ -552,8 +556,9 @@ The `steam_api` shim is **not injected**: it is a drop-in replacement for the
 Steam DLL that `dota2.exe` already loads. Read from the shim's source (not yet
 compiled or run by this project):
 
-1. Build `manuelalmaguersosa2-creator/steam_api` on Windows (Visual Studio, .NET Framework
-   4.7.2). Run `DllExport.bat` once first — it configures the native export
+1. Build `sosa93max-sketch/steam_api` (our fork of Hackerprod's `steam_api/`)
+   on Windows (Visual Studio, .NET Framework 4.7.2). Run `DllExport.bat` once
+   first — it configures the native export
    wrapper — then build **Release / x64**, producing `bin\Release\steam_api.dll`.
 2. In `...\dota 2 beta\game\bin\win64\`, rename `steam_api64.dll` to
    `steam_api64.dll.bak` and drop the built DLL in as `steam_api64.dll`.
@@ -584,7 +589,7 @@ compiled or run by this project):
 
 Three defects found while diagnosing the first real 7.22g runs. None of them is
 a server bug; they are written down because they make captures unreadable. All
-three are fixed in `manuelalmaguersosa2-creator/steam_api` PR #1 ("Fix log truncation,
+three are fixed in `sosa93max-sketch/steam_api` ("Fix log truncation,
 non-atomic ini writes and hung shutdown"), **not yet validated with the real
 client** — it still needs a DllExport build on Windows.
 
@@ -818,7 +823,8 @@ Ordered by dependency. Each stage is a separate branch + PR.
    non-zero regions is still missing),
    **4i** matchmaking (`StartFindingMatch` and the
    queue state), which only makes sense once party and lobby exist. Reference
-   for each: the module of the same name under `SKY_server/GC/570/modules/`.
+   for each: the module of the same name under the SKYNET server's
+   `GC/570/modules/` in `Hackerprod/-SKYNET-Steam-Emulator`.
    Still missing beyond that, and worth driving
    **empirically** from the dump described in §4 while running the real client:
    whatever 7.22g asks for that this list does not predict.
@@ -869,9 +875,11 @@ client (build 6783) + a `steam_api` shim that supports its interface versions.
 - No destructive git (`reset --hard`, `clean -fd`), no `git add .`, no `--no-verify`.
 - Keep `TreatWarningsAsErrors` green.
 - Don't claim 7.22g compatibility without a real-client test.
-- Related repos for reference: `soulhuntermax/SKY_server` (old full server),
-  `manuelalmaguersosa2-creator/steam_api` (the client shim actually in use; `soulhuntermax/steam_api`
-  is its upstream), `gerardopromax1-del/D2MaxLauncher`.
+- Original source: `Hackerprod/-SKYNET-Steam-Emulator` (MIT) — the shim
+  (`steam_api/`), the server (`SKYNET server/`) and the launcher (`SKYNET Steam
+  Client/`) all descend from it. This deployment: `sosa93max-sketch/steam_api`
+  (shim fork), `sosa93max-sketch/D2STServer` (server redesign),
+  `sosa93max-sketch/new_launcher` + `sosa93max-sketch/D2Launcher` (launchers).
 
 ---
 
