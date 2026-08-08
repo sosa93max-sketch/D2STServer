@@ -189,6 +189,9 @@
   .user-wallet { min-width: 132px; }
   .user-wallet strong { display: block; color: #cfe3ff; font-size: 12px; white-space: nowrap; }
   .user-wallet .meta { display: block; margin-top: 3px; white-space: nowrap; }
+  .user-plus { min-width: 112px; }
+  .user-plus strong { display: block; color: #d8c6ff; font-size: 12px; white-space: nowrap; }
+  .user-plus .meta { display: block; margin-top: 3px; white-space: nowrap; }
   .user-rank { min-width: 112px; }
   .user-rank strong { display: block; color: #dbe9ff; }
   .user-rank .meta { display: block; margin-top: 3px; }
@@ -200,6 +203,8 @@
   .user-action.wallet:hover { background: rgba(59, 130, 246, .2); }
   .user-action.rank { color: #d8c1ff; border-color: #5b4384; background: rgba(139, 92, 246, .08); }
   .user-action.rank:hover { background: rgba(139, 92, 246, .2); }
+  .user-action.plus { color: #d8c6ff; border-color: #684e9a; background: rgba(139, 92, 246, .1); }
+  .user-action.plus:hover { background: rgba(139, 92, 246, .22); }
   .user-action.secondary { color: #c5d1df; }
   .user-action.reset { color: var(--yellow); border-color: rgba(231, 184, 75, .4); }
   .user-action.danger { color: var(--red); border-color: rgba(241, 107, 107, .4); }
@@ -409,6 +414,23 @@
                 <div class="inspector-action-row">
                   <button id="walletAddBtn" class="inspector-submit accent">＋ Añadir saldo</button>
                   <button id="walletRemoveBtn" class="inspector-submit danger">− Retirar saldo</button>
+                </div>
+              </section>
+
+              <section class="inspector-block">
+                <div class="inspector-block-head"><h4>Dota Plus local</h4><span id="inspectorPlusStatus">Inactivo</span></div>
+                <div class="inspector-metrics">
+                  <div class="inspector-metric"><span>Estado</span><strong id="inspectorPlusState">Inactivo</strong></div>
+                  <div class="inspector-metric"><span>Restan</span><strong id="inspectorPlusDays">0 días</strong></div>
+                  <div class="inspector-metric"><span>Vence</span><strong id="inspectorPlusExpires">—</strong></div>
+                </div>
+                <div class="inspector-grid">
+                  <div class="inspector-field"><label for="plusDays">Días a añadir</label><input id="plusDays" type="number" min="1" max="3650" placeholder="30"></div>
+                  <div class="inspector-field"><label for="plusReason">Motivo</label><input id="plusReason" maxlength="256" placeholder="Activación local"></div>
+                </div>
+                <div class="inspector-action-row">
+                  <button id="plusActivateBtn" class="inspector-submit accent">＋ Activar / ampliar</button>
+                  <button id="plusRevokeBtn" class="inspector-submit danger">Revocar</button>
                 </div>
               </section>
 
@@ -728,12 +750,21 @@ function renderInspector(user) {
   $('inspectorBalance').textContent = formatCredits(user.BalanceCredits);
   $('inspectorAvailable').textContent = formatCredits(user.AvailableCredits);
   $('inspectorReserved').textContent = formatCredits(user.ReservedCredits);
+  $('inspectorPlusStatus').textContent = user.DotaPlusActive ? 'Activo' : 'Inactivo';
+  $('inspectorPlusStatus').style.color = user.DotaPlusActive ? '#d8c6ff' : 'var(--muted)';
+  $('inspectorPlusState').textContent = user.DotaPlusActive ? 'Activo' : 'Inactivo';
+  $('inspectorPlusDays').textContent = formatNumber(user.DotaPlusDaysRemaining || 0) + ' días';
+  $('inspectorPlusExpires').textContent = user.DotaPlusExpiresAt
+    ? new Date(user.DotaPlusExpiresAt).toLocaleDateString()
+    : '—';
   $('inspectorMmr').textContent = (user.Mmr || 0) + ' MMR';
   $('inspectorRank').textContent = user.IsCalibrated
     ? medalName(user.RankTier) + ' ' + (user.RankStar || '')
     : 'Sin calibrar';
   $('walletDelta').value = '';
   $('walletReason').value = '';
+  $('plusDays').value = '';
+  $('plusReason').value = '';
   $('mmrDelta').value = '';
   clearMessage($('inspectorMsg'));
 }
@@ -743,6 +774,7 @@ function focusInspectorField(focus) {
     wallet: 'walletDelta',
     walletAdd: 'walletDelta',
     walletRemove: 'walletDelta',
+    plus: 'plusDays',
     mmr: 'mmrDelta',
     mmrAdd: 'mmrDelta',
     mmrRemove: 'mmrDelta',
@@ -835,7 +867,7 @@ function renderUsers(body) {
   const table = document.createElement('table');
   table.className = 'user-table';
   const head = document.createElement('tr');
-  ['Usuario', 'Cuenta', 'Saldo', 'Rango', 'Estado', 'Alta', 'Acciones directas'].forEach((label) => {
+  ['Usuario', 'Cuenta', 'Saldo', 'Dota Plus', 'Rango', 'Estado', 'Alta', 'Acciones directas'].forEach((label) => {
     const th = document.createElement('th');
     th.textContent = label;
     head.appendChild(th);
@@ -886,6 +918,19 @@ function renderUsers(body) {
     balance.appendChild(available);
     row.appendChild(balance);
 
+    const plus = document.createElement('td');
+    plus.className = 'user-plus';
+    const plusValue = document.createElement('strong');
+    plusValue.textContent = user.DotaPlusActive ? 'Activo' : 'Inactivo';
+    const plusMeta = document.createElement('span');
+    plusMeta.className = 'meta';
+    plusMeta.textContent = user.DotaPlusActive
+      ? formatNumber(user.DotaPlusDaysRemaining || 0) + ' días'
+      : 'Sin acceso';
+    plus.appendChild(plusValue);
+    plus.appendChild(plusMeta);
+    row.appendChild(plus);
+
     const rank = document.createElement('td');
     rank.className = 'user-rank';
     const mmr = document.createElement('strong');
@@ -914,6 +959,8 @@ function renderUsers(body) {
     actions.className = 'user-actions';
     actions.appendChild(userActionButton('＋ Saldo', 'wallet', () => adjustWallet(user, 1), 'Preparar un abono de saldo'));
     actions.appendChild(userActionButton('− Saldo', 'wallet danger', () => adjustWallet(user, -1), 'Preparar un retiro de saldo'));
+    actions.appendChild(userActionButton('＋ Plus', 'plus', () => adjustDotaPlus(user, true), 'Activar o ampliar Dota Plus local'));
+    actions.appendChild(userActionButton('− Plus', 'plus danger', () => adjustDotaPlus(user, false), 'Revocar Dota Plus local'));
     actions.appendChild(userActionButton('＋ MMR', 'rank', () => adjustMmr(user, 1), 'Preparar un aumento de MMR'));
     actions.appendChild(userActionButton('− MMR', 'rank', () => adjustMmr(user, -1), 'Preparar una reducción de MMR'));
     actions.appendChild(userActionButton('Perfil', 'secondary', () => openUserInspector(user, 'profile')));
@@ -1229,6 +1276,50 @@ function adjustWallet(user, sign) {
   $('walletReason').value = sign > 0 ? 'Bonificación' : 'Corrección';
 }
 
+function adjustDotaPlus(user, enabled) {
+  openUserInspector(user, enabled ? 'plus' : undefined);
+  if (enabled) {
+    $('plusDays').value = '30';
+    $('plusReason').value = 'Activación local';
+  }
+}
+
+async function submitDotaPlus(enabled) {
+  const user = selectedUser;
+  if (!user) return;
+  let days = 0;
+  if (enabled) {
+    days = parseInt($('plusDays').value, 10);
+    if (!Number.isFinite(days) || days < 1 || days > 3650) {
+      show($('inspectorMsg'), 'Los días deben ser un entero entre 1 y 3.650.');
+      return;
+    }
+  } else if (!confirm('¿Revocar Dota Plus local de "' + user.Username + '" ahora?')) {
+    return;
+  }
+  const accountId = user.AccountId;
+  $('plusActivateBtn').disabled = true;
+  $('plusRevokeBtn').disabled = true;
+  const result = await api('/api/admin/users/' + accountId + '/dota-plus', {
+    method: 'PUT',
+    body: JSON.stringify({
+      Enabled: enabled,
+      Days: days,
+      Reason: $('plusReason').value.trim() || (enabled ? 'Activación local' : 'Revocación local')
+    })
+  });
+  $('plusActivateBtn').disabled = false;
+  $('plusRevokeBtn').disabled = false;
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  await loadUsers(usersState.page);
+  if (selectedUser && selectedUser.AccountId === accountId) {
+    show($('inspectorMsg'), result.body.Message || 'Dota Plus actualizado.', 'ok');
+  }
+}
+
 async function submitWallet(sign) {
   const user = selectedUser;
   if (!user) return;
@@ -1420,6 +1511,8 @@ $('savePasswordBtn').addEventListener('click', savePassword);
 $('uploadAvatarBtn').addEventListener('click', () => { if (selectedUser) uploadAvatar(selectedUser); });
 $('walletAddBtn').addEventListener('click', () => submitWallet(1));
 $('walletRemoveBtn').addEventListener('click', () => submitWallet(-1));
+$('plusActivateBtn').addEventListener('click', () => submitDotaPlus(true));
+$('plusRevokeBtn').addEventListener('click', () => submitDotaPlus(false));
 $('mmrAddBtn').addEventListener('click', () => submitMmr(1));
 $('mmrRemoveBtn').addEventListener('click', () => submitMmr(-1));
 $('resetMmrBtn').addEventListener('click', () => { if (selectedUser) resetMmr(selectedUser); });

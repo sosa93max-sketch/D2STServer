@@ -1,5 +1,6 @@
 using D2ST.Core.Accounts;
 using D2ST.Core.Ranking;
+using D2ST.GameCoordinator.DotaPlus;
 using D2ST.GameCoordinator.Ranks;
 using D2ST.GameCoordinator.SharedObjects;
 using D2ST.Protocol.Dota;
@@ -29,6 +30,7 @@ public sealed class LobbyService : IGcWelcomeContributor
 
     private readonly SoCacheService _soCache;
     private readonly IRankStore _ranks;
+    private readonly DotaPlusProjection _dotaPlus;
     private readonly TimeProvider _time;
     private readonly Lock _gate = new();
     private readonly Dictionary<ulong, ulong> _memberships = [];
@@ -37,11 +39,31 @@ public sealed class LobbyService : IGcWelcomeContributor
     private readonly Dictionary<ulong, Dictionary<ulong, string>> _memberNames = [];
     private ulong _sequence;
 
-    public LobbyService(SoCacheService soCache, IRankStore ranks, TimeProvider time)
+    public LobbyService(
+        SoCacheService soCache,
+        IRankStore ranks,
+        DotaPlusProjection dotaPlus,
+        TimeProvider time)
     {
         _soCache = soCache;
         _ranks = ranks;
+        _dotaPlus = dotaPlus;
         _time = time;
+    }
+
+    /// <summary>
+    /// Rebuilds the static lobby projections for an account whose local Dota
+    /// Plus entitlement changed while the lobby was already open.
+    /// </summary>
+    public void RefreshDotaPlus(uint accountId)
+    {
+        lock (_gate)
+        {
+            if (TryGetLobbyOf(SteamAccount.SteamIdFromAccountId(accountId), out var lobby))
+            {
+                Write(lobby);
+            }
+        }
     }
 
     /// <summary>The lobby a player is in, or null. Read-only snapshot.</summary>
@@ -976,7 +998,7 @@ public sealed class LobbyService : IGcWelcomeContributor
                 SteamId = member.Id,
                 RankTier = RankMath.VisibleRankFor(rank).RankValue,
                 WasMvpLastGame = false,
-                IsPlusSubscriber = true,
+                IsPlusSubscriber = _dotaPlus.IsActive(AccountIdOf(member.Id)),
                 FavoriteTeamPacked = 0,
                 IsSteamChina = false,
                 BannedHeroIds = new[] { 75, 0, 0, 0 }

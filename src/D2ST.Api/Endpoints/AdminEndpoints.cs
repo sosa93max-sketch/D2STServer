@@ -3,6 +3,8 @@ using D2ST.Api.Contracts;
 using D2ST.Core.Accounts;
 using D2ST.Core.Ranking;
 using D2ST.Core.Steam;
+using D2ST.GameCoordinator.DotaPlus;
+using D2ST.GameCoordinator.Lobbies;
 using D2ST.GameCoordinator.Ranks;
 using D2ST.Persistence;
 using D2ST.Steam;
@@ -41,6 +43,7 @@ public static class AdminEndpoints
             D2stDbContext db,
             IConfiguration config,
             IRankStore ranks,
+            IDotaPlusStore plus,
             CancellationToken ct) =>
         {
             var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
@@ -62,12 +65,14 @@ public static class AdminEndpoints
             var wallets = await db.Wallets.AsNoTracking()
                 .Where(wallet => accountIds.Contains(wallet.AccountId))
                 .ToDictionaryAsync(wallet => wallet.AccountId, ct);
+            var plusStates = plus.GetMany(accountIds);
             return Results.Ok(accounts.Select(account =>
                 ToResponse(
                     ranks,
                     account,
                     online.Contains(account.AccountId),
-                    wallets.GetValueOrDefault(account.AccountId))).ToList());
+                    wallets.GetValueOrDefault(account.AccountId),
+                    plusStates.GetValueOrDefault(account.AccountId))).ToList());
         });
 
         app.MapGet("/api/admin/users/page", async (
@@ -76,6 +81,7 @@ public static class AdminEndpoints
             D2stDbContext db,
             IConfiguration config,
             IRankStore ranks,
+            IDotaPlusStore plus,
             int page = 1,
             int pageSize = 25,
             string? search = null,
@@ -149,12 +155,14 @@ public static class AdminEndpoints
             var wallets = await db.Wallets.AsNoTracking()
                 .Where(wallet => accountIds.Contains(wallet.AccountId))
                 .ToDictionaryAsync(wallet => wallet.AccountId, ct);
+            var plusStates = plus.GetMany(accountIds);
             var items = accounts.Select(account =>
                 ToResponse(
                     ranks,
                     account,
                     online.Contains(account.AccountId),
-                    wallets.GetValueOrDefault(account.AccountId))).ToArray();
+                    wallets.GetValueOrDefault(account.AccountId),
+                    plusStates.GetValueOrDefault(account.AccountId))).ToArray();
 
             return Results.Ok(new AdminUsersPageResponse(
                 items,
@@ -207,6 +215,56 @@ public static class AdminEndpoints
             }
 
             return Results.Ok(ToResponse(ranks, account!, online: false));
+        });
+
+        app.MapPut("/api/admin/users/{accountId:long}/dota-plus", async (
+            long accountId,
+            AdminDotaPlusUpdateRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration config,
+            IDotaPlusStore plus,
+            DotaPlusProjection projection,
+            LobbyService lobbies,
+            CancellationToken ct) =>
+        {
+            var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
+            if (context is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.IsAdmin)
+            {
+                return Forbidden();
+            }
+
+            if (accountId <= 0 || accountId > uint.MaxValue)
+            {
+                return Json(new AdminMessageResponse("Usuario no encontrado."), 404);
+            }
+
+            var result = plus.UpdateSubscription(
+                (uint)accountId,
+                request.Enabled,
+                request.Days,
+                extend: true,
+                context.Session.Account.AccountId,
+                request.Reason);
+            var response = new AdminDotaPlusUpdateResponse(
+                result.Success,
+                result.Code,
+                result.Message,
+                DotaPlusEndpoints.ToResponse(result.State));
+            if (!result.Success)
+            {
+                return Json(response, result.Code == "account_not_found" ? 404 : 400);
+            }
+
+            projection.Refresh((uint)accountId);
+            lobbies.RefreshDotaPlus((uint)accountId);
+            return Results.Ok(response);
         });
 
         app.MapPut("/api/admin/users/{accountId:long}/avatar", async (
@@ -414,6 +472,10 @@ public static class AdminEndpoints
                 db.StorePurchaseTransactions.Where(transaction => transaction.AccountId == id));
             db.EconItems.RemoveRange(db.EconItems.Where(item => item.AccountId == id));
             db.Wallets.RemoveRange(db.Wallets.Where(wallet => wallet.AccountId == id));
+            db.DotaPlusTransactions.RemoveRange(
+                db.DotaPlusTransactions.Where(transaction => transaction.AccountId == id));
+            db.DotaPlusAccounts.RemoveRange(
+                db.DotaPlusAccounts.Where(subscription => subscription.AccountId == id));
             db.Accounts.Remove(account);
             await db.SaveChangesAsync(ct);
             sessions.RemoveAll(id);
@@ -455,10 +517,12 @@ public static class AdminEndpoints
         IRankStore ranks,
         AccountEntity account,
         bool online,
-        WalletEntity? wallet = null)
+        WalletEntity? wallet = null,
+        DotaPlusState? plus = null)
     {
         var rank = ranks.GetOrCreate(account.AccountId);
         var info = RankMath.RankFor(rank.Mmr);
+        var now = DateTimeOffset.UtcNow;
         return new AdminUserResponse(
             account.AccountId,
             SteamAccount.SteamIdFromAccountId(account.AccountId).ToString(),
@@ -475,7 +539,10 @@ public static class AdminEndpoints
             rank.IsCalibrated,
             wallet?.BalanceCredits ?? 0,
             wallet?.ReservedCredits ?? 0,
-            wallet is null ? 0 : Math.Max(0, wallet.BalanceCredits - wallet.ReservedCredits));
+            wallet is null ? 0 : Math.Max(0, wallet.BalanceCredits - wallet.ReservedCredits),
+            plus?.IsActiveAt(now) ?? false,
+            plus?.ExpiresAt,
+            plus?.DaysRemainingAt(now) ?? 0);
     }
 
     private static bool TryDecodeAvatar(string? contentBase64, out byte[] content)

@@ -42,7 +42,10 @@ public sealed record AdminUserResponse(
     bool IsCalibrated,
     long BalanceCredits,
     long ReservedCredits,
-    long AvailableCredits);
+    long AvailableCredits,
+    bool DotaPlusActive,
+    DateTimeOffset? DotaPlusExpiresAt,
+    int DotaPlusDaysRemaining);
 
 public sealed record AdminUsersPageResponse(
     IReadOnlyList<AdminUserResponse> Items,
@@ -266,6 +269,25 @@ public sealed record AdminWalletAdjustResponse(
     string Code,
     string Message,
     StoreWalletResponse Wallet);
+
+public sealed record DotaPlusResponse(
+    uint AccountId,
+    bool Active,
+    DateTimeOffset? StartedAt,
+    DateTimeOffset? ExpiresAt,
+    int DaysRemaining,
+    uint PlusStatus);
+
+public sealed record AdminDotaPlusUpdateRequest(
+    bool Enabled,
+    int Days,
+    string? Reason);
+
+public sealed record AdminDotaPlusUpdateResponse(
+    bool Success,
+    string Code,
+    string Message,
+    DotaPlusResponse DotaPlus);
 
 public sealed record AdminCatalogPageResponse(
     IReadOnlyList<StoreCatalogItemResponse> Items,

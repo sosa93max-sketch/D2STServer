@@ -55,6 +55,10 @@ public sealed class D2stDbContext : DbContext
 
     public DbSet<StorePurchaseTransactionEntity> StorePurchaseTransactions => Set<StorePurchaseTransactionEntity>();
 
+    public DbSet<DotaPlusAccountEntity> DotaPlusAccounts => Set<DotaPlusAccountEntity>();
+
+    public DbSet<DotaPlusTransactionEntity> DotaPlusTransactions => Set<DotaPlusTransactionEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountEntity>()
@@ -165,5 +169,11 @@ public sealed class D2stDbContext : DbContext
 
         modelBuilder.Entity<StorePurchaseTransactionEntity>()
             .HasIndex(transaction => new { transaction.AccountId, transaction.Status });
+
+        modelBuilder.Entity<DotaPlusAccountEntity>()
+            .HasKey(account => account.AccountId);
+
+        modelBuilder.Entity<DotaPlusTransactionEntity>()
+            .HasIndex(transaction => new { transaction.AccountId, transaction.CreatedAt });
     }
 }

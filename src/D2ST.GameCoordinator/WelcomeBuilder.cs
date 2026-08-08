@@ -1,4 +1,5 @@
 using D2ST.GameCoordinator.SharedObjects;
+using D2ST.GameCoordinator.DotaPlus;
 using D2ST.GameCoordinator.Econ;
 using D2ST.GameCoordinator.Matches;
 using D2ST.GameCoordinator.Profiles;
@@ -25,17 +26,20 @@ public sealed class WelcomeBuilder
     private readonly IReadOnlyList<IGcWelcomeContributor> _contributors;
     private readonly IMatchStore _matches;
     private readonly EconInventory _inventory;
+    private readonly DotaPlusProjection _dotaPlus;
 
     public WelcomeBuilder(
         SoCacheService soCache,
         IEnumerable<IGcWelcomeContributor> contributors,
         IMatchStore matches,
-        EconInventory inventory)
+        EconInventory inventory,
+        DotaPlusProjection dotaPlus)
     {
         _soCache = soCache;
         _contributors = contributors.ToList();
         _matches = matches;
         _inventory = inventory;
+        _dotaPlus = dotaPlus;
     }
 
     public CMsgClientWelcome Build(GcContext context)
@@ -89,10 +93,10 @@ public sealed class WelcomeBuilder
         // Dota Plus shipped in 2018; older builds have no 2012 cache bucket.
         if (context.Profile.IncludeDotaPlus)
         {
-            _soCache.SeedIfAbsent(
+            _soCache.SetIfChanged(
                 game,
                 new SoObjectKey(DotaSoCache.TypeDotaGameAccountPlus, context.AccountId),
-                () => new CSODOTAGameAccountPlus { AccountId = context.AccountId });
+                _dotaPlus.Build(context.AccountId));
         }
 
         _soCache.SeedIfAbsent(

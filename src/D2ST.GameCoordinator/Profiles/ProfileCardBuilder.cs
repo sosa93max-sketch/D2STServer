@@ -1,6 +1,7 @@
 using D2ST.Core.Matches;
 using D2ST.Core.Profiles;
 using D2ST.Core.Ranking;
+using D2ST.GameCoordinator.DotaPlus;
 using D2ST.GameCoordinator.Matches;
 using D2ST.GameCoordinator.Ranks;
 using D2ST.Protocol.Dota;
@@ -16,15 +17,18 @@ public sealed class ProfileCardBuilder
     private readonly IRankStore _ranks;
     private readonly IMatchStore _matches;
     private readonly IProfileStore _profiles;
+    private readonly DotaPlusProjection _dotaPlus;
 
     public ProfileCardBuilder(
         IRankStore ranks,
         IMatchStore matches,
-        IProfileStore profiles)
+        IProfileStore profiles,
+        DotaPlusProjection dotaPlus)
     {
         _ranks = ranks;
         _matches = matches;
         _profiles = profiles;
+        _dotaPlus = dotaPlus;
     }
 
     public CMsgDOTAProfileCard Build(uint accountId)
@@ -50,7 +54,7 @@ public sealed class ProfileCardBuilder
             RankTierScore = (uint)info.ProgressPercent,
             LeaderboardRank = 0,
             LeaderboardRankCore = 0,
-            IsPlusSubscriber = false,
+            IsPlusSubscriber = _dotaPlus.IsActive(accountId),
             LifetimeGames = NonNegative(stats.Games)
         };
 

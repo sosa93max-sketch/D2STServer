@@ -810,6 +810,54 @@ is the planning reference for the work that follows the real-client gate.
   environment still lacks `dotnet`, so the solution build and real
   build-6783 client validation remain pending.
 
+## Phase 15 — local Dota Plus entitlement (Phase 1)
+
+The first Dota Plus slice is now server-owned and persistent for the LAN
+deployment. It is deliberately independent from Valve billing or Steam Wallet:
+an administrator grants the entitlement to a local account.
+
+Implemented:
+
+- `DotaPlusAccounts` stores one entitlement per account with start, expiry,
+  enabled state, local flags and update time. `DotaPlusTransactions` records
+  every activation, extension and revocation with the acting admin, days,
+  reason and resulting expiry.
+- `PUT /api/admin/users/{accountId}/dota-plus` activates/extends a subscription
+  for 1–3,650 days or revokes it immediately. `GET /api/dota-plus` exposes the
+  authenticated account's current local status.
+- The Users workspace shows Dota Plus state and remaining days in the table and
+  provides activate/extend/revoke controls in the per-user inspector and direct
+  actions. The operation is available without leaving the user directory.
+- The GC publishes a populated `CSODOTAGameAccountPlus` (SO type 2012) at
+  welcome time. The projection carries local status and Unix-time boundaries,
+  and an admin mutation publishes a Shared Object delta to an already-connected
+  client.
+- Profile cards now derive `IsPlusSubscriber` from the persisted entitlement.
+  Lobby static projections do the same per member instead of marking everyone
+  as a subscriber, and an active lobby is rebuilt when its member's entitlement
+  changes.
+- Account deletion removes the entitlement and its audit rows.
+- The reusable GameCoordinator still works without the API database through an
+  empty persistence adapter.
+
+Evidence and limits:
+
+- `git diff --check` passes and the admin JavaScript was reviewed for the new
+  controls and endpoint wiring.
+- The current environment has no `dotnet` executable, so the Release build and
+  SQLite migration/startup smoke could not be rerun in this phase. Windows/.NET
+  build validation is required before deployment.
+- This phase exposes the subscription entitlement only. Shards, hero/player
+  challenges, match progress, relics and their rewards are the next phase; the
+  `CSODOTAPlayerChallenge` cache is not populated yet.
+- `PlusStatus=1` is the local active projection and `0` is inactive. The exact
+  visual interpretation of date units and optional flags still needs a real
+  build-6783 client capture after the DLL/server are deployed.
+
+Next step: implement the Phase 2 Dota Plus state (shards, challenge SO objects,
+match-progress updates and relic transactions) behind the same account-scoped
+store, then publish that phase separately.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -827,13 +875,12 @@ is the planning reference for the work that follows the real-client gate.
 
 ## Current handoff
 
-Phases 1–11 and the server-side bot-match support are implemented and verified
+Phases 1–15 and the server-side bot-match support are implemented and verified
 at compile/startup and targeted API/GC-smoke level, with the schema managed by
 EF Core and legacy databases preserved through the transition bridge. The next
-session should validate one client against the active web account flow, friend
-requests, conduct gates and profile/mini-profile showcase editing, then use a
-second client on the same PC only if the hardware permits. Preserve
+session should first validate the new local Dota Plus entitlement against a
+real build-6783 client, then continue with shards/challenges/relics. Preserve
 capture/replay evidence, rebuild the published client shim and verify that Dota
-returns to the foreground before expanding the vertical. See
+returns to the foreground before claiming client compatibility. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client
 compatibility as complete until it is recorded here.

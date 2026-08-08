@@ -1,5 +1,6 @@
 using D2ST.GameCoordinator.Chat;
 using D2ST.GameCoordinator.Diagnostics;
+using D2ST.GameCoordinator.DotaPlus;
 using D2ST.GameCoordinator.Econ;
 using D2ST.GameCoordinator.Handlers;
 using D2ST.GameCoordinator.Lobbies;
@@ -29,6 +30,8 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.TryAddSingleton<IGcMessageQueue>(provider => provider.GetRequiredService<GcMessageQueue>());
         services.AddSingleton<SoCacheStore>();
         services.AddSingleton<SoCacheService>();
+        services.TryAddSingleton<IDotaPlusStore, EmptyDotaPlusStore>();
+        services.AddSingleton<DotaPlusProjection>();
         services.TryAddSingleton<IEconomyStore, EmptyEconomyStore>();
         services.TryAddSingleton<IMatchStore, EmptyMatchStore>();
         services.TryAddSingleton<IProfileStore, EmptyProfileStore>();
