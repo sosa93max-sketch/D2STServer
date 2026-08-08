@@ -179,6 +179,10 @@ public sealed class D2stDbContext : DbContext
         modelBuilder.Entity<DotaPlusAccountEntity>()
             .HasKey(account => account.AccountId);
 
+        modelBuilder.Entity<DotaPlusAccountEntity>()
+            .Property(account => account.AccountId)
+            .ValueGeneratedNever();
+
         modelBuilder.Entity<DotaPlusTransactionEntity>()
             .HasIndex(transaction => new { transaction.AccountId, transaction.CreatedAt });
 
