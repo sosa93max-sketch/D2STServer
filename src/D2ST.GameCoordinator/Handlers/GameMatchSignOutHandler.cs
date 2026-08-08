@@ -5,6 +5,7 @@ using D2ST.GameCoordinator.Ranks;
 using D2ST.GameCoordinator.Lobbies;
 using D2ST.GameCoordinator.Messaging;
 using D2ST.GameCoordinator.Matches;
+using D2ST.GameCoordinator.Profiles;
 using D2ST.GameCoordinator.SharedObjects;
 using D2ST.Protocol.Dota;
 
@@ -205,6 +206,7 @@ public sealed class GameMatchSignOutHandler : IGcMessageHandler
             account.Losses = NonNegative(stats.Losses);
             account.CasualGamesPlayed = NonNegative(stats.Games);
             account.LeaverCount = NonNegative(stats.LeaverCount);
+            LocalConductState.ApplyTo(account);
             _soCache.Set(key, objectKey, account);
         }
     }

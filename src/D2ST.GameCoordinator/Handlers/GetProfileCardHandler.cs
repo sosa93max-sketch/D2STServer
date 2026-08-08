@@ -1,6 +1,5 @@
 using D2ST.Core.GameCoordinator;
-using D2ST.Core.Ranking;
-using D2ST.GameCoordinator.Ranks;
+using D2ST.GameCoordinator.Profiles;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Handlers;
@@ -12,11 +11,11 @@ namespace D2ST.GameCoordinator.Handlers;
 /// </summary>
 public sealed class GetProfileCardHandler : IGcMessageHandler
 {
-    private readonly IRankStore _ranks;
+    private readonly ProfileCardBuilder _cards;
 
-    public GetProfileCardHandler(IRankStore ranks)
+    public GetProfileCardHandler(ProfileCardBuilder cards)
     {
-        _ranks = ranks;
+        _cards = cards;
     }
 
     public uint MessageType => GcMsg.ClientToGCGetProfileCard;
@@ -25,25 +24,7 @@ public sealed class GetProfileCardHandler : IGcMessageHandler
     {
         var requested = context.Codec.Decode<CMsgClientToGCGetProfileCard>(request.Body);
         var accountId = requested.AccountId != 0 ? requested.AccountId : context.AccountId;
-
-        // Badge/showcase data is not persisted yet; rank data is backed by the
-        // rank store because the client renders it directly from this card.
-        var rank = _ranks.GetOrCreate(accountId);
-        var info = RankMath.VisibleRankFor(rank);
-        var card = new CMsgDOTAProfileCard
-        {
-            AccountId = accountId,
-            BadgePoints = 0,
-            EventId = 0,
-            // rank_tier is the encoded medal (for example Divine 3 = 73),
-            // not just the base tier (7).
-            RankTier = (uint)info.RankValue,
-            // The client renders this field as "{value}%". It is progress
-            // through the current star, never the player's raw MMR.
-            RankTierScore = (uint)info.ProgressPercent,
-            LeaderboardRank = 0,
-            IsPlusSubscriber = false
-        };
+        var card = _cards.Build(accountId);
 
         return
         [

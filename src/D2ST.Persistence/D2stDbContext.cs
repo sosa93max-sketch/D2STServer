@@ -39,6 +39,8 @@ public sealed class D2stDbContext : DbContext
 
     public DbSet<PlayerHeroStatsEntity> PlayerHeroStats => Set<PlayerHeroStatsEntity>();
 
+    public DbSet<ProfileCardEntity> ProfileCards => Set<ProfileCardEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountEntity>()
@@ -105,5 +107,8 @@ public sealed class D2stDbContext : DbContext
 
         modelBuilder.Entity<PlayerHeroStatsEntity>()
             .HasIndex(stats => stats.AccountId);
+
+        modelBuilder.Entity<ProfileCardEntity>()
+            .HasKey(card => card.AccountId);
     }
 }

@@ -95,6 +95,8 @@ public static class GcMsg
 
     public const uint ClientToGCGetProfileCard = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCard;
     public const uint ClientToGCGetProfileCardResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetProfileCardResponse;
+    public const uint ClientToGCSetProfileCardSlots = (uint)EDOTAGCMsg.kEMsgClientToGCSetProfileCardSlots;
+    public const uint GCToClientProfileCardUpdated = (uint)EDOTAGCMsg.kEMsgGCToClientProfileCardUpdated;
 
     public const uint MatchmakingStatsRequest = (uint)EDOTAGCMsg.kEMsgGCMatchmakingStatsRequest;
     public const uint MatchmakingStatsResponse = (uint)EDOTAGCMsg.kEMsgGCMatchmakingStatsResponse;
@@ -138,6 +140,8 @@ public static class GcMsg
     public const uint ClientToGCGetAvailablePrivateCoachingSessionsSummaryResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetAvailablePrivateCoachingSessionsSummaryResponse;
     public const uint ClientToGCShowcaseSetUserData = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseSetUserData;
     public const uint ClientToGCShowcaseSetUserDataResponse = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseSetUserDataResponse;
+    public const uint ClientToGCLatestConductScorecardRequest = (uint)EDOTAGCMsg.kEMsgClientToGCLatestConductScorecardRequest;
+    public const uint ClientToGCLatestConductScorecard = (uint)EDOTAGCMsg.kEMsgClientToGCLatestConductScorecard;
     public const uint DOTAClaimEventAction = (uint)EDOTAGCMsg.kEMsgDOTAClaimEventAction;
     public const uint DOTAClaimEventActionResponse = (uint)EDOTAGCMsg.kEMsgDOTAClaimEventActionResponse;
     public const uint GCLobbyList = (uint)EDOTAGCMsg.kEMsgGCLobbyList;

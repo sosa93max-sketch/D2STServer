@@ -1,5 +1,6 @@
 using D2ST.GameCoordinator.SharedObjects;
 using D2ST.GameCoordinator.Matches;
+using D2ST.GameCoordinator.Profiles;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator;
@@ -102,7 +103,7 @@ public sealed class WelcomeBuilder
     private CSODOTAGameAccountClient AccountSnapshot(uint accountId)
     {
         var stats = _matches.GetProfileStats(accountId);
-        return new CSODOTAGameAccountClient
+        var account = new CSODOTAGameAccountClient
         {
             AccountId = accountId,
             Wins = NonNegative(stats.Wins),
@@ -110,6 +111,9 @@ public sealed class WelcomeBuilder
             CasualGamesPlayed = NonNegative(stats.Games),
             LeaverCount = NonNegative(stats.LeaverCount)
         };
+
+        LocalConductState.ApplyTo(account);
+        return account;
     }
 
     private static uint NonNegative(int value) => (uint)Math.Max(0, value);

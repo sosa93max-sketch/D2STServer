@@ -7,6 +7,8 @@ using D2ST.GameCoordinator.Messaging;
 using D2ST.GameCoordinator.Matches;
 using D2ST.GameCoordinator.Parties;
 using D2ST.GameCoordinator.Players;
+using D2ST.GameCoordinator.Profiles;
+using D2ST.Core.Profiles;
 using D2ST.GameCoordinator.SharedObjects;
 using D2ST.Protocol;
 using Microsoft.Extensions.Configuration;
@@ -28,7 +30,9 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<SoCacheStore>();
         services.AddSingleton<SoCacheService>();
         services.TryAddSingleton<IMatchStore, EmptyMatchStore>();
+        services.TryAddSingleton<IProfileStore, EmptyProfileStore>();
         services.AddSingleton<WelcomeBuilder>();
+        services.AddSingleton<ProfileCardBuilder>();
         services.AddSingleton<EconInventory>();
         services.AddSingleton<PartyService>();
         services.AddSingleton<IGcWelcomeContributor>(provider => provider.GetRequiredService<PartyService>());
@@ -40,6 +44,8 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, PingHandler>();
         services.AddSingleton<IGcMessageHandler, SoCacheSubscriptionRefreshHandler>();
         services.AddSingleton<IGcMessageHandler, GetProfileCardHandler>();
+        services.AddSingleton<IGcMessageHandler, SetProfileCardSlotsHandler>();
+        services.AddSingleton<IGcMessageHandler, LatestConductScorecardHandler>();
         services.AddSingleton<IGcMessageHandler, MatchmakingStatsHandler>();
         services.AddSingleton<IGcMessageHandler, StoreSalesDataHandler>();
         services.AddSingleton<IGcMessageHandler, WeekendTourneyScheduleHandler>();

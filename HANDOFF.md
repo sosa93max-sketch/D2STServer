@@ -186,6 +186,46 @@ first-blood field, while kills, lead and building state are fields of the live
   compatibility bootstrap completed and the API reached its listening state.
 - `git diff --check`: passed.
 
+### Phase 5 — completed in this working tree
+
+The profile page no longer depends on an empty card or an omitted conduct
+payload:
+
+- The profile-card projection now exposes `LifetimeGames`, the persisted rank
+  projection and real stat slots for wins and games played when no custom
+  layout has been saved.
+- `ProfileCards` stores the authenticated account's selected slot layout as
+  JSON. `7538 ClientToGCSetProfileCardSlots` validates the slot types, persists
+  the edit and returns `7539 GCToClientProfileCardUpdated` with the rebuilt
+  card. The edit is scoped to the account in the authenticated GC context.
+- Saved stat, trophy, item, hero, emoticon and team slots are projected back
+  through the existing `CMsgDOTAProfileCard` nested messages. Hero slots use
+  the persisted per-hero wins/losses when that hero exists in local history.
+- The previous implementation had no handler for `7538`, so the router
+  silently returned no response when the client tried to edit the card. That
+  was the direct server-side reason the edit could not complete.
+- The account Shared Object now explicitly carries a local conduct state, and
+  `8095 -> 8096` returns a complete conduct scorecard. The score is the local
+  deployment policy (10,000, good, no reports/sanctions); match and abandon
+  counts are read from persisted local matches. This prevents an omitted/zero
+  behavior score from being interpreted as a restricted profile without
+  pretending to have Valve's external conduct history.
+- The same local conduct fields are sent both at welcome time and after a
+  recorded `7004`, so a reconnect and a post-match cache update use the same
+  semantics.
+
+### Evidence for Phase 5
+
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- API startup against a temporary SQLite database: passed; the new
+  `ProfileCards` table was created, the profile store was resolved and the API
+  reached its listening state without an exception.
+- `git diff --check`: passed before publication.
+- The profile/conduct behavior still needs a real two-account Windows client
+  run to confirm the exact build-6783 UI response; the local policy is
+  intentionally documented as local, not as a real Valve conduct score.
+
 ## Match close data flow
 
 ```text
@@ -214,17 +254,23 @@ arrays without inventing a second protocol model.
 `PlayerProfileStats` is a fast projection containing games, wins, losses, K/D/A,
 last hits, denies, damage, healing, gold, GPM/XPM, play time and leavers.
 `PlayerHeroStats` carries the same useful counters grouped by account and hero.
+`ProfileCards` stores the authenticated account's selected profile-card slots;
+the profile-card builder combines that layout with the real aggregate and
+per-hero projections. No profile-card item ownership or showcase moderation
+state is fabricated.
 The per-match rows remain the source of truth for future match-history and
 hero-standings handlers. The current history readers query those per-match rows
 directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Expose richer profile-card/recent-match projections from the persisted rows.
-2. Add EF migrations and replace the startup SQL bootstrap after the schema has
-   stabilized.
-3. Validate with two consecutive accounts and two real Windows clients through
+1. Add EF migrations and replace the startup SQL bootstrap now that the local
+   match/profile schema has stabilized.
+2. Validate with two consecutive accounts and two real Windows clients through
    create -> join -> launch -> play -> 7004 -> reconnect/profile/history.
+3. Use the Windows capture to decide whether the build also needs the
+   unimplemented `8034 -> 8035` profile-card statistics request or durable
+   showcase data; implement only fields confirmed by that traffic.
 4. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
@@ -232,9 +278,10 @@ directly, so they do not reconstruct history from lossy profile counters.
 
 - Lobby objects and the server-to-lobby index are still in memory; completed
   match data is persistent but a running lobby is not.
-- The profile card handler still exposes rank-focused fields. The account
-  Shared Object now has real aggregate counters; the richer profile-card
-  projection belongs to the next phase.
+- The profile card now exposes lifetime games and the real wins/games stat
+  slots, plus a persisted editable layout. Badge points, trophies, leaderboard
+  rank, previous-season rank, MVP totals and other fields remain zero because
+  their source data is not persisted yet.
 - Match-history rows expose the fields available in the current contracts. Rank
   change/previous rank is not yet stored per match, and the compact player slot
   currently preserves only the Radiant/Dire boundary (0/128) because the final
@@ -250,6 +297,14 @@ directly, so they do not reconstruct history from lossy profile counters.
 - Live kills, Radiant lead and building state are delivered by `7034` while the
   client is connected; the current lobby Shared Object schema has no fields for
   those values, so a reconnect depends on the next visible `7034` update.
+- The conduct scorecard is a local compatibility policy, not a Valve behavior
+  history. There is no report, commend, moderation or low-priority enforcement
+  pipeline yet; local match/abandon counts are real, while the 10,000 good score
+  is deliberately server-owned.
+- Profile-card slots are persisted and returned, but item/trophy ownership,
+  showcase persistence and the separate `8034 -> 8035` statistics surface are
+  not implemented until a real client capture establishes their required
+  fields.
 - The fallback server lookup for simultaneous local launches remains a known
   risk until the game-server/lobby association is made explicit for every
   launch.
