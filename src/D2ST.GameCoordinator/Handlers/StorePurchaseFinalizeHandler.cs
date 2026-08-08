@@ -2,6 +2,7 @@ using D2ST.Core.GameCoordinator;
 using D2ST.GameCoordinator.Econ;
 using D2ST.GameCoordinator.DotaPlus;
 using D2ST.Protocol.Dota;
+using Microsoft.Extensions.Logging;
 
 namespace D2ST.GameCoordinator.Handlers;
 
@@ -14,15 +15,18 @@ public sealed class StorePurchaseFinalizeHandler : IGcMessageHandler
     private readonly IEconomyStore _economy;
     private readonly EconInventory _inventory;
     private readonly DotaPlusProjection _dotaPlus;
+    private readonly ILogger<StorePurchaseFinalizeHandler> _logger;
 
     public StorePurchaseFinalizeHandler(
         IEconomyStore economy,
         EconInventory inventory,
-        DotaPlusProjection dotaPlus)
+        DotaPlusProjection dotaPlus,
+        ILogger<StorePurchaseFinalizeHandler> logger)
     {
         _economy = economy;
         _inventory = inventory;
         _dotaPlus = dotaPlus;
+        _logger = logger;
     }
 
     public uint MessageType => GcMsg.StorePurchaseFinalize;
@@ -31,6 +35,15 @@ public sealed class StorePurchaseFinalizeHandler : IGcMessageHandler
     {
         var finalize = context.Codec.Decode<CMsgGCStorePurchaseFinalize>(request.Body);
         var result = _economy.FinalizePurchase(context.AccountId, finalize.TxnId);
+
+        _logger.LogInformation(
+            "Compra local finalize: cuenta {AccountId}, transacción {TransactionId}, resultado {ResultCode}, saldo {BalanceCredits}, disponible {AvailableCredits}",
+            context.AccountId,
+            finalize.TxnId,
+            result.Code,
+            result.Wallet.BalanceCredits,
+            result.Wallet.AvailableCredits);
+
         if (result.Success)
         {
             _inventory.ApplyItems(context.SteamId, context.AccountId, result.Items);

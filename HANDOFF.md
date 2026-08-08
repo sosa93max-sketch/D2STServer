@@ -630,8 +630,8 @@ catalog into the browser:
 - `/admin` now presents compact summary cards, search/status/type filters,
   pagination, a reduced catalog table and per-user `Saldo +` / `Saldo −`
   actions. The authenticated REST balance remains available at
-  `GET /api/store/wallet`; the unmodified Dota client still has no validated
-  local-credit balance widget.
+  `GET /api/store/wallet`, and the GC welcome now also supplies the native
+  Dota currency/balance fields for the connected account.
 - Account deletion now removes the account's wallet, ledger, purchase and econ
   inventory rows along with the existing account data.
 
@@ -645,7 +645,9 @@ catalog into the browser:
 - Real Windows build-6783 validation remains pending for the catalog display,
   balance rendering and purchase/finalize sequence. The standard GC sales
   response exposes prices, while the local balance is currently enforced by the
-  server and exposed through REST rather than claimed as a native Dota widget.
+  server and exposed through REST plus the native `CMsgClientWelcome` balance
+  fields. The native client still renders the value using its standard currency
+  formatter rather than a custom “créditos” label.
 
 ## Match close data flow
 
@@ -951,6 +953,43 @@ Evidence and limits:
   Steam Wallet, real-money billing, Valve catalog ownership and cross-server
   synchronization are out of scope.
 
+## Phase 18 — native wallet visibility and purchase compatibility follow-up
+
+The first real-client symptom after Phase 17 was split into two protocol issues:
+the local wallet existed only in REST, while the stock Dota client reads its
+store balance from the welcome packet; and a checkout line could arrive without
+an explicit quantity. This phase closes both server-side gaps without routing
+anything through Valve:
+
+- `WelcomeBuilder` now reads the authenticated account's available local
+  credits and sets `CMsgClientWelcome.TxnCountryCode`, `Currency` and `Balance`.
+  The client receives the balance on the next GC hello/reconnect. The wire
+  amount uses the same minor-unit value as catalog prices, so `100` credits is
+  shown by the stock USD formatter as `$1.00` and costs `100` credits server
+  side.
+- The store sales response uses the same bounded wire conversion as the
+  welcome balance, preventing prices and balances from being represented in
+  different units.
+- `StorePurchaseInitHandler` treats an omitted protobuf `quantity` (`0`) as a
+  single unit, continues to use the server catalog as the authoritative price,
+  and logs stale client prices, unknown/inactive definitions and the exact
+  local result code. Finalization logs the transaction result and resulting
+  wallet as well.
+
+Evidence and limits:
+
+- `git diff --check` passes and the dependency/source-reference audit confirms
+  that the API's `IEconomyStore` registration and the fallback empty store both
+  satisfy the new `WelcomeBuilder` dependency.
+- This environment has no `dotnet` or `sqlite3` executable, so a Release build,
+  migration/startup smoke and real Windows build-6783 purchase capture could
+  not be rerun here. The real client must reconnect after deploying this
+  commit; inspect the server GC log for `Compra local init` and
+  `Compra local finalize` entries if the client still displays a generic error.
+- A native stock Dota screen cannot label the value “créditos”; it will display
+  the configured standard currency. A literal local-credit widget would
+  require a client/overlay change and is outside the server protocol.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -968,12 +1007,13 @@ Evidence and limits:
 
 ## Current handoff
 
-Phases 1–17 and the server-side bot-match support are implemented, with the
+Phases 1–18 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
-transition bridge. Phase 17 has static validation only in this environment;
+transition bridge. Phase 18 has static validation only in this environment;
 the next session should run the Windows/.NET migration/startup smoke and
-validate Dota Plus catalog purchase, wallet debit, entitlement refresh and
-challenge/relic projection against a real build-6783 client on the LAN.
+validate native wallet rendering, Dota Plus catalog purchase, wallet debit,
+entitlement refresh and challenge/relic projection against a real build-6783
+client on the LAN.
 Preserve capture/replay evidence, rebuild the published client shim and verify
 that Dota returns to the foreground before claiming client compatibility. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client

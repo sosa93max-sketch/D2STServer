@@ -27,29 +27,39 @@ public sealed class WelcomeBuilder
     private readonly IMatchStore _matches;
     private readonly EconInventory _inventory;
     private readonly DotaPlusProjection _dotaPlus;
+    private readonly IEconomyStore _economy;
 
     public WelcomeBuilder(
         SoCacheService soCache,
         IEnumerable<IGcWelcomeContributor> contributors,
         IMatchStore matches,
         EconInventory inventory,
-        DotaPlusProjection dotaPlus)
+        DotaPlusProjection dotaPlus,
+        IEconomyStore economy)
     {
         _soCache = soCache;
         _contributors = contributors.ToList();
         _matches = matches;
         _inventory = inventory;
         _dotaPlus = dotaPlus;
+        _economy = economy;
     }
 
     public CMsgClientWelcome Build(GcContext context)
     {
         var socacheFileVersion = (uint)context.Profile.SocacheFileVersion;
+        var wallet = _economy.GetWallet(context.AccountId);
 
         var welcome = new CMsgClientWelcome
         {
             Version = (uint)context.ClientVersion,
             GcSocacheFileVersion = socacheFileVersion,
+            // The stock client reads these fields to populate its native store
+            // balance. They intentionally use the same minor-unit value as
+            // StoreSalesDataHandler and the local wallet (100 => $1.00).
+            TxnCountryCode = LocalEconomyCurrency.CountryCode,
+            Currency = LocalEconomyCurrency.Code,
+            Balance = LocalEconomyCurrency.ToWireAmount(wallet.AvailableCredits),
             GameData = context.Codec.Encode(new CMsgDOTAWelcome
             {
                 GcSocacheFileVersion = socacheFileVersion,

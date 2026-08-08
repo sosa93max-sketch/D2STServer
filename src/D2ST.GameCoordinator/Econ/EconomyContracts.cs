@@ -3,6 +3,30 @@ using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Econ;
 
+/// <summary>
+/// Wire-format settings shared by the native Dota store welcome and sales
+/// responses. The local economy uses the same minor-unit amount for wallet
+/// balances and catalog prices, so the client can compare both values without
+/// a conversion. With the USD-compatible formatter used by the target build,
+/// 100 local credits are rendered as $1.00.
+/// </summary>
+public static class LocalEconomyCurrency
+{
+    // ECurrencyCode::USD in the Steam/Dota protocol.
+    public const uint Code = 1;
+    public const string CountryCode = "US";
+
+    public static uint ToWireAmount(long credits)
+    {
+        if (credits <= 0)
+        {
+            return 0;
+        }
+
+        return credits >= uint.MaxValue ? uint.MaxValue : (uint)credits;
+    }
+}
+
 public sealed record StoreCatalogComponent(uint ProductId, uint Quantity);
 
 public sealed record StoreCatalogItem(
