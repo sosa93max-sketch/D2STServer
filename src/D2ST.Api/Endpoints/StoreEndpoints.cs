@@ -2,6 +2,7 @@ using D2ST.Api.Contracts;
 using D2ST.Api.Economy;
 using D2ST.Core.Economy;
 using D2ST.GameCoordinator.Econ;
+using D2ST.GameCoordinator.DotaPlus;
 using D2ST.Persistence;
 using D2ST.Steam;
 using Microsoft.EntityFrameworkCore;
@@ -128,7 +129,7 @@ public static class StoreEndpoints
                 return Results.BadRequest(new AdminMessageResponse("El filtro de estado no es válido."));
             }
 
-            if (type.HasValue && type.Value is not (0 or 1))
+            if (type.HasValue && type.Value is not (0 or 1 or 2))
             {
                 return Results.BadRequest(new AdminMessageResponse("El filtro de tipo no es válido."));
             }
@@ -209,7 +210,8 @@ public static class StoreEndpoints
             StorePurchaseRequest request,
             HttpContext http,
             ISessionStore sessions,
-            EconInventory inventory) =>
+            EconInventory inventory,
+            DotaPlusProjection dotaPlus) =>
         {
             var session = http.Authenticate(sessions);
             if (session is null)
@@ -225,6 +227,10 @@ public static class StoreEndpoints
                     ? [new StorePurchaseLine(request.ProductId, request.Quantity)]
                     : Array.Empty<StorePurchaseLine>();
             var result = inventory.Purchase(session.Account.AccountId, session.Account.SteamId, lines);
+            if (result.Success)
+            {
+                dotaPlus.Refresh(session.Account.AccountId);
+            }
             var response = ToPurchaseResponse(result);
             return result.Success
                 ? Results.Ok(response)
@@ -263,6 +269,7 @@ public static class StoreEndpoints
                 request.Category ?? string.Empty,
                 request.Description ?? string.Empty,
                 request.BuildVersion,
+                request.DotaPlusDays,
                 request.Active,
                 (request.Components ?? [])
                     .Select(component => new StoreCatalogComponent(component.ProductId, component.Quantity))
@@ -385,6 +392,7 @@ public static class StoreEndpoints
                         category,
                         definition.Description,
                         buildVersion,
+                        0,
                         active,
                         []);
                 }).ToArray();
@@ -483,6 +491,7 @@ public static class StoreEndpoints
             item.Category,
             item.Description,
             item.BuildVersion,
+            item.DotaPlusDays,
             item.Active,
             item.Components,
             item.ProductType == D2ST.Core.Economy.StoreProductType.Item

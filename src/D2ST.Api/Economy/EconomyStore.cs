@@ -507,8 +507,15 @@ public sealed class EconomyStore : IEconomyStore
         var components = source.Components ?? [];
         if (source.ProductId == 0 || string.IsNullOrWhiteSpace(source.Name)
             || source.PriceCredits <= 0
-            || source.ProductType is not (StoreProductType.Item or StoreProductType.Set)
+            || source.ProductType is not (StoreProductType.Item or StoreProductType.Set or StoreProductType.DotaPlusSubscription)
             || components.Any(component => component.ProductId == 0 || component.Quantity == 0))
+        {
+            return false;
+        }
+
+        var isDotaPlus = source.ProductType == StoreProductType.DotaPlusSubscription;
+        if (isDotaPlus && (source.DotaPlusDays is < 1 or > 3650 || source.DefIndex != 0 || components.Count != 0)
+            || !isDotaPlus && source.DotaPlusDays != 0)
         {
             return false;
         }
@@ -537,6 +544,7 @@ public sealed class EconomyStore : IEconomyStore
                 Name = source.Name.Trim(),
                 Category = source.Category?.Trim() ?? string.Empty,
                 Description = source.Description?.Trim() ?? string.Empty,
+                DotaPlusDays = isDotaPlus ? source.DotaPlusDays : 0,
                 Components = normalizedComponents
             };
             return true;
@@ -560,6 +568,9 @@ public sealed class EconomyStore : IEconomyStore
         entity.Category = item.Category;
         entity.Description = item.Description;
         entity.BuildVersion = item.BuildVersion;
+        entity.DotaPlusDays = item.ProductType == StoreProductType.DotaPlusSubscription
+            ? item.DotaPlusDays
+            : 0;
         entity.Active = item.Active;
         entity.UpdatedAt = now;
 
@@ -593,6 +604,8 @@ public sealed class EconomyStore : IEconomyStore
             .GroupBy(component => component.ProductId)
             .ToDictionary(group => group.Key, group => group.ToArray());
         var grants = new Dictionary<uint, uint>();
+        var hasSubscription = false;
+        var dotaPlusDays = 0;
         long total = 0;
         foreach (var line in normalized)
         {
@@ -613,13 +626,64 @@ public sealed class EconomyStore : IEconomyStore
             }
 
             total += lineTotal;
+
+            if (product.ProductType == StoreProductType.DotaPlusSubscription)
+            {
+                if (grants.Count != 0)
+                {
+                    return StoreOperationResult.Failed(
+                        "mixed_purchase",
+                        "Un plan Dota Plus no se puede combinar con items o sets.");
+                }
+
+                if (product.DotaPlusDays is < 1 or > 3650)
+                {
+                    return StoreOperationResult.Failed(
+                        "invalid_product",
+                        "El plan Dota Plus no tiene una duración válida.");
+                }
+
+                try
+                {
+                    dotaPlusDays = checked(dotaPlusDays + checked(product.DotaPlusDays * (int)line.Quantity));
+                }
+                catch (OverflowException)
+                {
+                    return StoreOperationResult.Failed(
+                        "invalid_purchase",
+                        "La duración total de Dota Plus es demasiado grande.");
+                }
+
+                if (dotaPlusDays > 3650)
+                {
+                    return StoreOperationResult.Failed(
+                        "invalid_purchase",
+                        "Una compra no puede añadir más de 3.650 días de Dota Plus.");
+                }
+
+                hasSubscription = true;
+                continue;
+            }
+
+            if (hasSubscription)
+            {
+                return StoreOperationResult.Failed(
+                    "mixed_purchase",
+                    "Un plan Dota Plus no se puede combinar con items o sets.");
+            }
+
+            if (product.ProductType is not (StoreProductType.Item or StoreProductType.Set))
+            {
+                return StoreOperationResult.Failed("invalid_product", "El tipo de producto no es válido.");
+            }
+
             if (!ExpandProduct(product.ProductId, line.Quantity, products, components, [], grants, out error))
             {
                 return StoreOperationResult.Failed("invalid_product", error);
             }
         }
 
-        if (total <= 0 || grants.Count == 0)
+        if (total <= 0 || (grants.Count == 0 && dotaPlusDays == 0))
         {
             return StoreOperationResult.Failed("invalid_purchase", "La compra no contiene productos válidos.");
         }
@@ -643,6 +707,7 @@ public sealed class EconomyStore : IEconomyStore
         {
             AccountId = accountId,
             TotalCredits = total,
+            DotaPlusDays = dotaPlusDays,
             Status = StorePurchaseStatus.Pending,
             LinesJson = JsonSerializer.Serialize(normalized),
             GrantsJson = JsonSerializer.Serialize(grants.Select(grant => new GrantLine(grant.Key, grant.Value))),
@@ -700,6 +765,23 @@ public sealed class EconomyStore : IEconomyStore
         }
 
         var grants = Deserialize<GrantLine[]>(purchase.GrantsJson) ?? [];
+        if (purchase.DotaPlusDays is < 0 or > 3650)
+        {
+            return StoreOperationResult.Failed(
+                "invalid_purchase",
+                "La transacción contiene una duración Dota Plus no válida.",
+                ToWallet(wallet));
+        }
+
+        if (purchase.DotaPlusDays > 0 && grants.Length != 0
+            || purchase.DotaPlusDays == 0 && grants.Length == 0)
+        {
+            return StoreOperationResult.Failed(
+                "invalid_purchase",
+                "La transacción no contiene una concesión válida.",
+                ToWallet(wallet));
+        }
+
         var itemIds = new List<ulong>(grants.Length);
         var items = new List<CSOEconItem>(grants.Length);
         foreach (var grant in grants)
@@ -718,9 +800,37 @@ public sealed class EconomyStore : IEconomyStore
             items.Add(ToProto(entity));
         }
 
+        var now = DateTimeOffset.UtcNow;
+        if (purchase.DotaPlusDays > 0)
+        {
+            var plus = db.DotaPlusAccounts.SingleOrDefault(row => row.AccountId == accountId);
+            if (plus is null)
+            {
+                plus = new DotaPlusAccountEntity { AccountId = accountId };
+                db.DotaPlusAccounts.Add(plus);
+            }
+
+            var isActive = plus.Enabled && plus.ExpiresAt is not null && plus.ExpiresAt > now;
+            var baseDate = isActive ? plus.ExpiresAt!.Value : now;
+            plus.Enabled = true;
+            plus.StartedAt ??= now;
+            plus.ExpiresAt = baseDate.AddDays(purchase.DotaPlusDays);
+            plus.UpdatedAt = now;
+            db.DotaPlusTransactions.Add(new DotaPlusTransactionEntity
+            {
+                AccountId = accountId,
+                ChangedByAccountId = 0,
+                Action = "purchase",
+                Days = purchase.DotaPlusDays,
+                Reason = $"Compra local #{purchase.Id}",
+                ExpiresAtAfter = plus.ExpiresAt,
+                CreatedAt = now
+            });
+        }
+
         wallet.BalanceCredits -= purchase.TotalCredits;
         wallet.ReservedCredits -= purchase.TotalCredits;
-        wallet.UpdatedAt = DateTimeOffset.UtcNow;
+        wallet.UpdatedAt = now;
         db.WalletTransactions.Add(new WalletTransactionEntity
         {
             AccountId = accountId,
@@ -728,11 +838,11 @@ public sealed class EconomyStore : IEconomyStore
             AmountCredits = -purchase.TotalCredits,
             BalanceAfterCredits = wallet.BalanceCredits,
             Reference = $"store-purchase:{purchase.Id}",
-            CreatedAt = DateTimeOffset.UtcNow
+            CreatedAt = now
         });
         purchase.Status = StorePurchaseStatus.Finalized;
         purchase.ItemIdsJson = JsonSerializer.Serialize(itemIds);
-        purchase.CompletedAt = DateTimeOffset.UtcNow;
+        purchase.CompletedAt = now;
         db.SaveChanges();
 
         return new StoreOperationResult(true, "ok", "Compra completada.", (ulong)purchase.Id, itemIds, items, ToWallet(wallet));
@@ -982,6 +1092,7 @@ public sealed class EconomyStore : IEconomyStore
             item.Category,
             item.Description,
             item.BuildVersion,
+            item.DotaPlusDays,
             item.Active,
             components
                 .Where(component => component.ProductId == item.ProductId)

@@ -195,6 +195,7 @@ public sealed record StoreCatalogUpsertRequest(
     string? Category,
     string? Description,
     uint BuildVersion,
+    int DotaPlusDays,
     bool Active,
     IReadOnlyList<StoreCatalogComponentRequest>? Components);
 
@@ -207,6 +208,7 @@ public sealed record StoreCatalogItemResponse(
     string Category,
     string Description,
     uint BuildVersion,
+    int DotaPlusDays,
     bool Active,
     IReadOnlyList<StoreCatalogComponent> Components,
     uint OwnedQuantity);

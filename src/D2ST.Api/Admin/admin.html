@@ -517,8 +517,9 @@
           <input id="catalogProductId" class="span-2" type="number" min="1" placeholder="ProductId">
           <input id="catalogDefIndex" class="span-2" type="number" min="0" placeholder="DefIndex">
           <input id="catalogName" class="span-4" placeholder="Nombre">
-          <select id="catalogType" class="span-2"><option value="0">Item</option><option value="1">Set</option></select>
+          <select id="catalogType" class="span-2"><option value="0">Item</option><option value="1">Set</option><option value="2">Dota Plus</option></select>
           <input id="catalogPrice" class="span-2" type="number" min="1" placeholder="Precio">
+          <input id="catalogDotaPlusDays" class="span-2" type="number" min="1" max="3650" placeholder="Días Plus">
           <input id="catalogCategory" class="span-3" placeholder="Categoría">
           <input id="catalogBuildVersion" class="span-2" type="number" min="0" placeholder="BuildVersion">
           <input id="catalogDescription" class="span-7" placeholder="Descripción opcional">
@@ -538,7 +539,7 @@
         <div class="toolbar">
           <input id="catalogSearch" class="grow" placeholder="Buscar ProductId, DefIndex, nombre o categoría">
           <select id="catalogStatus"><option value="all">Todos</option><option value="active">Activos</option><option value="inactive">Inactivos</option></select>
-          <select id="catalogFilterType"><option value="all">Items y sets</option><option value="0">Solo items</option><option value="1">Solo sets</option></select>
+          <select id="catalogFilterType"><option value="all">Items, sets y Plus</option><option value="0">Solo items</option><option value="1">Solo sets</option><option value="2">Solo Dota Plus</option></select>
           <select id="catalogPageSize"><option value="25">25 por página</option><option value="50" selected>50 por página</option><option value="100">100 por página</option></select>
         </div>
         <div id="catalogWrap" class="catalog-table"><div class="empty">No hay productos cargados.</div></div>
@@ -1014,7 +1015,7 @@ async function loadUsers(page = usersState.page) {
 }
 
 function catalogTypeLabel(item) {
-  return Number(item.ProductType) === 1 ? 'Set' : 'Item';
+  return Number(item.ProductType) === 2 ? 'Dota Plus' : Number(item.ProductType) === 1 ? 'Set' : 'Item';
 }
 
 function catalogComponentsLabel(item) {
@@ -1062,6 +1063,7 @@ function renderCatalog(body) {
     detail.textContent = '#' + item.ProductId
       + ' · DefIndex ' + (item.DefIndex || '—')
       + (item.Category ? ' · ' + item.Category : '')
+      + (Number(item.ProductType) === 2 ? ' · ' + formatNumber(item.DotaPlusDays || 0) + ' días' : '')
       + (Number(item.ProductType) === 1 ? ' · ' + catalogComponentsLabel(item) : '');
     product.appendChild(name);
     product.appendChild(detail);
@@ -1203,11 +1205,24 @@ function clearCatalogForm() {
   $('catalogName').value = '';
   $('catalogType').value = '0';
   $('catalogPrice').value = '';
+  $('catalogDotaPlusDays').value = '';
   $('catalogCategory').value = '';
   $('catalogBuildVersion').value = '';
   $('catalogDescription').value = '';
   $('catalogComponents').value = '';
   $('catalogActive').checked = false;
+  syncCatalogTypeFields();
+}
+
+function syncCatalogTypeFields() {
+  const isPlus = Number($('catalogType').value) === 2;
+  $('catalogDefIndex').disabled = isPlus;
+  $('catalogComponents').disabled = isPlus;
+  $('catalogDotaPlusDays').disabled = !isPlus;
+  if (isPlus) {
+    $('catalogDefIndex').value = '0';
+    $('catalogComponents').value = '';
+  }
 }
 
 function editCatalog(item) {
@@ -1216,12 +1231,14 @@ function editCatalog(item) {
   $('catalogName').value = item.Name || '';
   $('catalogType').value = String(item.ProductType || 0);
   $('catalogPrice').value = item.PriceCredits;
+  $('catalogDotaPlusDays').value = item.DotaPlusDays || '';
   $('catalogCategory').value = item.Category || '';
   $('catalogBuildVersion').value = item.BuildVersion || 0;
   $('catalogDescription').value = item.Description || '';
   $('catalogComponents').value = (item.Components || [])
     .map((component) => component.ProductId + ':' + component.Quantity).join(',');
   $('catalogActive').checked = !!item.Active;
+  syncCatalogTypeFields();
   $('catalogName').focus();
   $('catalogProductId').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
@@ -1232,12 +1249,17 @@ async function saveCatalog() {
   const name = $('catalogName').value.trim();
   const productType = parseInt($('catalogType').value, 10);
   const price = parseInt($('catalogPrice').value, 10);
+  const dotaPlusDays = parseInt($('catalogDotaPlusDays').value || '0', 10);
   const components = parseComponents($('catalogComponents').value);
-  if (!Number.isFinite(productId) || productId <= 0 || !name || !Number.isFinite(price) || price <= 0) {
+  if (!Number.isFinite(productId) || productId <= 0 || !name || ![0, 1, 2].includes(productType) || !Number.isFinite(price) || price <= 0) {
     show($('manualCatalogMsg'), 'ProductId, nombre y precio son obligatorios; el precio debe ser mayor que cero.');
     return;
   }
-  if (components === null || (productType === 0 && components.length > 0) || (productType === 1 && components.length === 0)) {
+  if (productType === 2 && (!Number.isInteger(dotaPlusDays) || dotaPlusDays < 1 || dotaPlusDays > 3650)) {
+    show($('manualCatalogMsg'), 'Un producto Dota Plus debe indicar entre 1 y 3.650 días.');
+    return;
+  }
+  if (components === null || (productType === 0 && components.length > 0) || (productType === 1 && components.length === 0) || (productType === 2 && components.length > 0)) {
     show($('manualCatalogMsg'), 'Los componentes no son válidos para el tipo seleccionado.');
     return;
   }
@@ -1253,6 +1275,7 @@ async function saveCatalog() {
       Category: $('catalogCategory').value.trim(),
       Description: $('catalogDescription').value.trim(),
       BuildVersion: Number.isFinite(buildVersion) ? buildVersion : 0,
+      DotaPlusDays: productType === 2 ? dotaPlusDays : 0,
       Active: $('catalogActive').checked,
       Components: components
     })
@@ -1276,6 +1299,7 @@ async function toggleCatalog(item) {
       Category: item.Category || '',
       Description: item.Description || '',
       BuildVersion: item.BuildVersion || 0,
+      DotaPlusDays: Number(item.DotaPlusDays) || 0,
       Active: !item.Active,
       Components: item.Components || []
     })
@@ -1580,6 +1604,7 @@ $('discoverBtn').addEventListener('click', discoverCatalog);
 $('importBtn').addEventListener('click', importCatalog);
 $('saveCatalogBtn').addEventListener('click', saveCatalog);
 $('clearCatalogBtn').addEventListener('click', clearCatalogForm);
+$('catalogType').addEventListener('change', syncCatalogTypeFields);
 $('userStatus').addEventListener('change', () => {
   usersState.status = $('userStatus').value;
   loadUsers(1);
@@ -1616,6 +1641,7 @@ $('catalogSearch').addEventListener('input', () => {
 });
 $('discoverySearch').addEventListener('keydown', (event) => { if (event.key === 'Enter') discoverCatalog(); });
 
+syncCatalogTypeFields();
 if (token) enter();
 </script>
 </body>

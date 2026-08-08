@@ -897,8 +897,59 @@ Evidence and limits:
   while the exact labels/item visuals of a particular Dota client build must
   be confirmed against that build's local schema before treating the visual
   relic catalog as complete.
-- Phase 3 will connect Dota Plus activation/rewards to the existing local
-  catalog and wallet, then run the final LAN smoke path.
+- Phase 3 is implemented below: Dota Plus plans now connect to the local
+  catalog and wallet. The remaining validation is the Windows/.NET and real
+  client smoke on the LAN target.
+
+## Phase 17 — local Dota Plus catalog purchase (Phase 3)
+
+The third slice connects the local Dota Plus entitlement to the server-owned
+catalog and virtual wallet. It remains entirely inside the LAN server: there
+is no Valve billing, Steam Wallet charge or external entitlement lookup.
+
+Implemented:
+
+- `StoreProductType.DotaPlusSubscription` adds a catalog plan type. An admin
+  can create, edit, activate, deactivate and filter plans in the compact
+  catalog workspace. Each plan stores a local-credit price and `1`–`3,650`
+  subscription days; plans cannot have an econ `DefIndex` or components.
+- The catalog migration `20260808220000_AddDotaPlusCatalogPlans` persists the
+  plan duration in both catalog rows and pending purchase transactions. The GC
+  sales response advertises a plan as a local SKU using its `ProductId`, so
+  the existing purchase-init/finalize path can select it.
+- A Dota Plus checkout reserves the user's local credits, rejects mixed
+  plan/item purchases, snapshots the total days, then at finalization debits
+  the wallet and extends `DotaPlusAccounts.ExpiresAt` in the same SQLite
+  transaction. The operation also appends a `purchase` row to
+  `DotaPlusTransactions` and the normal wallet ledger.
+- REST (`POST /api/store/purchase`) and GC finalization both refresh the Dota
+  Plus Shared Objects after a successful purchase. The connected client sees
+  the local subscription projection without waiting for a relogin; reconnects
+  rebuild it from the database.
+- The existing admin Users workspace remains the direct operational fallback:
+  an administrator can activate/revoke/extend Dota Plus, add/remove shards
+  and add/remove local wallet credits per account.
+
+How to publish a plan locally: in Admin → Catálogo, use a unique ProductId,
+select “Dota Plus”, leave DefIndex/components empty, set the price in local
+credits and enter the number of days. Activate it when it is ready. The user
+then needs that amount in the local wallet; the client or REST purchase path
+uses the same SKU and wallet rules.
+
+Evidence and limits:
+
+- `git diff --check`, admin JavaScript parsing, duplicate DOM-id audit and
+  source-reference checks pass for this phase.
+- This environment has no `dotnet` or `sqlite3` executable, so the Release
+  build, migration/startup smoke and Windows build-6783 capture could not be
+  rerun here. Run those checks on the LAN server before deployment.
+- The server-side local purchase, entitlement extension, audit and SO refresh
+  paths are implemented. An unmodified client may not provide a native
+  friendly label or dedicated Dota Plus checkout screen for a custom local
+  SKU; that visual/schema behavior still needs a real build-6783 capture.
+- Plan purchases are deliberately local-credit transactions. Refunds,
+  Steam Wallet, real-money billing, Valve catalog ownership and cross-server
+  synchronization are out of scope.
 
 ## Working conventions
 
@@ -917,12 +968,13 @@ Evidence and limits:
 
 ## Current handoff
 
-Phases 1–16 and the server-side bot-match support are implemented and verified
-at compile/startup and targeted API/GC-smoke level, with the schema managed by
-EF Core and legacy databases preserved through the transition bridge. The next
-session should first validate the local Dota Plus progress projection against a
-real build-6783 client, then connect the local catalog/wallet rewards. Preserve
-capture/replay evidence, rebuild the published client shim and verify that Dota
-returns to the foreground before claiming client compatibility. See
+Phases 1–17 and the server-side bot-match support are implemented, with the
+schema managed by EF Core and legacy databases preserved through the
+transition bridge. Phase 17 has static validation only in this environment;
+the next session should run the Windows/.NET migration/startup smoke and
+validate Dota Plus catalog purchase, wallet debit, entitlement refresh and
+challenge/relic projection against a real build-6783 client on the LAN.
+Preserve capture/replay evidence, rebuild the published client shim and verify
+that Dota returns to the foreground before claiming client compatibility. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client
 compatibility as complete until it is recorded here.

@@ -1,5 +1,6 @@
 using D2ST.Core.GameCoordinator;
 using D2ST.GameCoordinator.Econ;
+using D2ST.GameCoordinator.DotaPlus;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Handlers;
@@ -12,11 +13,16 @@ public sealed class StorePurchaseFinalizeHandler : IGcMessageHandler
 {
     private readonly IEconomyStore _economy;
     private readonly EconInventory _inventory;
+    private readonly DotaPlusProjection _dotaPlus;
 
-    public StorePurchaseFinalizeHandler(IEconomyStore economy, EconInventory inventory)
+    public StorePurchaseFinalizeHandler(
+        IEconomyStore economy,
+        EconInventory inventory,
+        DotaPlusProjection dotaPlus)
     {
         _economy = economy;
         _inventory = inventory;
+        _dotaPlus = dotaPlus;
     }
 
     public uint MessageType => GcMsg.StorePurchaseFinalize;
@@ -28,6 +34,7 @@ public sealed class StorePurchaseFinalizeHandler : IGcMessageHandler
         if (result.Success)
         {
             _inventory.ApplyItems(context.SteamId, context.AccountId, result.Items);
+            _dotaPlus.Refresh(context.AccountId);
         }
 
         var response = new CMsgGCStorePurchaseFinalizeResponse

@@ -20,5 +20,6 @@ public enum EconomyTransactionKind
 public enum StoreProductType
 {
     Item = 0,
-    Set = 1
+    Set = 1,
+    DotaPlusSubscription = 2
 }

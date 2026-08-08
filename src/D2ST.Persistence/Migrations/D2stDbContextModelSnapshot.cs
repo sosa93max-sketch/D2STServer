@@ -877,6 +877,9 @@ namespace D2ST.Persistence.Migrations
                     b.Property<uint>("DefIndex")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DotaPlusDays")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2048)
@@ -917,6 +920,9 @@ namespace D2ST.Persistence.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("DotaPlusDays")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GrantsJson")
                         .IsRequired()

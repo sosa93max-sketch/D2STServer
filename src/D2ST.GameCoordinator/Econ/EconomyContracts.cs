@@ -14,6 +14,7 @@ public sealed record StoreCatalogItem(
     string Category,
     string Description,
     uint BuildVersion,
+    int DotaPlusDays,
     bool Active,
     IReadOnlyList<StoreCatalogComponent> Components);
 

@@ -3,7 +3,7 @@ using D2ST.Core.Economy;
 
 namespace D2ST.Persistence;
 
-/// <summary>One locally sellable item or set.</summary>
+/// <summary>One locally sellable item, set or Dota Plus subscription plan.</summary>
 public sealed class StoreCatalogItemEntity
 {
     [Key]
@@ -26,6 +26,9 @@ public sealed class StoreCatalogItemEntity
     public string Description { get; set; } = string.Empty;
 
     public uint BuildVersion { get; set; }
+
+    /// <summary>Subscription duration for a Dota Plus product; zero for items and sets.</summary>
+    public int DotaPlusDays { get; set; }
 
     public bool Active { get; set; }
 

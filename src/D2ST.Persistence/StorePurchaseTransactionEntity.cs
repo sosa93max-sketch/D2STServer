@@ -11,7 +11,8 @@ public enum StorePurchaseStatus
 
 /// <summary>
 /// Pending/finalized local store checkout. Lines and grants are kept as JSON so
-/// a catalog edit cannot change a purchase after its init response.
+/// a catalog edit cannot change a purchase after its init response; a Plus
+/// plan snapshots its duration in DotaPlusDays.
 /// </summary>
 public sealed class StorePurchaseTransactionEntity
 {
@@ -21,6 +22,9 @@ public sealed class StorePurchaseTransactionEntity
     public uint AccountId { get; set; }
 
     public long TotalCredits { get; set; }
+
+    /// <summary>Local Dota Plus days granted at finalization; zero for item/set purchases.</summary>
+    public int DotaPlusDays { get; set; }
 
     public StorePurchaseStatus Status { get; set; }
 
