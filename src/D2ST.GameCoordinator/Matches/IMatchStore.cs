@@ -15,6 +15,22 @@ public interface IMatchStore
     /// </summary>
     MatchRecordResult Record(MatchRecord match);
 
+    /// <summary>Reads the account's history in newest-first pages.</summary>
+    IReadOnlyList<PlayerMatchHistoryEntry> GetPlayerMatchHistory(
+        uint accountId,
+        ulong startAtMatchId,
+        uint matchesRequested,
+        int heroId,
+        bool includePracticeMatches,
+        bool includeCustomGames,
+        bool includeEventGames);
+
+    /// <summary>Reads compact projections for a requested set of match ids.</summary>
+    IReadOnlyList<MatchMinimalRecord> GetMatchesMinimal(IReadOnlyList<ulong> matchIds);
+
+    /// <summary>Aggregates players who shared a team with the account.</summary>
+    IReadOnlyList<TeammateStatRecord> GetTeammateStats(uint accountId);
+
     /// <summary>Reads the current profile projection for the account.</summary>
     PlayerProfileStats GetProfileStats(uint accountId);
 }

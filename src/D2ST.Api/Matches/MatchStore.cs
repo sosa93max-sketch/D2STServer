@@ -131,6 +131,155 @@ public sealed class MatchStore : IMatchStore
         }
     }
 
+    public IReadOnlyList<PlayerMatchHistoryEntry> GetPlayerMatchHistory(
+        uint accountId,
+        ulong startAtMatchId,
+        uint matchesRequested,
+        int heroId,
+        bool includePracticeMatches,
+        bool includeCustomGames,
+        bool includeEventGames)
+    {
+        // Every row currently written by D2STServer comes from a practice
+        // lobby. Respect an explicit request to exclude that category while
+        // leaving the other filters ready for future match sources.
+        if (accountId == 0 || !includePracticeMatches)
+        {
+            return [];
+        }
+
+        var limit = (int)Math.Min(matchesRequested == 0 ? 20u : matchesRequested, 100u);
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        var rows = (
+            from player in db.MatchPlayers.AsNoTracking()
+            join match in db.Matches.AsNoTracking() on player.MatchId equals match.MatchId
+            where player.AccountId == accountId
+                && (startAtMatchId == 0 || match.MatchId < startAtMatchId)
+                && (heroId <= 0 || player.HeroId == heroId)
+            orderby match.MatchId descending
+            select new
+            {
+                match.MatchId,
+                match.EndedAt,
+                match.DurationSeconds,
+                match.GameMode,
+                player.HeroId,
+                player.Won,
+                player.LeaverStatus
+            })
+            .Take(limit)
+            .ToList();
+
+        return rows.Select(row => new PlayerMatchHistoryEntry
+        {
+            MatchId = row.MatchId,
+            StartTime = UnixStartTime(row.EndedAt, row.DurationSeconds),
+            HeroId = row.HeroId,
+            Winner = row.Won,
+            GameMode = row.GameMode,
+            DurationSeconds = row.DurationSeconds,
+            Abandon = row.LeaverStatus != 0
+        }).ToArray();
+    }
+
+    public IReadOnlyList<MatchMinimalRecord> GetMatchesMinimal(IReadOnlyList<ulong> matchIds)
+    {
+        var ids = matchIds
+            .Where(matchId => matchId != 0)
+            .Distinct()
+            .Take(100)
+            .ToArray();
+        if (ids.Length == 0)
+        {
+            return [];
+        }
+
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        var matches = db.Matches.AsNoTracking()
+            .Where(match => ids.Contains(match.MatchId))
+            .OrderByDescending(match => match.MatchId)
+            .ToList();
+        var players = db.MatchPlayers.AsNoTracking()
+            .Where(player => ids.Contains(player.MatchId))
+            .OrderBy(player => player.MatchId)
+            .ThenBy(player => player.AccountId)
+            .ToList();
+        var playersByMatch = players
+            .GroupBy(player => player.MatchId)
+            .ToDictionary(group => group.Key, group => group.ToArray());
+
+        return matches.Select(match => new MatchMinimalRecord
+        {
+            MatchId = match.MatchId,
+            StartTime = UnixStartTime(match.EndedAt, match.DurationSeconds),
+            DurationSeconds = match.DurationSeconds,
+            GameMode = match.GameMode,
+            WinningTeam = match.WinningTeam,
+            RadiantScore = match.RadiantScore,
+            DireScore = match.DireScore,
+            Players = playersByMatch.TryGetValue(match.MatchId, out var matchPlayers)
+                ? matchPlayers.Select(ToMinimalPlayer).ToArray()
+                : Array.Empty<MatchMinimalPlayer>()
+        }).ToArray();
+    }
+
+    public IReadOnlyList<TeammateStatRecord> GetTeammateStats(uint accountId)
+    {
+        if (accountId == 0)
+        {
+            return [];
+        }
+
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        var ownTeams = db.MatchPlayers.AsNoTracking()
+            .Where(player => player.AccountId == accountId)
+            .Select(player => new { player.MatchId, player.Team })
+            .ToList()
+            .GroupBy(row => row.MatchId)
+            .ToDictionary(group => group.Key, group => group.First().Team);
+        if (ownTeams.Count == 0)
+        {
+            return [];
+        }
+
+        var matchIds = ownTeams.Keys.ToArray();
+        var candidates = (
+            from player in db.MatchPlayers.AsNoTracking()
+            join match in db.Matches.AsNoTracking() on player.MatchId equals match.MatchId
+            where player.AccountId != accountId && matchIds.Contains(player.MatchId)
+            select new { Player = player, match.EndedAt }
+        ).ToList();
+
+        var sharedGames = candidates
+            .Where(candidate => ownTeams.TryGetValue(candidate.Player.MatchId, out var ownTeam)
+                && ownTeam == candidate.Player.Team)
+            .ToList();
+
+        return sharedGames
+            .GroupBy(candidate => candidate.Player.AccountId)
+            .Select(group =>
+            {
+                var latest = group.OrderByDescending(entry => entry.EndedAt).First();
+                return new TeammateStatRecord
+                {
+                    AccountId = group.Key,
+                    Games = (uint)group.Count(),
+                    Wins = (uint)group.Count(entry => entry.Player.Won),
+                    MostRecentGameTimestamp = UnixTimestamp(latest.EndedAt),
+                    MostRecentGameMatchId = latest.Player.MatchId,
+                    Performance = (float)group.Average(entry =>
+                        (double)entry.Player.Kills + entry.Player.Assists - entry.Player.Deaths)
+                };
+            })
+            .OrderByDescending(stat => stat.Games)
+            .ThenByDescending(stat => stat.MostRecentGameTimestamp)
+            .Take(100)
+            .ToArray();
+    }
+
     public PlayerProfileStats GetProfileStats(uint accountId)
     {
         using var scope = _scopes.CreateScope();
@@ -250,6 +399,42 @@ public sealed class MatchStore : IMatchStore
         {
             entity.LastMatchAt = match.EndedAt;
         }
+    }
+
+    private static MatchMinimalPlayer ToMinimalPlayer(MatchPlayerEntity player) => new()
+    {
+        AccountId = player.AccountId,
+        HeroId = player.HeroId,
+        Level = player.Level,
+        Kills = player.Kills,
+        Deaths = player.Deaths,
+        Assists = player.Assists,
+        PlayerSlot = player.Team == 1 ? 128u : 0u,
+        Items = DeserializeItems(player.ItemsJson)
+    };
+
+    private static IReadOnlyList<int> DeserializeItems(string json)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<int[]>(json) ?? Array.Empty<int>();
+        }
+        catch (JsonException)
+        {
+            return Array.Empty<int>();
+        }
+    }
+
+    private static uint UnixStartTime(DateTimeOffset endedAt, uint durationSeconds)
+    {
+        var start = endedAt.ToUnixTimeSeconds() - durationSeconds;
+        return start <= 0 ? 0u : start >= uint.MaxValue ? uint.MaxValue : (uint)start;
+    }
+
+    private static uint UnixTimestamp(DateTimeOffset value)
+    {
+        var timestamp = value.ToUnixTimeSeconds();
+        return timestamp <= 0 ? 0u : timestamp >= uint.MaxValue ? uint.MaxValue : (uint)timestamp;
     }
 
     private static string Serialize<T>(IReadOnlyList<T> values) =>

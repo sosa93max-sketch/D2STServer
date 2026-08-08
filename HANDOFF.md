@@ -47,7 +47,7 @@ vertical.
 
 ## Decision and implementation status
 
-### Phase 1 — completed in this working tree
+### Phase 1 — completed
 
 The first vertical now consumes the game server's real `CMsgGameMatchSignOut`
 payload instead of discarding it.
@@ -92,6 +92,40 @@ Implemented:
 - Two-client Windows validation and a real captured `7004` replay are still
   pending; compilation and startup are not a substitute for that validation.
 
+### Phase 2 — completed in this working tree
+
+The persisted rows are now readable by the GC handlers that the client uses to
+populate match history and teammate summaries:
+
+- `7408 -> 7409` decodes the requested account, hero filter, page size,
+  `start_at_match_id` cursor and practice/custom/event flags. It returns the
+  newest local-lobby matches first and derives `start_time` from the authoritative
+  end time and duration.
+- `8063 -> 8064` decodes requested match ids and returns compact real match
+  summaries: result, duration, mode, Radiant/Dire score and each stored player's
+  account, hero, level, K/D/A, team boundary slot and items.
+- `8124 -> 8125` returns players that shared a team with the requesting account,
+  including common games, wins, most recent match and a deterministic
+  K/D/A-difference performance average.
+- `IMatchStore` and `MatchStore` now expose bounded read queries (100 rows per
+  request) without coupling the GameCoordinator to EF Core.
+- The generated protobuf files were not modified; all new behavior uses the
+  existing generated request/response contracts.
+
+The history reader treats rows written by the current server as practice-lobby
+matches. An omitted `include_practice_matches` field includes them; an explicit
+false excludes them, matching the protocol flag. Custom and event filters are
+accepted for forward compatibility but have no rows until those match sources
+are implemented.
+
+### Evidence for Phase 2
+
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings and
+  0 errors after the read-side changes.
+- API startup against a new temporary SQLite database: passed; DI resolved the
+  read-capable `IMatchStore` and the schema bootstrap completed.
+- `git diff --check`: passed.
+
 ## Match close data flow
 
 ```text
@@ -120,15 +154,16 @@ arrays without inventing a second protocol model.
 last hits, denies, damage, healing, gold, GPM/XPM, play time and leavers.
 `PlayerHeroStats` carries the same useful counters grouped by account and hero.
 The per-match rows remain the source of truth for future match-history and
-hero-standings handlers.
+hero-standings handlers. The current history readers query those per-match rows
+directly, so they do not reconstruct history from lossy profile counters.
 
 ## Next order
 
-1. Implement the history read handlers (`7408/7409`, `8063/8064` and the
-   compatible friend/teammate requests) from `Matches` and `MatchPlayers`.
-2. Implement hero standings/progress responses from `PlayerHeroStats`.
-3. Expand the live `7034` path for kill totals, first blood, team score and
+1. Implement hero standings/progress responses (`7274/7275`, `7521/7522` and
+   `7606/7607`) from `PlayerHeroStats`.
+2. Expand the live `7034` path for kill totals, first blood, team score and
    building state where the current client build requests them.
+3. Expose richer profile-card/recent-match projections from the persisted rows.
 4. Add EF migrations and replace the startup SQL bootstrap after the schema has
    stabilized.
 5. Validate with two consecutive accounts and two real Windows clients through
@@ -141,8 +176,15 @@ hero-standings handlers.
 - Lobby objects and the server-to-lobby index are still in memory; completed
   match data is persistent but a running lobby is not.
 - The profile card handler still exposes rank-focused fields. The account
-  Shared Object now has real aggregate counters; full history/profile-card
+  Shared Object now has real aggregate counters; the richer profile-card
   projection belongs to the next phase.
+- Match-history rows expose the fields available in the current contracts. Rank
+  change/previous rank is not yet stored per match, and the compact player slot
+  currently preserves only the Radiant/Dire boundary (0/128) because the final
+  sign-out payload has no lobby slot field.
+- The history endpoint honors an explicit `include_practice_matches=false`, so a
+  client request that excludes practice games will intentionally receive no
+  local-lobby rows until another match category exists.
 - The fallback server lookup for simultaneous local launches remains a known
   risk until the game-server/lobby association is made explicit for every
   launch.
@@ -161,8 +203,8 @@ hero-standings handlers.
 
 ## Current handoff
 
-Phase 1 is implemented and verified at compile/startup level. The next session
-should begin with the read side of the persisted match history, then expose the
-hero aggregates through the existing generated GC contracts. Before calling the
+Phases 1 and 2 are implemented and verified at compile/startup level. The next
+session should expose `PlayerHeroStats` through the existing hero standings and
+progress contracts, then improve the live `7034` data path. Before calling the
 vertical complete, reproduce it with two actual Dota 2 clients and preserve the
 capture/replay evidence in the repository diagnostics output.

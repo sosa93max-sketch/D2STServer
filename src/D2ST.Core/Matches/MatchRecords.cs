@@ -174,3 +174,76 @@ public sealed record PlayerProfileStats
 
     public static PlayerProfileStats Empty(uint accountId) => new() { AccountId = accountId };
 }
+
+/// <summary>One row returned by the player's match-history request.</summary>
+public sealed record PlayerMatchHistoryEntry
+{
+    public required ulong MatchId { get; init; }
+
+    public uint StartTime { get; init; }
+
+    public int HeroId { get; init; }
+
+    public bool Winner { get; init; }
+
+    public uint GameMode { get; init; }
+
+    public uint DurationSeconds { get; init; }
+
+    public bool Abandon { get; init; }
+}
+
+/// <summary>Compact match projection used by the 8063/8064 request.</summary>
+public sealed record MatchMinimalRecord
+{
+    public required ulong MatchId { get; init; }
+
+    public uint StartTime { get; init; }
+
+    public uint DurationSeconds { get; init; }
+
+    public uint GameMode { get; init; }
+
+    public int WinningTeam { get; init; }
+
+    public uint RadiantScore { get; init; }
+
+    public uint DireScore { get; init; }
+
+    public IReadOnlyList<MatchMinimalPlayer> Players { get; init; } = Array.Empty<MatchMinimalPlayer>();
+}
+
+public sealed record MatchMinimalPlayer
+{
+    public required uint AccountId { get; init; }
+
+    public int HeroId { get; init; }
+
+    public uint Level { get; init; }
+
+    public uint Kills { get; init; }
+
+    public uint Deaths { get; init; }
+
+    public uint Assists { get; init; }
+
+    public uint PlayerSlot { get; init; }
+
+    public IReadOnlyList<int> Items { get; init; } = Array.Empty<int>();
+}
+
+/// <summary>Aggregate for one account that shared a team with the requester.</summary>
+public sealed record TeammateStatRecord
+{
+    public required uint AccountId { get; init; }
+
+    public uint Games { get; init; }
+
+    public uint Wins { get; init; }
+
+    public uint MostRecentGameTimestamp { get; init; }
+
+    public ulong MostRecentGameMatchId { get; init; }
+
+    public float Performance { get; init; }
+}
