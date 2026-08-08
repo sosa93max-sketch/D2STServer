@@ -406,6 +406,51 @@ levels.
   receive `401` before the token exists while the overlay still opens. That
   client-side race is outside this repository and was not changed here.
 
+### Phase 9 — completed in this working tree
+
+The profile showcase flow now supports the editable profile and mini-profile
+views used by the client:
+
+- `8888 -> 8889` authenticates the edit against the caller's GC account,
+  validates the showcase type and item count, normalizes the local moderation
+  state to `Ok`, stores the exact protobuf showcase payload and returns it as
+  `validated_showcase`.
+- `8886 -> 8887` honors the requested `AccountId`, so any client can load the
+  saved profile or mini-profile of another account. `Profile` and
+  `DefaultProfile` share one saved profile; `MiniProfile` and
+  `DefaultMiniProfile` share one saved mini-profile.
+- A new `Showcases` table is keyed by `(AccountId, ShowcaseType)` and stores
+  the format version, encoded payload and update time. This keeps item
+  positions, scale, background and all generated showcase item variants
+  intact across reconnects and server restarts.
+- The existing editable profile-card path (`7538 -> 7539`) remains account
+  scoped and durable through `ProfileCards`; this phase makes the separate
+  showcase/mini-profile path durable and publicly readable as well.
+
+“Visible to everyone” is implemented through the public read request: when a
+client opens an account, it asks for that account's `AccountId` and receives
+the persisted data. The build has no separate unsolicited showcase-updated
+message, so clients that already have a profile open refresh it on their next
+read rather than receiving a live broadcast.
+
+### Evidence for Phase 9
+
+- `dotnet restore D2STServer.sln`: passed.
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- A fresh SQLite database applied both `InitialSchema` and
+  `20260808170000_AddShowcases`; an existing database applied only the new
+  migration without losing its prior rows.
+- Two independent authenticated GC sessions were used: the owner saved a
+  mini-profile item `101` and a profile item `202`; the viewer loaded both by
+  the owner's `AccountId` and received the item ids and saved position data.
+- After stopping and restarting the API, the viewer loaded both records again
+  without rewriting them: `RESTART_MINI_PUBLIC_LOAD=ok` and
+  `RESTART_PROFILE_PUBLIC_LOAD=ok`.
+- `git diff --check`: passed.
+- Real Windows build-6783 rendering and editing remain pending; the server
+  path is verified with protocol-level two-account smoke coverage.
+
 ## Match close data flow
 
 ```text
@@ -437,7 +482,9 @@ last hits, denies, damage, healing, gold, GPM/XPM, play time and leavers.
 `ProfileCards` stores the authenticated account's selected profile-card slots;
 the profile-card builder combines that layout with the real aggregate and
 per-hero projections. No profile-card item ownership or showcase moderation
-state is fabricated.
+state is fabricated. `Showcases` stores one opaque protobuf payload per account
+and canonical profile/mini-profile type, so public reads do not depend on the
+editor's in-memory session.
 The per-match rows remain the source of truth for future match-history and
 hero-standings handlers. The current history readers query those per-match rows
 directly, so they do not reconstruct history from lossy profile counters.
@@ -451,8 +498,9 @@ directly, so they do not reconstruct history from lossy profile counters.
 2. If the machine can run two client sessions, repeat with two accounts on the
    same PC. Otherwise keep the two-human validation as a pending external test.
 3. Use the Windows capture to decide whether the build also needs the
-   unimplemented `8034 -> 8035` profile-card statistics request or durable
-   showcase data; implement only fields confirmed by that traffic.
+   unimplemented `8034 -> 8035` profile-card statistics request and to confirm
+   the client renders every persisted showcase item variant; implement only
+   fields confirmed by that traffic.
 4. Only then widen the scope to spectators, invites, matchmaking and other GC
    surfaces.
 
@@ -497,10 +545,13 @@ is the planning reference for the work that follows the real-client gate.
   external client's immediate first-use session race can still make the first
   click appear ineffective, and the custom profile overlay's English strings
   are owned by that client rather than this server.
-- Profile-card slots are persisted and returned, but item/trophy ownership,
-  showcase persistence and the separate `8034 -> 8035` statistics surface are
-  not implemented until a real client capture establishes their required
-  fields.
+- Profile-card slots and profile/mini-profile showcase payloads are persisted
+  and publicly returned. Item/trophy ownership, catalog validation, showcase
+  moderation and the separate `8034 -> 8035` statistics surface still require
+  local source data or a real client capture.
+- Showcase edits are available to every client on its next public read. The
+  targeted build exposes no dedicated unsolicited showcase-update message, so
+  already-open profile windows are not pushed live by the server.
 - A bot lobby can launch with one human when `FillWithBots` is enabled, but the
   built-in Dota bot population and the exact `7004` payload still need real
   build-6783 validation. Bot rows are intentionally excluded from
@@ -533,11 +584,12 @@ is the planning reference for the work that follows the real-client gate.
 
 ## Current handoff
 
-Phases 1–8 and the server-side bot-match support are implemented and verified
+Phases 1–9 and the server-side bot-match support are implemented and verified
 at compile/startup and targeted API/GC-smoke level, with the schema managed by
 EF Core and legacy databases preserved through the transition bridge. The next
 session should validate one client against the active web account flow, friend
-requests and conduct feature gates, then use a second client on the same PC
-only if the hardware permits. Preserve capture/replay evidence before
-expanding the vertical. See [ROADMAP.md](ROADMAP.md) for the complete plan; do
-not treat client compatibility as complete until it is recorded here.
+requests, conduct gates and profile/mini-profile showcase editing, then use a
+second client on the same PC only if the hardware permits. Preserve
+capture/replay evidence before expanding the vertical. See
+[ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client
+compatibility as complete until it is recorded here.

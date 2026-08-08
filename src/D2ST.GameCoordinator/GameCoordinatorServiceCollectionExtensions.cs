@@ -31,6 +31,7 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<SoCacheService>();
         services.TryAddSingleton<IMatchStore, EmptyMatchStore>();
         services.TryAddSingleton<IProfileStore, EmptyProfileStore>();
+        services.TryAddSingleton<IShowcaseStore, EmptyShowcaseStore>();
         services.AddSingleton<WelcomeBuilder>();
         services.AddSingleton<ProfileCardBuilder>();
         services.AddSingleton<EconInventory>();

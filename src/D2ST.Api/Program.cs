@@ -28,6 +28,7 @@ builder.Services.AddSingleton<IGcMessageQueue, EventStreamGcMessageQueue>();
 builder.Services.AddSingleton<IRankStore, RankStore>();
 builder.Services.AddSingleton<IMatchStore, MatchStore>();
 builder.Services.AddSingleton<IProfileStore, ProfileCardStore>();
+builder.Services.AddSingleton<IShowcaseStore, ShowcaseStore>();
 builder.Services.AddGameCoordinator(builder.Configuration, builder.Environment.ContentRootPath);
 
 // The shim serializes/deserializes with PascalCase member names, so keep the
@@ -216,9 +217,13 @@ using (var scope = app.Services.CreateScope())
             "SlotsJson" TEXT NOT NULL,
             "UpdatedAt" TEXT NOT NULL
         );
+
         """);
 
         D2stDatabaseMigrator.MarkLegacyBaseline(db);
+        // Apply migrations added after the legacy baseline in this same
+        // startup, so the new store is available immediately after upgrade.
+        db.Database.Migrate();
     }
 }
 

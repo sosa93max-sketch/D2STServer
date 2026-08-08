@@ -531,6 +531,29 @@ namespace D2ST.Persistence.Migrations
                     b.ToTable("ProfileCards");
                 });
 
+            modelBuilder.Entity("D2ST.Persistence.ShowcaseEntity", b =>
+                {
+                    b.Property<uint>("AccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("FormatVersion")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Payload")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<uint>("ShowcaseType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AccountId", "ShowcaseType");
+
+                    b.ToTable("Showcases");
+                });
+
             modelBuilder.Entity("D2ST.Persistence.RemoteStorageFileEntity", b =>
                 {
                     b.Property<uint>("AccountId")

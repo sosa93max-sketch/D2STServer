@@ -211,10 +211,15 @@ una fuente persistente; no deben rellenarse con valores de conveniencia.
 
 ## 6. Fase 8 — showcase y economía de perfil
 
-**Prioridad: P1. Dependencia: captura del cliente y catálogo local.**
+**Estado: base de showcase implementada; catálogo/ownership pendiente.**
 
-Los handlers `8886 -> 8887` y `8888 -> 8889` pueden ampliarse para persistir el
-showcase completo, si la captura confirma que el cliente lo usa en este build:
+Los handlers `8886 -> 8887` y `8888 -> 8889` ya persisten y sirven por cuenta
+los showcases de perfil y mini perfil. El editor solo puede escribir para la
+cuenta autenticada; cualquier cliente puede leer el `AccountId` solicitado.
+Los payloads protobuf, posiciones, escala, fondo y versión de formato se
+conservan en `Showcases` y sobreviven a reconexiones, reinicios y migraciones.
+
+La ampliación pendiente requiere captura del cliente y catálogo local:
 
 - héroes mostrados;
 - ítems y cosméticos seleccionados;
@@ -225,9 +230,11 @@ showcase completo, si la captura confirma que el cliente lo usa en este build:
 - posición, escala y orden de cada elemento;
 - configuración de la tarjeta mini o vista pública.
 
-Antes de aceptar un ítem se debe comprobar que existe en el catálogo y que la
-cuenta tiene una propiedad local válida. No se debe enviar ownership de la
-economía oficial de Valve si el servidor no posee ese dato.
+La implementación actual conserva el payload para permitir que el cliente
+local lo dibuje, pero todavía no comprueba que cada ítem exista en el catálogo
+ni que la cuenta tenga una propiedad local válida. Antes de habilitar una
+economía más amplia se debe añadir esa validación; no se debe enviar ownership
+de la economía oficial de Valve si el servidor no posee ese dato.
 
 Esta fase puede requerir entidades separadas para layout, elementos y
 propiedad. Debe incluir validación de tamaño de JSON, límites por cuenta y
@@ -507,7 +514,7 @@ P0  Corregir incompatibilidades encontradas en lobby/perfil/historial
 P0  Persistir lobbies activos y asociar cada launch a un servidor único
 P0  Robustecer cierres, desconexiones, reconexiones y duplicados
 P1  Ampliar perfil, 8034/8035 y estadísticas derivadas
-P1  Persistir showcase y validar catálogo/ownership local
+P1  Validar showcase contra catálogo/ownership local y completar variantes
 P1  Añadir detalle de partida, analítica y observabilidad
 P1  Importar catálogo del build objetivo
 P2  Integrar party, invitaciones, chat y visibilidad social

@@ -41,6 +41,8 @@ public sealed class D2stDbContext : DbContext
 
     public DbSet<ProfileCardEntity> ProfileCards => Set<ProfileCardEntity>();
 
+    public DbSet<ShowcaseEntity> Showcases => Set<ShowcaseEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountEntity>()
@@ -110,5 +112,8 @@ public sealed class D2stDbContext : DbContext
 
         modelBuilder.Entity<ProfileCardEntity>()
             .HasKey(card => card.AccountId);
+
+        modelBuilder.Entity<ShowcaseEntity>()
+            .HasKey(showcase => new { showcase.AccountId, showcase.ShowcaseType });
     }
 }
