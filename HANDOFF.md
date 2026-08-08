@@ -211,6 +211,10 @@ payload:
   counts are read from persisted local matches. This prevents an omitted/zero
   behavior score from being interpreted as a restricted profile without
   pretending to have Valve's external conduct history.
+- The game-server `7450 -> 7451` player-resource response now supplies both
+  local scores as 10,000, the maximum communication/behavior feature levels,
+  and `low_priority=false`. This keeps the pre-match feature gates consistent
+  with the welcome and conduct-scorecard paths.
 - The same local conduct fields are sent both at welcome time and after a
   recorded `7004`, so a reconnect and a post-match cache update use the same
   semantics.
@@ -223,9 +227,10 @@ payload:
   `ProfileCards` table was created, the profile store was resolved and the API
   reached its listening state without an exception.
 - `git diff --check`: passed before publication.
-- The profile/conduct behavior still needs a real two-account Windows client
-  run to confirm the exact build-6783 UI response; the local policy is
-  intentionally documented as local, not as a real Valve conduct score.
+- The profile/conduct behavior and communication UI still need a real
+  two-account Windows client run to confirm the exact build-6783 response; the
+  local policy is intentionally documented as local, not as a real Valve
+  conduct history.
 
 ### Phase 6 — completed in this working tree
 
@@ -323,6 +328,37 @@ built-in bots:
   confirmed that build 6783's listen server accepts the current bot lobby
   projection and emits a complete `7004`.
 
+### Phase 7 — completed in this working tree
+
+The local conduct compatibility path now supplies both behavior and
+communication values wherever the client can use them to gate features:
+
+- `LocalConductState` owns the local defaults: behavior `10,000` and
+  communication `10,000`.
+- `7450 -> 7451` (`ServerToGCRequestBatchPlayerResources`) is now handled for
+  every requested account. The response includes both scores, the maximum
+  communication/behavior feature levels and `low_priority=false`, together
+  with the persisted local wins/losses projection.
+- The existing account Shared Object projection and `8095 -> 8096` conduct
+  scorecard remain explicitly good and unsanctioned. The protocol's conduct
+  scorecard has no separate communication-score field, so the direct
+  communication score is supplied through the `7451` player-resource response.
+- The change is intentionally a local compatibility policy; it does not claim
+  to reproduce Valve's report, commend or moderation history.
+
+### Evidence for Phase 7
+
+- `dotnet restore D2STServer.sln`: passed.
+- `dotnet build D2STServer.sln -c Release --no-restore`: passed with 0 warnings
+  and 0 errors.
+- API startup against a temporary SQLite database: passed; migrations applied,
+  dependency injection resolved the GameCoordinator handlers and the API
+  reached its listening state.
+- `git diff --check`: passed.
+- Real two-account Windows validation of the build-6783 UI remains pending;
+  until that run, the server-side response is verified but client rendering and
+  feature unlocks are not claimed as complete.
+
 ## Match close data flow
 
 ```text
@@ -399,10 +435,11 @@ is the planning reference for the work that follows the real-client gate.
 - Live kills, Radiant lead and building state are delivered by `7034` while the
   client is connected; the current lobby Shared Object schema has no fields for
   those values, so a reconnect depends on the next visible `7034` update.
-- The conduct scorecard is a local compatibility policy, not a Valve behavior
-  history. There is no report, commend, moderation or low-priority enforcement
-  pipeline yet; local match/abandon counts are real, while the 10,000 good score
-  is deliberately server-owned.
+- The conduct scorecard and the `7451` player-resource values are a local
+  compatibility policy, not a Valve behavior history. There is no report,
+  commend, moderation or low-priority enforcement pipeline yet; local
+  match/abandon counts are real, while the 10,000 good behavior and
+  communication scores are deliberately server-owned.
 - Profile-card slots are persisted and returned, but item/trophy ownership,
   showcase persistence and the separate `8034 -> 8035` statistics surface are
   not implemented until a real client capture establishes their required
@@ -425,6 +462,11 @@ is the planning reference for the work that follows the real-client gate.
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
+- Every code or configuration adjustment must update this `HANDOFF.md` in the
+  same change, recording the implementation, evidence, limitations and next
+  step before the commit.
+- After validation, commit the intended adjustment and push it to `main`; then
+  verify the remote branch contains the commit before reporting completion.
 - Work directly on `main` for this repository, using explicit file lists with
   git; never use `git reset --hard`, `git clean -fd` or broad destructive cleanup.
 - Keep `TreatWarningsAsErrors` green and do not claim a client build is
@@ -434,10 +476,11 @@ is the planning reference for the work that follows the real-client gate.
 
 ## Current handoff
 
-Phases 1–6 and the server-side bot-match support are implemented and verified
+Phases 1–7 and the server-side bot-match support are implemented and verified
 at compile/startup level, with the schema managed by EF Core and legacy
 databases preserved through the transition bridge. The next session should
-validate one client against Dota bots, then use a second client on the same PC
-only if the hardware permits. Preserve capture/replay evidence before
-expanding the vertical. See [ROADMAP.md](ROADMAP.md) for the complete plan; do
-not treat client compatibility as complete until it is recorded here.
+validate one client against Dota bots and the conduct feature gates, then use a
+second client on the same PC only if the hardware permits. Preserve
+capture/replay evidence before expanding the vertical. See [ROADMAP.md](ROADMAP.md)
+for the complete plan; do not treat client compatibility as complete until it
+is recorded here.

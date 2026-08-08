@@ -121,6 +121,7 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, ConnectedPlayersHandler>();
         services.AddSingleton<IGcMessageHandler, PlayerFailedToConnectHandler>();
         services.AddSingleton<IGcMessageHandler, GameMatchSignOutHandler>();
+        services.AddSingleton<IGcMessageHandler, BatchPlayerResourcesHandler>();
         services.AddSingleton<IGcMessageHandler, JoinChatChannelHandler>();
         services.AddSingleton<IGcMessageHandler, LeaveChatChannelHandler>();
         services.AddSingleton<IGcMessageHandler, ChatMessageHandler>();

@@ -6,7 +6,7 @@ using D2ST.Protocol.Dota;
 namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
-/// Answers the conduct request (8095) explicitly. An omitted or zero behavior
+/// Answers the conduct request (8095) explicitly. An omitted or zero conduct
 /// score is interpreted by the client as restricted; local deployments have no
 /// report pipeline yet, so the scorecard uses the local neutral policy and real
 /// persisted match/abandon counts.

@@ -76,6 +76,8 @@ public static class GcMsg
     public const uint GCLANServerAvailable = (uint)EGCBaseMsg.kEMsgGCLANServerAvailable;
     public const uint GCConnectedPlayers = (uint)EDOTAGCMsg.kEMsgGCConnectedPlayers;
     public const uint GCPlayerFailedToConnect = (uint)EDOTAGCMsg.kEMsgGCPlayerFailedToConnect;
+    public const uint ServerToGCRequestBatchPlayerResources = (uint)EDOTAGCMsg.kEMsgServerToGCRequestBatchPlayerResources;
+    public const uint ServerToGCRequestBatchPlayerResourcesResponse = (uint)EDOTAGCMsg.kEMsgServerToGCRequestBatchPlayerResourcesResponse;
 
     public const uint JoinChatChannel = (uint)EDOTAGCMsg.kEMsgGCJoinChatChannel;
     public const uint JoinChatChannelResponse = (uint)EDOTAGCMsg.kEMsgGCJoinChatChannelResponse;

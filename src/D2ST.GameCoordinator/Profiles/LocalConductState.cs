@@ -5,14 +5,35 @@ namespace D2ST.GameCoordinator.Profiles;
 
 /// <summary>
 /// Conduct values for the private/local deployment. There is no report or
-/// moderation service yet, so local accounts start with an explicit good
-/// status instead of an omitted/zero score that the Dota client interprets as
-/// restricted. Match counts still come from the persisted local history.
+/// moderation service yet, so local accounts start with explicit good
+/// behavior and communication scores instead of omitted/zero values that the
+/// Dota client interprets as restricted. Match counts still come from the
+/// persisted local history.
 /// </summary>
 internal static class LocalConductState
 {
     public const uint BehaviorScore = 10_000;
+    public const uint CommunicationScore = 10_000;
     public const uint SequenceNumber = 1;
+
+    public static CMsgServerToGCRequestBatchPlayerResourcesResponse.Result BuildPlayerResources(
+        uint accountId,
+        PlayerProfileStats stats)
+    {
+        return new CMsgServerToGCRequestBatchPlayerResourcesResponse.Result
+        {
+            AccountId = accountId,
+            LowPriority = false,
+            IsNewPlayer = false,
+            IsGuidePlayer = false,
+            CommLevel = (int)DOTACommLevelt.DotaCommLevelAlliedAbility,
+            BehaviorLevel = (int)DOTABehaviorLevelt.DotaBehaviorLevelCoaching,
+            Wins = Math.Max(0, stats.Wins),
+            Losses = Math.Max(0, stats.Losses),
+            CommScore = (int)CommunicationScore,
+            BehaviorScore = (int)BehaviorScore
+        };
+    }
 
     public static void ApplyTo(CSODOTAGameAccountClient account)
     {
