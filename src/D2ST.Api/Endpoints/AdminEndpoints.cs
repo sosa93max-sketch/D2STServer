@@ -108,8 +108,20 @@ public static class AdminEndpoints
             if (!string.IsNullOrWhiteSpace(normalizedSearch))
             {
                 var hasNumericSearch = uint.TryParse(normalizedSearch, out var numericSearch);
+                uint? steamSearchAccountId = null;
+                if (ulong.TryParse(normalizedSearch, out var numericSteamId)
+                    && numericSteamId >= SteamAccount.SteamIdBase)
+                {
+                    var candidateAccountId = SteamAccount.AccountIdFromSteamId(numericSteamId);
+                    if (SteamAccount.SteamIdFromAccountId(candidateAccountId) == numericSteamId)
+                    {
+                        steamSearchAccountId = candidateAccountId;
+                    }
+                }
+
                 query = hasNumericSearch
                     ? query.Where(account => account.AccountId == numericSearch
+                        || (steamSearchAccountId.HasValue && account.AccountId == steamSearchAccountId.Value)
                         || account.Username.Contains(normalizedSearch)
                         || (account.PersonaName != null && account.PersonaName.Contains(normalizedSearch)))
                     : query.Where(account => account.Username.Contains(normalizedSearch)

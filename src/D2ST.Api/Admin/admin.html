@@ -134,6 +134,140 @@
   .span-12 { grid-column: span 12; }
   code { color: #b8d4ff; }
   .muted { color: var(--muted); }
+  /* Users workspace */
+  .users-shell { display: flex; flex-direction: column; gap: 14px; }
+  .users-hero {
+    display: flex; align-items: flex-end; gap: 18px; padding: 20px 22px;
+    border: 1px solid #30445e; border-radius: 16px;
+    background: linear-gradient(120deg, rgba(22, 43, 70, .98), rgba(18, 26, 36, .96) 68%);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, .16);
+  }
+  .users-hero-copy { flex: 1; min-width: 0; }
+  .eyebrow { color: #8fbaff; font-size: 10px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+  .users-hero h2 { color: #fff; font-size: 26px; letter-spacing: -.6px; margin-top: 5px; }
+  .users-hero p { color: #a7b8cd; font-size: 12px; line-height: 1.5; margin-top: 5px; max-width: 650px; }
+  .users-hero-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .sync-badge { display: inline-flex; align-items: center; gap: 7px; color: #a7b8cd; border: 1px solid #38516f; background: rgba(9, 17, 28, .45); border-radius: 999px; padding: 8px 11px; font-size: 11px; }
+  .sync-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(53, 196, 106, .12); }
+  .users-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .user-stat { min-height: 82px; padding: 13px 15px; margin: 0; position: relative; overflow: hidden; }
+  .user-stat::after { content: ''; position: absolute; width: 72px; height: 72px; right: -24px; bottom: -35px; border-radius: 50%; background: var(--accent-soft); }
+  .user-stat-value { position: relative; z-index: 1; }
+  .user-stat > small { position: relative; z-index: 1; display: block; color: var(--muted); font-size: 10px; margin-top: 2px; }
+  .user-stat-value small { display: block; color: var(--muted); font-size: 11px; font-weight: 500; margin-top: 2px; letter-spacing: 0; }
+  .users-toolbar-card { padding: 12px 14px; margin: 0; }
+  .users-toolbar-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .users-search { display: flex; align-items: center; gap: 8px; flex: 1 1 310px; min-width: 220px; }
+  .users-search span { color: #6f89a8; font-size: 16px; line-height: 1; }
+  .users-search input { width: 100%; }
+  .users-toolbar-main select { min-width: 135px; }
+  .users-toolbar-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 9px 2px 0; }
+  .users-toolbar-meta .meta { font-size: 11px; }
+  .users-selection-hint { color: #9fc2f5; font-size: 11px; }
+  .users-workspace { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
+  .users-list-card { padding: 0; margin: 0; overflow: hidden; min-width: 0; }
+  .users-list-head { display: flex; align-items: center; gap: 12px; justify-content: space-between; padding: 15px 16px 12px; border-bottom: 1px solid var(--border); }
+  .users-list-head h3 { color: #dce8f5; font-size: 13px; }
+  .users-list-head .meta { margin-top: 3px; }
+  .users-load-state { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+  .users-load-state::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #60748c; }
+  .users-load-state.ready::before { background: var(--green); }
+  .users-table-wrap { overflow: auto; max-height: calc(100vh - 345px); min-height: 360px; }
+  .user-table { min-width: 1000px; }
+  .user-table th { position: sticky; top: 0; z-index: 2; background: #111b28; padding: 10px 9px; }
+  .user-table td { padding: 9px; }
+  .user-table tr.user-row { cursor: pointer; }
+  .user-table tr.user-row.selected td { background: rgba(59, 130, 246, .11); border-bottom-color: rgba(59, 130, 246, .28); }
+  .user-table tr.user-row.selected td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  .user-identity { display: flex; align-items: center; gap: 9px; min-width: 190px; }
+  .user-avatar { width: 36px; height: 36px; border-radius: 11px; object-fit: cover; flex: 0 0 auto; background: #1b2735; }
+  .user-identity strong { display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .user-identity .meta { display: block; max-width: 170px; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .user-account { min-width: 125px; }
+  .user-account code { display: block; font-size: 11px; }
+  .user-account .meta { display: block; margin-top: 3px; }
+  .user-wallet { min-width: 132px; }
+  .user-wallet strong { display: block; color: #cfe3ff; font-size: 12px; white-space: nowrap; }
+  .user-wallet .meta { display: block; margin-top: 3px; white-space: nowrap; }
+  .user-rank { min-width: 112px; }
+  .user-rank strong { display: block; color: #dbe9ff; }
+  .user-rank .meta { display: block; margin-top: 3px; }
+  .user-status { min-width: 80px; }
+  .user-created { min-width: 82px; white-space: nowrap; }
+  .user-actions { display: grid; grid-template-columns: repeat(3, minmax(66px, 1fr)); gap: 4px; min-width: 255px; }
+  .user-action { padding: 5px 6px; min-height: 27px; border-radius: 6px; font-size: 10px; line-height: 1.1; font-weight: 700; white-space: nowrap; }
+  .user-action.wallet { color: #9bc8ff; border-color: #345a8c; background: rgba(59, 130, 246, .08); }
+  .user-action.wallet:hover { background: rgba(59, 130, 246, .2); }
+  .user-action.rank { color: #d8c1ff; border-color: #5b4384; background: rgba(139, 92, 246, .08); }
+  .user-action.rank:hover { background: rgba(139, 92, 246, .2); }
+  .user-action.secondary { color: #c5d1df; }
+  .user-action.reset { color: var(--yellow); border-color: rgba(231, 184, 75, .4); }
+  .user-action.danger { color: var(--red); border-color: rgba(241, 107, 107, .4); }
+  .user-inspector { padding: 0; margin: 0; overflow: hidden; position: sticky; top: 14px; min-height: 360px; }
+  .inspector-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 430px; padding: 28px; }
+  .inspector-empty-icon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 17px; color: #8fbaff; background: var(--accent-soft); border: 1px solid #315787; font-size: 24px; margin-bottom: 14px; }
+  .inspector-empty h3 { color: #dce8f5; font-size: 15px; }
+  .inspector-empty p { color: var(--muted); font-size: 12px; line-height: 1.55; margin: 7px 0 16px; max-width: 260px; }
+  .inspector-header { display: flex; align-items: center; gap: 10px; padding: 14px 15px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(28, 50, 80, .55), rgba(18, 26, 36, .25)); }
+  .inspector-avatar { width: 46px; height: 46px; border-radius: 14px; object-fit: cover; flex: 0 0 auto; background: #1b2735; }
+  .inspector-title { flex: 1; min-width: 0; }
+  .inspector-title strong { display: block; color: #fff; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .inspector-title .meta { display: block; margin-top: 3px; }
+  .inspector-close { align-self: flex-start; border: 0; background: transparent; color: var(--muted); padding: 3px 6px; font-size: 18px; }
+  .inspector-close:hover { color: #fff; background: rgba(255,255,255,.08); }
+  .inspector-scroll { max-height: calc(100vh - 280px); overflow-y: auto; padding: 12px; }
+  .inspector-block { padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: rgba(11, 16, 23, .3); margin-bottom: 10px; }
+  .inspector-block:last-child { margin-bottom: 0; }
+  .inspector-block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+  .inspector-block h4 { color: #dce8f5; font-size: 12px; }
+  .inspector-block-head span { color: var(--muted); font-size: 10px; }
+  .inspector-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 9px; }
+  .inspector-field:last-child { margin-bottom: 0; }
+  .inspector-field label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .25px; text-transform: uppercase; }
+  .inspector-field input { width: 100%; padding: 8px 9px; }
+  .inspector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .inspector-grid > * { min-width: 0; }
+  .inspector-submit { width: 100%; padding: 8px 10px; font-size: 11px; }
+  .inspector-action-row { display: flex; gap: 6px; }
+  .inspector-action-row > * { flex: 1; min-width: 0; }
+  .inspector-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 9px; }
+  .inspector-metric { min-width: 0; padding: 8px 7px; border: 1px solid var(--border); border-radius: 8px; background: rgba(23, 34, 49, .65); }
+  .inspector-metric span { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .35px; }
+  .inspector-metric strong { display: block; color: #dbe9ff; font-size: 12px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .inspector-rank { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 9px; margin-bottom: 9px; border-radius: 8px; background: rgba(139, 92, 246, .08); border: 1px solid rgba(139, 92, 246, .26); }
+  .inspector-rank strong { color: #eadfff; }
+  .inspector-rank span { color: #bea7e6; font-size: 10px; }
+  .danger-zone { border-color: rgba(241, 107, 107, .32); background: rgba(80, 24, 31, .16); }
+  .danger-zone h4 { color: #ffb0b0; }
+  .create-panel { padding: 15px; }
+  .create-panel h3 { color: #fff; font-size: 15px; }
+  .create-panel > p { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 5px 0 14px; }
+  .create-panel .inspector-field { margin-bottom: 10px; }
+  .create-panel .inspector-action-row { margin-top: 12px; }
+  .create-panel .msg { margin-top: 10px; }
+  .users-empty { min-height: 330px; display: grid; place-items: center; }
+  @media (max-width: 1120px) {
+    .users-workspace { grid-template-columns: minmax(0, 1fr) 330px; }
+    .user-inspector { min-width: 0; }
+  }
+  @media (max-width: 980px) {
+    .users-workspace { grid-template-columns: 1fr; }
+    .user-inspector { position: static; }
+    .inspector-scroll { max-height: none; }
+  }
+  @media (max-width: 680px) {
+    .users-hero { align-items: stretch; flex-direction: column; padding: 17px; }
+    .users-hero-actions { justify-content: flex-start; }
+    .users-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .users-table-wrap { max-height: none; }
+    .users-toolbar-main select { flex: 1 1 140px; }
+    .users-toolbar-main > button { flex: 1; }
+  }
+  @media (max-width: 420px) {
+    .users-stats { grid-template-columns: 1fr; }
+    .users-toolbar-main { align-items: stretch; }
+    .users-search { flex-basis: 100%; }
+  }
   @media (max-width: 820px) {
     .wrap { padding: 18px 12px 50px; }
     header { align-items: flex-start; flex-wrap: wrap; }
@@ -184,46 +318,142 @@
       <button id="catalogTab" class="tab">Catálogo</button>
     </div>
 
-    <div id="usersView">
-      <div class="stats">
-        <div class="stat"><span class="stat-label">Usuarios registrados</span><strong id="userTotal" class="stat-value">—</strong></div>
-        <div class="stat"><span class="stat-label">Conectados ahora</span><strong id="userOnline" class="stat-value">—</strong></div>
-        <div class="stat"><span class="stat-label">Vista actual</span><strong id="userViewCount" class="stat-value">—</strong></div>
-      </div>
-
-      <div class="card">
-        <div class="section-head">
-          <div><h2>Crear usuario</h2><div class="meta">La cuenta empieza con saldo 0; puedes asignarlo desde la tabla.</div></div>
+    <div id="usersView" class="users-shell">
+      <div class="users-hero">
+        <div class="users-hero-copy">
+          <span class="eyebrow">Centro de cuentas</span>
+          <h2>Usuarios</h2>
+          <p>Administra identidad, saldo, rango y seguridad desde una sola vista. Todas las acciones quedan visibles junto a cada cuenta.</p>
         </div>
-        <div class="row">
-          <input id="newUser" class="grow" placeholder="Usuario">
-          <input id="newPass" class="grow" type="password" placeholder="Contraseña">
-          <input id="newPersona" class="grow" placeholder="Persona (opcional)">
-          <button id="createBtn" class="accent">Crear usuario</button>
-        </div>
-        <div id="createMsg" class="msg"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-head">
-          <div><h2>Usuarios</h2><div id="counts" class="meta">Carga paginada y búsqueda por cuenta, usuario o persona.</div></div>
+        <div class="users-hero-actions">
+          <span id="usersSyncState" class="sync-badge">Listo para sincronizar</span>
           <button id="refreshUsersBtn">Actualizar</button>
+          <button id="newUserBtn" class="accent">＋ Nuevo usuario</button>
         </div>
-        <div class="toolbar">
-          <input id="userSearch" class="grow" placeholder="Buscar usuario, persona o ID">
-          <select id="userStatus"><option value="all">Todos los estados</option><option value="online">En línea</option><option value="offline">Offline</option></select>
-          <select id="userPageSize"><option value="25">25 por página</option><option value="50">50 por página</option><option value="100">100 por página</option></select>
+      </div>
+
+      <div class="users-stats">
+        <div class="stat user-stat"><span class="stat-label">Usuarios registrados</span><strong id="userTotal" class="stat-value user-stat-value">—</strong></div>
+        <div class="stat user-stat"><span class="stat-label">Conectados ahora</span><strong id="userOnline" class="stat-value user-stat-value">—</strong></div>
+        <div class="stat user-stat"><span class="stat-label">En esta vista</span><strong id="userViewCount" class="stat-value user-stat-value">—</strong></div>
+        <div class="stat user-stat"><span class="stat-label">Saldo en vista</span><strong id="userWalletTotal" class="stat-value user-stat-value">—</strong><small>créditos totales visibles</small></div>
+      </div>
+
+      <div class="card users-toolbar-card">
+        <div class="users-toolbar-main">
+          <label class="users-search" for="userSearch"><span>⌕</span><input id="userSearch" placeholder="Buscar por usuario, persona, cuenta o Steam ID" autocomplete="off"></label>
+          <select id="userStatus" aria-label="Filtrar por estado"><option value="all">Todos los estados</option><option value="online">En línea</option><option value="offline">Offline</option></select>
+          <select id="userPageSize" aria-label="Usuarios por página"><option value="25">25 por página</option><option value="50">50 por página</option><option value="100">100 por página</option></select>
+          <button id="clearUserFiltersBtn">Limpiar</button>
         </div>
-        <div id="tableWrap" class="table-wrap"></div>
-        <div id="usersPager" class="pager"></div>
-        <div id="usersMsg" class="msg"></div>
+        <div class="users-toolbar-meta">
+          <span id="counts" class="meta">Carga paginada y búsqueda por cuenta, usuario o persona.</span>
+          <span id="usersSelectionHint" class="users-selection-hint">Selecciona una cuenta para abrir su panel de gestión.</span>
+        </div>
+      </div>
+
+      <div class="users-workspace">
+        <section class="card users-list-card">
+          <div class="users-list-head">
+            <div><h3>Directorio de cuentas</h3><div class="meta">Acciones directas por usuario · haz clic en una fila para ver todos los detalles.</div></div>
+            <span id="usersLoadState" class="users-load-state ready">Sincronizado</span>
+          </div>
+          <div id="tableWrap" class="table-wrap users-table-wrap"></div>
+          <div id="usersPager" class="pager" style="padding: 12px 16px 15px;"></div>
+          <div id="usersMsg" class="msg" style="margin: 0 16px 16px;"></div>
+        </section>
+
+        <aside id="userInspector" class="card user-inspector">
+          <div id="userInspectorEmpty" class="inspector-empty">
+            <div class="inspector-empty-icon">◎</div>
+            <h3>Panel de gestión</h3>
+            <p>Selecciona un usuario para editar sus datos, administrar saldo y MMR, actualizar seguridad o eliminar la cuenta.</p>
+            <button id="inspectorCreateBtn" class="accent">＋ Crear usuario</button>
+          </div>
+
+          <div id="userInspectorBody" class="hide">
+            <div class="inspector-header">
+              <img id="inspectorAvatar" class="inspector-avatar" alt="">
+              <div class="inspector-title"><strong id="inspectorUsername">—</strong><span id="inspectorAccount" class="meta">—</span></div>
+              <button id="closeInspectorBtn" class="inspector-close" title="Cerrar panel" aria-label="Cerrar panel">×</button>
+            </div>
+            <div id="inspectorMsg" class="msg" style="margin: 10px 12px 0;"></div>
+            <div class="inspector-scroll">
+              <section class="inspector-block">
+                <div class="inspector-block-head"><h4>Perfil y acceso</h4><span id="inspectorStatus">—</span></div>
+                <div class="inspector-field">
+                  <label for="inspectorPersona">Nombre de persona</label>
+                  <div class="inspector-action-row"><input id="inspectorPersona" placeholder="Nombre visible"><button id="savePersonaBtn" class="inspector-submit">Guardar</button></div>
+                </div>
+                <div class="inspector-field">
+                  <label for="inspectorPassword">Nueva contraseña</label>
+                  <div class="inspector-action-row"><input id="inspectorPassword" type="password" placeholder="Mínimo según política"><button id="savePasswordBtn" class="inspector-submit">Cambiar</button></div>
+                </div>
+                <div class="inspector-action-row">
+                  <button id="uploadAvatarBtn" class="secondary">Cambiar avatar</button>
+                  <input id="avatarFileInput" type="file" accept="image/png" class="hide">
+                </div>
+              </section>
+
+              <section class="inspector-block">
+                <div class="inspector-block-head"><h4>Economía</h4><span>Saldo administrable</span></div>
+                <div class="inspector-metrics">
+                  <div class="inspector-metric"><span>Saldo</span><strong id="inspectorBalance">0</strong></div>
+                  <div class="inspector-metric"><span>Disponible</span><strong id="inspectorAvailable">0</strong></div>
+                  <div class="inspector-metric"><span>Reservado</span><strong id="inspectorReserved">0</strong></div>
+                </div>
+                <div class="inspector-grid">
+                  <div class="inspector-field"><label for="walletDelta">Cantidad</label><input id="walletDelta" type="number" min="1" max="1000000000" placeholder="100"></div>
+                  <div class="inspector-field"><label for="walletReason">Motivo</label><input id="walletReason" maxlength="80" placeholder="Bonificación"></div>
+                </div>
+                <div class="inspector-action-row">
+                  <button id="walletAddBtn" class="inspector-submit accent">＋ Añadir saldo</button>
+                  <button id="walletRemoveBtn" class="inspector-submit danger">− Retirar saldo</button>
+                </div>
+              </section>
+
+              <section class="inspector-block">
+                <div class="inspector-block-head"><h4>Ranking</h4><span>MMR y calibración</span></div>
+                <div class="inspector-rank"><strong id="inspectorMmr">0 MMR</strong><span id="inspectorRank">Sin calibrar</span></div>
+                <div class="inspector-field"><label for="mmrDelta">Ajuste de MMR</label><input id="mmrDelta" type="number" min="1" max="5000" placeholder="25"></div>
+                <div class="inspector-action-row">
+                  <button id="mmrAddBtn" class="inspector-submit">＋ Añadir MMR</button>
+                  <button id="mmrRemoveBtn" class="inspector-submit">− Retirar MMR</button>
+                </div>
+                <button id="resetMmrBtn" class="inspector-submit reset" style="margin-top: 7px;">Restablecer a 0 y descalibrar</button>
+              </section>
+
+              <section class="inspector-block danger-zone">
+                <div class="inspector-block-head"><h4>Zona de riesgo</h4><span>Irreversible</span></div>
+                <button id="deleteUserBtn" class="inspector-submit danger">Eliminar usuario y sus datos</button>
+              </section>
+            </div>
+          </div>
+
+          <div id="createUserPanel" class="create-panel hide">
+            <div class="inspector-header" style="margin: -15px -15px 15px;">
+              <div class="inspector-empty-icon" style="width: 40px; height: 40px; border-radius: 12px; margin: 0; font-size: 18px;">＋</div>
+              <div class="inspector-title"><strong>Nuevo usuario</strong><span class="meta">La cuenta empieza con saldo 0</span></div>
+              <button id="cancelCreateBtn" class="inspector-close" title="Cancelar" aria-label="Cancelar">×</button>
+            </div>
+            <p>Crea una cuenta y después podrás gestionar saldo, MMR, perfil y seguridad desde este mismo panel.</p>
+            <div class="inspector-field"><label for="newUser">Usuario</label><input id="newUser" placeholder="Nombre de acceso" autocomplete="username"></div>
+            <div class="inspector-field"><label for="newPass">Contraseña</label><input id="newPass" type="password" placeholder="Contraseña inicial" autocomplete="new-password"></div>
+            <div class="inspector-field"><label for="newPersona">Persona (opcional)</label><input id="newPersona" placeholder="Nombre visible"></div>
+            <div class="inspector-action-row">
+              <button id="createBtn" class="inspector-submit accent">Crear usuario</button>
+              <button id="cancelCreateSecondaryBtn" class="inspector-submit">Cancelar</button>
+            </div>
+            <div id="createMsg" class="msg"></div>
+          </div>
+        </aside>
       </div>
     </div>
 
     <div id="catalogView" class="hide">
       <div class="stats">
         <div class="stat"><span class="stat-label">Productos publicados</span><strong id="catalogTotal" class="stat-value">—</strong></div>
-        <div class="stat"><span class="stat-label">Activos para el GC</span><strong id="catalogActive" class="stat-value">—</strong></div>
+        <div class="stat"><span class="stat-label">Activos para el GC</span><strong id="catalogActiveCount" class="stat-value">—</strong></div>
         <div class="stat"><span class="stat-label">Filas visibles</span><strong id="catalogViewCount" class="stat-value">—</strong></div>
       </div>
 
@@ -297,6 +527,8 @@ let discoveredItems = [];
 let catalogItems = [];
 const usersState = { page: 1, pageSize: 25, search: '', status: 'all' };
 const catalogState = { page: 1, pageSize: 50, search: '', status: 'all', type: 'all' };
+let selectedUser = null;
+let inspectorMode = null;
 let userSearchTimer = null;
 let catalogSearchTimer = null;
 
@@ -363,6 +595,7 @@ function defaultAvatarSrc(user) {
 
 function avatarElement(user) {
   const img = document.createElement('img');
+  img.className = 'user-avatar';
   img.width = 34;
   img.height = 34;
   img.style.borderRadius = '10px';
@@ -371,15 +604,18 @@ function avatarElement(user) {
   img.style.background = '#1b2735';
   img.alt = '';
   img.src = defaultAvatarSrc(user);
-  if (user.HasAvatar) {
-    fetch('/api/users/' + user.SteamId + '/avatar', {
-      headers: { Authorization: 'Bearer ' + token }
-    })
-      .then((response) => (response.ok ? response.blob() : Promise.reject()))
-      .then((blob) => { img.src = URL.createObjectURL(blob); })
-      .catch(() => {});
-  }
+  loadAvatarImage(user, img);
   return img;
+}
+
+function loadAvatarImage(user, img) {
+  if (!user.HasAvatar) return;
+  fetch('/api/users/' + user.SteamId + '/avatar', {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+    .then((response) => (response.ok ? response.blob() : Promise.reject()))
+    .then((blob) => { img.src = URL.createObjectURL(blob); })
+    .catch(() => {});
 }
 
 function medalName(tier) {
@@ -461,26 +697,145 @@ function logout() {
   $('loginPass').value = '';
 }
 
+function userActionButton(label, cls, handler, title) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'user-action ' + (cls || '');
+  button.textContent = label;
+  button.title = title || label;
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    handler();
+  });
+  return button;
+}
+
+function clearMessage(el) {
+  el.textContent = '';
+  el.className = 'msg';
+}
+
+function renderInspector(user) {
+  const avatar = $('inspectorAvatar');
+  avatar.src = defaultAvatarSrc(user);
+  loadAvatarImage(user, avatar);
+  $('inspectorUsername').textContent = user.Username || '—';
+  $('inspectorAccount').textContent = 'Cuenta #' + user.AccountId + ' · Steam ' + user.SteamId;
+  $('inspectorStatus').textContent = user.Online ? 'En línea' : 'Offline';
+  $('inspectorStatus').style.color = user.Online ? 'var(--green)' : 'var(--muted)';
+  $('inspectorPersona').value = user.PersonaName || '';
+  $('inspectorPassword').value = '';
+  $('inspectorBalance').textContent = formatCredits(user.BalanceCredits);
+  $('inspectorAvailable').textContent = formatCredits(user.AvailableCredits);
+  $('inspectorReserved').textContent = formatCredits(user.ReservedCredits);
+  $('inspectorMmr').textContent = (user.Mmr || 0) + ' MMR';
+  $('inspectorRank').textContent = user.IsCalibrated
+    ? medalName(user.RankTier) + ' ' + (user.RankStar || '')
+    : 'Sin calibrar';
+  $('walletDelta').value = '';
+  $('walletReason').value = '';
+  $('mmrDelta').value = '';
+  clearMessage($('inspectorMsg'));
+}
+
+function focusInspectorField(focus) {
+  const fieldId = {
+    wallet: 'walletDelta',
+    walletAdd: 'walletDelta',
+    walletRemove: 'walletDelta',
+    mmr: 'mmrDelta',
+    mmrAdd: 'mmrDelta',
+    mmrRemove: 'mmrDelta',
+    profile: 'inspectorPersona',
+    password: 'inspectorPassword'
+  }[focus];
+  if (!fieldId) return;
+  const field = $(fieldId);
+  field.focus();
+  if (field.select) field.select();
+}
+
+function markSelectedUserRow(accountId) {
+  document.querySelectorAll('#tableWrap .user-row').forEach((row) => {
+    row.classList.toggle('selected', accountId != null && row.dataset.accountId === String(accountId));
+  });
+}
+
+function openUserInspector(user, focus) {
+  selectedUser = user;
+  inspectorMode = 'user';
+  markSelectedUserRow(user.AccountId);
+  $('userInspectorEmpty').classList.add('hide');
+  $('createUserPanel').classList.add('hide');
+  $('userInspectorBody').classList.remove('hide');
+  renderInspector(user);
+  $('usersSelectionHint').textContent = 'Gestionando ' + user.Username + ' · todas las acciones están disponibles en el panel.';
+  if (focus) requestAnimationFrame(() => focusInspectorField(focus));
+  if (window.innerWidth < 980 && focus) {
+    $('userInspector').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function closeInspector() {
+  selectedUser = null;
+  inspectorMode = null;
+  markSelectedUserRow(null);
+  $('userInspectorBody').classList.add('hide');
+  $('createUserPanel').classList.add('hide');
+  $('userInspectorEmpty').classList.remove('hide');
+  $('usersSelectionHint').textContent = 'Selecciona una cuenta para abrir su panel de gestión.';
+}
+
+function openCreateUser() {
+  selectedUser = null;
+  inspectorMode = 'create';
+  markSelectedUserRow(null);
+  $('userInspectorEmpty').classList.add('hide');
+  $('userInspectorBody').classList.add('hide');
+  $('createUserPanel').classList.remove('hide');
+  $('newUser').value = '';
+  $('newPass').value = '';
+  $('newPersona').value = '';
+  clearMessage($('createMsg'));
+  $('usersSelectionHint').textContent = 'Creando una nueva cuenta.';
+  requestAnimationFrame(() => $('newUser').focus());
+  if (window.innerWidth < 980) $('userInspector').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 function renderUsers(body) {
   const users = body.Items || [];
   const total = body.TotalCount || 0;
   const online = body.OnlineCount || 0;
+  const visibleBalance = users.reduce((sum, user) => sum + (Number(user.BalanceCredits) || 0), 0);
   $('userTotal').textContent = formatNumber(total);
   $('userOnline').textContent = formatNumber(online);
   $('userViewCount').textContent = formatNumber(users.length);
-  $('counts').textContent = formatNumber(total) + ' usuarios · ' + formatNumber(online) + ' en línea · saldo gestionable desde cada fila';
+  $('userWalletTotal').textContent = formatNumber(visibleBalance);
+  $('counts').textContent = formatNumber(total) + ' usuarios · ' + formatNumber(online) + ' en línea · ' + formatNumber(users.length) + ' mostrados';
+  $('usersSyncState').textContent = 'Sincronizado ahora';
+  $('usersLoadState').textContent = 'Sincronizado';
+  $('usersLoadState').classList.add('ready');
+
+  if (selectedUser && inspectorMode === 'user') {
+    const refreshed = users.find((user) => user.AccountId === selectedUser.AccountId);
+    if (refreshed) {
+      selectedUser = refreshed;
+      renderInspector(refreshed);
+    }
+  }
 
   const wrap = $('tableWrap');
   wrap.innerHTML = '';
   if (users.length === 0) {
-    wrap.innerHTML = '<div class="empty">No hay usuarios que coincidan con los filtros.</div>';
+    wrap.innerHTML = '<div class="empty users-empty">No hay usuarios que coincidan con los filtros.</div>';
     renderPager('usersPager', body.Page || 1, total, body.PageSize || usersState.pageSize, () => {});
     return;
   }
 
   const table = document.createElement('table');
+  table.className = 'user-table';
   const head = document.createElement('tr');
-  ['Usuario', 'Cuenta', 'Saldo', 'MMR', 'Estado', 'Creado', 'Acciones'].forEach((label) => {
+  ['Usuario', 'Cuenta', 'Saldo', 'Rango', 'Estado', 'Alta', 'Acciones directas'].forEach((label) => {
     const th = document.createElement('th');
     th.textContent = label;
     head.appendChild(th);
@@ -489,10 +844,13 @@ function renderUsers(body) {
 
   for (const user of users) {
     const row = document.createElement('tr');
+    row.className = 'user-row' + (selectedUser && selectedUser.AccountId === user.AccountId ? ' selected' : '');
+    row.dataset.accountId = String(user.AccountId);
+    row.addEventListener('click', () => openUserInspector(user));
 
     const identity = document.createElement('td');
     const identityWrap = document.createElement('div');
-    identityWrap.className = 'identity';
+    identityWrap.className = 'user-identity';
     identityWrap.appendChild(avatarElement(user));
     const identityText = document.createElement('div');
     const username = document.createElement('strong');
@@ -507,45 +865,62 @@ function renderUsers(body) {
     row.appendChild(identity);
 
     const account = document.createElement('td');
-    account.appendChild(document.createTextNode('Cuenta #' + user.AccountId));
+    account.className = 'user-account';
+    const accountId = document.createElement('code');
+    accountId.textContent = '#' + user.AccountId;
     const steam = document.createElement('span');
     steam.className = 'meta';
-    steam.style.display = 'block';
-    steam.style.marginTop = '3px';
     steam.textContent = 'Steam ' + user.SteamId;
+    account.appendChild(accountId);
     account.appendChild(steam);
     row.appendChild(account);
 
     const balance = document.createElement('td');
-    balance.className = 'balance';
+    balance.className = 'user-wallet';
     const balanceValue = document.createElement('strong');
     balanceValue.textContent = formatCredits(user.BalanceCredits);
     const available = document.createElement('span');
     available.className = 'meta';
-    available.textContent = 'Disponible: ' + formatNumber(user.AvailableCredits || 0)
-      + ' · Reservado: ' + formatNumber(user.ReservedCredits || 0);
+    available.textContent = 'Disp. ' + formatNumber(user.AvailableCredits || 0) + ' · Res. ' + formatNumber(user.ReservedCredits || 0);
     balance.appendChild(balanceValue);
     balance.appendChild(available);
     row.appendChild(balance);
 
-    row.appendChild(tr(rankLabel(user)));
+    const rank = document.createElement('td');
+    rank.className = 'user-rank';
+    const mmr = document.createElement('strong');
+    mmr.textContent = formatNumber(user.Mmr || 0) + ' MMR';
+    const medal = document.createElement('span');
+    medal.className = 'meta';
+    medal.textContent = user.IsCalibrated ? medalName(user.RankTier) + ' ' + (user.RankStar || '') : 'Sin calibrar';
+    rank.appendChild(mmr);
+    rank.appendChild(medal);
+    row.appendChild(rank);
 
     const state = document.createElement('td');
-    const dot = document.createElement('span');
-    dot.className = 'dot' + (user.Online ? ' on' : '');
-    state.appendChild(dot);
-    state.appendChild(document.createTextNode(user.Online ? 'En línea' : 'Offline'));
+    state.className = 'user-status';
+    const tag = document.createElement('span');
+    tag.className = 'tag ' + (user.Online ? 'on' : 'off');
+    tag.textContent = user.Online ? 'En línea' : 'Offline';
+    state.appendChild(tag);
     row.appendChild(state);
 
-    row.appendChild(tr(new Date(user.CreatedAt).toLocaleDateString()));
+    const created = document.createElement('td');
+    created.className = 'user-created';
+    created.textContent = new Date(user.CreatedAt).toLocaleDateString();
+    row.appendChild(created);
 
     const actions = document.createElement('td');
-    actions.className = 'actions';
-    actions.appendChild(actionLink('Saldo +', '', () => adjustWallet(user, 1)));
-    actions.appendChild(actionLink('Saldo −', 'danger', () => adjustWallet(user, -1)));
-    actions.appendChild(actionLink('MMR +', '', () => adjustMmr(user, 1)));
-    actions.appendChild(actionLink('MMR −', '', () => adjustMmr(user, -1)));
-    actions.appendChild(actionLink('Más', '', () => manageUser(user)));
+    actions.className = 'user-actions';
+    actions.appendChild(userActionButton('＋ Saldo', 'wallet', () => adjustWallet(user, 1), 'Preparar un abono de saldo'));
+    actions.appendChild(userActionButton('− Saldo', 'wallet danger', () => adjustWallet(user, -1), 'Preparar un retiro de saldo'));
+    actions.appendChild(userActionButton('＋ MMR', 'rank', () => adjustMmr(user, 1), 'Preparar un aumento de MMR'));
+    actions.appendChild(userActionButton('− MMR', 'rank', () => adjustMmr(user, -1), 'Preparar una reducción de MMR'));
+    actions.appendChild(userActionButton('Perfil', 'secondary', () => openUserInspector(user, 'profile')));
+    actions.appendChild(userActionButton('Avatar', 'secondary', () => { openUserInspector(user); uploadAvatar(user); }));
+    actions.appendChild(userActionButton('Clave', 'secondary', () => openUserInspector(user, 'password')));
+    actions.appendChild(userActionButton('Reset MMR', 'reset', () => resetMmr(user)));
+    actions.appendChild(userActionButton('Eliminar', 'danger', () => deleteUser(user)));
     row.appendChild(actions);
     table.appendChild(row);
   }
@@ -553,25 +928,10 @@ function renderUsers(body) {
   renderPager('usersPager', body.Page || 1, total, body.PageSize || usersState.pageSize, loadUsers);
 }
 
-function manageUser(user) {
-  const action = prompt(
-    'Acción para ' + user.Username + ': escribe avatar, renombrar, contraseña, reset-mmr o eliminar',
-    'renombrar');
-  if (action == null) return;
-  switch (action.trim().toLowerCase()) {
-    case 'avatar': uploadAvatar(user); break;
-    case 'renombrar': renameUser(user); break;
-    case 'contraseña':
-    case 'contrasena':
-    case 'password': resetPassword(user); break;
-    case 'reset-mmr': resetMmr(user); break;
-    case 'eliminar': deleteUser(user); break;
-    default: alert('Acción no reconocida.'); break;
-  }
-}
-
 async function loadUsers(page = usersState.page) {
   usersState.page = Math.max(1, page);
+  $('usersLoadState').textContent = 'Cargando…';
+  $('usersLoadState').classList.remove('ready');
   const params = new URLSearchParams({
     page: String(usersState.page),
     pageSize: String(usersState.pageSize),
@@ -581,6 +941,7 @@ async function loadUsers(page = usersState.page) {
   const result = await api('/api/admin/users/page?' + params.toString());
   if (!result.ok) {
     if (result.status === 401 || result.status === 403) { logout(); return; }
+    $('usersLoadState').textContent = 'Error de carga';
     show($('usersMsg'), 'No se pudieron cargar los usuarios: ' + messageOf(result));
     return;
   }
@@ -608,7 +969,7 @@ function renderCatalog(body) {
   const total = body.TotalCount || 0;
   const active = body.ActiveCount || 0;
   $('catalogTotal').textContent = formatNumber(total);
-  $('catalogActive').textContent = formatNumber(active);
+  $('catalogActiveCount').textContent = formatNumber(active);
   $('catalogViewCount').textContent = formatNumber(catalogItems.length);
   $('catalogCounts').textContent = formatNumber(total) + ' resultados · ' + formatNumber(active) + ' activos para el GC';
 
@@ -863,53 +1224,85 @@ async function toggleCatalog(item) {
   else alert(messageOf(result));
 }
 
-async function adjustWallet(user, sign) {
-  const label = sign > 0 ? 'añadir a' : 'retirar de';
-  const amount = prompt('Créditos a ' + label + ' ' + user.Username + ' (máximo 1.000.000.000):', '100');
-  if (amount == null) return;
-  const value = Number(amount);
-  if (!Number.isSafeInteger(value) || value <= 0 || value > 1000000000) {
-    alert('Cantidad inválida.');
-    return;
-  }
-  const reason = prompt('Motivo del ajuste (queda en la referencia de auditoría):', sign > 0 ? 'Bonificación' : 'Corrección');
-  if (reason == null) return;
-  const result = await api('/api/admin/users/' + user.AccountId + '/wallet/adjust', {
-    method: 'POST',
-    body: JSON.stringify({ Delta: sign * value, Reason: reason.trim() || 'Ajuste manual' })
-  });
-  if (!result.ok) {
-    show($('usersMsg'), messageOf(result));
-    return;
-  }
-  show($('usersMsg'), result.body.Message + ' Nuevo saldo: ' + formatCredits(result.body.Wallet.BalanceCredits), 'ok');
-  await loadUsers(usersState.page);
+function adjustWallet(user, sign) {
+  openUserInspector(user, sign > 0 ? 'walletAdd' : 'walletRemove');
+  $('walletReason').value = sign > 0 ? 'Bonificación' : 'Corrección';
 }
 
-async function adjustMmr(user, sign) {
-  const amount = prompt((sign > 0 ? 'Sumar' : 'Restar') + ' MMR a ' + user.Username + ' (máximo 5000):', '25');
-  if (amount == null) return;
-  const value = parseInt(amount, 10);
-  if (!Number.isFinite(value) || value <= 0 || value > 5000) { alert('Cantidad inválida.'); return; }
-  const result = await api('/api/admin/users/' + user.AccountId + '/mmr/adjust', {
+async function submitWallet(sign) {
+  const user = selectedUser;
+  if (!user) return;
+  const value = Number($('walletDelta').value);
+  if (!Number.isSafeInteger(value) || value <= 0 || value > 1000000000) {
+    show($('inspectorMsg'), 'La cantidad debe ser un entero entre 1 y 1.000.000.000.');
+    return;
+  }
+  const reason = $('walletReason').value.trim() || (sign > 0 ? 'Bonificación' : 'Corrección');
+  const accountId = user.AccountId;
+  $('walletAddBtn').disabled = true;
+  $('walletRemoveBtn').disabled = true;
+  const result = await api('/api/admin/users/' + accountId + '/wallet/adjust', {
+    method: 'POST',
+    body: JSON.stringify({ Delta: sign * value, Reason: reason })
+  });
+  $('walletAddBtn').disabled = false;
+  $('walletRemoveBtn').disabled = false;
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  const message = result.body.Message + ' Nuevo saldo: ' + formatCredits(result.body.Wallet.BalanceCredits);
+  await loadUsers(usersState.page);
+  if (selectedUser && selectedUser.AccountId === accountId) show($('inspectorMsg'), message, 'ok');
+}
+
+function adjustMmr(user, sign) {
+  openUserInspector(user, sign > 0 ? 'mmrAdd' : 'mmrRemove');
+}
+
+async function submitMmr(sign) {
+  const user = selectedUser;
+  if (!user) return;
+  const value = parseInt($('mmrDelta').value, 10);
+  if (!Number.isFinite(value) || value <= 0 || value > 5000) {
+    show($('inspectorMsg'), 'El ajuste debe ser un entero entre 1 y 5.000.');
+    return;
+  }
+  const accountId = user.AccountId;
+  $('mmrAddBtn').disabled = true;
+  $('mmrRemoveBtn').disabled = true;
+  const result = await api('/api/admin/users/' + accountId + '/mmr/adjust', {
     method: 'POST',
     body: JSON.stringify({ Delta: sign * value })
   });
-  if (result.ok) await loadUsers(usersState.page);
-  else alert(messageOf(result));
+  $('mmrAddBtn').disabled = false;
+  $('mmrRemoveBtn').disabled = false;
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  const message = result.body.Message || ('MMR actualizado: ' + result.body.Mmr);
+  await loadUsers(usersState.page);
+  if (selectedUser && selectedUser.AccountId === accountId) show($('inspectorMsg'), message, 'ok');
 }
 
 async function resetMmr(user) {
+  openUserInspector(user);
   if (!confirm('¿Restablecer el MMR de "' + user.Username + '" a 0 (sin calibrar)? Se borran sus partidas contadas.')) return;
   const result = await api('/api/admin/users/' + user.AccountId + '/mmr/reset', { method: 'POST' });
-  if (result.ok) await loadUsers(usersState.page);
-  else alert(messageOf(result));
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  const message = result.body.Message || 'MMR restablecido.';
+  await loadUsers(usersState.page);
+  if (selectedUser && selectedUser.AccountId === user.AccountId) show($('inspectorMsg'), message, 'ok');
 }
 
 function uploadAvatar(user) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/png';
+  openUserInspector(user);
+  const input = $('avatarFileInput');
+  input.value = '';
   input.onchange = async () => {
     const file = input.files && input.files[0];
     if (!file) return;
@@ -924,8 +1317,12 @@ function uploadAvatar(user) {
       method: 'PUT',
       body: JSON.stringify({ ContentBase64: base64 })
     });
-    if (result.ok) await loadUsers(usersState.page);
-    else alert(messageOf(result));
+    if (!result.ok) {
+      show($('inspectorMsg'), messageOf(result));
+      return;
+    }
+    await loadUsers(usersState.page);
+    if (selectedUser && selectedUser.AccountId === user.AccountId) show($('inspectorMsg'), 'Avatar actualizado.', 'ok');
   };
   input.click();
 }
@@ -945,36 +1342,59 @@ async function createUser() {
     $('newPass').value = '';
     $('newPersona').value = '';
     await loadUsers(1);
+    if (result.body && result.body.AccountId) {
+      openUserInspector(result.body);
+      show($('inspectorMsg'), 'Usuario creado correctamente.', 'ok');
+    }
   }
 }
 
-async function renameUser(user) {
-  const persona = prompt('Nuevo nombre de persona para ' + user.Username + ':', user.PersonaName || '');
-  if (persona == null) return;
+async function savePersona() {
+  const user = selectedUser;
+  if (!user) return;
   const result = await api('/api/admin/users/' + user.AccountId + '/persona', {
     method: 'PATCH',
-    body: JSON.stringify({ PersonaName: persona.trim() })
+    body: JSON.stringify({ PersonaName: $('inspectorPersona').value.trim() })
   });
-  if (result.ok) await loadUsers(usersState.page);
-  else alert(messageOf(result));
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  await loadUsers(usersState.page);
+  if (selectedUser && selectedUser.AccountId === user.AccountId) show($('inspectorMsg'), 'Nombre de persona actualizado.', 'ok');
 }
 
-async function resetPassword(user) {
-  const password = prompt('Nueva contraseña para ' + user.Username + ':');
-  if (password == null || password === '') return;
+async function savePassword() {
+  const user = selectedUser;
+  if (!user) return;
+  const password = $('inspectorPassword').value;
+  if (!password) {
+    show($('inspectorMsg'), 'Escribe una nueva contraseña.');
+    return;
+  }
   const result = await api('/api/admin/users/' + user.AccountId + '/password', {
     method: 'POST',
     body: JSON.stringify({ Password: password })
   });
-  if (result.ok) alert('Contraseña actualizada.');
-  else alert(messageOf(result));
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  $('inspectorPassword').value = '';
+  show($('inspectorMsg'), 'Contraseña actualizada.', 'ok');
 }
 
 async function deleteUser(user) {
+  openUserInspector(user);
   if (!confirm('¿Eliminar al usuario "' + user.Username + '" (ID ' + user.AccountId + ')?\nSe borran sus datos, saldo, compras y sesiones.')) return;
   const result = await api('/api/admin/users/' + user.AccountId, { method: 'DELETE' });
-  if (result.ok) await loadUsers(1);
-  else alert(messageOf(result));
+  if (!result.ok) {
+    show($('inspectorMsg'), messageOf(result));
+    return;
+  }
+  closeInspector();
+  show($('usersMsg'), 'Usuario eliminado correctamente.', 'ok');
+  await loadUsers(1);
 }
 
 function showView(view) {
@@ -990,9 +1410,30 @@ $('loginPass').addEventListener('keydown', (event) => { if (event.key === 'Enter
 $('logoutBtn').addEventListener('click', logout);
 $('createBtn').addEventListener('click', createUser);
 $('newPass').addEventListener('keydown', (event) => { if (event.key === 'Enter') createUser(); });
+$('newUserBtn').addEventListener('click', openCreateUser);
+$('inspectorCreateBtn').addEventListener('click', openCreateUser);
+$('closeInspectorBtn').addEventListener('click', closeInspector);
+$('cancelCreateBtn').addEventListener('click', closeInspector);
+$('cancelCreateSecondaryBtn').addEventListener('click', closeInspector);
+$('savePersonaBtn').addEventListener('click', savePersona);
+$('savePasswordBtn').addEventListener('click', savePassword);
+$('uploadAvatarBtn').addEventListener('click', () => { if (selectedUser) uploadAvatar(selectedUser); });
+$('walletAddBtn').addEventListener('click', () => submitWallet(1));
+$('walletRemoveBtn').addEventListener('click', () => submitWallet(-1));
+$('mmrAddBtn').addEventListener('click', () => submitMmr(1));
+$('mmrRemoveBtn').addEventListener('click', () => submitMmr(-1));
+$('resetMmrBtn').addEventListener('click', () => { if (selectedUser) resetMmr(selectedUser); });
+$('deleteUserBtn').addEventListener('click', () => { if (selectedUser) deleteUser(selectedUser); });
 $('usersTab').addEventListener('click', () => showView('users'));
 $('catalogTab').addEventListener('click', () => showView('catalog'));
 $('refreshUsersBtn').addEventListener('click', () => loadUsers(1));
+$('clearUserFiltersBtn').addEventListener('click', () => {
+  usersState.search = '';
+  usersState.status = 'all';
+  $('userSearch').value = '';
+  $('userStatus').value = 'all';
+  loadUsers(1);
+});
 $('refreshCatalogBtn').addEventListener('click', () => loadCatalog(1));
 $('discoverBtn').addEventListener('click', discoverCatalog);
 $('importBtn').addEventListener('click', importCatalog);

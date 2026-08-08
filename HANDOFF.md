@@ -792,6 +792,24 @@ is the planning reference for the work that follows the real-client gate.
 - No test project should be added unless explicitly requested. Use the solution
   build, startup smoke check and real client captures.
 
+## Phase 14 — Users administration workspace
+
+- Replaced the admin Users view with a denser operations workspace: summary
+  metrics, persistent search/status/page-size filters, a paginated directory,
+  and a responsive inspector panel that uses the available screen space.
+- Every visible user row now exposes direct actions for adding/removing wallet
+  credits, adding/removing MMR, editing persona, changing avatar/password,
+  resetting MMR and deleting the account. Normal operations no longer use
+  browser prompts; destructive deletion and MMR reset remain confirmed.
+- The inspector manages profile/access, wallet balance/available/reserved
+  values, MMR calibration and the danger zone without leaving the user list.
+- User search now accepts canonical Steam IDs as well as account IDs,
+  usernames and persona names.
+- Evidence: `git diff --check`, admin JavaScript syntax validation and a DOM
+  audit for unique IDs and all JavaScript element references pass. The current
+  environment still lacks `dotnet`, so the solution build and real
+  build-6783 client validation remain pending.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
