@@ -30,6 +30,36 @@ public static class LocalEconomyCurrency
     }
 }
 
+/// <summary>
+/// Item definitions hard-coded by the native Dota Plus checkout in the target
+/// client. A local plan keeps its own ProductId, but the client sends one of
+/// these definitions when the user opens the native subscription checkout.
+/// </summary>
+public static class DotaPlusNativeSkus
+{
+    public static IReadOnlyList<uint> All { get; } =
+    [
+        19994,
+        19995,
+        19996,
+        19997,
+        19998,
+        19999
+    ];
+
+    public static bool Contains(uint itemDefId) => All.Contains(itemDefId);
+}
+
+/// <summary>
+/// The store protobuf uses a legacy result field whose successful value is 1.
+/// It is not the generic <see cref="EGCMsgResponse"/> enum, where OK is 0.
+/// </summary>
+public static class StorePurchaseWireResult
+{
+    public const int Failure = 0;
+    public const int Success = 1;
+}
+
 public sealed record StoreCatalogComponent(uint ProductId, uint Quantity);
 
 public sealed record StoreCatalogItem(

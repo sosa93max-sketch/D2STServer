@@ -70,8 +70,8 @@ public sealed class StorePurchaseInitHandler : IGcMessageHandler
         var response = new CMsgGCStorePurchaseInitResponse
         {
             Result = result.Success
-                ? (int)EGCMsgResponse.kEGCMsgResponseOK
-                : (int)EGCMsgResponse.kEGCMsgResponseDenied,
+                ? StorePurchaseWireResult.Success
+                : StorePurchaseWireResult.Failure,
             TxnId = result.Success ? result.TransactionId : 0
         };
 

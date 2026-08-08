@@ -25,8 +25,8 @@ public sealed class StorePurchaseCancelHandler : IGcMessageHandler
         var response = new CMsgGCStorePurchaseCancelResponse
         {
             Result = result.Success
-                ? (uint)EGCMsgResponse.kEGCMsgResponseOK
-                : (uint)EGCMsgResponse.kEGCMsgResponseDenied
+                ? (uint)StorePurchaseWireResult.Success
+                : (uint)StorePurchaseWireResult.Failure
         };
 
         return

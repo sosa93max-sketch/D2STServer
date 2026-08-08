@@ -53,8 +53,8 @@ public sealed class StorePurchaseFinalizeHandler : IGcMessageHandler
         var response = new CMsgGCStorePurchaseFinalizeResponse
         {
             Result = result.Success
-                ? (uint)EGCMsgResponse.kEGCMsgResponseOK
-                : (uint)EGCMsgResponse.kEGCMsgResponseDenied,
+                ? (uint)StorePurchaseWireResult.Success
+                : (uint)StorePurchaseWireResult.Failure,
             ItemIds = result.Success ? result.ItemIds.ToArray() : Array.Empty<ulong>()
         };
 

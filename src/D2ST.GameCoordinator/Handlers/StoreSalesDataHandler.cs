@@ -1,4 +1,5 @@
 using D2ST.Core.GameCoordinator;
+using D2ST.Core.Economy;
 using D2ST.GameCoordinator.Econ;
 using D2ST.Protocol.Dota;
 
@@ -32,6 +33,8 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
             ExpirationTime = (uint)_timeProvider.GetUtcNow().Add(Validity).ToUnixTimeSeconds()
         };
 
+        var nativePlusSkuPublished = false;
+
         foreach (var item in _economy.GetCatalog())
         {
             var itemDef = item.DefIndex != 0 ? item.DefIndex : item.ProductId;
@@ -45,6 +48,31 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
                 ItemDef = itemDef,
                 price = LocalEconomyCurrency.ToWireAmount(item.PriceDollars)
             });
+
+            // The native client does not submit the custom local ProductId
+            // when the Dota Plus checkout is opened. It submits the built-in
+            // subscription definitions instead. Publish the first active
+            // local plan under those aliases; custom ProductIds remain
+            // advertised for clients that can use them directly.
+            if (item.ProductType == StoreProductType.DotaPlusSubscription &&
+                !nativePlusSkuPublished)
+            {
+                foreach (var nativeSku in DotaPlusNativeSkus.All)
+                {
+                    if (nativeSku == itemDef)
+                    {
+                        continue;
+                    }
+
+                    response.SalePrices.Add(new CMsgGCRequestStoreSalesDataResponse.Price
+                    {
+                        ItemDef = nativeSku,
+                        price = LocalEconomyCurrency.ToWireAmount(item.PriceDollars)
+                    });
+                }
+
+                nativePlusSkuPublished = true;
+            }
         }
 
         return

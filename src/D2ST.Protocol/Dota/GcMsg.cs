@@ -127,6 +127,10 @@ public static class GcMsg
     public const uint GCNotificationsResponse = (uint)EDOTAGCMsg.kEMsgGCNotificationsResponse;
     public const uint ClientToGCRequestAccountGuildPersonaInfo = (uint)EDOTAGCMsg.kEMsgClientToGCRequestAccountGuildPersonaInfo;
     public const uint ClientToGCRequestAccountGuildPersonaInfoResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRequestAccountGuildPersonaInfoResponse;
+    public const uint ClientToGCRequestAccountGuildPersonaInfoBatch = (uint)EDOTAGCMsg.kEMsgClientToGCRequestAccountGuildPersonaInfoBatch;
+    public const uint ClientToGCRequestAccountGuildPersonaInfoBatchResponse = (uint)EDOTAGCMsg.kEMsgClientToGCRequestAccountGuildPersonaInfoBatchResponse;
+    public const uint ClientToGCGetGiftPermissions = (uint)EDOTAGCMsg.kEMsgClientToGCGetGiftPermissions;
+    public const uint ClientToGCGetGiftPermissionsResponse = (uint)EDOTAGCMsg.kEMsgClientToGCGetGiftPermissionsResponse;
     public const uint ClientToGCShowcaseGetUserData = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseGetUserData;
     public const uint ClientToGCShowcaseGetUserDataResponse = (uint)EDOTAGCMsg.kEMsgClientToGCShowcaseGetUserDataResponse;
     public const uint ClientToGCRequestSocialFeed = (uint)EDOTAGCMsg.kEMsgClientToGCRequestSocialFeed;

@@ -26,9 +26,11 @@ internal static class LocalConductState
             LowPriority = false,
             IsNewPlayer = false,
             IsGuidePlayer = false,
-            // These are small tier enums, not the raw 0-10000 scores. Leave
-            // the optional fields unset so the client uses the raw scores
-            // below instead of combining an unrelated tier with them.
+            // These are feature-gate tiers in addition to the raw scores. The
+            // maximum values keep communication and behavior features green;
+            // CommScore and BehaviorScore below are the visible 0-10000 values.
+            CommLevel = (int)DOTACommLevelt.DotaCommLevelAlliedAbility,
+            BehaviorLevel = (int)DOTABehaviorLevelt.DotaBehaviorLevelCoaching,
             Wins = Math.Max(0, stats.Wins),
             Losses = Math.Max(0, stats.Losses),
             CommScore = (int)CommunicationScore,

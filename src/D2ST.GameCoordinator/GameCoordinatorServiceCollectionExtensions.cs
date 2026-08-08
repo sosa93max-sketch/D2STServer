@@ -66,6 +66,8 @@ public static class GameCoordinatorServiceCollectionExtensions
         services.AddSingleton<IGcMessageHandler, GetCurrentPrivateCoachingSessionHandler>();
         services.AddSingleton<IGcMessageHandler, NotificationsRequestHandler>();
         services.AddSingleton<IGcMessageHandler, RequestAccountGuildPersonaInfoHandler>();
+        services.AddSingleton<IGcMessageHandler, RequestAccountGuildPersonaInfoBatchHandler>();
+        services.AddSingleton<IGcMessageHandler, GetGiftPermissionsHandler>();
         services.AddSingleton<IGcMessageHandler, ShowcaseGetUserDataHandler>();
         services.AddSingleton<IGcMessageHandler, RequestSocialFeedHandler>();
         services.AddSingleton<IGcMessageHandler, MatchesMinimalRequestHandler>();

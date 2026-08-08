@@ -44,6 +44,21 @@ public sealed class EconomyStore : IEconomyStore
                 && (candidate.ProductId == productIdOrDefIndex || candidate.DefIndex == productIdOrDefIndex))
             .OrderBy(candidate => candidate.ProductId == productIdOrDefIndex ? 0 : 1)
             .FirstOrDefault();
+
+        // The native client sends its built-in Dota Plus item definitions
+        // instead of the local plan ProductId. Keep one deterministic local
+        // plan available under those aliases so the wallet checkout can still
+        // resolve the request. Normal item definitions never use this path.
+        if (item is null && DotaPlusNativeSkus.Contains(productIdOrDefIndex))
+        {
+            item = db.StoreCatalogItems.AsNoTracking()
+                .Where(candidate => (!activeOnly || candidate.Active)
+                    && candidate.ProductType == StoreProductType.DotaPlusSubscription)
+                .OrderBy(candidate => candidate.Name)
+                .ThenBy(candidate => candidate.ProductId)
+                .FirstOrDefault();
+        }
+
         if (item is null)
         {
             return null;
