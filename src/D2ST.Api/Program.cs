@@ -41,6 +41,15 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
     db.Database.EnsureCreated();
 
+    // Avatar was present in the model from the first release, but EnsureCreated
+    // does not evolve an already existing SQLite database. Keep installations
+    // created by an older build readable before UserDirectory queries Accounts.Avatar.
+    if (!HasColumn(db, "Accounts", "Avatar"))
+    {
+        db.Database.ExecuteSqlRaw(
+            "ALTER TABLE \"Accounts\" ADD COLUMN \"Avatar\" BLOB NULL;");
+    }
+
     // EnsureCreated() only creates tables on a brand-new database, so tables
     // added later are created by hand here until stage 5 introduces migrations.
     db.Database.ExecuteSqlRaw(
@@ -96,7 +105,10 @@ static void EnsureSqliteDirectory(string connectionString)
     }
 }
 
-static bool HasPlayerRankCalibrationColumn(D2stDbContext db)
+static bool HasPlayerRankCalibrationColumn(D2stDbContext db) =>
+    HasColumn(db, "PlayerRanks", "IsCalibrated");
+
+static bool HasColumn(D2stDbContext db, string tableName, string columnName)
 {
     var connection = db.Database.GetDbConnection();
     var openedHere = connection.State != System.Data.ConnectionState.Open;
@@ -108,12 +120,12 @@ static bool HasPlayerRankCalibrationColumn(D2stDbContext db)
     try
     {
         using var command = connection.CreateCommand();
-        command.CommandText = "PRAGMA table_info(\"PlayerRanks\");";
+        command.CommandText = $"PRAGMA table_info(\"{tableName}\");";
         using var reader = command.ExecuteReader();
         while (reader.Read())
         {
             if (!reader.IsDBNull(1) &&
-                string.Equals(reader.GetString(1), "IsCalibrated", StringComparison.Ordinal))
+                string.Equals(reader.GetString(1), columnName, StringComparison.Ordinal))
             {
                 return true;
             }

@@ -937,3 +937,39 @@ These changes still require a Windows DllExport build and a real two-account,
 two-consecutive-launch test. Do not claim the client issue is fully validated
 until `dota2.exe` is confirmed gone after the first exit and the second launch
 opens normally.
+
+## 10. Avatar visible en Dota 2
+
+The avatar contract is compatible with the older SKY implementation: the
+server returns PNG bytes plus `X-SKYNET-Avatar-SteamId` and
+`X-SKYNET-Avatar-Default`, while the shim converts the response into the
+32/64/184 Steam image handles and emits `AvatarImageLoaded_t`.
+
+There was, however, an authentication difference. SKY's legacy GET path did
+not reject a request without a bearer token; D2ST correctly protects
+`GET /api/users/{steamId}/avatar`. The shim's previous `RefreshAvatar` called
+the non-blocking `EnsureSession()`, immediately sent the GET, and could receive
+`401` before the session handshake completed. That response was discarded, so
+the client could remain without an avatar even though the endpoint and image
+decoder were otherwise correct. The companion `steam_api` fix now waits for a
+session on the avatar worker and retries once after a stale token.
+
+New accounts created by shim logon or password login have no stored avatar.
+The API then returns the same transparent 1x1 fallback used by SKY, which is
+deliberately not a visible photograph. The current Qt launcher only fetches an
+avatar; it does not provide a user upload control. A real image must therefore
+be assigned from `/admin` or `PUT /api/users/me/avatar`. The API response is
+authenticated, has an identity header, and publishes `PersonaChange.Avatar`
+so other clients refresh it.
+
+The bootstrap now also checks `PRAGMA table_info("Accounts")` and adds a
+nullable `Avatar` BLOB for databases created by a pre-avatar build. This avoids
+an `Accounts.Avatar` query failure when an existing SQLite file is upgraded;
+new databases remain unchanged.
+
+Validation still requires the Windows shim build and a live client. The useful
+signals are: no `RefreshAvatar ... HTTP 401`, a successful
+`AvatarImageLoaded_t`, `GetImageSize` returning 32/64/184, and
+`GetImageRGBA` receiving a non-empty buffer. If the response says
+`X-SKYNET-Avatar-Default: true`, upload/assign an image first; that is data
+availability, not a Steam image-handle failure.
