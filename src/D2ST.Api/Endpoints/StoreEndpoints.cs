@@ -1,5 +1,6 @@
 using D2ST.Api.Contracts;
 using D2ST.Api.Economy;
+using D2ST.Core.Economy;
 using D2ST.GameCoordinator.Econ;
 using D2ST.Persistence;
 using D2ST.Steam;
@@ -94,6 +95,114 @@ public static class StoreEndpoints
             }
 
             return Results.Ok(ToCatalogResponse(economy.GetCatalog(false), []));
+        });
+
+        app.MapGet("/api/admin/store/catalog/page", async (
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration configuration,
+            IEconomyStore economy,
+            int page = 1,
+            int pageSize = 50,
+            string? search = null,
+            string status = "all",
+            int? type = null,
+            CancellationToken cancellationToken = default) =>
+        {
+            var authorization = await AuthorizeAdminAsync(
+                http, sessions, db, configuration, cancellationToken);
+            if (!authorization.Authenticated)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!authorization.Authorized)
+            {
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            var normalizedStatus = status.Trim().ToLowerInvariant();
+            if (normalizedStatus is not ("all" or "active" or "inactive"))
+            {
+                return Results.BadRequest(new AdminMessageResponse("El filtro de estado no es válido."));
+            }
+
+            if (type.HasValue && type.Value is not (0 or 1))
+            {
+                return Results.BadRequest(new AdminMessageResponse("El filtro de tipo no es válido."));
+            }
+
+            var active = normalizedStatus switch
+            {
+                "active" => true,
+                "inactive" => false,
+                _ => (bool?)null
+            };
+            var productType = type.HasValue ? (StoreProductType)type.Value : (StoreProductType?)null;
+            var result = economy.GetCatalogPage(page, pageSize, search, active, productType);
+            var boundedPage = Math.Clamp(page, 1, 100_000);
+            var boundedPageSize = Math.Clamp(pageSize, 10, 100);
+            return Results.Ok(new AdminCatalogPageResponse(
+                ToCatalogResponse(result.Items, []),
+                boundedPage,
+                boundedPageSize,
+                result.TotalCount,
+                result.ActiveCount));
+        });
+
+        app.MapPost("/api/admin/users/{accountId:long}/wallet/adjust", async (
+            long accountId,
+            AdminWalletAdjustRequest request,
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration configuration,
+            IEconomyStore economy,
+            CancellationToken cancellationToken) =>
+        {
+            var authorization = await AuthorizeAdminAsync(
+                http, sessions, db, configuration, cancellationToken);
+            if (!authorization.Authenticated)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!authorization.Authorized)
+            {
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            if (accountId <= 0 || accountId > uint.MaxValue)
+            {
+                return Results.BadRequest(new AdminMessageResponse("La cuenta no es válida."));
+            }
+
+            var account = await db.Accounts.AsNoTracking()
+                .SingleOrDefaultAsync(row => row.AccountId == (uint)accountId, cancellationToken);
+            if (account is null)
+            {
+                return Results.NotFound(new AdminMessageResponse("Usuario no encontrado."));
+            }
+
+            var session = http.Authenticate(sessions)!;
+            var reason = CleanReason(request.Reason);
+            var reference = $"admin-adjustment:{session.Account.AccountId}:{Guid.NewGuid():N}:{reason}";
+            var result = economy.AdjustWallet((uint)accountId, request.Delta, reference);
+            var response = new AdminWalletAdjustResponse(
+                result.Success,
+                result.Code,
+                result.Message,
+                ToWalletResponse(result.Wallet));
+            if (result.Success)
+            {
+                return Results.Ok(response);
+            }
+
+            var statusCode = result.Code is "insufficient_available" or "wallet_limit"
+                ? StatusCodes.Status409Conflict
+                : StatusCodes.Status400BadRequest;
+            return Results.Json(response, statusCode: statusCode);
         });
 
         app.MapPost("/api/store/purchase", (
@@ -325,6 +434,20 @@ public static class StoreEndpoints
         return new AdminAuthorization(
             true,
             account is not null && admins.Contains(account.Username, StringComparer.OrdinalIgnoreCase));
+    }
+
+    private static string CleanReason(string? reason)
+    {
+        var normalized = new string((reason ?? "ajuste manual")
+            .Where(character => !char.IsControl(character))
+            .ToArray())
+            .Trim();
+        if (normalized.Length == 0)
+        {
+            normalized = "ajuste manual";
+        }
+
+        return normalized.Length <= 80 ? normalized : normalized[..80];
     }
 
     private static DotaCatalogDefinitionResponse ToDotaDefinitionResponse(DotaCatalogDefinition item) =>

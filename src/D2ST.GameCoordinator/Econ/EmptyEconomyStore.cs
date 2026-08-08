@@ -1,3 +1,4 @@
+using D2ST.Core.Economy;
 using D2ST.Protocol.Dota;
 
 namespace D2ST.GameCoordinator.Econ;
@@ -13,6 +14,9 @@ internal sealed class EmptyEconomyStore : IEconomyStore
     public StoreCatalogItem? FindProduct(uint productIdOrDefIndex, bool activeOnly = true) => null;
 
     public WalletSnapshot GetWallet(uint accountId) => WalletSnapshot.Empty(accountId);
+
+    public WalletAdjustmentResult AdjustWallet(uint accountId, long delta, string reference) =>
+        WalletAdjustmentResult.Failed("economy_unavailable", "La economía persistente no está disponible.");
 
     public IReadOnlyList<WalletTransactionSummary> GetTransactions(uint accountId, int limit = 50) => [];
 
@@ -47,6 +51,14 @@ internal sealed class EmptyEconomyStore : IEconomyStore
 
     public StoreOperationResult Purchase(uint accountId, IReadOnlyList<StorePurchaseLine> lines) =>
         StoreOperationResult.Failed("economy_unavailable", "La economía persistente no está disponible.");
+
+    public CatalogPage GetCatalogPage(
+        int page,
+        int pageSize,
+        string? search = null,
+        bool? active = null,
+        StoreProductType? productType = null) =>
+        new([], 0, 0);
 
     public bool UpsertCatalogItem(StoreCatalogItem item) => false;
 

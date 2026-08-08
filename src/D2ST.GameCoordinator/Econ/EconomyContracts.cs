@@ -28,6 +28,19 @@ public sealed record WalletSnapshot(
     public static WalletSnapshot Empty(uint accountId) => new(accountId, 0, 0, null);
 }
 
+public sealed record WalletAdjustmentResult(
+    bool Success,
+    string Code,
+    string Message,
+    WalletSnapshot Wallet)
+{
+    public static WalletAdjustmentResult Failed(
+        string code,
+        string message,
+        WalletSnapshot? wallet = null) =>
+        new(false, code, message, wallet ?? WalletSnapshot.Empty(0));
+}
+
 public sealed record WalletTransactionSummary(
     long Id,
     EconomyTransactionKind Kind,
@@ -59,6 +72,11 @@ public sealed record CatalogImportSummary(
     int UpdatedCount,
     int SkippedCount);
 
+public sealed record CatalogPage(
+    IReadOnlyList<StoreCatalogItem> Items,
+    int TotalCount,
+    int ActiveCount);
+
 /// <summary>
 /// Persistence boundary for the local wallet, catalog and econ inventory. The
 /// GC project consumes this contract without taking a dependency on EF Core.
@@ -70,6 +88,8 @@ public interface IEconomyStore
     StoreCatalogItem? FindProduct(uint productIdOrDefIndex, bool activeOnly = true);
 
     WalletSnapshot GetWallet(uint accountId);
+
+    WalletAdjustmentResult AdjustWallet(uint accountId, long delta, string reference);
 
     IReadOnlyList<WalletTransactionSummary> GetTransactions(uint accountId, int limit = 50);
 
@@ -90,6 +110,13 @@ public interface IEconomyStore
     StoreOperationResult Purchase(uint accountId, IReadOnlyList<StorePurchaseLine> lines);
 
     bool UpsertCatalogItem(StoreCatalogItem item);
+
+    CatalogPage GetCatalogPage(
+        int page,
+        int pageSize,
+        string? search = null,
+        bool? active = null,
+        StoreProductType? productType = null);
 
     CatalogImportSummary ImportCatalog(
         IReadOnlyList<StoreCatalogItem> items,

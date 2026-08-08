@@ -607,6 +607,46 @@ machine's local VPK by path alone.
 - A real Windows Dota installation is still required to validate the VPK
   reader's discovered count, build number and the resulting client store UI.
 
+### Phase 13 — administrative wallet controls and paginated admin UI
+
+The local economy is now manageable from `/admin` without loading the complete
+catalog into the browser:
+
+- `POST /api/admin/users/{accountId}/wallet/adjust` accepts a positive or
+  negative `Delta` and an optional `Reason`. Positive adjustments credit the
+  wallet; negative adjustments can only consume currently available credits and
+  never reduce the balance below a pending purchase reservation. Every change
+  is recorded as `AdminAdjustment` in `WalletTransactions` with a unique admin
+  reference.
+- The user administration projection now includes balance, reserved credits
+  and available credits. The page uses
+  `GET /api/admin/users/page?page=&pageSize=&search=&status=` so only the
+  visible user slice and its avatars are rendered. The existing unpaged user
+  endpoint remains available for compatibility.
+- `GET /api/admin/store/catalog/page?page=&pageSize=&search=&status=&type=`
+  queries only the requested product slice and returns total/active counts.
+  This keeps a catalog of 11,390 products from creating 11,390 DOM rows on
+  first load.
+- `/admin` now presents compact summary cards, search/status/type filters,
+  pagination, a reduced catalog table and per-user `Saldo +` / `Saldo −`
+  actions. The authenticated REST balance remains available at
+  `GET /api/store/wallet`; the unmodified Dota client still has no validated
+  local-credit balance widget.
+- Account deletion now removes the account's wallet, ledger, purchase and econ
+  inventory rows along with the existing account data.
+
+### Evidence for administrative wallet controls and UI
+
+- `admin.html` JavaScript syntax check: passed.
+- `git diff --check`: passed.
+- The current execution environment has no `dotnet` executable, so the release
+  build could not be rerun in this pass; the previous baseline build remains
+  recorded above and a build is required before deployment.
+- Real Windows build-6783 validation remains pending for the catalog display,
+  balance rendering and purchase/finalize sequence. The standard GC sales
+  response exposes prices, while the local balance is currently enforced by the
+  server and exposed through REST rather than claimed as a native Dota widget.
+
 ## Match close data flow
 
 ```text

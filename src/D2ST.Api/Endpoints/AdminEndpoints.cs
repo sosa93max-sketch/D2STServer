@@ -58,8 +58,98 @@ public static class AdminEndpoints
                 .OrderBy(account => account.AccountId)
                 .ToListAsync(ct);
             var online = sessions.OnlineAccounts();
+            var accountIds = accounts.Select(account => account.AccountId).ToArray();
+            var wallets = await db.Wallets.AsNoTracking()
+                .Where(wallet => accountIds.Contains(wallet.AccountId))
+                .ToDictionaryAsync(wallet => wallet.AccountId, ct);
             return Results.Ok(accounts.Select(account =>
-                ToResponse(ranks, account, online.Contains(account.AccountId))).ToList());
+                ToResponse(
+                    ranks,
+                    account,
+                    online.Contains(account.AccountId),
+                    wallets.GetValueOrDefault(account.AccountId))).ToList());
+        });
+
+        app.MapGet("/api/admin/users/page", async (
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration config,
+            IRankStore ranks,
+            int page = 1,
+            int pageSize = 25,
+            string? search = null,
+            string status = "all",
+            CancellationToken ct = default) =>
+        {
+            var context = await AuthenticateAdminAsync(http, sessions, db, config, ct);
+            if (context is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!context.IsAdmin)
+            {
+                return Forbidden();
+            }
+
+            var normalizedStatus = status.Trim().ToLowerInvariant();
+            if (normalizedStatus is not ("all" or "online" or "offline"))
+            {
+                return Json(new AdminMessageResponse("El filtro de estado no es válido."), 400);
+            }
+
+            var online = sessions.OnlineAccounts().ToHashSet();
+            var onlineIds = online.ToArray();
+            var boundedPage = Math.Clamp(page, 1, 100_000);
+            var boundedPageSize = Math.Clamp(pageSize, 10, 100);
+            var query = db.Accounts.AsNoTracking();
+            var normalizedSearch = search?.Trim();
+            if (!string.IsNullOrWhiteSpace(normalizedSearch))
+            {
+                var hasNumericSearch = uint.TryParse(normalizedSearch, out var numericSearch);
+                query = hasNumericSearch
+                    ? query.Where(account => account.AccountId == numericSearch
+                        || account.Username.Contains(normalizedSearch)
+                        || (account.PersonaName != null && account.PersonaName.Contains(normalizedSearch)))
+                    : query.Where(account => account.Username.Contains(normalizedSearch)
+                        || (account.PersonaName != null && account.PersonaName.Contains(normalizedSearch)));
+            }
+
+            if (normalizedStatus == "online")
+            {
+                query = onlineIds.Length == 0
+                    ? query.Where(_ => false)
+                    : query.Where(account => onlineIds.Contains(account.AccountId));
+            }
+            else if (normalizedStatus == "offline" && onlineIds.Length != 0)
+            {
+                query = query.Where(account => !onlineIds.Contains(account.AccountId));
+            }
+
+            var totalCount = await query.CountAsync(ct);
+            var accounts = await query
+                .OrderBy(account => account.AccountId)
+                .Skip((boundedPage - 1) * boundedPageSize)
+                .Take(boundedPageSize)
+                .ToListAsync(ct);
+            var accountIds = accounts.Select(account => account.AccountId).ToArray();
+            var wallets = await db.Wallets.AsNoTracking()
+                .Where(wallet => accountIds.Contains(wallet.AccountId))
+                .ToDictionaryAsync(wallet => wallet.AccountId, ct);
+            var items = accounts.Select(account =>
+                ToResponse(
+                    ranks,
+                    account,
+                    online.Contains(account.AccountId),
+                    wallets.GetValueOrDefault(account.AccountId))).ToArray();
+
+            return Results.Ok(new AdminUsersPageResponse(
+                items,
+                boundedPage,
+                boundedPageSize,
+                totalCount,
+                online.Count));
         });
 
         app.MapPost("/api/admin/users", async (
@@ -306,6 +396,12 @@ public static class AdminEndpoints
                 db.WorkshopSubscriptions.Where(subscription =>
                     owned.Any(item => item.PublishedFileId == subscription.PublishedFileId)));
             db.WorkshopItems.RemoveRange(owned);
+            db.WalletTransactions.RemoveRange(
+                db.WalletTransactions.Where(transaction => transaction.AccountId == id));
+            db.StorePurchaseTransactions.RemoveRange(
+                db.StorePurchaseTransactions.Where(transaction => transaction.AccountId == id));
+            db.EconItems.RemoveRange(db.EconItems.Where(item => item.AccountId == id));
+            db.Wallets.RemoveRange(db.Wallets.Where(wallet => wallet.AccountId == id));
             db.Accounts.Remove(account);
             await db.SaveChangesAsync(ct);
             sessions.RemoveAll(id);
@@ -343,7 +439,11 @@ public static class AdminEndpoints
     private static IResult Json(object value, int statusCode) =>
         Results.Json(value, JsonOptions, statusCode: statusCode);
 
-    private static AdminUserResponse ToResponse(IRankStore ranks, AccountEntity account, bool online)
+    private static AdminUserResponse ToResponse(
+        IRankStore ranks,
+        AccountEntity account,
+        bool online,
+        WalletEntity? wallet = null)
     {
         var rank = ranks.GetOrCreate(account.AccountId);
         var info = RankMath.RankFor(rank.Mmr);
@@ -360,7 +460,10 @@ public static class AdminEndpoints
             info.Star,
             info.RankValue,
             info.ProgressPercent,
-            rank.IsCalibrated);
+            rank.IsCalibrated,
+            wallet?.BalanceCredits ?? 0,
+            wallet?.ReservedCredits ?? 0,
+            wallet is null ? 0 : Math.Max(0, wallet.BalanceCredits - wallet.ReservedCredits));
     }
 
     private static bool TryDecodeAvatar(string? contentBase64, out byte[] content)

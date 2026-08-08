@@ -39,7 +39,17 @@ public sealed record AdminUserResponse(
     int RankStar,
     int RankValue,
     int RankProgress,
-    bool IsCalibrated);
+    bool IsCalibrated,
+    long BalanceCredits,
+    long ReservedCredits,
+    long AvailableCredits);
+
+public sealed record AdminUsersPageResponse(
+    IReadOnlyList<AdminUserResponse> Items,
+    int Page,
+    int PageSize,
+    int TotalCount,
+    int OnlineCount);
 
 public sealed record AdminCreateUserRequest(string Username, string Password, string? PersonaName);
 
@@ -50,6 +60,8 @@ public sealed record AdminSetPersonaRequest(string PersonaName);
 public sealed record AdminSetAvatarRequest(string ContentBase64);
 
 public sealed record AdminAdjustMmrRequest(int Delta);
+
+public sealed record AdminWalletAdjustRequest(long Delta, string? Reason);
 
 public sealed record AdminMessageResponse(string Message);
 
@@ -248,6 +260,19 @@ public sealed record StoreWalletResponse(
     long ReservedCredits,
     long AvailableCredits,
     DateTimeOffset? UpdatedAt);
+
+public sealed record AdminWalletAdjustResponse(
+    bool Success,
+    string Code,
+    string Message,
+    StoreWalletResponse Wallet);
+
+public sealed record AdminCatalogPageResponse(
+    IReadOnlyList<StoreCatalogItemResponse> Items,
+    int Page,
+    int PageSize,
+    int TotalCount,
+    int ActiveCount);
 
 public sealed record StorePurchaseResponse(
     bool Success,

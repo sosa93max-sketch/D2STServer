@@ -68,6 +68,140 @@ public sealed class EconomyStore : IEconomyStore
         return wallet is null ? WalletSnapshot.Empty(accountId) : ToWallet(wallet);
     }
 
+    public WalletAdjustmentResult AdjustWallet(uint accountId, long delta, string reference)
+    {
+        if (accountId == 0)
+        {
+            return WalletAdjustmentResult.Failed("invalid_account", "La cuenta no es válida.");
+        }
+
+        if (delta == 0 || delta == long.MinValue)
+        {
+            return WalletAdjustmentResult.Failed("invalid_delta", "El ajuste debe ser distinto de cero.");
+        }
+
+        if (string.IsNullOrWhiteSpace(reference) || reference.Length > 160)
+        {
+            return WalletAdjustmentResult.Failed("invalid_reference", "La referencia del ajuste no es válida.");
+        }
+
+        lock (_gate)
+        {
+            using var scope = _scopes.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+            using var transaction = db.Database.BeginTransaction();
+            var wallet = GetOrCreateWallet(db, accountId);
+            var current = ToWallet(wallet);
+
+            if (db.WalletTransactions.Any(row => row.Reference == reference))
+            {
+                return WalletAdjustmentResult.Failed(
+                    "duplicate_reference",
+                    "El ajuste ya fue aplicado.",
+                    current);
+            }
+
+            if (delta > 0 && wallet.BalanceCredits > long.MaxValue - delta)
+            {
+                return WalletAdjustmentResult.Failed(
+                    "wallet_limit",
+                    "El saldo excedería el límite permitido.",
+                    current);
+            }
+
+            if (delta < 0)
+            {
+                var available = Math.Max(0, wallet.BalanceCredits - wallet.ReservedCredits);
+                var debit = -delta;
+                if (debit > available)
+                {
+                    return WalletAdjustmentResult.Failed(
+                        "insufficient_available",
+                        $"No se pueden restar {debit} créditos: hay {available} disponibles.",
+                        current);
+                }
+            }
+
+            wallet.BalanceCredits = checked(wallet.BalanceCredits + delta);
+            wallet.UpdatedAt = DateTimeOffset.UtcNow;
+            db.WalletTransactions.Add(new WalletTransactionEntity
+            {
+                AccountId = accountId,
+                Kind = EconomyTransactionKind.AdminAdjustment,
+                AmountCredits = delta,
+                BalanceAfterCredits = wallet.BalanceCredits,
+                Reference = reference,
+                CreatedAt = wallet.UpdatedAt
+            });
+            db.SaveChanges();
+            transaction.Commit();
+
+            return new WalletAdjustmentResult(
+                true,
+                "ok",
+                delta > 0 ? "Saldo añadido." : "Saldo retirado.",
+                ToWallet(wallet));
+        }
+    }
+
+    public CatalogPage GetCatalogPage(
+        int page,
+        int pageSize,
+        string? search = null,
+        bool? active = null,
+        StoreProductType? productType = null)
+    {
+        var boundedPage = Math.Clamp(page, 1, 100_000);
+        var boundedPageSize = Math.Clamp(pageSize, 10, 100);
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        var query = db.StoreCatalogItems.AsNoTracking();
+
+        if (active.HasValue)
+        {
+            query = query.Where(item => item.Active == active.Value);
+        }
+
+        if (productType.HasValue)
+        {
+            query = query.Where(item => item.ProductType == productType.Value);
+        }
+
+        var normalizedSearch = search?.Trim();
+        if (!string.IsNullOrWhiteSpace(normalizedSearch))
+        {
+            var hasNumericSearch = uint.TryParse(normalizedSearch, out var numericSearch);
+            query = hasNumericSearch
+                ? query.Where(item => item.ProductId == numericSearch
+                    || item.DefIndex == numericSearch
+                    || item.Name.Contains(normalizedSearch)
+                    || item.Category.Contains(normalizedSearch))
+                : query.Where(item => item.Name.Contains(normalizedSearch)
+                    || item.Category.Contains(normalizedSearch)
+                    || item.Description.Contains(normalizedSearch));
+        }
+
+        var totalCount = query.Count();
+        var activeCount = db.StoreCatalogItems.Count(item => item.Active);
+        var products = query
+            .OrderBy(item => item.Name)
+            .ThenBy(item => item.ProductId)
+            .Skip((boundedPage - 1) * boundedPageSize)
+            .Take(boundedPageSize)
+            .ToList();
+        var productIds = products.Select(item => item.ProductId).ToArray();
+        IReadOnlyList<StoreCatalogComponentEntity> components = productIds.Length == 0
+            ? []
+            : db.StoreCatalogComponents.AsNoTracking()
+                .Where(component => productIds.Contains(component.ProductId))
+                .ToList();
+
+        return new CatalogPage(
+            products.Select(item => ToCatalog(item, components)).ToArray(),
+            totalCount,
+            activeCount);
+    }
+
     public IReadOnlyList<WalletTransactionSummary> GetTransactions(uint accountId, int limit = 50)
     {
         if (accountId == 0)
