@@ -1112,6 +1112,54 @@ Evidence for this phase:
   the target Windows machine. The local economy remains virtual: no Steam
   Wallet charge, real-money payment, refund or Valve ownership is implied.
 
+## Phase 22 — session revocation, safe catalog replacement and polished clients
+
+This phase closes the remaining store and launcher issues reported after Phase
+21:
+
+- Launcher logout now removes the exact authenticated token that the browser
+  store received through the handoff and sends an expired `d2st_store_session`
+  cookie. The web page also heartbeats `/api/store/session` every 15 seconds,
+  so an open store tab notices launcher logout and disables its catalog.
+- The consumer catalog uses `GET /api/store/catalog/page` with server-side
+  pagination, search, product type, category and hero filters. Imported Dota
+  hero names are persisted in `HeroesJson` and returned to the UI as hero tags.
+- `POST /api/admin/store/catalog/clear` removes catalog products/components
+  while preserving every user's durable `EconItems` inventory. The admin import
+  checkbox performs a validated clear followed by a clean import using the new
+  default price/activation values.
+- Repeated imports are idempotent by item `DefIndex`; the migration removes old
+  duplicate rows, keeps the lowest stable product id and creates a filtered
+  unique index. Existing prices, activation and Steam market metadata survive a
+  normal import. Direct admin saves also preserve omitted market/hero metadata.
+- The store displays the exact matched Steam lowest price in cents and shows
+  the separate local whole-dollar amount required by checkout. Steam sync now
+  rounds that local amount upward, avoiding undercharging. The wallet/GC wire
+  contract remains whole-dollar for compatibility; this is not a real-money or
+  official Steam Market settlement.
+- The launcher no longer shows `--`: its header subscribes to `pingFinished` and
+  renders checking, online/version or offline states. The `Agregar cuenta`
+  button was removed. The main window received a card-based dark glass theme,
+  shadows, status pills and improved spacing. Dota detection now checks the
+  saved path, executable/Dota/Steam root forms, Steam registry and library VDFs,
+  environment/common roots and drive candidates; launch resolves and validates
+  `dota2.exe` before starting.
+
+Evidence for this phase:
+
+- `dotnet build D2STServer.sln --configuration Release` passed with 0 warnings
+  and 0 errors using SDK 10.0.100.
+- EF reports no pending model changes. A clean temporary SQLite startup applied
+  `20260809010000_ImproveStoreCatalog`, including the `HeroesJson` column,
+  duplicate cleanup and filtered unique index.
+- API smoke verified duplicate upsert resolution to one product, hero filtering,
+  catalog clear, handoff exchange, session HTTP 200 before offline and HTTP 401
+  after launcher-style `/api/presence/offline`.
+- Store and admin JavaScript syntax checks plus `git diff --check` passed.
+- CMake configuration of `new_launcher` was attempted; Qt6 is not installed in
+  this Linux environment, so the Windows Qt build still requires the target
+  machine/CI. No native client compatibility claim is made without that build.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -1129,13 +1177,13 @@ Evidence for this phase:
 
 ## Current handoff
 
-Phases 1–21 and the server-side bot-match support are implemented, with the
+Phases 1–22 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
-transition bridge. The server build and temporary SQLite migration/startup
-smoke for Phase 21 pass; the next session should open the store from the
-Windows launcher, validate a real catalog purchase and reconnect/inventory
-rendering, then capture the newly logged native cancel/finalize sequence on a
-real build-6783 client on the LAN.
+transition bridge. The server build, migration/startup smoke, catalog/session
+API smoke and frontend syntax checks for Phase 22 pass; the next session should
+open the store from the Windows launcher, validate a real catalog purchase and
+reconnect/inventory rendering, then capture the native cancel/finalize sequence
+on a real build-6783 client on the LAN.
 Preserve capture/replay evidence, rebuild the published client shim and verify
 that Dota returns to the foreground before claiming client compatibility. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client

@@ -156,6 +156,11 @@ public sealed class D2stDbContext : DbContext
             .HasIndex(item => new { item.Active, item.ProductType });
 
         modelBuilder.Entity<StoreCatalogItemEntity>()
+            .HasIndex(item => new { item.ProductType, item.DefIndex })
+            .IsUnique()
+            .HasFilter("ProductType = 0 AND DefIndex > 0");
+
+        modelBuilder.Entity<StoreCatalogItemEntity>()
             .Property(item => item.ProductId)
             .ValueGeneratedNever();
 

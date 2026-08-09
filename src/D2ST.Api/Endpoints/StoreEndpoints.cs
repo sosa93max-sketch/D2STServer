@@ -106,6 +106,47 @@ public static class StoreEndpoints
                 economy.GetItems(session.Account.AccountId)));
         });
 
+        app.MapGet("/api/store/catalog/page", (
+            HttpContext http,
+            ISessionStore sessions,
+            IEconomyStore economy,
+            int page = 1,
+            int pageSize = 24,
+            string? search = null,
+            string? category = null,
+            string? hero = null,
+            int? type = null) =>
+        {
+            var session = http.Authenticate(sessions);
+            if (session is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (type.HasValue && type.Value is not (0 or 1 or 2))
+            {
+                return Results.BadRequest(new AdminMessageResponse("El filtro de tipo no es válido."));
+            }
+
+            var result = economy.GetCatalogPage(
+                page,
+                pageSize,
+                search,
+                active: true,
+                type.HasValue ? (StoreProductType)type.Value : null,
+                category,
+                hero);
+            var filters = economy.GetCatalogFilters();
+            return Results.Ok(new StoreCatalogPageResponse(
+                ToCatalogResponse(result.Items, economy.GetItems(session.Account.AccountId)),
+                Math.Clamp(page, 1, 100_000),
+                Math.Clamp(pageSize, 10, 100),
+                result.TotalCount,
+                result.ActiveCount,
+                filters.Categories,
+                filters.Heroes));
+        });
+
         app.MapGet("/api/store/wallet", (
             HttpContext http,
             ISessionStore sessions,
@@ -269,6 +310,34 @@ public static class StoreEndpoints
                 result.ActiveCount));
         });
 
+        app.MapPost("/api/admin/store/catalog/clear", async (
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            IConfiguration configuration,
+            IEconomyStore economy,
+            CancellationToken cancellationToken) =>
+        {
+            var authorization = await AuthorizeAdminAsync(
+                http, sessions, db, configuration, cancellationToken);
+            if (!authorization.Authenticated)
+            {
+                return Results.Unauthorized();
+            }
+
+            if (!authorization.Authorized)
+            {
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            var removed = economy.ClearCatalog();
+            return Results.Ok(new StoreCatalogClearResponse(
+                removed,
+                removed == 0
+                    ? "El catálogo ya estaba vacío."
+                    : $"Se eliminaron {removed} productos del catálogo. El inventario de los usuarios se conservó."));
+        });
+
         app.MapPost("/api/admin/users/{accountId:long}/wallet/adjust", async (
             long accountId,
             AdminWalletAdjustRequest request,
@@ -397,10 +466,19 @@ public static class StoreEndpoints
                 request.MarketVolume,
                 request.MarketPriceSource ?? string.Empty,
                 request.MarketPriceStatus ?? "not_checked",
-                request.MarketPriceUpdatedAt);
-            return economy.UpsertCatalogItem(item)
-                ? Results.Ok(ToCatalogResponse(economy.GetCatalog(false), []).FirstOrDefault(candidate => candidate.ProductId == item.ProductId))
-                : Results.BadRequest(new AdminMessageResponse("El producto o sus componentes no son válidos."));
+                request.MarketPriceUpdatedAt,
+                request.Heroes);
+            if (!economy.UpsertCatalogItem(item))
+            {
+                return Results.BadRequest(new AdminMessageResponse("El producto o sus componentes no son válidos."));
+            }
+
+            var stored = ToCatalogResponse(economy.GetCatalog(false), [])
+                .FirstOrDefault(candidate => candidate.ProductId == item.ProductId
+                    || item.DefIndex != 0
+                    && candidate.ProductType == item.ProductType
+                    && candidate.DefIndex == item.DefIndex);
+            return Results.Ok(stored);
         });
 
         app.MapPost("/api/admin/store/catalog/discover", async (
@@ -499,9 +577,15 @@ public static class StoreEndpoints
                 var buildVersion = request.BuildVersion ?? source.ClientVersion;
                 var products = definitions.Select(definition =>
                 {
-                    var current = existing.FirstOrDefault(item =>
-                        item.ProductType == D2ST.Core.Economy.StoreProductType.Item &&
-                        (item.ProductId == definition.DefIndex || item.DefIndex == definition.DefIndex));
+                    // A replacement import is intentionally a clean slate:
+                    // use the requested default price/activation instead of
+                    // carrying values from the catalog that is about to be
+                    // deleted. A normal import keeps existing business data.
+                    var current = request.ClearExisting
+                        ? null
+                        : existing.FirstOrDefault(item =>
+                            item.ProductType == D2ST.Core.Economy.StoreProductType.Item &&
+                            (item.ProductId == definition.DefIndex || item.DefIndex == definition.DefIndex));
                     var productId = current?.ProductId ?? definition.DefIndex;
                     var price = current?.PriceDollars ?? request.DefaultPriceDollars;
                     var active = current?.Active ?? request.Activate;
@@ -521,9 +605,23 @@ public static class StoreEndpoints
                         buildVersion,
                         0,
                         active,
-                        []);
+                        [],
+                        HeroNames: definition.HeroNames);
                 }).ToArray();
-                var result = economy.ImportCatalog(products, preserveExisting: true);
+                var removedExisting = 0;
+                CatalogImportSummary result;
+                if (request.ClearExisting)
+                {
+                    // The source has already been fully read and validated,
+                    // so replacing the catalog cannot leave an installation
+                    // empty because of a bad VPK path.
+                    removedExisting = economy.ClearCatalog();
+                    result = economy.ImportCatalog(products, preserveExisting: false);
+                }
+                else
+                {
+                    result = economy.ImportCatalog(products, preserveExisting: true);
+                }
                 var activationMessage = request.Activate
                     ? "Los productos nuevos se activaron."
                     : "Los productos nuevos quedaron desactivados hasta que el administrador los active.";
@@ -539,7 +637,8 @@ public static class StoreEndpoints
                     result.SkippedCount,
                     request.DefaultPriceDollars,
                     request.Activate,
-                    $"Catálogo importado: {result.ImportedCount} nuevos, {result.UpdatedCount} actualizados, {result.SkippedCount} omitidos. {activationMessage}"));
+                    $"Catálogo importado: {result.ImportedCount} nuevos, {result.UpdatedCount} actualizados, {result.SkippedCount} omitidos. {activationMessage}",
+                    removedExisting));
             }
             catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
             {
@@ -663,7 +762,8 @@ public static class StoreEndpoints
             item.MarketVolume,
             item.MarketPriceSource,
             item.MarketPriceStatus,
-            item.MarketPriceUpdatedAt)).ToArray();
+            item.MarketPriceUpdatedAt,
+            item.HeroNames ?? [])).ToArray();
     }
 
     private static StoreWalletResponse ToWalletResponse(WalletSnapshot wallet) =>

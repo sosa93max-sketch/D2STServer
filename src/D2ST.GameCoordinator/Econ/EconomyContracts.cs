@@ -80,7 +80,8 @@ public sealed record StoreCatalogItem(
     long? MarketVolume = null,
     string MarketPriceSource = "",
     string MarketPriceStatus = "not_checked",
-    DateTimeOffset? MarketPriceUpdatedAt = null);
+    DateTimeOffset? MarketPriceUpdatedAt = null,
+    IReadOnlyList<string>? HeroNames = null);
 
 public sealed record WalletSnapshot(
     uint AccountId,
@@ -142,6 +143,10 @@ public sealed record CatalogPage(
     int TotalCount,
     int ActiveCount);
 
+public sealed record CatalogFilters(
+    IReadOnlyList<string> Categories,
+    IReadOnlyList<string> Heroes);
+
 /// <summary>
 /// Persistence boundary for the local wallet, catalog and econ inventory. The
 /// GC project consumes this contract without taking a dependency on EF Core.
@@ -181,7 +186,13 @@ public interface IEconomyStore
         int pageSize,
         string? search = null,
         bool? active = null,
-        StoreProductType? productType = null);
+        StoreProductType? productType = null,
+        string? category = null,
+        string? hero = null);
+
+    CatalogFilters GetCatalogFilters(bool activeOnly = true);
+
+    int ClearCatalog();
 
     CatalogImportSummary ImportCatalog(
         IReadOnlyList<StoreCatalogItem> items,

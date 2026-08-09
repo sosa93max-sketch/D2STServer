@@ -164,7 +164,9 @@ public sealed class EconomyStore : IEconomyStore
         int pageSize,
         string? search = null,
         bool? active = null,
-        StoreProductType? productType = null)
+        StoreProductType? productType = null,
+        string? category = null,
+        string? hero = null)
     {
         var boundedPage = Math.Clamp(page, 1, 100_000);
         var boundedPageSize = Math.Clamp(pageSize, 10, 100);
@@ -182,6 +184,19 @@ public sealed class EconomyStore : IEconomyStore
             query = query.Where(item => item.ProductType == productType.Value);
         }
 
+        var normalizedCategory = category?.Trim();
+        if (!string.IsNullOrWhiteSpace(normalizedCategory))
+        {
+            query = query.Where(item => item.Category == normalizedCategory);
+        }
+
+        var normalizedHero = hero?.Trim();
+        if (!string.IsNullOrWhiteSpace(normalizedHero))
+        {
+            var heroToken = $"\"{normalizedHero}\"";
+            query = query.Where(item => item.HeroesJson.Contains(heroToken));
+        }
+
         var normalizedSearch = search?.Trim();
         if (!string.IsNullOrWhiteSpace(normalizedSearch))
         {
@@ -190,10 +205,12 @@ public sealed class EconomyStore : IEconomyStore
                 ? query.Where(item => item.ProductId == numericSearch
                     || item.DefIndex == numericSearch
                     || item.Name.Contains(normalizedSearch)
-                    || item.Category.Contains(normalizedSearch))
+                    || item.Category.Contains(normalizedSearch)
+                    || item.HeroesJson.Contains(normalizedSearch))
                 : query.Where(item => item.Name.Contains(normalizedSearch)
                     || item.Category.Contains(normalizedSearch)
-                    || item.Description.Contains(normalizedSearch));
+                    || item.Description.Contains(normalizedSearch)
+                    || item.HeroesJson.Contains(normalizedSearch));
         }
 
         var totalCount = query.Count();
@@ -215,6 +232,48 @@ public sealed class EconomyStore : IEconomyStore
             products.Select(item => ToCatalog(item, components)).ToArray(),
             totalCount,
             activeCount);
+    }
+
+    public CatalogFilters GetCatalogFilters(bool activeOnly = true)
+    {
+        using var scope = _scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+        var rows = db.StoreCatalogItems.AsNoTracking()
+            .Where(item => !activeOnly || item.Active)
+            .Select(item => new { item.Category, item.HeroesJson })
+            .ToList();
+
+        var categories = rows
+            .Select(row => row.Category.Trim())
+            .Where(category => category.Length > 0)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(category => category)
+            .ToArray();
+        var heroes = rows
+            .SelectMany(row => Deserialize<string[]>(row.HeroesJson) ?? [])
+            .Select(hero => hero.Trim())
+            .Where(hero => hero.Length > 0)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(hero => hero)
+            .ToArray();
+        return new CatalogFilters(categories, heroes);
+    }
+
+    public int ClearCatalog()
+    {
+        lock (_gate)
+        {
+            using var scope = _scopes.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
+            using var transaction = db.Database.BeginTransaction();
+            var products = db.StoreCatalogItems.ToList();
+            var components = db.StoreCatalogComponents.ToList();
+            db.StoreCatalogComponents.RemoveRange(components);
+            db.StoreCatalogItems.RemoveRange(products);
+            db.SaveChanges();
+            transaction.Commit();
+            return products.Count;
+        }
     }
 
     public IReadOnlyList<WalletTransactionSummary> GetTransactions(uint accountId, int limit = 50)
@@ -438,6 +497,40 @@ public sealed class EconomyStore : IEconomyStore
 
     public bool UpsertCatalogItem(StoreCatalogItem item)
     {
+        // Admin edits often only change the local price/visibility. Keep
+        // Steam pricing and hero metadata when an older form omits those
+        // optional fields, so a save cannot silently make a real price look
+        // unknown or remove a filter tag.
+        var existing = FindProduct(item.ProductId, activeOnly: false);
+        if (existing is null
+            && item.ProductType == StoreProductType.Item
+            && item.DefIndex != 0)
+        {
+            existing = FindProduct(item.DefIndex, activeOnly: false);
+        }
+        if (existing is not null && existing.ProductType == item.ProductType)
+        {
+            item = item with
+            {
+                ProductId = existing.ProductId,
+                MarketHashName = string.IsNullOrWhiteSpace(item.MarketHashName)
+                    ? existing.MarketHashName
+                    : item.MarketHashName,
+                MarketLowestPriceCents = item.MarketLowestPriceCents ?? existing.MarketLowestPriceCents,
+                MarketMedianPriceCents = item.MarketMedianPriceCents ?? existing.MarketMedianPriceCents,
+                MarketVolume = item.MarketVolume ?? existing.MarketVolume,
+                MarketPriceSource = string.IsNullOrWhiteSpace(item.MarketPriceSource)
+                    ? existing.MarketPriceSource
+                    : item.MarketPriceSource,
+                MarketPriceStatus = string.IsNullOrWhiteSpace(item.MarketPriceStatus)
+                    || item.MarketPriceStatus == "not_checked"
+                    ? existing.MarketPriceStatus
+                    : item.MarketPriceStatus,
+                MarketPriceUpdatedAt = item.MarketPriceUpdatedAt ?? existing.MarketPriceUpdatedAt,
+                HeroNames = item.HeroNames ?? existing.HeroNames
+            };
+        }
+
         var result = ImportCatalog([item], preserveExisting: false);
         return result.ImportedCount + result.UpdatedCount == 1;
     }
@@ -458,7 +551,14 @@ public sealed class EconomyStore : IEconomyStore
             using var transaction = db.Database.BeginTransaction();
             var now = DateTimeOffset.UtcNow;
             var existing = db.StoreCatalogItems.ToDictionary(row => row.ProductId);
-            var seen = new HashSet<uint>();
+            var existingByDefinition = db.StoreCatalogItems
+                .Where(row => row.ProductType == StoreProductType.Item && row.DefIndex != 0)
+                .OrderBy(row => row.ProductId)
+                .ToList()
+                .GroupBy(row => row.DefIndex)
+                .ToDictionary(group => group.Key, group => group.First());
+            var seenProductIds = new HashSet<uint>();
+            var seenDefinitions = new HashSet<uint>();
             var imported = 0;
             var updated = 0;
             var skipped = 0;
@@ -466,7 +566,24 @@ public sealed class EconomyStore : IEconomyStore
             foreach (var source in items)
             {
                 if (!TryNormalizeCatalogItem(source, out var item)
-                    || !seen.Add(item.ProductId))
+                    || item.ProductType == StoreProductType.Item
+                    && !seenDefinitions.Add(item.DefIndex))
+                {
+                    skipped++;
+                    continue;
+                }
+
+                // DefIndex is the stable identity of a Dota cosmetic. Older
+                // imports could have used a different ProductId, so resolve
+                // by definition before deciding that this is a new row.
+                if (item.ProductType == StoreProductType.Item
+                    && !existing.TryGetValue(item.ProductId, out _)
+                    && existingByDefinition.TryGetValue(item.DefIndex, out var byDefinition))
+                {
+                    item = item with { ProductId = byDefinition.ProductId };
+                }
+
+                if (!seenProductIds.Add(item.ProductId))
                 {
                     skipped++;
                     continue;
@@ -582,6 +699,13 @@ public sealed class EconomyStore : IEconomyStore
                 MarketPriceStatus = string.IsNullOrWhiteSpace(source.MarketPriceStatus)
                     ? "not_checked"
                     : source.MarketPriceStatus.Trim(),
+                HeroNames = (source.HeroNames ?? [])
+                    .Select(hero => hero.Trim())
+                    .Where(hero => hero.Length > 0)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(hero => hero)
+                    .Take(64)
+                    .ToArray(),
                 DotaPlusDays = isDotaPlus ? source.DotaPlusDays : 0,
                 Components = normalizedComponents
             };
@@ -612,6 +736,7 @@ public sealed class EconomyStore : IEconomyStore
         entity.Name = item.Name;
         entity.Category = item.Category;
         entity.Description = item.Description;
+        entity.HeroesJson = JsonSerializer.Serialize(item.HeroNames ?? []);
         entity.BuildVersion = item.BuildVersion;
         entity.DotaPlusDays = item.ProductType == StoreProductType.DotaPlusSubscription
             ? item.DotaPlusDays
@@ -1149,7 +1274,8 @@ public sealed class EconomyStore : IEconomyStore
             item.MarketVolume,
             item.MarketPriceSource,
             item.MarketPriceStatus,
-            item.MarketPriceUpdatedAt);
+            item.MarketPriceUpdatedAt,
+            Deserialize<string[]>(item.HeroesJson) ?? []);
 
     private static WalletSnapshot ToWallet(WalletEntity wallet) =>
         new(wallet.AccountId, wallet.BalanceDollars, wallet.ReservedDollars, wallet.UpdatedAt);

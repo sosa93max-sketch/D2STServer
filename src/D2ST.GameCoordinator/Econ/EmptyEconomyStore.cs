@@ -57,8 +57,14 @@ internal sealed class EmptyEconomyStore : IEconomyStore
         int pageSize,
         string? search = null,
         bool? active = null,
-        StoreProductType? productType = null) =>
+        StoreProductType? productType = null,
+        string? category = null,
+        string? hero = null) =>
         new([], 0, 0);
+
+    public CatalogFilters GetCatalogFilters(bool activeOnly = true) => new([], []);
+
+    public int ClearCatalog() => 0;
 
     public bool UpsertCatalogItem(StoreCatalogItem item) => false;
 

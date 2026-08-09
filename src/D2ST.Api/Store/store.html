@@ -81,17 +81,20 @@
     .wallet-sub { color: var(--muted); }
     .wallet-icon { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; color: #07101d; background: var(--gold); font-weight: 900; box-shadow: 0 0 30px rgba(255,200,107,.24); }
 
-    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 18px 0; }
+    .toolbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; margin: 18px 0 10px; }
     .toolbar h2 { margin: 0; font-size: 20px; letter-spacing: -.02em; }
     .tools { display: flex; gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
-    .search { min-width: 230px; color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px 13px; outline: none; background: rgba(4, 12, 24, .68); }
+    .filterbar { display: grid; grid-template-columns: minmax(230px, 1.5fr) repeat(3, minmax(150px, .7fr)) auto; gap: 9px; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: rgba(4, 12, 24, .48); }
+    .search, .filter { min-width: 0; width: 100%; color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px 13px; outline: none; background: rgba(4, 12, 24, .68); }
     .search:focus { border-color: rgba(102,229,226,.75); box-shadow: 0 0 0 3px rgba(102,229,226,.10); }
+    .filter:focus { border-color: rgba(102,229,226,.75); box-shadow: 0 0 0 3px rgba(102,229,226,.10); }
+    .catalog-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; margin: 12px 2px 14px; }
     .btn { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; color: var(--text); background: rgba(18, 35, 59, .8); transition: transform .18s ease, border-color .18s ease, background .18s ease; }
     .btn:hover { transform: translateY(-1px); border-color: rgba(102,229,226,.55); background: rgba(25, 51, 80, .95); }
     .btn-primary { border-color: transparent; color: #07101d; font-weight: 800; background: linear-gradient(135deg, var(--cyan), var(--blue)); }
     .btn-danger { color: #ffdce0; }
 
-    .catalog { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+    .catalog { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; }
     .product { min-height: 250px; border: 1px solid var(--line); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; background: linear-gradient(150deg, rgba(22,43,72,.9), rgba(10,20,37,.88)); transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease; }
     .product:hover { transform: translateY(-4px); border-color: rgba(109,181,255,.62); box-shadow: 0 18px 42px rgba(0,0,0,.25), 0 0 30px rgba(66,144,255,.10); }
     .product::before { content: ""; position: absolute; width: 130px; height: 130px; border-radius: 50%; right: -50px; top: -50px; background: radial-gradient(circle, rgba(102,229,226,.18), transparent 68%); }
@@ -102,6 +105,14 @@
     .product p { color: var(--muted); margin: 0; min-height: 45px; }
     .product-bottom { margin-top: auto; padding-top: 18px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
     .price { font-size: 22px; font-weight: 800; color: var(--gold); }
+    .market-price { color: var(--cyan); font-size: 12px; font-weight: 700; margin-top: 2px; }
+    .local-price { color: var(--muted); font-size: 11px; margin-top: 2px; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 11px; min-height: 22px; }
+    .hero-tag { color: #b9d9ff; border: 1px solid rgba(109,181,255,.22); border-radius: 99px; padding: 3px 7px; font-size: 10px; background: rgba(109,181,255,.08); }
+    .catalog-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 4px; color: var(--muted); }
+    .pager { display: flex; align-items: center; gap: 8px; }
+    .pager .btn { min-width: 38px; padding: 8px 10px; }
+    .pager .current { color: var(--cyan); border-color: rgba(102,229,226,.35); }
     .owned { color: var(--muted); font-size: 11px; margin-top: 2px; }
     .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 18px; padding: 38px; }
 
@@ -118,8 +129,9 @@
     .toast.show { transform: translateY(0); opacity: 1; }
     .loading { opacity: .65; pointer-events: none; }
     .error { color: var(--danger); margin: 12px 0; }
+    @media (max-width: 1120px) { .catalog { grid-template-columns: repeat(3, minmax(0, 1fr)); } .filterbar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 900px) { .hero, .lower { grid-template-columns: 1fr; } .catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 620px) { .shell { width: min(100% - 24px, 1240px); padding-top: 16px; } .topbar, .toolbar { align-items: flex-start; flex-direction: column; } .account { align-self: stretch; justify-content: flex-end; } .tools { width: 100%; justify-content: stretch; } .search { min-width: 0; flex: 1; } .catalog { grid-template-columns: 1fr; } .hero-card, .wallet-card { padding: 24px; } }
+    @media (max-width: 620px) { .shell { width: min(100% - 24px, 1240px); padding-top: 16px; } .topbar, .toolbar { align-items: flex-start; flex-direction: column; } .account { align-self: stretch; justify-content: flex-end; } .tools { width: 100%; justify-content: stretch; } .search, .filter { min-width: 0; flex: 1; } .filterbar { grid-template-columns: 1fr; } .catalog { grid-template-columns: 1fr; } .catalog-footer { align-items: flex-start; flex-direction: column; } .hero-card, .wallet-card { padding: 24px; } }
   </style>
 </head>
 <body>
@@ -143,13 +155,21 @@
       </div>
       <div class="wallet-card">
         <div class="wallet-head"><div><div class="wallet-label">Saldo disponible</div><div class="wallet-value" id="balance">—</div><div class="wallet-sub" id="reserved">Cargando saldo…</div></div><div class="wallet-icon">$</div></div>
-        <button class="btn" id="refresh">Actualizar tienda</button>
       </div>
     </section>
 
-    <div class="toolbar"><h2>Catálogo destacado</h2><div class="tools"><input class="search" id="search" type="search" placeholder="Buscar artículo…"><button class="btn btn-danger" id="logout">Cerrar tienda</button></div></div>
+    <div class="toolbar"><div><div class="eyebrow">CATÁLOGO EN VIVO</div><h2>Encuentra tu siguiente loadout</h2></div><div class="tools"><button class="btn" id="refresh">Actualizar</button><button class="btn btn-danger" id="logout">Cerrar tienda</button></div></div>
+    <div class="filterbar">
+      <input class="search" id="search" type="search" placeholder="Buscar nombre, héroe o definición…">
+      <select class="filter" id="categoryFilter"><option value="">Todas las categorías</option></select>
+      <select class="filter" id="heroFilter"><option value="">Todos los héroes</option></select>
+      <select class="filter" id="typeFilter"><option value="">Todo el catálogo</option><option value="0">Cosméticos</option><option value="1">Sets</option><option value="2">Dota Plus</option></select>
+      <button class="btn" id="clearFilters">Limpiar</button>
+    </div>
+    <div class="catalog-meta"><span id="catalogCount">Cargando catálogo…</span><span>Precios Steam sincronizados · checkout en saldo local</span></div>
     <div class="error" id="error" hidden></div>
     <section class="catalog" id="catalog"></section>
+    <div class="catalog-footer"><span id="pageInfo">Página 1</span><div class="pager"><button class="btn" id="prevPage">‹</button><button class="btn current" id="currentPage">1</button><button class="btn" id="nextPage">›</button><select class="filter" id="pageSize"><option value="12">12 por página</option><option value="24" selected>24 por página</option><option value="48">48 por página</option></select></div></div>
 
     <section class="lower">
       <div class="panel"><h2>Inventario activado</h2><div id="inventory"><div class="item-meta">Cargando inventario…</div></div></div>
@@ -158,9 +178,11 @@
   </main>
   <div class="toast" id="toast"></div>
   <script>
-    const state = { catalog: [], inventory: [], transactions: [], wallet: null, account: null };
+    const state = { catalog: [], inventory: [], transactions: [], wallet: null, account: null, page: 1, pageSize: 24, totalCount: 0, activeCount: 0, categories: [], heroes: [], sessionExpired: false };
     const $ = (id) => document.getElementById(id);
-    const money = (value) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(value || 0));
+    const money = (value, digits = 2) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(Number(value || 0));
+    const localMoney = (value) => money(value, 0);
+    const marketMoney = (cents) => money(Number(cents || 0) / 100, 2);
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
     const typeName = (type) => Number(type) === 2 ? 'Dota Plus' : Number(type) === 1 ? 'Set' : 'Cosmético';
     const initials = (name) => (String(name || 'D2').trim().slice(0, 2) || 'D2').toUpperCase();
@@ -172,7 +194,7 @@
 
     async function api(path, options = {}) {
       const response = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options });
-      if (response.status === 401) throw new Error('La sesión de la tienda ha expirado. Ábrela nuevamente desde el launcher.');
+      if (response.status === 401) { const error = new Error('La sesión de la tienda ha expirado. Ábrela nuevamente desde el launcher.'); error.status = 401; throw error; }
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.Message || body.message || body.Code || `Error HTTP ${response.status}`);
       return body;
@@ -186,41 +208,88 @@
       window.history.replaceState({}, document.title, '/store');
     }
 
-    async function load() {
+    function populateSelect(id, values, placeholder) {
+      const select = $(id); const selected = select.value;
+      select.innerHTML = `<option value="">${placeholder}</option>` + values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('');
+      if (values.includes(selected)) select.value = selected;
+    }
+
+    function renderPager() {
+      const pages = Math.max(1, Math.ceil(state.totalCount / state.pageSize));
+      $('catalogCount').textContent = state.totalCount ? `${state.totalCount} artículos · ${state.activeCount} activos` : 'No hay artículos publicados';
+      $('pageInfo').textContent = `Página ${state.page} de ${pages}`;
+      $('currentPage').textContent = String(state.page);
+      $('prevPage').disabled = state.page <= 1;
+      $('nextPage').disabled = state.page >= pages;
+    }
+
+    async function loadCatalog(page = 1) {
+      const params = new URLSearchParams({ page: String(Math.max(1, page)), pageSize: String(state.pageSize) });
+      const search = $('search').value.trim(); const category = $('categoryFilter').value; const hero = $('heroFilter').value; const type = $('typeFilter').value;
+      if (search) params.set('search', search); if (category) params.set('category', category); if (hero) params.set('hero', hero); if (type) params.set('type', type);
+      const body = await api(`/api/store/catalog/page?${params.toString()}`);
+      state.catalog = body.Items || []; state.page = body.Page || page; state.pageSize = body.PageSize || state.pageSize;
+      state.totalCount = Number(body.TotalCount || 0); state.activeCount = Number(body.ActiveCount || 0); state.categories = body.Categories || []; state.heroes = body.Heroes || [];
+      populateSelect('categoryFilter', state.categories, 'Todas las categorías'); populateSelect('heroFilter', state.heroes, 'Todos los héroes');
+      const lastPage = Math.max(1, Math.ceil(state.totalCount / state.pageSize));
+      if (state.page > lastPage) return loadCatalog(lastPage);
+      renderCatalog(); renderPager();
+    }
+
+    async function load(page = state.page) {
       $('app').classList.add('loading'); $('error').hidden = true;
       try {
         await exchangeTicket();
-        const [account, catalog, wallet, inventory, transactions] = await Promise.all([
-          api('/api/store/session'), api('/api/store/catalog'), api('/api/store/wallet'), api('/api/store/inventory'), api('/api/store/transactions?limit=8')
+        const [account, wallet, inventory, transactions] = await Promise.all([
+          api('/api/store/session'), api('/api/store/wallet'), api('/api/store/inventory'), api('/api/store/transactions?limit=8')
         ]);
         state.account = account;
-        state.catalog = Array.isArray(catalog) ? catalog : (catalog.Items || []);
         state.wallet = wallet; state.inventory = inventory.Items || []; state.transactions = Array.isArray(transactions) ? transactions : (transactions.Items || []);
+        state.sessionExpired = false;
+        await loadCatalog(page);
         render();
       } catch (error) {
+        if (error.status === 401) expireSession(error.message);
         $('error').textContent = error.message || 'No se pudo cargar la tienda.'; $('error').hidden = false;
         showToast(error.message || 'No se pudo cargar la tienda.', true);
       } finally { $('app').classList.remove('loading'); }
     }
+
+    function expireSession(message = 'La sesión se cerró desde el launcher. Abre la tienda nuevamente para continuar.') {
+      state.sessionExpired = true; window.clearInterval(sessionTimer);
+      $('catalog').innerHTML = '<div class="empty">Tu sesión terminó. Abre la tienda desde el launcher para volver a comprar.</div>';
+      $('catalogCount').textContent = 'Sesión cerrada'; $('pageInfo').textContent = 'Sin sesión';
+      $('error').textContent = message; $('error').hidden = false; showToast(message, true);
+    }
+
+    async function checkSession() {
+      if (state.sessionExpired) return;
+      try { state.account = await api('/api/store/session'); render(); }
+      catch (error) { if (error.status === 401) expireSession(); }
+    }
+
+    let sessionTimer = window.setInterval(checkSession, 15000);
 
     function render() {
       const persona = state.account?.PersonaName || state.account?.Username || 'Cuenta';
       $('persona').textContent = persona; $('username').textContent = state.account?.Username ? `Cuenta ${state.account.Username}` : 'Sesión segura'; $('avatar').textContent = initials(persona);
       const available = state.wallet?.AvailableDollars ?? 0;
       const reserved = state.wallet?.ReservedDollars ?? 0;
-      $('balance').textContent = money(available); $('reserved').textContent = reserved ? `${money(reserved)} reservados en checkout` : 'Saldo listo para usar';
+      $('balance').textContent = localMoney(available); $('reserved').textContent = reserved ? `${localMoney(reserved)} reservados en checkout` : 'Saldo listo para usar';
       renderCatalog(); renderInventory(); renderTransactions();
     }
 
     function renderCatalog() {
-      const needle = $('search').value.trim().toLowerCase();
-      const items = state.catalog.filter((item) => !needle || [item.Name, item.Description, item.Category].join(' ').toLowerCase().includes(needle));
+      const items = state.catalog;
       if (!items.length) { $('catalog').innerHTML = '<div class="empty">No hay artículos que coincidan con tu búsqueda.</div>'; return; }
       $('catalog').innerHTML = items.map((item) => {
         const name = escapeHtml(item.Name || `Producto ${item.ProductId}`); const description = escapeHtml(item.Description || 'Artículo local para tu inventario.');
-        const owned = Number(item.OwnedQuantity || 0); const price = money(item.PriceDollars); const type = escapeHtml(typeName(item.ProductType));
+        const owned = Number(item.OwnedQuantity || 0); const localPrice = localMoney(item.PriceDollars); const type = escapeHtml(typeName(item.ProductType));
+        const marketCents = Number(item.MarketLowestPriceCents || 0); const marketMatched = marketCents > 0 && String(item.MarketPriceStatus || '').toLowerCase() === 'matched';
+        const heroes = (item.Heroes || []).slice(0, 5).map((hero) => `<span class="hero-tag">${escapeHtml(hero)}</span>`).join('');
         const canBuy = Number(item.PriceDollars) > 0 && Number(state.wallet?.AvailableDollars || 0) >= Number(item.PriceDollars);
-        return `<article class="product"><div class="product-top"><div class="sigil">${escapeHtml(initials(item.Name))}</div><span class="badge">${type}</span></div><h3>${name}</h3><p>${description}</p><div class="product-bottom"><div><div class="price">${price}</div><div class="owned">${owned ? `Activado ×${owned}` : 'Aún no activado'}</div></div><button class="btn btn-primary" data-buy="${item.ProductId}" ${canBuy ? '' : 'disabled'}>${owned ? 'Comprar otro' : 'Comprar'}</button></div></article>`;
+        const priceMarkup = marketMatched ? `<div class="price">${marketMoney(marketCents)}</div><div class="market-price">Precio Steam mínimo</div><div class="local-price">Saldo requerido: ${localPrice}</div>` : `<div class="price">${localPrice}</div><div class="local-price">Precio local</div>`;
+        return `<article class="product"><div class="product-top"><div class="sigil">${escapeHtml(initials(item.Name))}</div><span class="badge">${type}</span></div><h3>${name}</h3><p>${description}</p><div class="hero-tags">${heroes}</div><div class="product-bottom"><div>${priceMarkup}<div class="owned">${owned ? `Activado ×${owned}` : 'Aún no activado'}</div></div><button class="btn btn-primary" data-buy="${item.ProductId}" ${canBuy ? '' : 'disabled'}>${owned ? 'Comprar otro' : 'Comprar'}</button></div></article>`;
       }).join('');
       document.querySelectorAll('[data-buy]').forEach((button) => button.addEventListener('click', () => buy(Number(button.dataset.buy))));
     }
@@ -238,11 +307,17 @@
     async function buy(productId) {
       try {
         const result = await api('/api/store/purchase', { method: 'POST', body: JSON.stringify({ ProductId: productId, Quantity: 1 }) });
-        showToast('Compra completada. El artículo ya está activado en tu inventario.'); await load();
+        showToast('Compra completada. El artículo ya está activado en tu inventario.'); await load(state.page);
       } catch (error) { showToast(error.message || 'La compra no pudo completarse.', true); }
     }
 
-    $('search').addEventListener('input', renderCatalog);
+    let searchTimer;
+    $('search').addEventListener('input', () => { window.clearTimeout(searchTimer); searchTimer = window.setTimeout(() => loadCatalog(1).catch((error) => showToast(error.message, true)), 260); });
+    ['categoryFilter', 'heroFilter', 'typeFilter'].forEach((id) => $(id).addEventListener('change', () => loadCatalog(1).catch((error) => showToast(error.message, true))));
+    $('clearFilters').addEventListener('click', () => { $('search').value = ''; $('categoryFilter').value = ''; $('heroFilter').value = ''; $('typeFilter').value = ''; loadCatalog(1).catch((error) => showToast(error.message, true)); });
+    $('prevPage').addEventListener('click', () => loadCatalog(state.page - 1));
+    $('nextPage').addEventListener('click', () => loadCatalog(state.page + 1));
+    $('pageSize').addEventListener('change', () => { state.pageSize = Number($('pageSize').value) || 24; loadCatalog(1); });
     $('refresh').addEventListener('click', load);
     $('logout').addEventListener('click', async () => { await fetch('/api/store/logout', { method: 'POST', credentials: 'include' }); window.location.href = '/store'; });
     load();

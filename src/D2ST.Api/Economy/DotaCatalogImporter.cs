@@ -291,7 +291,7 @@ public sealed class DotaCatalogImporter
         var heroes = entry.Child("used_by_heroes")?.Children
             .Where(child => child.Key.StartsWith("npc_dota_hero_", StringComparison.OrdinalIgnoreCase))
             .Where(child => string.IsNullOrWhiteSpace(child.Value) || child.Value == "1")
-            .Select(child => child.Key)
+            .Select(child => child.Key["npc_dota_hero_".Length..])
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(hero => hero, StringComparer.OrdinalIgnoreCase)
             .ToArray() ?? [];

@@ -885,6 +885,11 @@ namespace D2ST.Persistence.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("HeroesJson")
+                        .IsRequired()
+                        .HasMaxLength(4096)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(160)
@@ -929,6 +934,10 @@ namespace D2ST.Persistence.Migrations
                     b.HasKey("ProductId");
 
                     b.HasIndex("Active", "ProductType");
+
+                    b.HasIndex("ProductType", "DefIndex")
+                        .IsUnique()
+                        .HasFilter("ProductType = 0 AND DefIndex > 0");
 
                     b.ToTable("StoreCatalogItems");
                 });

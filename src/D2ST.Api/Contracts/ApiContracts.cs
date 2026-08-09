@@ -228,7 +228,8 @@ public sealed record StoreCatalogUpsertRequest(
     long? MarketVolume = null,
     string? MarketPriceSource = null,
     string? MarketPriceStatus = null,
-    DateTimeOffset? MarketPriceUpdatedAt = null);
+    DateTimeOffset? MarketPriceUpdatedAt = null,
+    IReadOnlyList<string>? Heroes = null);
 
 public sealed record StoreCatalogItemResponse(
     uint ProductId,
@@ -249,7 +250,21 @@ public sealed record StoreCatalogItemResponse(
     long? MarketVolume,
     string MarketPriceSource,
     string MarketPriceStatus,
-    DateTimeOffset? MarketPriceUpdatedAt);
+    DateTimeOffset? MarketPriceUpdatedAt,
+    IReadOnlyList<string>? Heroes = null);
+
+public sealed record StoreCatalogPageResponse(
+    IReadOnlyList<StoreCatalogItemResponse> Items,
+    int Page,
+    int PageSize,
+    int TotalCount,
+    int ActiveCount,
+    IReadOnlyList<string> Categories,
+    IReadOnlyList<string> Heroes);
+
+public sealed record StoreCatalogClearResponse(
+    int RemovedProducts,
+    string Message);
 
 public sealed record MarketPriceSyncRequest(
     bool ActiveOnly = true,
@@ -291,7 +306,8 @@ public sealed record DotaCatalogImportRequest(
     long DefaultPriceDollars = 1,
     bool Activate = false,
     uint? BuildVersion = null,
-    IReadOnlyList<uint>? DefIndexes = null);
+    IReadOnlyList<uint>? DefIndexes = null,
+    bool ClearExisting = false);
 
 public sealed record DotaCatalogDefinitionResponse(
     uint DefIndex,
@@ -327,7 +343,8 @@ public sealed record DotaCatalogImportResponse(
     int SkippedCount,
     long DefaultPriceDollars,
     bool Activate,
-    string Message);
+    string Message,
+    int RemovedExistingCount = 0);
 
 public sealed record StoreWalletResponse(
     uint AccountId,

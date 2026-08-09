@@ -276,7 +276,7 @@ public sealed class SteamMarketPriceSync
     }
 
     private static long ToLocalDollars(long cents) =>
-        Math.Max(1, (long)Math.Round(cents / 100m, MidpointRounding.AwayFromZero));
+        Math.Max(1, cents / 100 + (cents % 100 == 0 ? 0 : 1));
 
     private static void SetStatus(
         StoreCatalogItemEntity product,

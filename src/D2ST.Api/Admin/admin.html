@@ -498,15 +498,17 @@
           <button id="discoverBtn" class="accent">Detectar</button>
         </div>
         <div class="row" style="margin-top: 10px;">
-          <input id="defaultPrice" type="number" min="1" value="1" step="1" placeholder="Precio base en USD">
+          <input id="defaultPrice" type="number" min="1" value="1" step="1" placeholder="Precio local fallback (USD entero)">
           <label class="check"><input id="activateImported" type="checkbox"> Activar productos nuevos</label>
+          <label class="check"><input id="replaceImported" type="checkbox"> Vaciar antes de importar</label>
           <button id="importBtn">Importar catálogo completo</button>
         </div>
         <div class="row" style="margin-top: 10px;">
           <input id="marketMaxItems" type="number" min="1" max="500" value="100" step="1" placeholder="Artículos por lote">
           <select id="marketPriceMode"><option value="lowest">Steam: precio mínimo</option><option value="median">Steam: precio medio</option></select>
           <label class="check"><input id="marketIncludeInactive" type="checkbox"> Incluir inactivos</label>
-          <button id="syncMarketBtn" class="accent">Actualizar precios Steam</button>
+          <button id="syncMarketBtn" class="accent">Actualizar precios reales Steam</button>
+          <button id="clearPublishedCatalogBtn" class="danger">Vaciar catálogo publicado</button>
         </div>
         <div id="catalogSource" class="meta" style="margin-top: 12px;"></div>
         <div id="discoverMsg" class="msg"></div>
@@ -1083,6 +1085,7 @@ function renderCatalog(body) {
     detail.textContent = '#' + item.ProductId
       + ' · DefIndex ' + (item.DefIndex || '—')
       + (item.Category ? ' · ' + item.Category : '')
+      + ((item.Heroes || []).length ? ' · ' + item.Heroes.join(', ') : '')
       + (Number(item.ProductType) === 2 ? ' · ' + formatNumber(item.DotaPlusDays || 0) + ' días' : '')
       + (Number(item.ProductType) === 1 ? ' · ' + catalogComponentsLabel(item) : '')
       + (item.MarketPriceStatus && item.MarketPriceStatus !== 'not_checked'
@@ -1202,11 +1205,26 @@ async function importCatalog() {
     body: JSON.stringify({
       DotaPath: path,
       DefaultPriceDollars: price,
-      Activate: $('activateImported').checked
+      Activate: $('activateImported').checked,
+      ClearExisting: $('replaceImported').checked
     })
   });
   if (!result.ok) { show($('discoverMsg'), messageOf(result)); return; }
   show($('discoverMsg'), result.body.Message || 'Catálogo importado.', 'ok');
+  await loadCatalog(1);
+}
+
+async function clearPublishedCatalog() {
+  if (!confirm('¿Vaciar todo el catálogo publicado? Se eliminarán productos y componentes, pero se conservará el inventario ya entregado a los usuarios.')) return;
+  const button = $('clearPublishedCatalogBtn');
+  button.disabled = true;
+  const result = await api('/api/admin/store/catalog/clear', { method: 'POST' });
+  button.disabled = false;
+  if (!result.ok) {
+    show($('catalogMsg'), 'No se pudo vaciar el catálogo: ' + messageOf(result));
+    return;
+  }
+  show($('catalogMsg'), result.body.Message || 'Catálogo vacío.', 'ok');
   await loadCatalog(1);
 }
 
@@ -1316,7 +1334,8 @@ async function saveCatalog() {
       MarketVolume: market.MarketVolume ?? null,
       MarketPriceSource: market.MarketPriceSource || null,
       MarketPriceStatus: marketHashName ? (market.MarketPriceStatus || null) : 'not_checked',
-      MarketPriceUpdatedAt: market.MarketPriceUpdatedAt || null
+      MarketPriceUpdatedAt: market.MarketPriceUpdatedAt || null,
+      Heroes: market.Heroes || []
     })
   });
   if (!result.ok) { show($('manualCatalogMsg'), messageOf(result)); return; }
@@ -1347,7 +1366,8 @@ async function toggleCatalog(item) {
       MarketVolume: item.MarketVolume ?? null,
       MarketPriceSource: item.MarketPriceSource || null,
       MarketPriceStatus: item.MarketPriceStatus || null,
-      MarketPriceUpdatedAt: item.MarketPriceUpdatedAt || null
+      MarketPriceUpdatedAt: item.MarketPriceUpdatedAt || null,
+      Heroes: item.Heroes || []
     })
   });
   if (result.ok) await loadCatalog(catalogState.page);
@@ -1681,6 +1701,7 @@ $('refreshCatalogBtn').addEventListener('click', () => loadCatalog(1));
 $('discoverBtn').addEventListener('click', discoverCatalog);
 $('importBtn').addEventListener('click', importCatalog);
 $('syncMarketBtn').addEventListener('click', syncMarketPrices);
+$('clearPublishedCatalogBtn').addEventListener('click', clearPublishedCatalog);
 $('saveCatalogBtn').addEventListener('click', saveCatalog);
 $('clearCatalogBtn').addEventListener('click', clearCatalogForm);
 $('catalogType').addEventListener('change', syncCatalogTypeFields);

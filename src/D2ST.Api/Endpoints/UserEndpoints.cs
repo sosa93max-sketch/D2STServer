@@ -1,4 +1,5 @@
 using D2ST.Api.Contracts;
+using D2ST.Api.Store;
 using D2ST.Core.Accounts;
 using D2ST.Core.Events;
 using D2ST.Core.Ranking;
@@ -260,8 +261,16 @@ public static class UserEndpoints
             // account so friends see it offline now instead of when the
             // presence window lapses.
             var accountId = session.Account.AccountId;
+            // The launcher uses the same web bearer token that the store
+            // handoff exchanges into its browser cookie. Revoke that exact
+            // token so an already-open store cannot outlive launcher logout.
+            sessions.Remove(session.Token);
             sessions.RemoveClientSessions(accountId);
             presence.Clear(accountId);
+            http.Response.Cookies.Append(
+                StoreSessionCookie.Name,
+                string.Empty,
+                StoreSessionCookie.Expired(http));
             await publisher.PublishToAudienceAsync(
                 accountId,
                 SteamEventTypes.PersonaStateChanged,

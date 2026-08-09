@@ -49,6 +49,10 @@ public sealed class StoreCatalogItemEntity
     [MaxLength(2048)]
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>JSON array of hero names that can use the cosmetic.</summary>
+    [MaxLength(4096)]
+    public string HeroesJson { get; set; } = "[]";
+
     public uint BuildVersion { get; set; }
 
     /// <summary>Subscription duration for a Dota Plus product; zero for items and sets.</summary>
