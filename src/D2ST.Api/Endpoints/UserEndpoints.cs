@@ -4,9 +4,11 @@ using D2ST.Core.Events;
 using D2ST.Core.Ranking;
 using D2ST.Core.Steam;
 using D2ST.GameCoordinator.Ranks;
+using D2ST.Persistence;
 using D2ST.Steam;
 using D2ST.Steam.Presence;
 using D2ST.Steam.Social;
+using Microsoft.EntityFrameworkCore;
 
 namespace D2ST.Api.Endpoints;
 
@@ -58,6 +60,73 @@ public static class UserEndpoints
                 RankProgress = info.ProgressPercent,
                 IsCalibrated = rank.IsCalibrated
             });
+        });
+
+        app.MapGet("/api/ranking", async (
+            HttpContext http,
+            ISessionStore sessions,
+            D2stDbContext db,
+            int? page,
+            int? pageSize,
+            CancellationToken ct) =>
+        {
+            if (http.Authenticate(sessions) is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var requestedPage = Math.Clamp(page ?? 1, 1, 10_000);
+            var requestedPageSize = Math.Clamp(pageSize ?? 50, 10, 100);
+            var rankedPlayers = db.PlayerRanks
+                .AsNoTracking()
+                .Where(rank => rank.IsCalibrated)
+                .Join(
+                    db.Accounts.AsNoTracking(),
+                    rank => rank.AccountId,
+                    account => account.AccountId,
+                    (rank, account) => new { Rank = rank, Account = account });
+
+            var totalCount = await rankedPlayers.CountAsync(ct);
+            var rows = await rankedPlayers
+                .OrderByDescending(entry => entry.Rank.Mmr)
+                .ThenByDescending(entry => entry.Rank.Wins)
+                .ThenByDescending(entry => entry.Rank.Games)
+                .ThenBy(entry => entry.Rank.AccountId)
+                .Skip((requestedPage - 1) * requestedPageSize)
+                .Take(requestedPageSize)
+                .ToListAsync(ct);
+
+            var items = rows.Select((entry, index) =>
+            {
+                var info = RankMath.RankFor(entry.Rank.Mmr);
+                var games = Math.Max(0, entry.Rank.Games);
+                var wins = Math.Clamp(entry.Rank.Wins, 0, games);
+                var losses = Math.Clamp(entry.Rank.Losses, 0, games);
+                var winRate = games == 0 ? 0 : (int)Math.Round(wins * 100.0 / games);
+                return new RankingEntryResponse(
+                    Position: ((requestedPage - 1) * requestedPageSize) + index + 1,
+                    AccountId: entry.Account.AccountId,
+                    SteamId: SteamAccount.SteamIdFromAccountId(entry.Account.AccountId).ToString(),
+                    Username: entry.Account.Username,
+                    PersonaName: entry.Account.PersonaName ?? entry.Account.Username,
+                    Online: sessions.IsOnline(entry.Account.AccountId),
+                    Mmr: Math.Max(0, entry.Rank.Mmr),
+                    RankTier: info.Tier,
+                    RankStar: info.Star,
+                    RankValue: info.RankValue,
+                    RankProgress: info.ProgressPercent,
+                    IsCalibrated: entry.Rank.IsCalibrated,
+                    Games: games,
+                    Wins: wins,
+                    Losses: losses,
+                    WinRatePercent: winRate);
+            }).ToList();
+
+            return Results.Ok(new RankingPageResponse(
+                items,
+                requestedPage,
+                requestedPageSize,
+                totalCount));
         });
 
         app.MapGet("/api/users", async (

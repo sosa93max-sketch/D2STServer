@@ -1235,6 +1235,31 @@ listening state; `/store` returns 404 and unauthenticated `/api/store/catalog`
 returns 401. Qt6/Windows visual and purchase validation remain pending because
 Qt6 and the target Dota client are not available in this Linux environment.
 
+## Phase 25 — bearer ranking endpoint for the native launcher
+
+The server now exposes `GET /api/ranking?page=1&pageSize=50` for authenticated
+launcher sessions. It joins calibrated `PlayerRanks` with `Accounts`, orders by
+MMR descending with deterministic wins/games/AccountId tie-breakers, includes
+online presence from `ISessionStore`, and returns the player's display name,
+MMR, Dota rank tier/star/progress and basic games/wins/losses/win-rate data.
+`SteamId` is serialized as text on this endpoint so Qt clients do not round a
+64-bit Steam id through a JSON number. Uncalibrated accounts are intentionally
+excluded; an empty result is a valid ranking state for the launcher UI.
+
+The medal source was verified against the public Dota game-file index:
+`dota/pak01_dir.vpk` contains the official compiled assets under
+`panorama/images/rank_tier_icons/rank0_psd.vtex_c` through
+`rank8_psd.vtex_c`. This API returns the numeric tier/star; the native launcher
+maps those values to its local display badge because the server should not
+serve Valve's compiled VPK assets as web files.
+
+Evidence: `git diff --check` passes. `/tmp/dotnet-sdk-d2st/dotnet restore
+D2STServer.sln` and `dotnet build D2STServer.sln -c Release --no-restore`
+pass with 0 warnings and 0 errors. An authenticated SQLite smoke confirmed
+HTTP 401 without a bearer, HTTP 200 with a launcher login and the valid empty
+payload `Items:[]`, `TotalCount:0`. The endpoint still needs a live Windows/Qt
+check with both populated and empty rank tables.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -1252,13 +1277,15 @@ Qt6 and the target Dota client are not available in this Linux environment.
 
 ## Current handoff
 
-Phases 1–24 and the server-side bot-match support are implemented, with the
+Phases 1–25 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
 transition bridge. The next session should build the launcher on Windows,
 open the native store from the launcher, validate a real Steam-priced catalog
 purchase and confirm the pushed inventory snapshot in a live build-6783 client,
 then capture the native sales/purchase sequence on Windows.
 Preserve capture/replay evidence, rebuild the published client shim and verify
-that Dota returns to the foreground before claiming client compatibility. See
+that Dota returns to the foreground before claiming client compatibility. Also
+validate `/api/ranking` with both calibrated users and an empty rank table, and
+confirm the native launcher renders both states. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client
 compatibility as complete until it is recorded here.

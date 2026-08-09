@@ -55,6 +55,35 @@ public sealed record AdminUsersPageResponse(
     int TotalCount,
     int OnlineCount);
 
+/// <summary>
+/// One calibrated player in the public launcher ranking. SteamId is a string
+/// on this endpoint so native clients do not lose precision while parsing a
+/// 64-bit Steam id through a JSON number.
+/// </summary>
+public sealed record RankingEntryResponse(
+    int Position,
+    uint AccountId,
+    string SteamId,
+    string Username,
+    string PersonaName,
+    bool Online,
+    int Mmr,
+    int RankTier,
+    int RankStar,
+    int RankValue,
+    int RankProgress,
+    bool IsCalibrated,
+    int Games,
+    int Wins,
+    int Losses,
+    int WinRatePercent);
+
+public sealed record RankingPageResponse(
+    IReadOnlyList<RankingEntryResponse> Items,
+    int Page,
+    int PageSize,
+    int TotalCount);
+
 public sealed record AdminCreateUserRequest(string Username, string Password, string? PersonaName);
 
 public sealed record AdminSetPasswordRequest(string Password);
