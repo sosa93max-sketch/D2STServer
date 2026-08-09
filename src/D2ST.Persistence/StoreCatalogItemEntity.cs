@@ -23,6 +23,13 @@ public sealed class StoreCatalogItemEntity
     [MaxLength(300)]
     public string MarketHashName { get; set; } = string.Empty;
 
+    /// <summary>
+    /// English client name used to resolve the exact Steam market hash when
+    /// the catalog display name is localized for the player.
+    /// </summary>
+    [MaxLength(300)]
+    public string MarketSearchName { get; set; } = string.Empty;
+
     /// <summary>Lowest USD market price in cents from the last sync.</summary>
     public long? MarketLowestPriceCents { get; set; }
 

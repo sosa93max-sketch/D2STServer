@@ -129,6 +129,12 @@
     .toast.show { transform: translateY(0); opacity: 1; }
     .loading { opacity: .65; pointer-events: none; }
     .error { color: var(--danger); margin: 12px 0; }
+    .session-gate { min-height: calc(100vh - 56px); display: grid; place-items: center; padding: 30px 0 70px; }
+    .session-gate-card { width: min(560px, 100%); border: 1px solid rgba(255,126,139,.28); border-radius: 28px; padding: 38px; text-align: center; background: linear-gradient(150deg, rgba(30,39,65,.94), rgba(11,20,37,.94)); box-shadow: var(--shadow); }
+    .session-gate-mark { width: 64px; height: 64px; display: grid; place-items: center; margin: 0 auto 20px; border-radius: 22px; color: #08111f; font-size: 26px; font-weight: 900; background: linear-gradient(135deg, var(--gold), var(--danger)); box-shadow: 0 0 38px rgba(255,126,139,.22); }
+    .session-gate-card h1 { font-size: clamp(28px, 5vw, 42px); margin: 0 0 12px; }
+    .session-gate-card p { color: var(--muted); margin: 0 auto; max-width: 420px; }
+    .session-gate-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
     @media (max-width: 1120px) { .catalog { grid-template-columns: repeat(3, minmax(0, 1fr)); } .filterbar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 900px) { .hero, .lower { grid-template-columns: 1fr; } .catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 620px) { .shell { width: min(100% - 24px, 1240px); padding-top: 16px; } .topbar, .toolbar { align-items: flex-start; flex-direction: column; } .account { align-self: stretch; justify-content: flex-end; } .tools { width: 100%; justify-content: stretch; } .search, .filter { min-width: 0; flex: 1; } .filterbar { grid-template-columns: 1fr; } .catalog { grid-template-columns: 1fr; } .catalog-footer { align-items: flex-start; flex-direction: column; } .hero-card, .wallet-card { padding: 24px; } }
@@ -136,6 +142,19 @@
 </head>
 <body>
   <main class="shell" id="app">
+    <section class="session-gate" id="sessionGate" hidden>
+      <div class="session-gate-card">
+        <div class="session-gate-mark">D2</div>
+        <div class="eyebrow">Acceso de tienda</div>
+        <h1>Sesión cerrada</h1>
+        <p id="sessionGateMessage">Tu sesión ya no está activa. Abre la tienda desde el launcher para generar un nuevo acceso seguro.</p>
+        <div class="session-gate-actions">
+          <button class="btn btn-primary" id="retrySession">Reintentar sesión</button>
+          <button class="btn" id="returnLauncher">Volver al launcher</button>
+        </div>
+      </div>
+    </section>
+    <div id="storeView">
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark">D2</div>
@@ -175,6 +194,7 @@
       <div class="panel"><h2>Inventario activado</h2><div id="inventory"><div class="item-meta">Cargando inventario…</div></div></div>
       <div class="panel"><h2>Actividad reciente</h2><div id="transactions"><div class="item-meta">Cargando transacciones…</div></div></div>
     </section>
+    </div>
   </main>
   <div class="toast" id="toast"></div>
   <script>
@@ -249,7 +269,10 @@
         await loadCatalog(page);
         render();
       } catch (error) {
-        if (error.status === 401) expireSession(error.message);
+        if (error.status === 401) {
+          expireSession(error.message);
+          return;
+        }
         $('error').textContent = error.message || 'No se pudo cargar la tienda.'; $('error').hidden = false;
         showToast(error.message || 'No se pudo cargar la tienda.', true);
       } finally { $('app').classList.remove('loading'); }
@@ -257,9 +280,9 @@
 
     function expireSession(message = 'La sesión se cerró desde el launcher. Abre la tienda nuevamente para continuar.') {
       state.sessionExpired = true; window.clearInterval(sessionTimer);
-      $('catalog').innerHTML = '<div class="empty">Tu sesión terminó. Abre la tienda desde el launcher para volver a comprar.</div>';
-      $('catalogCount').textContent = 'Sesión cerrada'; $('pageInfo').textContent = 'Sin sesión';
-      $('error').textContent = message; $('error').hidden = false; showToast(message, true);
+      $('storeView').hidden = true;
+      $('sessionGateMessage').textContent = message;
+      $('sessionGate').hidden = false;
     }
 
     async function checkSession() {
@@ -285,7 +308,7 @@
       $('catalog').innerHTML = items.map((item) => {
         const name = escapeHtml(item.Name || `Producto ${item.ProductId}`); const description = escapeHtml(item.Description || 'Artículo local para tu inventario.');
         const owned = Number(item.OwnedQuantity || 0); const localPrice = localMoney(item.PriceDollars); const type = escapeHtml(typeName(item.ProductType));
-        const marketCents = Number(item.MarketLowestPriceCents || 0); const marketMatched = marketCents > 0 && String(item.MarketPriceStatus || '').toLowerCase() === 'matched';
+        const marketCents = Number(item.MarketLowestPriceCents || item.MarketMedianPriceCents || 0); const marketMatched = marketCents > 0 && String(item.MarketPriceStatus || '').toLowerCase() === 'matched';
         const heroes = (item.Heroes || []).slice(0, 5).map((hero) => `<span class="hero-tag">${escapeHtml(hero)}</span>`).join('');
         const canBuy = Number(item.PriceDollars) > 0 && Number(state.wallet?.AvailableDollars || 0) >= Number(item.PriceDollars);
         const priceMarkup = marketMatched ? `<div class="price">${marketMoney(marketCents)}</div><div class="market-price">Precio Steam mínimo</div><div class="local-price">Saldo requerido: ${localPrice}</div>` : `<div class="price">${localPrice}</div><div class="local-price">Precio local</div>`;
@@ -320,6 +343,8 @@
     $('pageSize').addEventListener('change', () => { state.pageSize = Number($('pageSize').value) || 24; loadCatalog(1); });
     $('refresh').addEventListener('click', load);
     $('logout').addEventListener('click', async () => { await fetch('/api/store/logout', { method: 'POST', credentials: 'include' }); window.location.href = '/store'; });
+    $('retrySession').addEventListener('click', () => window.location.reload());
+    $('returnLauncher').addEventListener('click', () => window.history.length > 1 ? window.history.back() : window.close());
     load();
   </script>
 </body>

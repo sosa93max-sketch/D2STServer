@@ -12,6 +12,7 @@ public sealed record DotaCatalogDefinition(
     uint DefIndex,
     string Name,
     string DisplayName,
+    string MarketSearchName,
     string ItemName,
     string Description,
     string Prefab,
@@ -26,6 +27,7 @@ public sealed record DotaCatalogSource(
     string PakPath,
     string? SteamInfPath,
     uint ClientVersion,
+    string Language,
     int ParsedDefinitionCount,
     IReadOnlyList<DotaCatalogDefinition> Items);
 
@@ -125,7 +127,6 @@ public sealed class DotaCatalogImporter
         ["music"] = "music",
         ["radiantcreeps"] = "radiantcreeps",
         ["radiantsiegecreeps"] = "radiantsiegecreeps",
-        ["radianttowers"] = "radianttowers",
         ["roshan"] = "roshan",
         ["streak_effect"] = "streak_effect",
         ["terrain"] = "terrain",
@@ -136,12 +137,18 @@ public sealed class DotaCatalogImporter
         ["blink_effect"] = "blink_effect"
     };
 
-    public DotaCatalogSource Read(string requestedPath)
+    public DotaCatalogSource Read(string requestedPath, string? language = "spanish")
     {
         var (dotaPath, pakPath) = ResolvePaths(requestedPath);
         var schema = VpkTextReader.ReadText(pakPath, ItemsSchemaPath);
-        var localization = ReadEnglishItemLocalization(pakPath);
-        var parsed = ParseItems(schema, localization);
+        var normalizedLanguage = NormalizeLanguage(language);
+        var englishLocalization = ReadItemLocalization(pakPath, "english");
+        var localization = normalizedLanguage == "english"
+            ? englishLocalization
+            : MergeLocalization(
+                ReadItemLocalization(pakPath, normalizedLanguage),
+                englishLocalization);
+        var parsed = ParseItems(schema, localization, englishLocalization);
         var version = ReadClientVersion(dotaPath);
 
         return new DotaCatalogSource(
@@ -149,6 +156,7 @@ public sealed class DotaCatalogImporter
             pakPath,
             version.SteamInfPath,
             version.ClientVersion,
+            normalizedLanguage,
             parsed.ParsedDefinitionCount,
             parsed.Items);
     }
@@ -248,7 +256,8 @@ public sealed class DotaCatalogImporter
 
     private static (int ParsedDefinitionCount, IReadOnlyList<DotaCatalogDefinition> Items) ParseItems(
         string text,
-        IReadOnlyDictionary<string, string> localization)
+        IReadOnlyDictionary<string, string> localization,
+        IReadOnlyDictionary<string, string> englishLocalization)
     {
         var root = ValveKeyValues.Parse(text);
         var itemsSection = root.Child("items")
@@ -267,7 +276,7 @@ public sealed class DotaCatalogImporter
             }
 
             parsedCount++;
-            var definition = ToDefinition(defIndex, entry, localization);
+            var definition = ToDefinition(defIndex, entry, localization, englishLocalization);
             if (IsSellableCandidate(definition))
             {
                 items.Add(definition);
@@ -280,12 +289,14 @@ public sealed class DotaCatalogImporter
     private static DotaCatalogDefinition ToDefinition(
         uint defIndex,
         ValveKeyValueNode entry,
-        IReadOnlyDictionary<string, string> localization)
+        IReadOnlyDictionary<string, string> localization,
+        IReadOnlyDictionary<string, string> englishLocalization)
     {
         var name = FirstNonEmpty(entry.ValueOf("name"), entry.ValueOf("item_name"), $"def_{defIndex}");
         var itemName = entry.ValueOf("item_name");
         var displayName = ResolveDisplayName(name, itemName, localization);
-        var description = entry.ValueOf("item_description");
+        var marketSearchName = ResolveDisplayName(name, itemName, englishLocalization);
+        var description = ResolveLocalizedValue(entry.ValueOf("item_description"), localization);
         var prefab = Normalize(entry.ValueOf("prefab"));
         var slot = Normalize(FirstNonEmpty(entry.ValueOf("item_slot"), entry.ValueOf("loadout_slot")));
         var heroes = entry.Child("used_by_heroes")?.Children
@@ -306,6 +317,7 @@ public sealed class DotaCatalogImporter
             defIndex,
             name,
             displayName,
+            marketSearchName,
             itemName,
             description,
             prefab,
@@ -316,11 +328,15 @@ public sealed class DotaCatalogImporter
             heroes);
     }
 
-    private static IReadOnlyDictionary<string, string> ReadEnglishItemLocalization(string pakPath)
+    private static IReadOnlyDictionary<string, string> ReadItemLocalization(string pakPath, string language)
     {
         try
         {
-            var text = VpkTextReader.ReadText(pakPath, EnglishItemsLocalizationPath);
+            var path = EnglishItemsLocalizationPath.Replace(
+                "items_english",
+                $"items_{NormalizeLanguage(language)}",
+                StringComparison.OrdinalIgnoreCase);
+            var text = VpkTextReader.ReadText(pakPath, path);
             var tokens = ValveKeyValues.Parse(text).Descendant("Tokens");
             if (tokens is null)
             {
@@ -340,11 +356,28 @@ public sealed class DotaCatalogImporter
             or IOException
             or UnauthorizedAccessException)
         {
-            // Some stripped client builds omit localization. The raw schema
-            // remains importable and the administrator can set a market name
-            // manually in that case.
+            // Some stripped client builds omit a language file. The raw schema
+            // remains importable and the English fallback is tried separately.
             return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
+    }
+
+    private static IReadOnlyDictionary<string, string> MergeLocalization(
+        IReadOnlyDictionary<string, string> localized,
+        IReadOnlyDictionary<string, string> fallback)
+    {
+        var merged = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (key, value) in fallback)
+        {
+            merged[key] = value;
+        }
+
+        foreach (var (key, value) in localized)
+        {
+            merged[key] = value;
+        }
+
+        return merged;
     }
 
     private static string ResolveDisplayName(
@@ -359,6 +392,41 @@ public sealed class DotaCatalogImporter
         }
 
         return name.Trim();
+    }
+
+    private static string ResolveLocalizedValue(
+        string value,
+        IReadOnlyDictionary<string, string> localization)
+    {
+        var trimmed = value.Trim();
+        var token = trimmed.TrimStart('#');
+        return token.Length > 0 && localization.TryGetValue(token, out var localized)
+            ? localized
+            : trimmed;
+    }
+
+    private static string NormalizeLanguage(string? language)
+    {
+        var value = (language ?? "spanish").Trim().ToLowerInvariant();
+        return value switch
+        {
+            "es" or "es-es" or "spanish" => "spanish",
+            "es-419" or "latam" or "latinamerican" => "latam",
+            "en" or "en-us" or "english" => "english",
+            "pt" or "pt-br" or "brazilian" => "brazilian",
+            "zh" or "zh-cn" or "schinese" => "schinese",
+            "zh-tw" or "tchinese" => "tchinese",
+            "ko" or "koreana" => "koreana",
+            "ja" or "japanese" => "japanese",
+            "ru" or "russian" => "russian",
+            "fr" or "french" => "french",
+            "de" or "german" => "german",
+            "it" or "italian" => "italian",
+            "pl" or "polish" => "polish",
+            "tr" or "turkish" => "turkish",
+            "uk" or "ukrainian" => "ukrainian",
+            _ => "english"
+        };
     }
 
     private static bool IsSellableCandidate(DotaCatalogDefinition item)

@@ -516,6 +516,9 @@ public sealed class EconomyStore : IEconomyStore
                 MarketHashName = string.IsNullOrWhiteSpace(item.MarketHashName)
                     ? existing.MarketHashName
                     : item.MarketHashName,
+                MarketSearchName = string.IsNullOrWhiteSpace(item.MarketSearchName)
+                    ? existing.MarketSearchName
+                    : item.MarketSearchName,
                 MarketLowestPriceCents = item.MarketLowestPriceCents ?? existing.MarketLowestPriceCents,
                 MarketMedianPriceCents = item.MarketMedianPriceCents ?? existing.MarketMedianPriceCents,
                 MarketVolume = item.MarketVolume ?? existing.MarketVolume,
@@ -611,14 +614,18 @@ public sealed class EconomyStore : IEconomyStore
 
                     if (preserveExisting)
                     {
+                        var preserveVerifiedPrice = HasAuthoritativePrice(entity);
                         item = item with
                         {
                             ProductId = entity.ProductId,
-                            PriceDollars = entity.PriceDollars,
-                            Active = entity.Active,
+                            PriceDollars = preserveVerifiedPrice ? entity.PriceDollars : item.PriceDollars,
+                            Active = preserveVerifiedPrice ? entity.Active : item.Active,
                             MarketHashName = string.IsNullOrWhiteSpace(item.MarketHashName)
                                 ? entity.MarketHashName
                                 : item.MarketHashName,
+                            MarketSearchName = string.IsNullOrWhiteSpace(item.MarketSearchName)
+                                ? entity.MarketSearchName
+                                : item.MarketSearchName,
                             MarketLowestPriceCents = item.MarketLowestPriceCents ?? entity.MarketLowestPriceCents,
                             MarketMedianPriceCents = item.MarketMedianPriceCents ?? entity.MarketMedianPriceCents,
                             MarketVolume = item.MarketVolume ?? entity.MarketVolume,
@@ -645,6 +652,12 @@ public sealed class EconomyStore : IEconomyStore
         }
     }
 
+    private static bool HasAuthoritativePrice(StoreCatalogItemEntity entity) =>
+        entity.MarketPriceStatus.Equals("matched", StringComparison.OrdinalIgnoreCase)
+            && (entity.MarketLowestPriceCents is > 0 || entity.MarketMedianPriceCents is > 0)
+        || entity.MarketPriceSource.Equals("manual", StringComparison.OrdinalIgnoreCase)
+            && entity.PriceDollars > 0;
+
     private static bool TryNormalizeCatalogItem(
         StoreCatalogItem source,
         out StoreCatalogItem normalized)
@@ -652,11 +665,13 @@ public sealed class EconomyStore : IEconomyStore
         normalized = source;
         var components = source.Components ?? [];
         if (source.ProductId == 0 || string.IsNullOrWhiteSpace(source.Name)
-            || source.PriceDollars <= 0
+            || source.PriceDollars < 0
+            || source.PriceDollars == 0 && source.Active
             || source.PriceDollars > LocalEconomyCurrency.MaxWireDollars
-            || source.MarketHashName.Length > 300
-            || source.MarketPriceSource.Length > 32
-            || source.MarketPriceStatus.Length > 32
+            || (source.MarketHashName?.Length ?? 0) > 300
+            || (source.MarketSearchName?.Length ?? 0) > 300
+            || (source.MarketPriceSource?.Length ?? 0) > 32
+            || (source.MarketPriceStatus?.Length ?? 0) > 32
             || source.ProductType is not (StoreProductType.Item or StoreProductType.Set or StoreProductType.DotaPlusSubscription)
             || components.Any(component => component.ProductId == 0 || component.Quantity == 0))
         {
@@ -695,6 +710,7 @@ public sealed class EconomyStore : IEconomyStore
                 Category = source.Category?.Trim() ?? string.Empty,
                 Description = source.Description?.Trim() ?? string.Empty,
                 MarketHashName = source.MarketHashName?.Trim() ?? string.Empty,
+                MarketSearchName = source.MarketSearchName?.Trim() ?? string.Empty,
                 MarketPriceSource = source.MarketPriceSource?.Trim() ?? string.Empty,
                 MarketPriceStatus = string.IsNullOrWhiteSpace(source.MarketPriceStatus)
                     ? "not_checked"
@@ -727,6 +743,7 @@ public sealed class EconomyStore : IEconomyStore
         entity.ProductType = item.ProductType;
         entity.PriceDollars = item.PriceDollars;
         entity.MarketHashName = item.MarketHashName;
+        entity.MarketSearchName = item.MarketSearchName;
         entity.MarketLowestPriceCents = item.MarketLowestPriceCents;
         entity.MarketMedianPriceCents = item.MarketMedianPriceCents;
         entity.MarketVolume = item.MarketVolume;
@@ -1269,6 +1286,7 @@ public sealed class EconomyStore : IEconomyStore
                 .Select(component => new StoreCatalogComponent(component.ComponentProductId, component.Quantity))
                 .ToArray(),
             item.MarketHashName,
+            item.MarketSearchName,
             item.MarketLowestPriceCents,
             item.MarketMedianPriceCents,
             item.MarketVolume,

@@ -6,8 +6,9 @@ using D2ST.Protocol.Dota;
 namespace D2ST.GameCoordinator.Handlers;
 
 /// <summary>
-/// Answers the store sale query from the active local catalog. Prices are
-/// expressed in the server's local USD dollars and refreshed daily by the client.
+/// Answers the store sale query from the active local catalog. Verified Steam
+/// prices are sent in USD cents; local manual prices use the compatible
+/// whole-dollar fallback.
 /// </summary>
 public sealed class StoreSalesDataHandler : IGcMessageHandler
 {
@@ -38,7 +39,7 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
         foreach (var item in _economy.GetCatalog())
         {
             var itemDef = item.DefIndex != 0 ? item.DefIndex : item.ProductId;
-            if (itemDef == 0 || item.PriceDollars < 0 || item.PriceDollars > LocalEconomyCurrency.MaxWireDollars)
+            if (itemDef == 0 || item.EffectivePriceCents <= 0)
             {
                 continue;
             }
@@ -46,7 +47,7 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
             response.SalePrices.Add(new CMsgGCRequestStoreSalesDataResponse.Price
             {
                 ItemDef = itemDef,
-                price = LocalEconomyCurrency.ToWireAmount(item.PriceDollars)
+                price = LocalEconomyCurrency.ToWireCents(item.EffectivePriceCents)
             });
 
             // The native client does not submit the custom local ProductId
@@ -67,7 +68,7 @@ public sealed class StoreSalesDataHandler : IGcMessageHandler
                     response.SalePrices.Add(new CMsgGCRequestStoreSalesDataResponse.Price
                     {
                         ItemDef = nativeSku,
-                        price = LocalEconomyCurrency.ToWireAmount(item.PriceDollars)
+                        price = LocalEconomyCurrency.ToWireCents(item.EffectivePriceCents)
                     });
                 }
 

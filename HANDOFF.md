@@ -1,6 +1,6 @@
 # D2STServer handoff
 
-Last updated: 2026-08-08
+Last updated: 2026-08-09
 
 ## Current objective
 
@@ -1160,6 +1160,56 @@ Evidence for this phase:
   this Linux environment, so the Windows Qt build still requires the target
   machine/CI. No native client compatibility claim is made without that build.
 
+## Phase 23 — immediate web inventory sync, real catalog pricing and localization
+
+This phase addresses the three store issues observed after Phase 22 and records
+the launcher redesign delivered alongside them:
+
+- `EconInventory.Purchase` now reconciles the durable inventory and pushes a
+  complete account-owned SO snapshot after a successful web checkout. The
+  existing delta is still written first, while `PushSubscribe` repairs a live
+  client that missed the delta while establishing its econ subscription. A
+  connected Dota client therefore does not need to be restarted; a disconnected
+  client still receives the same inventory on its next welcome.
+- Dota catalog imports accept a language (Spanish by default), use that
+  localization for the visible store name and retain the English localization
+  as `MarketSearchName` for Steam lookup. The new
+  `20260809020000_AddMarketSearchName` migration stores that second name.
+- The import fallback is now `0`, never an implicit `$1`. New/unresolved
+  products are not purchasable until the Steam lookup resolves them. The import
+  endpoint queues item ids in `MarketPriceRefreshQueue`, which processes
+  batches of 500 in the background through Steam Market `appid=570`. A
+  successful match stores lowest/median cents, rounds the local whole-dollar
+  checkout amount upward for compatibility, and can activate the item when the
+  administrator selected activation. No-match/no-data products are cleared to
+  zero/inactive unless they carry a previous verified or explicitly manual
+  price.
+- Native `RequestStoreSalesData` now advertises the verified Steam cents when
+  available, instead of falling back to `$1`; unresolved products are omitted.
+  The local wallet and purchase ledger remain whole-dollar by design, so the
+  web UI continues to show the exact Steam reference separately from the
+  rounded local balance required for checkout.
+- `/store` now hides the purchase/catalog view after a 401 or heartbeat
+  revocation and shows a separate session gate with retry and return actions.
+  It no longer mixes a closed-session message into the product grid.
+- `new_launcher` now has a full dashboard layout: navigation rail, account
+  hero, metrics, grouped Dota/server settings and a distinct launch action.
+  Existing handoff, login, autodetection and process controls remain wired to
+  the same server contracts.
+
+Evidence for this phase:
+
+- `/tmp/dotnet-sdk-d2st/dotnet restore D2STServer.sln` and
+  `dotnet build D2STServer.sln -c Release --no-restore` pass with 0 warnings and
+  0 errors using SDK 10.0.100.
+- A temporary SQLite API startup applied the full migration chain, including
+  `20260809020000_AddMarketSearchName`, and reached the listening state.
+- Store/admin JavaScript syntax checks and `git diff --check` pass.
+- CMake configuration of `new_launcher` was attempted; Qt6 is not installed in
+  this Linux environment, so the Windows Qt build and the real build-6783
+  client validation remain pending. No native client compatibility claim is
+  made without that validation.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -1177,13 +1227,13 @@ Evidence for this phase:
 
 ## Current handoff
 
-Phases 1–22 and the server-side bot-match support are implemented, with the
+Phases 1–23 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
 transition bridge. The server build, migration/startup smoke, catalog/session
-API smoke and frontend syntax checks for Phase 22 pass; the next session should
-open the store from the Windows launcher, validate a real catalog purchase and
-reconnect/inventory rendering, then capture the native cancel/finalize sequence
-on a real build-6783 client on the LAN.
+API smoke and frontend syntax checks for Phase 23 pass; the next session should
+open the store from the Windows launcher, validate a real Steam-priced catalog
+purchase and confirm the pushed inventory snapshot in a live build-6783 client,
+then capture the native sales/purchase sequence on Windows.
 Preserve capture/replay evidence, rebuild the published client shim and verify
 that Dota returns to the foreground before claiming client compatibility. See
 [ROADMAP.md](ROADMAP.md) for the complete plan; do not treat client

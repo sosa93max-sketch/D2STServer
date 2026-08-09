@@ -42,6 +42,11 @@ builder.Services.AddSingleton<IProfileStore, ProfileCardStore>();
 builder.Services.AddSingleton<IShowcaseStore, ShowcaseStore>();
 builder.Services.AddSingleton<IEconomyStore, EconomyStore>();
 builder.Services.AddSingleton<SteamMarketPriceSync>();
+builder.Services.AddSingleton<MarketPriceRefreshQueue>();
+builder.Services.AddSingleton<IMarketPriceRefreshQueue>(provider =>
+    provider.GetRequiredService<MarketPriceRefreshQueue>());
+builder.Services.AddHostedService(provider =>
+    provider.GetRequiredService<MarketPriceRefreshQueue>());
 builder.Services.AddSingleton<IDotaPlusStore, DotaPlusStore>();
 builder.Services.AddSingleton<DotaCatalogImporter>();
 builder.Services.AddSingleton<StoreSessionHandoffService>();

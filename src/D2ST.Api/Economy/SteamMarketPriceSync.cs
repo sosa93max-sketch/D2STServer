@@ -11,9 +11,9 @@ namespace D2ST.Api.Economy;
 
 /// <summary>
 /// Updates local catalog prices from the public Steam Community Market
-/// endpoint. The operation is administrator-triggered, rate-limited and
-/// persisted per product so the client never depends on Steam being reachable
-/// during a purchase or a GC session.
+/// endpoint. The operation is rate-limited and persisted per product; it can be
+/// requested by an administrator or queued after a catalog import so the client
+/// never depends on Steam being reachable during a purchase or a GC session.
 /// </summary>
 public sealed class SteamMarketPriceSync
 {
@@ -89,6 +89,22 @@ public sealed class SteamMarketPriceSync
         var db = scope.ServiceProvider.GetRequiredService<D2stDbContext>();
         var query = db.StoreCatalogItems
             .Where(item => item.ProductType == StoreProductType.Item);
+        uint[]? productIds = null;
+        if (request.ProductIds is { Count: > 0 })
+        {
+            productIds = request.ProductIds
+                .Where(productId => productId != 0)
+                .Distinct()
+                .ToArray();
+            if (productIds.Length > MaxItemsLimit)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(request.ProductIds),
+                    $"ProductIds no puede contener más de {MaxItemsLimit} artículos por lote.");
+            }
+
+            query = query.Where(item => productIds!.Contains(item.ProductId));
+        }
         if (request.ActiveOnly)
         {
             query = query.Where(item => item.Active);
@@ -122,6 +138,10 @@ public sealed class SteamMarketPriceSync
             if (IsFreshMatch(product, now, request.MaxAgeMinutes))
             {
                 cached++;
+                if (!request.DryRun && request.ActivateMatched)
+                {
+                    product.Active = true;
+                }
                 rows.Add(ToResult(product, "cached", product.PriceDollars, null));
                 continue;
             }
@@ -131,7 +151,11 @@ public sealed class SteamMarketPriceSync
                 var marketHashName = product.MarketHashName.Trim();
                 if (marketHashName.Length == 0)
                 {
-                    var searchName = PrepareSearchName(product.Name);
+                    var searchName = PrepareSearchName(product.MarketSearchName);
+                    if (searchName.Length == 0)
+                    {
+                        searchName = PrepareSearchName(product.Name);
+                    }
                     if (searchName.Length == 0)
                     {
                         noMatch++;
@@ -201,6 +225,10 @@ public sealed class SteamMarketPriceSync
                     product.MarketPriceStatus = "matched";
                     product.MarketPriceUpdatedAt = now;
                     product.PriceDollars = appliedDollars;
+                    if (request.ActivateMatched)
+                    {
+                        product.Active = true;
+                    }
                 }
 
                 matched++;
@@ -258,7 +286,7 @@ public sealed class SteamMarketPriceSync
         && !string.IsNullOrWhiteSpace(product.MarketHashName)
         && product.MarketPriceUpdatedAt is { } updatedAt
         && now - updatedAt < TimeSpan.FromMinutes(maxAgeMinutes)
-        && product.MarketLowestPriceCents is > 0;
+        && (product.MarketLowestPriceCents is > 0 || product.MarketMedianPriceCents is > 0);
 
     private static string PrepareSearchName(string value)
     {
@@ -284,6 +312,18 @@ public sealed class SteamMarketPriceSync
         string status,
         DateTimeOffset updatedAt)
     {
+        var hasTrustedPrice = product.MarketPriceStatus.Equals("matched", StringComparison.OrdinalIgnoreCase)
+            && (product.MarketLowestPriceCents is > 0 || product.MarketMedianPriceCents is > 0);
+        var isManualPrice = product.MarketPriceSource.Equals("manual", StringComparison.OrdinalIgnoreCase);
+        if (!hasTrustedPrice && !isManualPrice && status != "matched")
+        {
+            // An unresolved import must never remain purchasable at the old
+            // placeholder value (historically this was $1). A previous
+            // matched/manual value is retained if a later Steam request fails.
+            product.PriceDollars = 0;
+            product.Active = false;
+        }
+
         product.MarketPriceSource = source;
         product.MarketPriceStatus = status;
         product.MarketPriceUpdatedAt = updatedAt;

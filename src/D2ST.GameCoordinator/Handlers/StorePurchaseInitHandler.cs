@@ -51,14 +51,14 @@ public sealed class StorePurchaseInitHandler : IGcMessageHandler
             // active catalog price. This log only makes a stale sale cache
             // visible while keeping the server authoritative.
             if (line.CostInLocalCurrency != 0 &&
-                line.CostInLocalCurrency != LocalEconomyCurrency.ToWireAmount(product.PriceDollars))
+                line.CostInLocalCurrency != LocalEconomyCurrency.ToWireCents(product.EffectivePriceCents))
             {
                 _logger.LogDebug(
-                    "Precio de cliente desactualizado: cuenta {AccountId}, producto {ProductId}, cliente {ClientPrice}, catálogo {CatalogPrice}",
+                    "Precio de cliente desactualizado: cuenta {AccountId}, producto {ProductId}, cliente {ClientPrice}, catálogo {CatalogPriceCents} cents",
                     context.AccountId,
                     product.ProductId,
                     line.CostInLocalCurrency,
-                    product.PriceDollars);
+                    product.EffectivePriceCents);
             }
 
             lines.Add(new StorePurchaseLine(product.ProductId, quantity));

@@ -223,6 +223,7 @@ public sealed record StoreCatalogUpsertRequest(
     bool Active,
     IReadOnlyList<StoreCatalogComponentRequest>? Components,
     string? MarketHashName = null,
+    string? MarketSearchName = null,
     long? MarketLowestPriceCents = null,
     long? MarketMedianPriceCents = null,
     long? MarketVolume = null,
@@ -245,6 +246,7 @@ public sealed record StoreCatalogItemResponse(
     IReadOnlyList<StoreCatalogComponent> Components,
     uint OwnedQuantity,
     string MarketHashName,
+    string MarketSearchName,
     long? MarketLowestPriceCents,
     long? MarketMedianPriceCents,
     long? MarketVolume,
@@ -271,7 +273,9 @@ public sealed record MarketPriceSyncRequest(
     int MaxItems = 100,
     int MaxAgeMinutes = 60,
     bool UseMedian = false,
-    bool DryRun = false);
+    bool DryRun = false,
+    IReadOnlyList<uint>? ProductIds = null,
+    bool ActivateMatched = false);
 
 public sealed record MarketPriceSyncItemResponse(
     uint ProductId,
@@ -299,20 +303,23 @@ public sealed record MarketPriceSyncResponse(
 public sealed record DotaCatalogDiscoverRequest(
     string DotaPath,
     string? Search = null,
-    int Take = 500);
+    int Take = 500,
+    string Language = "spanish");
 
 public sealed record DotaCatalogImportRequest(
     string DotaPath,
-    long DefaultPriceDollars = 1,
+    long DefaultPriceDollars = 0,
     bool Activate = false,
     uint? BuildVersion = null,
     IReadOnlyList<uint>? DefIndexes = null,
-    bool ClearExisting = false);
+    bool ClearExisting = false,
+    string Language = "spanish");
 
 public sealed record DotaCatalogDefinitionResponse(
     uint DefIndex,
     string Name,
     string DisplayName,
+    string MarketSearchName,
     string ItemName,
     string Description,
     string Prefab,
@@ -344,7 +351,9 @@ public sealed record DotaCatalogImportResponse(
     long DefaultPriceDollars,
     bool Activate,
     string Message,
-    int RemovedExistingCount = 0);
+    int RemovedExistingCount = 0,
+    string Language = "spanish",
+    int PricesQueued = 0);
 
 public sealed record StoreWalletResponse(
     uint AccountId,

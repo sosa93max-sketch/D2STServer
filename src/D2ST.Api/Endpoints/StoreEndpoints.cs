@@ -461,6 +461,7 @@ public static class StoreEndpoints
                     .Select(component => new StoreCatalogComponent(component.ProductId, component.Quantity))
                     .ToArray(),
                 request.MarketHashName ?? string.Empty,
+                request.MarketSearchName ?? string.Empty,
                 request.MarketLowestPriceCents,
                 request.MarketMedianPriceCents,
                 request.MarketVolume,
@@ -504,7 +505,7 @@ public static class StoreEndpoints
 
             try
             {
-                var source = importer.Read(request.DotaPath);
+                var source = importer.Read(request.DotaPath, request.Language);
                 var items = source.Items.AsEnumerable();
                 if (!string.IsNullOrWhiteSpace(request.Search))
                 {
@@ -543,6 +544,7 @@ public static class StoreEndpoints
             IConfiguration configuration,
             IEconomyStore economy,
             DotaCatalogImporter importer,
+            IMarketPriceRefreshQueue marketPriceQueue,
             CancellationToken cancellationToken) =>
         {
             var authorization = await AuthorizeAdminAsync(
@@ -557,16 +559,16 @@ public static class StoreEndpoints
                 return Results.StatusCode(StatusCodes.Status403Forbidden);
             }
 
-            if (request.DefaultPriceDollars <= 0
+            if (request.DefaultPriceDollars < 0
                 || request.DefaultPriceDollars > LocalEconomyCurrency.MaxWireDollars)
             {
                 return Results.BadRequest(new AdminMessageResponse(
-                    $"DefaultPriceDollars debe estar entre 1 y {LocalEconomyCurrency.MaxWireDollars}."));
+                    $"DefaultPriceDollars debe estar entre 0 y {LocalEconomyCurrency.MaxWireDollars}. Usa 0 para esperar el precio real de Steam."));
             }
 
             try
             {
-                var source = importer.Read(request.DotaPath);
+                var source = importer.Read(request.DotaPath, request.Language);
                 var selectedIndexes = request.DefIndexes is { Count: > 0 }
                     ? request.DefIndexes.ToHashSet()
                     : null;
@@ -587,8 +589,13 @@ public static class StoreEndpoints
                             item.ProductType == D2ST.Core.Economy.StoreProductType.Item &&
                             (item.ProductId == definition.DefIndex || item.DefIndex == definition.DefIndex));
                     var productId = current?.ProductId ?? definition.DefIndex;
-                    var price = current?.PriceDollars ?? request.DefaultPriceDollars;
-                    var active = current?.Active ?? request.Activate;
+                    var preservePrice = current is not null
+                        && (string.Equals(current.MarketPriceStatus, "matched", StringComparison.OrdinalIgnoreCase)
+                            && (current.MarketLowestPriceCents is > 0 || current.MarketMedianPriceCents is > 0)
+                            || string.Equals(current.MarketPriceSource, "manual", StringComparison.OrdinalIgnoreCase)
+                            && current.PriceDollars > 0);
+                    var price = preservePrice ? current!.PriceDollars : request.DefaultPriceDollars;
+                    var active = preservePrice ? current!.Active : request.Activate && price > 0;
                     var category = string.IsNullOrWhiteSpace(definition.Slot)
                         ? definition.Prefab
                         : definition.Slot;
@@ -606,6 +613,7 @@ public static class StoreEndpoints
                         0,
                         active,
                         [],
+                        MarketSearchName: definition.MarketSearchName,
                         HeroNames: definition.HeroNames);
                 }).ToArray();
                 var removedExisting = 0;
@@ -622,8 +630,13 @@ public static class StoreEndpoints
                 {
                     result = economy.ImportCatalog(products, preserveExisting: true);
                 }
+                var pricesQueued = marketPriceQueue.Enqueue(
+                    products
+                        .Where(product => product.ProductType == D2ST.Core.Economy.StoreProductType.Item)
+                        .Select(product => product.ProductId),
+                    request.Activate);
                 var activationMessage = request.Activate
-                    ? "Los productos nuevos se activaron."
+                    ? "Los productos nuevos con precio válido se activarán al terminar la consulta Steam."
                     : "Los productos nuevos quedaron desactivados hasta que el administrador los active.";
                 return Results.Ok(new DotaCatalogImportResponse(
                     source.DotaPath,
@@ -637,8 +650,10 @@ public static class StoreEndpoints
                     result.SkippedCount,
                     request.DefaultPriceDollars,
                     request.Activate,
-                    $"Catálogo importado: {result.ImportedCount} nuevos, {result.UpdatedCount} actualizados, {result.SkippedCount} omitidos. {activationMessage}",
-                    removedExisting));
+                    $"Catálogo importado: {result.ImportedCount} nuevos, {result.UpdatedCount} actualizados, {result.SkippedCount} omitidos. {activationMessage} Se programó la consulta de precios reales para {pricesQueued} artículos.",
+                    removedExisting,
+                    source.Language,
+                    pricesQueued));
             }
             catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
             {
@@ -720,6 +735,7 @@ public static class StoreEndpoints
             item.DefIndex,
             item.Name,
             item.DisplayName,
+            item.MarketSearchName,
             item.ItemName,
             item.Description,
             item.Prefab,
@@ -757,6 +773,7 @@ public static class StoreEndpoints
                 ? quantity
                 : 0,
             item.MarketHashName,
+            item.MarketSearchName,
             item.MarketLowestPriceCents,
             item.MarketMedianPriceCents,
             item.MarketVolume,

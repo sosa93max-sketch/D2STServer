@@ -17,6 +17,16 @@ public static class LocalEconomyCurrency
     public const long MinorUnitsPerDollar = 100;
     public const long MaxWireDollars = uint.MaxValue / MinorUnitsPerDollar;
 
+    public static uint ToWireCents(long cents)
+    {
+        if (cents <= 0)
+        {
+            return 0;
+        }
+
+        return cents >= uint.MaxValue ? uint.MaxValue : (uint)cents;
+    }
+
     public static uint ToWireAmount(long dollars)
     {
         if (dollars <= 0)
@@ -24,9 +34,9 @@ public static class LocalEconomyCurrency
             return 0;
         }
 
-        return dollars > MaxWireDollars
-            ? uint.MaxValue
-            : (uint)(dollars * MinorUnitsPerDollar);
+        return ToWireCents(dollars > long.MaxValue / MinorUnitsPerDollar
+            ? long.MaxValue
+            : dollars * MinorUnitsPerDollar);
     }
 }
 
@@ -75,13 +85,31 @@ public sealed record StoreCatalogItem(
     bool Active,
     IReadOnlyList<StoreCatalogComponent> Components,
     string MarketHashName = "",
+    string MarketSearchName = "",
     long? MarketLowestPriceCents = null,
     long? MarketMedianPriceCents = null,
     long? MarketVolume = null,
     string MarketPriceSource = "",
     string MarketPriceStatus = "not_checked",
     DateTimeOffset? MarketPriceUpdatedAt = null,
-    IReadOnlyList<string>? HeroNames = null);
+    IReadOnlyList<string>? HeroNames = null)
+{
+    /// <summary>
+    /// Uses the verified Steam lowest price at the native-client boundary.
+    /// Unpriced products return zero and are not advertised by the GC.
+    /// </summary>
+    public long EffectivePriceCents =>
+        string.Equals(MarketPriceStatus, "matched", StringComparison.OrdinalIgnoreCase)
+            && (MarketLowestPriceCents is > 0 || MarketMedianPriceCents is > 0)
+            ? MarketLowestPriceCents is > 0
+                ? MarketLowestPriceCents.Value
+                : MarketMedianPriceCents.GetValueOrDefault()
+            : PriceDollars <= 0
+                ? 0
+                : PriceDollars > long.MaxValue / LocalEconomyCurrency.MinorUnitsPerDollar
+                    ? long.MaxValue
+                    : PriceDollars * LocalEconomyCurrency.MinorUnitsPerDollar;
+}
 
 public sealed record WalletSnapshot(
     uint AccountId,

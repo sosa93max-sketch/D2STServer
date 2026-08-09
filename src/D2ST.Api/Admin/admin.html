@@ -498,7 +498,8 @@
           <button id="discoverBtn" class="accent">Detectar</button>
         </div>
         <div class="row" style="margin-top: 10px;">
-          <input id="defaultPrice" type="number" min="1" value="1" step="1" placeholder="Precio local fallback (USD entero)">
+          <input id="defaultPrice" type="number" min="0" value="0" step="1" placeholder="Fallback local (0 = precio Steam)">
+          <select id="catalogLanguage"><option value="spanish" selected>Nombre visible: español</option><option value="english">Nombre visible: inglés</option><option value="latam">Español latino</option></select>
           <label class="check"><input id="activateImported" type="checkbox"> Activar productos nuevos</label>
           <label class="check"><input id="replaceImported" type="checkbox"> Vaciar antes de importar</label>
           <button id="importBtn">Importar catálogo completo</button>
@@ -533,6 +534,7 @@
           <input id="catalogBuildVersion" class="span-2" type="number" min="0" placeholder="BuildVersion">
           <input id="catalogDescription" class="span-7" placeholder="Descripción opcional">
           <input id="catalogMarketHashName" class="span-8" placeholder="Market hash name Steam (opcional)">
+          <input id="catalogMarketSearchName" class="span-8" placeholder="Nombre inglés para buscar en Steam (opcional)">
           <input id="catalogComponents" class="span-8" placeholder="Componentes (1001:1,1002:1)">
           <label class="check span-2"><input id="catalogActive" type="checkbox"> Activo</label>
           <button id="saveCatalogBtn" class="accent span-2">Guardar</button>
@@ -1089,7 +1091,7 @@ function renderCatalog(body) {
       + (Number(item.ProductType) === 2 ? ' · ' + formatNumber(item.DotaPlusDays || 0) + ' días' : '')
       + (Number(item.ProductType) === 1 ? ' · ' + catalogComponentsLabel(item) : '')
       + (item.MarketPriceStatus && item.MarketPriceStatus !== 'not_checked'
-        ? ' · Steam ' + formatMarketCents(item.MarketLowestPriceCents) + ' (' + item.MarketPriceStatus + ')'
+        ? ' · Steam ' + formatMarketCents(item.MarketLowestPriceCents || item.MarketMedianPriceCents) + ' (' + item.MarketPriceStatus + ')'
         : '');
     product.appendChild(name);
     product.appendChild(detail);
@@ -1180,7 +1182,8 @@ async function discoverCatalog() {
     body: JSON.stringify({
       DotaPath: path,
       Search: $('discoverySearch').value.trim() || null,
-      Take: 100
+      Take: 100,
+      Language: $('catalogLanguage').value
     })
   });
   if (!result.ok) { show($('discoverMsg'), messageOf(result)); return; }
@@ -1199,14 +1202,15 @@ async function importCatalog() {
   const path = $('dotaPath').value.trim();
   const price = parseInt($('defaultPrice').value, 10);
   if (!path) { show($('discoverMsg'), 'Indica la ruta de instalación de Dota 2.'); return; }
-  if (!Number.isFinite(price) || price <= 0) { show($('discoverMsg'), 'El precio base debe ser mayor que cero.'); return; }
+  if (!Number.isFinite(price) || price < 0) { show($('discoverMsg'), 'El fallback debe ser 0 o un número positivo.'); return; }
   const result = await api('/api/admin/store/catalog/import', {
     method: 'POST',
     body: JSON.stringify({
       DotaPath: path,
       DefaultPriceDollars: price,
       Activate: $('activateImported').checked,
-      ClearExisting: $('replaceImported').checked
+      ClearExisting: $('replaceImported').checked,
+      Language: $('catalogLanguage').value
     })
   });
   if (!result.ok) { show($('discoverMsg'), messageOf(result)); return; }
@@ -1253,6 +1257,7 @@ function clearCatalogForm() {
   $('catalogBuildVersion').value = '';
   $('catalogDescription').value = '';
   $('catalogMarketHashName').value = '';
+  $('catalogMarketSearchName').value = '';
   $('catalogComponents').value = '';
   $('catalogActive').checked = false;
   syncCatalogTypeFields();
@@ -1263,6 +1268,7 @@ function syncCatalogTypeFields() {
   const isItem = Number($('catalogType').value) === 0;
   $('catalogDefIndex').disabled = isPlus;
   $('catalogMarketHashName').disabled = !isItem;
+  $('catalogMarketSearchName').disabled = !isItem;
   $('catalogComponents').disabled = isPlus;
   $('catalogDotaPlusDays').disabled = !isPlus;
   if (isPlus) {
@@ -1283,6 +1289,7 @@ function editCatalog(item) {
   $('catalogBuildVersion').value = item.BuildVersion || 0;
   $('catalogDescription').value = item.Description || '';
   $('catalogMarketHashName').value = item.MarketHashName || '';
+  $('catalogMarketSearchName').value = item.MarketSearchName || '';
   $('catalogComponents').value = (item.Components || [])
     .map((component) => component.ProductId + ':' + component.Quantity).join(',');
   $('catalogActive').checked = !!item.Active;
@@ -1314,6 +1321,7 @@ async function saveCatalog() {
   const buildVersion = parseInt($('catalogBuildVersion').value || '0', 10);
   const market = editingCatalogItem || {};
   const marketHashName = productType === 0 ? $('catalogMarketHashName').value.trim() : '';
+  const marketSearchName = productType === 0 ? $('catalogMarketSearchName').value.trim() : '';
   const result = await api('/api/admin/store/catalog', {
     method: 'POST',
     body: JSON.stringify({
@@ -1329,10 +1337,11 @@ async function saveCatalog() {
       Active: $('catalogActive').checked,
       Components: components,
       MarketHashName: marketHashName || null,
+      MarketSearchName: marketSearchName || null,
       MarketLowestPriceCents: market.MarketLowestPriceCents ?? null,
       MarketMedianPriceCents: market.MarketMedianPriceCents ?? null,
       MarketVolume: market.MarketVolume ?? null,
-      MarketPriceSource: market.MarketPriceSource || null,
+      MarketPriceSource: market.MarketPriceSource || (price > 0 ? 'manual' : null),
       MarketPriceStatus: marketHashName ? (market.MarketPriceStatus || null) : 'not_checked',
       MarketPriceUpdatedAt: market.MarketPriceUpdatedAt || null,
       Heroes: market.Heroes || []
@@ -1361,6 +1370,7 @@ async function toggleCatalog(item) {
       Active: !item.Active,
       Components: item.Components || [],
       MarketHashName: item.MarketHashName || null,
+      MarketSearchName: item.MarketSearchName || null,
       MarketLowestPriceCents: item.MarketLowestPriceCents ?? null,
       MarketMedianPriceCents: item.MarketMedianPriceCents ?? null,
       MarketVolume: item.MarketVolume ?? null,

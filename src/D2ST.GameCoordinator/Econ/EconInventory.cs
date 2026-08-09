@@ -67,6 +67,17 @@ public sealed class EconInventory
         }
     }
 
+    /// <summary>
+    /// Reconciles the durable inventory and sends a complete SO snapshot to a
+    /// live client. The web checkout uses this after its atomic purchase so a
+    /// missed delta during subscription setup cannot require a restart.
+    /// </summary>
+    public void Refresh(ulong steamId, uint accountId)
+    {
+        EnsureCache(steamId, accountId);
+        _soCache.PushSubscribe(accountId, SoOwner.ForSteamId(steamId));
+    }
+
     public void ApplyItems(ulong steamId, uint accountId, IEnumerable<CSOEconItem> items)
     {
         var key = SoCacheKey.Econ(steamId);
@@ -97,6 +108,7 @@ public sealed class EconInventory
         if (result.Success)
         {
             ApplyItems(steamId, accountId, result.Items);
+            Refresh(steamId, accountId);
         }
 
         return result;

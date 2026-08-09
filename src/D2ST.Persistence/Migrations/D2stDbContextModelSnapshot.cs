@@ -900,6 +900,11 @@ namespace D2ST.Persistence.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MarketSearchName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("TEXT");
+
                     b.Property<long?>("MarketLowestPriceCents")
                         .HasColumnType("INTEGER");
 
