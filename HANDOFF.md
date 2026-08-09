@@ -1210,6 +1210,31 @@ Evidence for this phase:
   client validation remain pending. No native client compatibility claim is
   made without that validation.
 
+## Phase 24 — native launcher store and bearer-only session
+
+The consumer browser store has been retired. `new_launcher` now renders the
+catalog, wallet, inventory, activity and purchase controls as a native Qt view.
+The server keeps the authenticated `/api/store/*` REST surface for that view,
+but no longer publishes `/store`, handoff tickets or store cookies.
+
+- Session authentication is bearer-only. The native view sends the exact token
+  returned by `/api/auth/login`, so logging in on the launcher and opening the
+  store use one session instead of a browser cookie bridge.
+- The legacy store HTML, handoff service, cookie helper and their DI/endpoint
+  registrations were removed. Admin catalog pages remain browser-backed and
+  continue to use their own bearer token in `sessionStorage`.
+- `ServerClient` now parses catalog pages, filters, wallet, inventory,
+  transactions and purchase responses, including HTTP 401 detection. A native
+  purchase refreshes the visible catalog and inventory and still uses the
+  server-side SO snapshot path described in Phase 23.
+
+Evidence: `dotnet restore D2STServer.sln --force` and
+`dotnet build D2STServer.sln -c Release --no-restore` pass with 0 warnings and
+0 errors. A temporary SQLite startup applies all migrations and reaches the
+listening state; `/store` returns 404 and unauthenticated `/api/store/catalog`
+returns 401. Qt6/Windows visual and purchase validation remain pending because
+Qt6 and the target Dota client are not available in this Linux environment.
+
 ## Working conventions
 
 - Update this `HANDOFF.md` when a phase changes, before committing.
@@ -1227,11 +1252,10 @@ Evidence for this phase:
 
 ## Current handoff
 
-Phases 1–23 and the server-side bot-match support are implemented, with the
+Phases 1–24 and the server-side bot-match support are implemented, with the
 schema managed by EF Core and legacy databases preserved through the
-transition bridge. The server build, migration/startup smoke, catalog/session
-API smoke and frontend syntax checks for Phase 23 pass; the next session should
-open the store from the Windows launcher, validate a real Steam-priced catalog
+transition bridge. The next session should build the launcher on Windows,
+open the native store from the launcher, validate a real Steam-priced catalog
 purchase and confirm the pushed inventory snapshot in a live build-6783 client,
 then capture the native sales/purchase sequence on Windows.
 Preserve capture/replay evidence, rebuild the published client shim and verify

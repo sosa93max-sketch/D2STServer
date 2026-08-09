@@ -1,6 +1,5 @@
 using D2ST.Api.Contracts;
 using D2ST.Api.Economy;
-using D2ST.Api.Store;
 using D2ST.Core.Economy;
 using D2ST.GameCoordinator.Econ;
 using D2ST.GameCoordinator.DotaPlus;
@@ -14,82 +13,6 @@ public static class StoreEndpoints
 {
     public static IEndpointRouteBuilder MapStoreEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/store", (IHostEnvironment env) =>
-        {
-            var page = Path.Combine(env.ContentRootPath, "Store", "store.html");
-            return File.Exists(page)
-                ? Results.Content(File.ReadAllText(page), "text/html; charset=utf-8")
-                : Results.NotFound("Store page not deployed.");
-        });
-
-        app.MapPost("/api/store/handoff", (
-            HttpContext http,
-            ISessionStore sessions,
-            StoreSessionHandoffService handoffs) =>
-        {
-            var session = http.Authenticate(sessions);
-            if (session is null)
-            {
-                return Results.Unauthorized();
-            }
-
-            var handoff = handoffs.Create(session);
-            var path = $"/store?ticket={Uri.EscapeDataString(handoff.Code)}";
-            return Results.Ok(new StoreHandoffResponse(path, handoff.ExpiresAt));
-        });
-
-        app.MapPost("/api/store/handoff/exchange", (
-            StoreHandoffExchangeRequest request,
-            HttpContext http,
-            StoreSessionHandoffService handoffs) =>
-        {
-            var session = handoffs.Consume(request.Code);
-            if (session is null)
-            {
-                return Results.Unauthorized();
-            }
-
-            var expiresAt = DateTimeOffset.UtcNow.AddMinutes(30);
-            http.Response.Cookies.Append(
-                StoreSessionCookie.Name,
-                session.Token,
-                StoreSessionCookie.ForSession(http, expiresAt));
-
-            return Results.Ok(new StoreSessionResponse(
-                session.Account.AccountId,
-                session.Account.SteamId,
-                session.Account.Username,
-                session.PersonaName ?? session.Account.Username,
-                expiresAt));
-        });
-
-        app.MapPost("/api/store/logout", (HttpContext http) =>
-        {
-            http.Response.Cookies.Append(
-                StoreSessionCookie.Name,
-                string.Empty,
-                StoreSessionCookie.Expired(http));
-            return Results.Ok();
-        });
-
-        app.MapGet("/api/store/session", (
-            HttpContext http,
-            ISessionStore sessions) =>
-        {
-            var session = http.Authenticate(sessions);
-            if (session is null)
-            {
-                return Results.Unauthorized();
-            }
-
-            return Results.Ok(new StoreSessionResponse(
-                session.Account.AccountId,
-                session.Account.SteamId,
-                session.Account.Username,
-                session.PersonaName ?? session.Account.Username,
-                DateTimeOffset.UtcNow.AddMinutes(30)));
-        });
-
         app.MapGet("/api/store/catalog", (
             HttpContext http,
             ISessionStore sessions,

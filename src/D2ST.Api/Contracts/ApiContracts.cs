@@ -177,17 +177,6 @@ public sealed record GcInventoryItem(ulong ItemId, uint DefIndex, uint Quantity,
 
 public sealed record GcInventoryResponse(IReadOnlyList<GcInventoryItem> Items, ulong CacheVersion);
 
-public sealed record StoreHandoffResponse(string Path, DateTimeOffset ExpiresAt);
-
-public sealed record StoreHandoffExchangeRequest(string Code);
-
-public sealed record StoreSessionResponse(
-    uint AccountId,
-    ulong SteamId,
-    string Username,
-    string PersonaName,
-    DateTimeOffset ExpiresAt);
-
 public sealed record StoreEquipRequest(
     ulong ItemId,
     uint HeroId,

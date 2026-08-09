@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Content Include="Admin\admin.html" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="Store\store.html" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <PropertyGroup>

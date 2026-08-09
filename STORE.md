@@ -1,20 +1,14 @@
 # D2MAX Store
 
-The consumer store is served by the same D2STServer process at `/store`.
-It uses the local catalog and wallet; it does not charge Steam Wallet or claim
-official Valve ownership.
+La tienda de consumo vive dentro de `new_launcher`. Ya no se publica una página
+`/store` ni se usa una cookie o un handoff de navegador: el launcher envía el
+mismo bearer token que recibió al iniciar sesión en cada llamada. Así la cuenta
+que ve el catálogo, el saldo y el inventario es exactamente la cuenta activa del
+launcher.
 
-## Launcher handoff
-
-The launcher calls `POST /api/store/handoff` with the active profile's bearer
-token. The server returns a relative `/store?ticket=...` path. The ticket is
-short-lived and single-use. The store page exchanges it with
-`POST /api/store/handoff/exchange`, which sets the `d2st_store_session` HttpOnly
-cookie scoped to `/api/store`.
-
-The permanent launcher token is never included in the URL. The store account is
-always resolved from the server session, so `ProductId`, item ids and account
-ids supplied by a browser cannot change the owner of a purchase.
+El servidor conserva únicamente la API autenticada y la administración del
+catálogo. `ProductId`, ids de inventario y cuenta se resuelven siempre desde la
+sesión bearer; el cliente nunca puede cambiar el propietario de una compra.
 
 ## Store APIs
 
@@ -28,7 +22,6 @@ ids supplied by a browser cannot change the owner of a purchase.
 - `POST /api/store/inventory/equip` — validates ownership before publishing an
   equip delta for a supplied hero and slot.
 - `GET /api/store/transactions` — wallet and purchase activity.
-- `POST /api/store/logout` — clears the browser store cookie.
 
 After a successful REST purchase, the item is persisted and published to the
 connected client through the econ Shared Object cache. The server then pushes a
@@ -72,8 +65,7 @@ shown separately as `Saldo requerido`. This keeps the existing wallet and GC
 contracts compatible and does not represent a Steam Wallet charge or official
 Valve ownership.
 
-When the launcher logs off, `/api/presence/offline` revokes the same server
-session used by the store cookie and expires that cookie. The store page checks
-`/api/store/session` periodically, so an open tab changes to a dedicated
-“Sesión cerrada” screen with retry/return actions instead of leaving the
-purchase UI visible.
+When the launcher logs off, `/api/presence/offline` revokes the active bearer
+session. The embedded store receives the same token and therefore becomes
+unavailable immediately; a later login supplies a new token without any browser
+state to clean up.
